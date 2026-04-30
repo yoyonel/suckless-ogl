@@ -1,0 +1,2010 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/app_ui.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('app__ui_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle">
+<div class="title">app_ui.c File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="app__ui_8h_source.html">app_ui.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__input__state_8h_source.html">app_input_state.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__profiling_8h_source.html">app_profiling.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__ui__layout_8h_source.html">app_ui_layout.h</a>&quot;</code><br />
+<code>#include &quot;glad/glad.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="nbody_8h_source.html">nbody.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="scene__simulation_8h_source.html">scene_simulation.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ui_8h_source.html">ui.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for app_ui.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:af70a47e72bc3967a1e497ee63ec55e0a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#af70a47e72bc3967a1e497ee63ec55e0a">draw_exposure_overlay</a> (const <a class="el" href="structApp.html">App</a> *app, <a class="el" href="structUILayout.html">UILayout</a> *<a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a>)</td></tr>
+<tr class="separator:af70a47e72bc3967a1e497ee63ec55e0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63249de861c8bca9d1bf3e0c4705f8ab"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a63249de861c8bca9d1bf3e0c4705f8ab">draw_nbody_overlay</a> (const <a class="el" href="structApp.html">App</a> *app, <a class="el" href="structUILayout.html">UILayout</a> *<a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a>)</td></tr>
+<tr class="separator:a63249de861c8bca9d1bf3e0c4705f8ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1201a24aee78d93c5e82a3924ffec0a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ab1201a24aee78d93c5e82a3924ffec0a">draw_loading_indicator</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ab1201a24aee78d93c5e82a3924ffec0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac88180806da165ac149d340e26add6ac"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ac88180806da165ac149d340e26add6ac">draw_help_overlay_keys</a> (const <a class="el" href="structApp.html">App</a> *app, float start_x, float start_y, float total_h, const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *scaled_cfg)</td></tr>
+<tr class="separator:ac88180806da165ac149d340e26add6ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18bb12dc158eb14e51915e211510e391"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a18bb12dc158eb14e51915e211510e391">draw_key_layer_base</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_ctx, const <a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay, const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *scaled_cfg, const <a class="el" href="structKeyPos.html">KeyPos</a> *pos, float pos_x, float pos_y, const vec3 base_col, bool has_binding, bool is_pressed, bool is_hovered, float global_dim_mult, int screen_width, int screen_height)</td></tr>
+<tr class="separator:a18bb12dc158eb14e51915e211510e391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf9833624808a2cc35105ff6b4a04c26"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#adf9833624808a2cc35105ff6b4a04c26">draw_key_layer_effects</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_ctx, const <a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay, const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *scaled_cfg, const <a class="el" href="structKeyPos.html">KeyPos</a> *pos, float pos_x, float pos_y, const vec3 base_col, bool is_pressed, bool is_hovered, int screen_width, int screen_height)</td></tr>
+<tr class="separator:adf9833624808a2cc35105ff6b4a04c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3588aa62deafb57552b5f109dfa3705"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#af3588aa62deafb57552b5f109dfa3705">draw_key_layer_label</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_ctx, const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *scaled_cfg, const <a class="el" href="structKeyPos.html">KeyPos</a> *pos, float pos_x, float pos_y, int screen_width, int screen_height)</td></tr>
+<tr class="separator:af3588aa62deafb57552b5f109dfa3705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74c643caf4877bfc6c92caed2a7d779a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a74c643caf4877bfc6c92caed2a7d779a">draw_text_centered</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_ctx, const char *text, float pos_x, float pos_y, float scale, int screen_width, int screen_height)</td></tr>
+<tr class="separator:a74c643caf4877bfc6c92caed2a7d779a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac728a2c6b8100d42540b7471262c7284"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structAppBinding.html">AppBinding</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ac728a2c6b8100d42540b7471262c7284">get_active_binding</a> (const <a class="el" href="structAppBindingRegistry.html">AppBindingRegistry</a> *registry, int key, int mods, int *out_effective_mods)</td></tr>
+<tr class="separator:ac728a2c6b8100d42540b7471262c7284"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27e5ee4cedb372f915cf408adc005d94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a27e5ee4cedb372f915cf408adc005d94">app_ui_init</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay)</td></tr>
+<tr class="separator:a27e5ee4cedb372f915cf408adc005d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae291b4eb13641176e0232509ddc0ccf0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ae291b4eb13641176e0232509ddc0ccf0">app_ui_cleanup</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay)</td></tr>
+<tr class="separator:ae291b4eb13641176e0232509ddc0ccf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bc4879a7af2ed6616a105fc9a66a1e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a8bc4879a7af2ed6616a105fc9a66a1e6">app_ui_update</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay, double delta_time)</td></tr>
+<tr class="separator:a8bc4879a7af2ed6616a105fc9a66a1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8faf008fc34cc59d6cf8fc7eb6e1e15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#aa8faf008fc34cc59d6cf8fc7eb6e1e15">app_ui_handle_mouse</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay, double xpos, double ypos, int screen_width, int screen_height)</td></tr>
+<tr class="separator:aa8faf008fc34cc59d6cf8fc7eb6e1e15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7db775acc267773a5d45a5afc6844eeb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a7db775acc267773a5d45a5afc6844eeb">get_key_base_color</a> (const <a class="el" href="structAppBindingRegistry.html">AppBindingRegistry</a> *registry, int key, vec3 out_col, bool *out_has_binding)</td></tr>
+<tr class="separator:a7db775acc267773a5d45a5afc6844eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c6ab23480ae4de17b6ff39d29cdc36e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a2c6ab23480ae4de17b6ff39d29cdc36e">is_modifier_relevant</a> (int key, int pressed_key, int pressed_mods)</td></tr>
+<tr class="separator:a2c6ab23480ae4de17b6ff39d29cdc36e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecd45eb408c8a13e0f98d280a6fef2df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#aecd45eb408c8a13e0f98d280a6fef2df">app_draw_help_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:aecd45eb408c8a13e0f98d280a6fef2df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the help overlay with keyboard shortcuts.  <a href="app__ui_8c.html#aecd45eb408c8a13e0f98d280a6fef2df">More...</a><br /></td></tr>
+<tr class="separator:aecd45eb408c8a13e0f98d280a6fef2df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab90a94299ab3aff797d97f66965a0737"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ab90a94299ab3aff797d97f66965a0737">draw_gamepad_control</a> (const <a class="el" href="structApp.html">App</a> *app, const <a class="el" href="structGamepadControlPos.html">GamepadControlPos</a> *ctrl, float origin_x, float origin_y, float unit_size, float unit_pad, float ui_scale, int hovered_idx, int ctrl_idx, bool is_pressed, float dim_mult)</td></tr>
+<tr class="separator:ab90a94299ab3aff797d97f66965a0737"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fa733535e4b950624955b987ab1fbe7"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a4fa733535e4b950624955b987ab1fbe7">gp_axis_active</a> (const float *axes, int axis_id, const <a class="el" href="structGamepadState.html">GamepadState</a> *pad)</td></tr>
+<tr class="memdesc:a4fa733535e4b950624955b987ab1fbe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether a raw GLFW axis value exceeds its activation threshold.  <a href="app__ui_8c.html#a4fa733535e4b950624955b987ab1fbe7">More...</a><br /></td></tr>
+<tr class="separator:a4fa733535e4b950624955b987ab1fbe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e089cd73f85596832c1db598a3662aa"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a8e089cd73f85596832c1db598a3662aa">gp_overlay_poll_active</a> (const <a class="el" href="structApp.html">App</a> *app, bool active[<a class="el" href="app__ui__layout_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe">GAMEPAD_LAYOUT_COUNT</a>])</td></tr>
+<tr class="memdesc:a8e089cd73f85596832c1db598a3662aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Poll live gamepad state and mark active controls.  <a href="app__ui_8c.html#a8e089cd73f85596832c1db598a3662aa">More...</a><br /></td></tr>
+<tr class="separator:a8e089cd73f85596832c1db598a3662aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bd46e2ed0be3adf716e027f818841ff"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a5bd46e2ed0be3adf716e027f818841ff">gp_overlay_find_hovered</a> (float origin_x, float origin_y, float unit_size, float unit_pad, float step)</td></tr>
+<tr class="memdesc:a5bd46e2ed0be3adf716e027f818841ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the hovered gamepad control via mouse hit-test.  <a href="app__ui_8c.html#a5bd46e2ed0be3adf716e027f818841ff">More...</a><br /></td></tr>
+<tr class="separator:a5bd46e2ed0be3adf716e027f818841ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecd586b031f0825054a022157ef27429"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#aecd586b031f0825054a022157ef27429">app_draw_gamepad_help_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:aecd586b031f0825054a022157ef27429"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the gamepad help overlay with controller bindings.  <a href="app__ui_8c.html#aecd586b031f0825054a022157ef27429">More...</a><br /></td></tr>
+<tr class="separator:aecd586b031f0825054a022157ef27429"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79e4807fa5dc8741de93d060381548f8"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a79e4807fa5dc8741de93d060381548f8">is_key_active_in_overlay</a> (int key_to_test, int active_key, int active_mods)</td></tr>
+<tr class="separator:a79e4807fa5dc8741de93d060381548f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc20d7574d4fd85069eea1a69a4d56f6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#adc20d7574d4fd85069eea1a69a4d56f6">draw_exposure_debug_text</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:adc20d7574d4fd85069eea1a69a4d56f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac195a5b0693c9126eabbfb556e6cbf9f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ac195a5b0693c9126eabbfb556e6cbf9f">draw_luminance_histogram_graph</a> (const <a class="el" href="structApp.html">App</a> *app, const int *buckets, int size, float min_lum, float max_lum)</td></tr>
+<tr class="separator:ac195a5b0693c9126eabbfb556e6cbf9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a535fc2bb9e40cd77f226290c0f46ffcc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a535fc2bb9e40cd77f226290c0f46ffcc">draw_bloom_debug_status</a> (const <a class="el" href="structApp.html">App</a> *app, <a class="el" href="structUILayout.html">UILayout</a> *<a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a>)</td></tr>
+<tr class="separator:a535fc2bb9e40cd77f226290c0f46ffcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2260be1c8a14c8df4d54dee625f51c3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a2260be1c8a14c8df4d54dee625f51c3a">app_draw_debug_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:a2260be1c8a14c8df4d54dee625f51c3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the debug overlay with performance metrics and settings.  <a href="app__ui_8c.html#a2260be1c8a14c8df4d54dee625f51c3a">More...</a><br /></td></tr>
+<tr class="separator:a2260be1c8a14c8df4d54dee625f51c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a600c8e8156cfa1ae1ad50a82f9d1ee05"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a600c8e8156cfa1ae1ad50a82f9d1ee05">draw_main_info_overlay</a> (const <a class="el" href="structApp.html">App</a> *app, <a class="el" href="structUILayout.html">UILayout</a> *<a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a>)</td></tr>
+<tr class="separator:a600c8e8156cfa1ae1ad50a82f9d1ee05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82d18ad8e7c83cd153cf1b73896ee4e6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a82d18ad8e7c83cd153cf1b73896ee4e6">draw_cinematic_overlay</a> (const <a class="el" href="structApp.html">App</a> *app, <a class="el" href="structUILayout.html">UILayout</a> *<a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a>)</td></tr>
+<tr class="separator:a82d18ad8e7c83cd153cf1b73896ee4e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e6cd6f94ac584ad4b8ca7434079e65b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a6e6cd6f94ac584ad4b8ca7434079e65b">app_render_ui</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:a6e6cd6f94ac584ad4b8ca7434079e65b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main UI rendering entry point.  <a href="app__ui_8c.html#a6e6cd6f94ac584ad4b8ca7434079e65b">More...</a><br /></td></tr>
+<tr class="separator:a6e6cd6f94ac584ad4b8ca7434079e65b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae34ca930ba8175fe6d5e0e59ef5256f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#ae34ca930ba8175fe6d5e0e59ef5256f2">compute_luminance_histogram</a> (const <a class="el" href="structApp.html">App</a> *app, int *buckets, int size, float *min_lum, float *max_lum)</td></tr>
+<tr class="memdesc:ae34ca930ba8175fe6d5e0e59ef5256f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the luminance histogram from current frame data.  <a href="app__ui_8c.html#ae34ca930ba8175fe6d5e0e59ef5256f2">More...</a><br /></td></tr>
+<tr class="separator:ae34ca930ba8175fe6d5e0e59ef5256f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a20b1ff518e5e14a017594a9c75438b19"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a20b1ff518e5e14a017594a9c75438b19">GP_LAYOUT_COLS</a> = 12.0F</td></tr>
+<tr class="separator:a20b1ff518e5e14a017594a9c75438b19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31a731d480b2f7695594a443dc6a67db"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a31a731d480b2f7695594a443dc6a67db">GP_LAYOUT_ROWS</a> = 7.0F</td></tr>
+<tr class="separator:a31a731d480b2f7695594a443dc6a67db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa757d8bd1a3d4fb06b9bf2046963de6a"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#aa757d8bd1a3d4fb06b9bf2046963de6a">GP_GLOW_BASE_SIZE</a> = 12.0F</td></tr>
+<tr class="separator:aa757d8bd1a3d4fb06b9bf2046963de6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedf6ee7fcafaa6149218b94f81b0b34b"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#aedf6ee7fcafaa6149218b94f81b0b34b">GP_GLOW_SIDES</a> = 2.0F</td></tr>
+<tr class="separator:aedf6ee7fcafaa6149218b94f81b0b34b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6a4cd2b290e70b89a9b3ca96c6d8689"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#af6a4cd2b290e70b89a9b3ca96c6d8689">GP_SMALL_LABEL_SCALE</a> = 0.7F</td></tr>
+<tr class="separator:af6a4cd2b290e70b89a9b3ca96c6d8689"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8913760ddb525fced3aebc3519c7c8a7"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8c.html#a8913760ddb525fced3aebc3519c7c8a7">GP_TRIGGER_NORM</a> = 0.5F</td></tr>
+<tr class="separator:a8913760ddb525fced3aebc3519c7c8a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a2260be1c8a14c8df4d54dee625f51c3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2260be1c8a14c8df4d54dee625f51c3a">&#9670;&nbsp;</a></span>app_draw_debug_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_draw_debug_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws the debug overlay with performance metrics and settings. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a2260be1c8a14c8df4d54dee625f51c3a_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aecd586b031f0825054a022157ef27429"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecd586b031f0825054a022157ef27429">&#9670;&nbsp;</a></span>app_draw_gamepad_help_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_draw_gamepad_help_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws the gamepad help overlay with controller bindings. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_aecd586b031f0825054a022157ef27429_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aecd45eb408c8a13e0f98d280a6fef2df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecd45eb408c8a13e0f98d280a6fef2df">&#9670;&nbsp;</a></span>app_draw_help_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_draw_help_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws the help overlay with keyboard shortcuts. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_aecd45eb408c8a13e0f98d280a6fef2df_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a6e6cd6f94ac584ad4b8ca7434079e65b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e6cd6f94ac584ad4b8ca7434079e65b">&#9670;&nbsp;</a></span>app_render_ui()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_render_ui </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Main UI rendering entry point. </p>
+<p>Orchestrates all UI elements (overlays, histograms, loading spinners). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a6e6cd6f94ac584ad4b8ca7434079e65b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ae291b4eb13641176e0232509ddc0ccf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae291b4eb13641176e0232509ddc0ccf0">&#9670;&nbsp;</a></span>app_ui_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ae291b4eb13641176e0232509ddc0ccf0_cgraph.svg" width="443" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aa8faf008fc34cc59d6cf8fc7eb6e1e15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8faf008fc34cc59d6cf8fc7eb6e1e15">&#9670;&nbsp;</a></span>app_ui_handle_mouse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_handle_mouse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>xpos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>ypos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27e5ee4cedb372f915cf408adc005d94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27e5ee4cedb372f915cf408adc005d94">&#9670;&nbsp;</a></span>app_ui_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a27e5ee4cedb372f915cf408adc005d94_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a8bc4879a7af2ed6616a105fc9a66a1e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bc4879a7af2ed6616a105fc9a66a1e6">&#9670;&nbsp;</a></span>app_ui_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>delta_time</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae34ca930ba8175fe6d5e0e59ef5256f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae34ca930ba8175fe6d5e0e59ef5256f2">&#9670;&nbsp;</a></span>compute_luminance_histogram()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int compute_luminance_histogram </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>buckets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>min_lum</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>max_lum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the luminance histogram from current frame data. </p>
+<p>Scans the luminance buffer to populate buckets for visualization. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">buckets</td><td>Array to fill with histogram data. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">size</td><td>Number of buckets in the array. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">min_lum</td><td>Minimum luminance found in the data. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">max_lum</td><td>Maximum luminance found in the data. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of samples processed or error code. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ae34ca930ba8175fe6d5e0e59ef5256f2_cgraph.svg" width="100%" height="366"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a535fc2bb9e40cd77f226290c0f46ffcc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a535fc2bb9e40cd77f226290c0f46ffcc">&#9670;&nbsp;</a></span>draw_bloom_debug_status()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_bloom_debug_status </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUILayout.html">UILayout</a> *&#160;</td>
+          <td class="paramname"><em>layout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a535fc2bb9e40cd77f226290c0f46ffcc_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a82d18ad8e7c83cd153cf1b73896ee4e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82d18ad8e7c83cd153cf1b73896ee4e6">&#9670;&nbsp;</a></span>draw_cinematic_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_cinematic_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUILayout.html">UILayout</a> *&#160;</td>
+          <td class="paramname"><em>layout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a82d18ad8e7c83cd153cf1b73896ee4e6_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="adc20d7574d4fd85069eea1a69a4d56f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc20d7574d4fd85069eea1a69a4d56f6">&#9670;&nbsp;</a></span>draw_exposure_debug_text()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_exposure_debug_text </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_adc20d7574d4fd85069eea1a69a4d56f6_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af70a47e72bc3967a1e497ee63ec55e0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af70a47e72bc3967a1e497ee63ec55e0a">&#9670;&nbsp;</a></span>draw_exposure_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_exposure_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUILayout.html">UILayout</a> *&#160;</td>
+          <td class="paramname"><em>layout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_af70a47e72bc3967a1e497ee63ec55e0a_cgraph.svg" width="100%" height="511"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ab90a94299ab3aff797d97f66965a0737"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab90a94299ab3aff797d97f66965a0737">&#9670;&nbsp;</a></span>draw_gamepad_control()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_gamepad_control </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structGamepadControlPos.html">GamepadControlPos</a> *&#160;</td>
+          <td class="paramname"><em>ctrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>origin_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>origin_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>unit_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>unit_pad</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>ui_scale</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>hovered_idx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ctrl_idx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_pressed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>dim_mult</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ab90a94299ab3aff797d97f66965a0737_cgraph.svg" width="100%" height="524"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ac88180806da165ac149d340e26add6ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac88180806da165ac149d340e26add6ac">&#9670;&nbsp;</a></span>draw_help_overlay_keys()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_help_overlay_keys </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>start_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>start_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>total_h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *&#160;</td>
+          <td class="paramname"><em>scaled_cfg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ac88180806da165ac149d340e26add6ac_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a18bb12dc158eb14e51915e211510e391"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18bb12dc158eb14e51915e211510e391">&#9670;&nbsp;</a></span>draw_key_layer_base()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_key_layer_base </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *&#160;</td>
+          <td class="paramname"><em>scaled_cfg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyPos.html">KeyPos</a> *&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>base_col</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>has_binding</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_pressed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_hovered</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>global_dim_mult</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a18bb12dc158eb14e51915e211510e391_cgraph.svg" width="100%" height="479"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="adf9833624808a2cc35105ff6b4a04c26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf9833624808a2cc35105ff6b4a04c26">&#9670;&nbsp;</a></span>draw_key_layer_effects()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_key_layer_effects </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *&#160;</td>
+          <td class="paramname"><em>scaled_cfg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyPos.html">KeyPos</a> *&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>base_col</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_pressed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_hovered</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_adf9833624808a2cc35105ff6b4a04c26_cgraph.svg" width="100%" height="454"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af3588aa62deafb57552b5f109dfa3705"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3588aa62deafb57552b5f109dfa3705">&#9670;&nbsp;</a></span>draw_key_layer_label()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_key_layer_label </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a> *&#160;</td>
+          <td class="paramname"><em>scaled_cfg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKeyPos.html">KeyPos</a> *&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_af3588aa62deafb57552b5f109dfa3705_cgraph.svg" width="100%" height="454"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ab1201a24aee78d93c5e82a3924ffec0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1201a24aee78d93c5e82a3924ffec0a">&#9670;&nbsp;</a></span>draw_loading_indicator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_loading_indicator </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ab1201a24aee78d93c5e82a3924ffec0a_cgraph.svg" width="100%" height="568"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ac195a5b0693c9126eabbfb556e6cbf9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac195a5b0693c9126eabbfb556e6cbf9f">&#9670;&nbsp;</a></span>draw_luminance_histogram_graph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_luminance_histogram_graph </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int *&#160;</td>
+          <td class="paramname"><em>buckets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>min_lum</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max_lum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ac195a5b0693c9126eabbfb556e6cbf9f_cgraph.svg" width="100%" height="479"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a600c8e8156cfa1ae1ad50a82f9d1ee05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a600c8e8156cfa1ae1ad50a82f9d1ee05">&#9670;&nbsp;</a></span>draw_main_info_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_main_info_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUILayout.html">UILayout</a> *&#160;</td>
+          <td class="paramname"><em>layout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a600c8e8156cfa1ae1ad50a82f9d1ee05_cgraph.svg" width="100%" height="598"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a63249de861c8bca9d1bf3e0c4705f8ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63249de861c8bca9d1bf3e0c4705f8ab">&#9670;&nbsp;</a></span>draw_nbody_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_nbody_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUILayout.html">UILayout</a> *&#160;</td>
+          <td class="paramname"><em>layout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a63249de861c8bca9d1bf3e0c4705f8ab_cgraph.svg" width="100%" height="599"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a74c643caf4877bfc6c92caed2a7d779a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74c643caf4877bfc6c92caed2a7d779a">&#9670;&nbsp;</a></span>draw_text_centered()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void draw_text_centered </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pos_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>scale</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a74c643caf4877bfc6c92caed2a7d779a_cgraph.svg" width="100%" height="454"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ac728a2c6b8100d42540b7471262c7284"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac728a2c6b8100d42540b7471262c7284">&#9670;&nbsp;</a></span>get_active_binding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const <a class="el" href="structAppBinding.html">AppBinding</a> * get_active_binding </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAppBindingRegistry.html">AppBindingRegistry</a> *&#160;</td>
+          <td class="paramname"><em>registry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>out_effective_mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ac728a2c6b8100d42540b7471262c7284_cgraph.svg" width="391" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a7db775acc267773a5d45a5afc6844eeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7db775acc267773a5d45a5afc6844eeb">&#9670;&nbsp;</a></span>get_key_base_color()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void get_key_base_color </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAppBindingRegistry.html">AppBindingRegistry</a> *&#160;</td>
+          <td class="paramname"><em>registry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>out_col</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>out_has_binding</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a7db775acc267773a5d45a5afc6844eeb_cgraph.svg" width="396" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a4fa733535e4b950624955b987ab1fbe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fa733535e4b950624955b987ab1fbe7">&#9670;&nbsp;</a></span>gp_axis_active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool gp_axis_active </td>
+          <td>(</td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>axes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>axis_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structGamepadState.html">GamepadState</a> *&#160;</td>
+          <td class="paramname"><em>pad</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Test whether a raw GLFW axis value exceeds its activation threshold. </p>
+<p>Triggers (axes 4-5) rest at -1.0 and range to +1.0, so they are normalised to [0,1] before comparing against the trigger threshold. Stick axes (0-3) are centred at 0.0 and compared via fabsf against the deadzone. </p>
+
+</div>
+</div>
+<a id="a5bd46e2ed0be3adf716e027f818841ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bd46e2ed0be3adf716e027f818841ff">&#9670;&nbsp;</a></span>gp_overlay_find_hovered()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int gp_overlay_find_hovered </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>origin_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>origin_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>unit_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>unit_pad</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>step</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Find the hovered gamepad control via mouse hit-test. </p>
+
+</div>
+</div>
+<a id="a8e089cd73f85596832c1db598a3662aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e089cd73f85596832c1db598a3662aa">&#9670;&nbsp;</a></span>gp_overlay_poll_active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gp_overlay_poll_active </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>active</em>[GAMEPAD_LAYOUT_COUNT]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Poll live gamepad state and mark active controls. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a8e089cd73f85596832c1db598a3662aa_cgraph.svg" width="350" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a79e4807fa5dc8741de93d060381548f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79e4807fa5dc8741de93d060381548f8">&#9670;&nbsp;</a></span>is_key_active_in_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool is_key_active_in_overlay </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>key_to_test</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>active_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>active_mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a79e4807fa5dc8741de93d060381548f8_cgraph.svg" width="399" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a2c6ab23480ae4de17b6ff39d29cdc36e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c6ab23480ae4de17b6ff39d29cdc36e">&#9670;&nbsp;</a></span>is_modifier_relevant()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool is_modifier_relevant </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pressed_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pressed_mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="aa757d8bd1a3d4fb06b9bf2046963de6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa757d8bd1a3d4fb06b9bf2046963de6a">&#9670;&nbsp;</a></span>GP_GLOW_BASE_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GP_GLOW_BASE_SIZE = 12.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aedf6ee7fcafaa6149218b94f81b0b34b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedf6ee7fcafaa6149218b94f81b0b34b">&#9670;&nbsp;</a></span>GP_GLOW_SIDES</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GP_GLOW_SIDES = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a20b1ff518e5e14a017594a9c75438b19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20b1ff518e5e14a017594a9c75438b19">&#9670;&nbsp;</a></span>GP_LAYOUT_COLS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GP_LAYOUT_COLS = 12.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gamepad layout spans 12 units wide × 7 units tall. </p>
+
+</div>
+</div>
+<a id="a31a731d480b2f7695594a443dc6a67db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31a731d480b2f7695594a443dc6a67db">&#9670;&nbsp;</a></span>GP_LAYOUT_ROWS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GP_LAYOUT_ROWS = 7.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af6a4cd2b290e70b89a9b3ca96c6d8689"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6a4cd2b290e70b89a9b3ca96c6d8689">&#9670;&nbsp;</a></span>GP_SMALL_LABEL_SCALE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GP_SMALL_LABEL_SCALE = 0.7F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8913760ddb525fced3aebc3519c7c8a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8913760ddb525fced3aebc3519c7c8a7">&#9670;&nbsp;</a></span>GP_TRIGGER_NORM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GP_TRIGGER_NORM = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="app__ui_8c.html">app_ui.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

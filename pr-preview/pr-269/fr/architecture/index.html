@@ -1,0 +1,4245 @@
+<!DOCTYPE html><html lang="fr" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A lean, high-performance C11 PBR Renderer">
+      
+      
+        <meta name="author" content="Latty">
+      
+      
+      
+        <link rel="prev" href="../project_structure/">
+      
+      
+        <link rel="next" href="../async_loader/">
+      
+      
+        
+          <link rel="alternate" href="../../architecture/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="fr">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Core Architecture - Suckless OGL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-de-lapplication" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../" title="Suckless OGL" class="md-header__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Suckless OGL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../architecture/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yoyonel/suckless-ogl" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../" title="Suckless OGL" class="md-nav__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Suckless OGL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yoyonel/suckless-ogl" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application_lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anatomy of a Frame: Full Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagram Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../project_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble-du-refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble du refactoring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#app_ui-interface-utilisateur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app_ui — Interface utilisateur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#app_input-gestion-des-entrees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app_input — Gestion des entrées
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#app_env-environnement-hdr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app_env — Environnement HDR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#app_scene-scene-et-primitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        app_scene — Scène et primitives
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#propriete-des-donnees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Propriété des données
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Propriété des données">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#decomposition-de-scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Décomposition de Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decomposition-de-app-appprofiling-appinput-appwindow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Décomposition de App (AppProfiling, AppInput, AppWindow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decomposition-du-header-postprocess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Décomposition du header PostProcess
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decoupage-des-unites-de-traduction-postprocess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Découpage des unités de traduction PostProcess
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extraction-du-cache-duniformes-scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extraction du cache d'uniformes Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#privatisation-des-donnees-de-layout-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privatisation des données de layout UI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seam-gamepadcontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seam GamepadContext
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decouplage-des-effets-effectcontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Découplage des effets (EffectContext)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nettoyage-des-dependances-den-tetes-env_managerh-rendererh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nettoyage des dépendances d'en-têtes (env_manager.h, renderer.h)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension-des-declarations-anticipees-phase-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension des déclarations anticipées (Phase 10)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduction-du-fan-out-dincludes-app_inputc-app_uic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Réduction du fan-out d'includes (app_input.c, app_ui.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-cmake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration CMake
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metriques-sante" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métriques &amp; Santé
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Métriques &amp; Santé">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taille-du-codebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taille du codebase
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loc-par-module-top-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LOC par module (top 15)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fan-out-dincludes-des-en-tetes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fan-out d'includes des en-têtes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#couverture-de-test-llvm-cov-avril-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Couverture de test (LLVM-Cov, avril 2026)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graphe-de-dependances-include" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graphe de dépendances include
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ibl_architecture_ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBL Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_ubo_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process UBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../refactoring_analysis_2026_02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Analysis (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../portability_pal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Abstraction (PAL)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendu
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rendu
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../global_illumination/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Global Illumination
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neon_trails/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neon Trails
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sphere_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PBR Sphere Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../skybox_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skybox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../progressive_ibl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Progressive IBL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cubemap_seam_resolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FXAA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FXAA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specular_aa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specular Anti-Aliasing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banding &amp; Dithering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exposure_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exposure Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_debug_histogram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug Histogram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../photographic_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Photographic Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../env_transitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Transitions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (March 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_opt_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto-Exposure Opt. Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../motion_blur_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motion Blur Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bloom_debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cinematic_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cinematic Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_bokeh_effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Bokeh Research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sony_a7siii_profile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sony A7S III Profile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contrôles &amp; Entrées
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contrôles &amp; Entrées
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mouse_camera_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mouse Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gamepad Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../keyboard_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Help System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_visual_parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Visual Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_batching_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Batching Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimisation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimisation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu-rendering-synchronization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Synchronization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shader Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../texture_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texture Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_pbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async PBO Upload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nvidia_optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVIDIA Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader-cross-gpu-compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-GPU Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_and_notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Mode &amp; Notifs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stencil_masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stencil Buffer Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fullscreen_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fullscreen Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simd_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIMD Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_gl_call_reduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard GL Call Reduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mesa F32-to-F16 Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../justfile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Justfile Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iwyu_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IWYU Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ide_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IDE &amp; Env Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_tracy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracy Profiling (v0.13.1)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu_profiling_flamegraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CPU Profiling (FlameGraph)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_utilization_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Utilization Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_usage_monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Usage Monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../effect_benchmark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Effect Benchmark
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_benchmarking_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Benchmarking Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renderdoc_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RenderDoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visual_testing_artifacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opengl_cleanup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenGL Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../raii_cleanup_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAII Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory_management_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../standalone_testing_mocking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standalone Mocking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs_staging_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Staging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Docs System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doxygen_customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Doxygen Customization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes Techniques
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notes Techniques
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../doxygen/html/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Référence API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rapports
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rapports
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coverage/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Coverage (LCOV)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coverage/visual_tests/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Regression Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/architecture.fr.md" title="Editer cette page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="architecture-de-lapplication">Architecture de l'application<a class="headerlink" href="#architecture-de-lapplication" title="Permanent link">¶</a></h1>
+<p>Ce document décrit l'architecture modulaire de l'application après le refactoring de <code>app.c</code>.</p>
+<h2 id="vue-densemble-du-refactoring">Vue d'ensemble du refactoring<a class="headerlink" href="#vue-densemble-du-refactoring" title="Permanent link">¶</a></h2>
+<p>Le fichier monolithique <code>app.c</code> a été décomposé en modules cohérents. Chaque module a une responsabilité claire et des interfaces bien définies.</p>
+<h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permanent link">¶</a></h2>
+<h3 id="app_ui-interface-utilisateur"><code>app_ui</code> — Interface utilisateur<a class="headerlink" href="#app_ui-interface-utilisateur" title="Permanent link">¶</a></h3>
+<p>Gère l'affichage de la superposition d'informations, du clavier interactif et des métriques de performance.</p>
+<p><strong>Responsabilités :</strong>
+- Rendu des textes et des indicateurs visuels
+- Gestion de la disposition du clavier
+- Affichage de la Timeline GPU</p>
+<h3 id="app_input-gestion-des-entrees"><code>app_input</code> — Gestion des entrées<a class="headerlink" href="#app_input-gestion-des-entrees" title="Permanent link">¶</a></h3>
+<p>Traite les événements clavier et souris via les callbacks GLFW. Utilise <code>AppInputContext</code> (bundle de pointeurs ciblés) pour se découpler de l'objet God <code>App</code>, suivant le même pattern que <code>PostProcessInputContext</code>.</p>
+<p><strong>Responsabilités :</strong>
+- Dispatch des commandes depuis les frappes clavier
+- Gestion des modes modificateurs (Shift, Alt)
+- Mode Dry-Run pour l'exploration des raccourcis</p>
+<h3 id="app_env-environnement-hdr"><code>app_env</code> — Environnement HDR<a class="headerlink" href="#app_env-environnement-hdr" title="Permanent link">¶</a></h3>
+<p>Coordonne le chargement des cartes d'environnement et la transition entre elles.</p>
+<p><strong>Responsabilités :</strong>
+- Chargement asynchrone des HDR
+- Génération des cartes IBL (irradiance, spéculaire préfiltrée)
+- Transitions (fondu enchaîné, écran noir)</p>
+<h3 id="app_scene-scene-et-primitives"><code>app_scene</code> — Scène et primitives<a class="headerlink" href="#app_scene-scene-et-primitives" title="Permanent link">¶</a></h3>
+<p>Gère les objets de la scène, leur tri et leur rendu.</p>
+<p><strong>Responsabilités :</strong>
+- Gestion des sphères (création, mise à jour, tri)
+- Appel des passes de rendu (géométrie, skybox, post-traitement)
+- Coordination du profiler GPU</p>
+<h2 id="propriete-des-donnees">Propriété des données<a class="headerlink" href="#propriete-des-donnees" title="Permanent link">¶</a></h2>
+<p>La structure <code>App</code> reste le point d'entrée central. Elle possède tous les sous-systèmes et leur passe des pointeurs selon le besoin.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>App
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── AppUI          (rendu de l'interface)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── AppInput       (événements et raccourcis)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── AppEnv         (environnement HDR)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── AppScene       (scène 3D)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── GPUProfiler    (métriques temporelles GPU)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── AsyncLoader    (chargement asynchrone)
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>└── PostProcess    (effets de post-traitement)
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    └── EffectContext  (seam vers les effets individuels)
+</span></code></pre></div>
+<h3 id="decomposition-de-scene">Décomposition de Scene<a class="headerlink" href="#decomposition-de-scene" title="Permanent link">¶</a></h3>
+<p>La structure <code>Scene</code> est entièrement décomposée en six sous-structs par domaine, chacune dans son propre header :</p>
+<ul>
+<li><strong><code>SceneGPUResources</code></strong> (<code>include/scene_gpu_resources.h</code>) : tous les handles de ressources GPU — 28 GLuint pour textures, buffers, VAOs, programmes compute, plus le billboard UBO et les caches de binding IBL/SH. Accès via <code>scene-&gt;gpu.hdr_texture</code>, <code>scene-&gt;gpu.icosphere_vbo</code>, etc.</li>
+<li><strong><code>SceneShaders</code></strong> (<code>include/scene_shaders.h</code>) : tous les pointeurs de shaders — <code>pbr_instanced</code>, <code>pbr_billboard</code>, <code>debug</code>, <code>debug_line</code>, <code>skybox</code> (+ conditionnel <code>pbr_ssbo</code>). Accès via <code>scene-&gt;shaders.pbr_instanced</code>, etc.</li>
+<li><strong><code>SceneConfig</code></strong> (<code>include/scene_config.h</code>) : configuration runtime — <code>wireframe</code>, <code>billboard_mode</code>, <code>sorting_mode</code>, <code>pbr_debug_mode</code>, <code>show_envmap</code>, <code>env_lod</code>, <code>subdivisions</code>, <code>gi_mode</code>, <code>show_probe_grid</code>, <code>specular_aa_enabled</code>, <code>aa_mode</code>. Définit aussi les enums <code>SortingMode</code>, <code>GIMode</code>, <code>AAMode</code>. Accès via <code>scene-&gt;config.wireframe</code>, etc.</li>
+<li><strong><code>SceneVisuals</code></strong> (<code>include/scene_visuals.h</code>) : effets visuels — <code>Skybox</code>, <code>TrailRenderer</code>, <code>ShockwaveRenderer</code>. Accès via <code>scene-&gt;visuals.skybox</code>, etc.</li>
+<li><strong><code>SceneSimulation</code></strong> (<code>include/scene_simulation.h</code>) : état N-body — <code>NBodySim</code>, <code>nbody_mode</code>. Accès via <code>scene-&gt;simulation.nbody_sim</code>, etc.</li>
+<li><strong><code>SceneLighting</code></strong> (<code>include/scene_lighting.h</code>) : IBL, probes et matériaux — <code>IBLCoordinator</code>, <code>LightProbeGrid</code>, <code>MaterialLib*</code>. Accès via <code>scene-&gt;lighting.ibl_coord</code>, etc.</li>
+</ul>
+<p>Cela réduit le nombre de champs directs de <code>Scene</code> de ~50 à ~19 et déplace les définitions de types par domaine hors du monolithique <code>scene.h</code>.</p>
+<h3 id="decomposition-de-app-appprofiling-appinput-appwindow">Décomposition de App (AppProfiling, AppInput, AppWindow)<a class="headerlink" href="#decomposition-de-app-appprofiling-appinput-appwindow" title="Permanent link">¶</a></h3>
+<p>La structure <code>App</code> est décomposée en sous-structs par domaine :</p>
+<ul>
+<li><strong><code>AppProfiling</code></strong> (<code>include/app_profiling.h</code>) : regroupe le profiling et les métriques — <code>GPUProfiler</code>, <code>GPUProfilerUI</code>, <code>FpsCounter</code>, <code>TracyManager</code>, <code>GPUUsageMonitor</code>, <code>PerfModeContext</code>, <code>perf_mode_active</code>, <code>log_gpu_metrics</code>. Accès via <code>app-&gt;profiling-&gt;gpu_profiler</code>, etc. Init/cleanup délégués à <code>app_profiling_init()</code> / <code>app_profiling_cleanup()</code> dans <code>src/app_profiling.c</code>.</li>
+<li><strong><code>AppInput</code></strong> (<code>include/app_input_state.h</code>) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — <code>Camera</code>, <code>GamepadState</code>, <code>AppBindingRegistry</code>, <code>AdaptiveSampler</code>, <code>camera_enabled</code>. Accès via <code>app-&gt;input-&gt;camera</code>, etc. Init/cleanup délégués à <code>app_input_state_init()</code> / <code>app_input_state_cleanup()</code> dans <code>src/app_input_state.c</code>.</li>
+<li><strong><code>AppWindow</code></strong> (<code>include/app_window.h</code>) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — <code>GLFWwindow* handle</code>, <code>is_fullscreen</code>, <code>saved_x/y</code>, <code>saved_width/height</code>, <code>resize_pending</code>, <code>pending_width/height</code>. Accès via <code>app-&gt;win.handle</code>, <code>app-&gt;win.is_fullscreen</code>, etc.</li>
+</ul>
+<blockquote>
+<p><strong>Note de nommage</strong> : <code>app_input_state.h</code> héberge la définition de la sous-struct <code>AppInput</code>, tandis que le fichier existant <code>app_input.h</code> héberge le seam <code>AppInputContext</code> (bundle de pointeurs ciblés pour les handlers d'entrée, issue #204).</p>
+</blockquote>
+<p>Cela réduit le nombre de champs directs de <code>App</code> de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant <code>app.c</code> focalisé sur l'orchestration.</p>
+<h3 id="decomposition-du-header-postprocess">Décomposition du header PostProcess<a class="headerlink" href="#decomposition-du-header-postprocess" title="Permanent link">¶</a></h3>
+<p>Les définitions de types de <code>PostProcess</code> sont décomposées en cinq sous-headers, suivant le même pattern que la décomposition de Scene. <code>postprocess.h</code> (648 → 330 lignes) ne contient plus que la struct agrégat <code>PostProcess</code>, l'enum <code>PostProcessEffect</code>, <code>PostProcessPreset</code> et les signatures de fonctions.</p>
+<ul>
+<li><strong><code>pp_params.h</code></strong> : les 10 structs de paramètres des effets uber-shader (<code>VignetteParams</code>, <code>GrainParams</code>, <code>ExposureParams</code>, <code>ChromAbberationParams</code>, <code>WhiteBalanceParams</code>, <code>ColorGradingParams</code>, <code>TonemapParams</code>, <code>FXAAParams</code>, <code>BandingParams</code>, <code>FogParams</code>) plus l'enum <code>BandingMode</code> et les valeurs <code>DEFAULT_*</code>. Les effets avec leur propre pipeline multi-pass (<code>BloomParams</code>, <code>DoFParams</code>, <code>AutoExposureParams</code>, <code>MotionBlurParams</code>, <code>LUT3DParams</code>) vivent dans leurs headers <code>fx_*.h</code> respectifs.</li>
+<li><strong><code>pp_ubo.h</code></strong> : layout GPU <code>PostProcessUBO</code> (std140) — correspond au UBO du uber-shader GLSL.</li>
+<li><strong><code>pp_gpu_resources.h</code></strong> : struct <code>PPGPUResources</code> — FBOs, textures, handle UBO, quad écran.</li>
+<li><strong><code>pp_shader_state.h</code></strong> : <code>PPShaderState</code> + <code>ShaderCacheEntry</code> — état de compilation et cache de shaders.</li>
+<li><strong><code>pp_exposure_readback.h</code></strong> : struct <code>PPExposureReadback</code> — readback PBO asynchrone pour l'auto-exposition et l'histogramme.</li>
+</ul>
+<h3 id="decoupage-des-unites-de-traduction-postprocess">Découpage des unités de traduction PostProcess<a class="headerlink" href="#decoupage-des-unites-de-traduction-postprocess" title="Permanent link">¶</a></h3>
+<p>Le monolithique <code>postprocess.c</code> (1634 lignes) est découpé en six unités de traduction ciblées par domaine, chacune sous 360 lignes :</p>
+<table>
+<thead>
+<tr>
+<th>UT</th>
+<th>Lignes</th>
+<th>Responsabilité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postprocess_init.c</code></td>
+<td>358</td>
+<td>Initialisation, création des framebuffers, redimensionnement, textures factices</td>
+</tr>
+<tr>
+<td><code>postprocess_apply.c</code></td>
+<td>360</td>
+<td>Passes de rendu begin/end, synchronisation UBO, passes bloom/DoF/AE/MB/composite</td>
+</tr>
+<tr>
+<td><code>postprocess_setters.c</code></td>
+<td>268</td>
+<td>Enable/disable/toggle, setters de paramètres, application de presets</td>
+</tr>
+<tr>
+<td><code>postprocess_shader.c</code></td>
+<td>223</td>
+<td>Recherche dans le cache de shaders, compilation optimisée, switching dynamique</td>
+</tr>
+<tr>
+<td><code>postprocess_readback.c</code></td>
+<td>199</td>
+<td>Readback PBO, calcul d'histogramme, luminance, mise à jour des matrices</td>
+</tr>
+<tr>
+<td><code>postprocess_cleanup.c</code></td>
+<td>97</td>
+<td>Libération des ressources (FBOs, quad, buffers de readback, cache de shaders)</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>graph TD
+    PP_H[postprocess.h&lt;br/&gt;&lt;i&gt;API publique&lt;/i&gt;]
+    PP_INT[postprocess_internal.h&lt;br/&gt;&lt;i&gt;enums partagés + déclarations pp_&lt;/i&gt;]
+    PP_INT --&gt; PP_H
+    INIT[postprocess_init.c] --&gt; PP_INT
+    APPLY[postprocess_apply.c] --&gt; PP_INT
+    SHADER[postprocess_shader.c] --&gt; PP_INT
+    CLEANUP[postprocess_cleanup.c] --&gt; PP_INT
+    SETTERS[postprocess_setters.c] --&gt; PP_H
+    READBACK[postprocess_readback.c] --&gt; PP_H</code></pre>
+<p><strong>Header interne</strong> <code>postprocess_internal.h</code> fournit :</p>
+<ul>
+<li>Les enums d'unités de texture (<code>POSTPROCESS_TEX_UNIT_SCENE</code>, <code>_BLOOM</code>, <code>_DOF</code>, etc.)</li>
+<li>Les déclarations de fonctions internes préfixées <code>pp_</code> partagées entre les UT (ex. <code>pp_create_framebuffer</code>, <code>pp_destroy_framebuffer</code>, <code>pp_setup_sampler_uniforms</code>, <code>pp_update_current_shader</code>, <code>pp_is_shader_in_cache</code>)</li>
+<li>Inclus uniquement par les UT nécessitant l'état interne partagé ; <code>postprocess_setters.c</code> et <code>postprocess_readback.c</code> n'ont besoin que du <code>postprocess.h</code> public</li>
+</ul>
+<h3 id="extraction-du-cache-duniformes-scene">Extraction du cache d'uniformes Scene<a class="headerlink" href="#extraction-du-cache-duniformes-scene" title="Permanent link">¶</a></h3>
+<p>Les structs de cache d'uniformes shader (<code>InstancedUniforms</code>, <code>DebugUniforms</code>, <code>BillboardUBO</code>, <code>BillboardUniforms</code>, <code>MAT4_FLOAT_COUNT</code>) sont extraites de <code>scene.h</code> (194 → 120 lignes) vers <code>scene_uniforms.h</code>. Ce sont des détails d'implémentation GPU accessibles uniquement par <code>scene_render.c</code> et <code>scene_init.c</code>. La struct <code>Scene</code> conserve ses champs d'uniformes par valeur ; les définitions de types sont simplement déplacées vers un sous-header ciblé.</p>
+<h3 id="privatisation-des-donnees-de-layout-ui">Privatisation des données de layout UI<a class="headerlink" href="#privatisation-des-donnees-de-layout-ui" title="Permanent link">¶</a></h3>
+<p>Les données de layout statiques (tableau <code>KEY_LAYOUT_QWERTY[]</code> de 66 entrées, tableau <code>GAMEPAD_LAYOUT[]</code> de 16 entrées, ~60 constantes visuelles, définitions des structs <code>KeyPos</code>/<code>GamepadControlPos</code>) sont déplacées de <code>app_ui.h</code> (387 → 128 lignes) vers <code>app_ui.c</code>. Le header public n'expose plus que <code>HelpMode</code>, <code>AppUIOverlay</code> et 8 signatures de fonctions. Cela élimine la duplication des tableaux <code>static const</code> entre les unités de traduction et rend les modifications de layout locales à la recompilation.</p>
+<h3 id="seam-gamepadcontext">Seam GamepadContext<a class="headerlink" href="#seam-gamepadcontext" title="Permanent link">¶</a></h3>
+<p>Le <code>GamepadContext</code> (<code>include/gamepad_context.h</code>) découple <code>gamepad_input.c</code> de <code>camera.h</code> :</p>
+<ul>
+<li>Contient uniquement la tranche minimale d'état caméra nécessaire pour l'entrée gamepad : <code>move_input[3]</code>, <code>yaw_target</code>, <code>pitch_target</code>, <code>fixed_timestep</code>, limites de pitch.</li>
+<li><code>gamepad_write_input()</code> prend <code>GamepadContext*</code> au lieu de <code>Camera*</code>.</li>
+<li>Pattern bridge : <code>Camera ↔ GamepadContext</code> au site d'appel dans <code>app.c</code>.</li>
+</ul>
+<h3 id="decouplage-des-effets-effectcontext">Découplage des effets (EffectContext)<a class="headerlink" href="#decouplage-des-effets-effectcontext" title="Permanent link">¶</a></h3>
+<p>Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, LUT, LUT viz) sont entièrement découplés de l'objet God <code>PostProcess</code> via un seam <code>EffectContext</code> :</p>
+<ul>
+<li><strong><code>EffectContext</code></strong> (<code>include/effects/effect_context.h</code>) : snapshot read-only de l'état partagé du pipeline (texture source, dimensions viewport, textures profondeur/vélocité, exposition).</li>
+<li>Les effets reçoivent <code>(FX*, Params*, const EffectContext*)</code> au lieu de <code>PostProcess*</code>.</li>
+<li>Cela élimine la dépendance bidirectionnelle : <code>postprocess.h</code> → <code>fx_*.h</code> (pour l'embedding des structs) reste, mais <code>fx_*.c</code> → <code>postprocess.h</code> est supprimé.</li>
+<li>Tous les effets sont désormais entièrement migrés : <strong>bloom</strong>, <strong>DoF</strong>, <strong>auto-exposition</strong>, <strong>flou de mouvement</strong>, <strong>LUT 3D</strong> et <strong>LUT viz</strong>. Plus aucun fichier source d'effet n'inclut <code>postprocess.h</code>.</li>
+</ul>
+<h3 id="nettoyage-des-dependances-den-tetes-env_managerh-rendererh">Nettoyage des dépendances d'en-têtes (env_manager.h, renderer.h)<a class="headerlink" href="#nettoyage-des-dependances-den-tetes-env_managerh-rendererh" title="Permanent link">¶</a></h3>
+<p>Deux en-têtes de modules transportaient des includes transitifs inutiles, augmentant le couplage et le coût de recompilation :</p>
+<ul>
+<li><strong><code>env_manager.h</code></strong> : incluait <code>postprocess.h</code> alors qu'il n'utilise que <code>PostProcess*</code> dans les signatures de fonctions. Remplacé par une déclaration anticipée <code>typedef struct PostProcess PostProcess;</code>. L'include concret reste dans <code>env_manager.c</code> qui appelle <code>postprocess_set_exposure_target()</code>.</li>
+<li><strong><code>renderer.h</code></strong> : incluait 9 en-têtes projet (<code>action_notifier.h</code>, <code>camera.h</code>, <code>effect_benchmark.h</code>, <code>env_manager.h</code>, <code>gpu_profiler.h</code>, <code>gpu_profiler_ui.h</code>, <code>postprocess.h</code>, <code>scene.h</code>, <code>ui.h</code>) alors que <code>RenderContext</code> ne contient que des pointeurs. Tous remplacés par des déclarations anticipées. Seuls <code>&lt;stdbool.h&gt;</code> et <code>&lt;stdint.h&gt;</code> restent comme includes concrets. Le fichier <code>.c</code> inclut les en-têtes complets nécessaires.</li>
+</ul>
+<h3 id="extension-des-declarations-anticipees-phase-10">Extension des déclarations anticipées (Phase 10)<a class="headerlink" href="#extension-des-declarations-anticipees-phase-10" title="Permanent link">¶</a></h3>
+<p>Passe systématique remplaçant <code>#include "shader.h"</code> (et autres includes pointeur-only) par <code>typedef struct X X;</code> dans 13 en-têtes supplémentaires. Les structs <code>Shader</code>, <code>NBodySim</code> et <code>SphereInstance</code> ont reçu des tags de struct explicites (auparavant anonymes) pour permettre la déclaration anticipée.</p>
+<table>
+<thead>
+<tr>
+<th>En-tête</th>
+<th>Types déclarés</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>effect_benchmark.h</code></td>
+<td><code>PostProcess*</code>, <code>GPUProfiler*</code></td>
+<td>Supprime 2 includes lourds</td>
+</tr>
+<tr>
+<td><code>trail_renderer.h</code></td>
+<td><code>Shader*</code></td>
+<td>Conserve <code>nbody.h</code> pour la constante <code>NBODY_MAX_BODIES</code></td>
+</tr>
+<tr>
+<td><code>light_probes.h</code></td>
+<td><code>Shader*</code>, <code>SphereInstance*</code></td>
+<td>Supprime 2 includes</td>
+</tr>
+<tr>
+<td><code>skybox.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>shockwave.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ui.h</code></td>
+<td><code>Shader*</code></td>
+<td>Ajoute <code>gl_common.h</code> pour <code>GLuint</code></td>
+</tr>
+<tr>
+<td><code>pp_shader_state.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fx_bloom.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fx_dof.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fx_lut3d.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fx_lut_viz.h</code></td>
+<td><code>Shader*</code></td>
+<td>Ajoute <code>&lt;stdbool.h&gt;</code> pour <code>bool</code></td>
+</tr>
+<tr>
+<td><code>fx_auto_exposure.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fx_motion_blur.h</code></td>
+<td><code>Shader*</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultat</strong> : 24 en-têtes utilisent désormais des déclarations anticipées (contre 6 avant cette passe). Chaque fichier <code>.c</code> correspondant ajoute l'<code>#include</code> complet nécessaire pour la définition concrète du type.</p>
+<h3 id="reduction-du-fan-out-dincludes-app_inputc-app_uic">Réduction du fan-out d'includes (app_input.c, app_ui.c)<a class="headerlink" href="#reduction-du-fan-out-dincludes-app_inputc-app_uic" title="Permanent link">¶</a></h3>
+<p>Les deux fichiers sources avec le plus haut fan-out d'includes ont été allégés en déplaçant la fonction pont <code>app_input_ctx_from_app()</code> vers <code>app.c</code> et en supprimant les includes inutilisés ou transitivement redondants :</p>
+<ul>
+<li><strong><code>app_input.c</code></strong> : 25 → 17 includes. La fonction pont était la seule raison d'inclure <code>app.h</code>, <code>app_profiling.h</code> et <code>app_input_state.h</code>. Son déplacement vers <code>app.c</code> (qui inclut déjà ces trois en-têtes) élimine le couplage. Suppressions additionnelles : <code>window.h</code> (jamais utilisé), <code>action_notifier.h</code>, <code>app_settings.h</code>, <code>nbody.h</code>, <code>glad/glad.h</code>, <code>GLFW/glfw3.h</code> (tous disponibles transitivement).</li>
+<li><strong><code>app_ui.c</code></strong> : 23 → 16 includes. Suppression de <code>stb_image.h</code> (aucun appel <code>stbi_*</code>), <code>&lt;stdio.h&gt;</code> et <code>&lt;stdlib.h&gt;</code> (aucune utilisation directe), plus 4 en-têtes transitivement redondants (<code>action_notifier.h</code>, <code>adaptive_sampler.h</code>, <code>app_binding.h</code>, <code>app_settings.h</code>).</li>
+</ul>
+<p><strong>Principe</strong> : un en-tête qui n'utilise un type qu'à travers un pointeur ou une référence doit faire une déclaration anticipée de ce type, pas inclure sa définition complète. Cela réduit la propagation des includes et accélère les builds incrémentaux.</p>
+<h2 id="configuration-cmake">Configuration CMake<a class="headerlink" href="#configuration-cmake" title="Permanent link">¶</a></h2>
+<p>Les modules sont compilés séparément et liés à l'exécutable principal :</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="s">src/app.c</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s">src/app_ui.c</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">src/app_input.c</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">src/app_env.c</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="s">src/app_scene.c</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>Chaque module expose son interface via un en-tête dans <code>include/</code> avec le préfixe correspondant (<code>app_ui.h</code>, <code>app_input.h</code>, etc.).</p>
+<h2 id="metriques-sante">Métriques &amp; Santé<a class="headerlink" href="#metriques-sante" title="Permanent link">¶</a></h2>
+<blockquote>
+<p>Dernière mise à jour : avril 2026 (Phase 10 — Architecture Deepening V)</p>
+</blockquote>
+<h3 id="taille-du-codebase">Taille du codebase<a class="headerlink" href="#taille-du-codebase" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Catégorie</th>
+<th style="text-align: right;">Fichiers</th>
+<th style="text-align: right;">LOC total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sources (<code>src/*.c</code>)</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">20 556</td>
+</tr>
+<tr>
+<td>En-têtes (<code>include/*.h</code>)</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">7 839</td>
+</tr>
+<tr>
+<td>Tests (<code>tests/test_*.c</code>)</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">12 666</td>
+</tr>
+<tr>
+<td>Shaders (<code>shaders/</code>)</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loc-par-module-top-15">LOC par module (top 15)<a class="headerlink" href="#loc-par-module-top-15" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th style="text-align: right;">LOC</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postprocess.c</code></td>
+<td style="text-align: right;">1 634</td>
+<td>Monolithe historique — découpé en 6 UT (voir Découpage PostProcess)</td>
+</tr>
+<tr>
+<td><code>app_ui.c</code></td>
+<td style="text-align: right;">1 317</td>
+<td>Rendu UI + données de layout (privatisées)</td>
+</tr>
+<tr>
+<td><code>app_input.c</code></td>
+<td style="text-align: right;">925</td>
+<td>Dispatch entrées clavier/souris</td>
+</tr>
+<tr>
+<td><code>ui.c</code></td>
+<td style="text-align: right;">879</td>
+<td>Intégration Dear ImGui</td>
+</tr>
+<tr>
+<td><code>shader.c</code></td>
+<td style="text-align: right;">870</td>
+<td>Compilation &amp; édition de liens shaders</td>
+</tr>
+<tr>
+<td><code>light_probes.c</code></td>
+<td style="text-align: right;">752</td>
+<td>Grille de sondes lumineuses</td>
+</tr>
+<tr>
+<td><code>postprocess_presets.c</code></td>
+<td style="text-align: right;">525</td>
+<td>Définitions de presets</td>
+</tr>
+<tr>
+<td><code>scene_render.c</code></td>
+<td style="text-align: right;">494</td>
+<td>Appels de rendu de la scène</td>
+</tr>
+<tr>
+<td><code>postprocess_input.c</code></td>
+<td style="text-align: right;">486</td>
+<td>Contrôles clavier post-process</td>
+</tr>
+<tr>
+<td><code>nbody.c</code></td>
+<td style="text-align: right;">486</td>
+<td>Simulation N-body (CPU + compute)</td>
+</tr>
+<tr>
+<td><code>scene_init.c</code></td>
+<td style="text-align: right;">476</td>
+<td>Création des ressources scène</td>
+</tr>
+<tr>
+<td><code>app.c</code></td>
+<td style="text-align: right;">474</td>
+<td>Orchestrateur (boucle principale)</td>
+</tr>
+<tr>
+<td><code>billboard_sorting.c</code></td>
+<td style="text-align: right;">472</td>
+<td>Tri en profondeur des billboards</td>
+</tr>
+<tr>
+<td><code>ibl_coordinator.c</code></td>
+<td style="text-align: right;">443</td>
+<td>Machine d'état IBL</td>
+</tr>
+<tr>
+<td><code>async_loader.c</code></td>
+<td style="text-align: right;">422</td>
+<td>Chargement HDR asynchrone</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Règle</strong> : les modules &gt; 500 LOC sont candidats à une décomposition ultérieure.</p>
+<h3 id="fan-out-dincludes-des-en-tetes">Fan-out d'includes des en-têtes<a class="headerlink" href="#fan-out-dincludes-des-en-tetes" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>En-tête</th>
+<th style="text-align: right;">#includes</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scene.h</code></td>
+<td style="text-align: right;">14</td>
+<td>Agrégat — attendu</td>
+</tr>
+<tr>
+<td><code>app.h</code></td>
+<td style="text-align: right;">13</td>
+<td>Réduit de 22 (Phase 3)</td>
+</tr>
+<tr>
+<td><code>postprocess.h</code></td>
+<td style="text-align: right;">11</td>
+<td>Agrégat — attendu</td>
+</tr>
+<tr>
+<td><code>app_profiling.h</code></td>
+<td style="text-align: right;">7</td>
+<td>Sous-struct — acceptable</td>
+</tr>
+<tr>
+<td><code>gpu_profiler.h</code></td>
+<td style="text-align: right;">7</td>
+<td>En-tête de domaine</td>
+</tr>
+<tr>
+<td><code>utils.h</code></td>
+<td style="text-align: right;">7</td>
+<td>Utilitaires divers</td>
+</tr>
+<tr>
+<td><code>renderer.h</code></td>
+<td style="text-align: right;">0</td>
+<td>Déclarations anticipées uniquement ✅</td>
+</tr>
+<tr>
+<td><code>effect_benchmark.h</code></td>
+<td style="text-align: right;">1</td>
+<td>Était 3 — décl. anticipées ✅</td>
+</tr>
+<tr>
+<td><code>light_probes.h</code></td>
+<td style="text-align: right;">2</td>
+<td>Était 4 — décl. anticipées ✅</td>
+</tr>
+<tr>
+<td><code>fx_*.h</code> (effets)</td>
+<td style="text-align: right;">0–1</td>
+<td>Tous utilisent des décl. anticipées pour <code>Shader*</code> ✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Principe</strong> : les en-têtes agrégats (<code>app.h</code>, <code>scene.h</code>, <code>postprocess.h</code>) ont naturellement un fan-out élevé. Les en-têtes de modules feuilles doivent rester ≤ 5. <strong>24 en-têtes</strong> utilisent désormais des déclarations anticipées.</p>
+<h3 id="couverture-de-test-llvm-cov-avril-2026">Couverture de test (LLVM-Cov, avril 2026)<a class="headerlink" href="#couverture-de-test-llvm-cov-avril-2026" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Métrique</th>
+<th style="text-align: right;">Valeur</th>
+<th style="text-align: right;">Cible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lignes</td>
+<td style="text-align: right;">66,6 %</td>
+<td style="text-align: right;">≥ 78 %</td>
+</tr>
+<tr>
+<td>Fonctions</td>
+<td style="text-align: right;">83,1 %</td>
+<td style="text-align: right;">≥ 85 %</td>
+</tr>
+<tr>
+<td>Branches</td>
+<td style="text-align: right;">53,6 %</td>
+<td style="text-align: right;">≥ 50 % ✅</td>
+</tr>
+</tbody>
+</table>
+<p>68 tests passent (unitaires + intégration, CTest).</p>
+<h2 id="graphe-de-dependances-include">Graphe de dépendances include<a class="headerlink" href="#graphe-de-dependances-include" title="Permanent link">¶</a></h2>
+<p>Dépendances des modules principaux (en-têtes projet uniquement, hors système et vendeur) :</p>
+<pre class="mermaid"><code>graph TD
+    classDef aggregate fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+    classDef substruct fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+    classDef leaf fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+    classDef effect fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+
+    APP[app.h]:::aggregate
+    SCENE[scene.h]:::aggregate
+    PP[postprocess.h]:::aggregate
+    REND[renderer.h]:::leaf
+
+    %% Sous-structs App
+    APP_PROF[app_profiling.h]:::substruct
+    APP_INP[app_input_state.h]:::substruct
+    APP_WIN[app_window.h]:::substruct
+    APP_UI[app_ui.h]:::substruct
+
+    %% Sous-structs Scene
+    SC_GPU[scene_gpu_resources.h]:::substruct
+    SC_SH[scene_shaders.h]:::substruct
+    SC_CFG[scene_config.h]:::substruct
+    SC_VIS[scene_visuals.h]:::substruct
+    SC_SIM[scene_simulation.h]:::substruct
+    SC_LIT[scene_lighting.h]:::substruct
+
+    %% Sous-headers PostProcess
+    PP_PAR[pp_params.h]:::substruct
+    PP_GPU[pp_gpu_resources.h]:::substruct
+    PP_SHD[pp_shader_state.h]:::substruct
+    PP_RDB[pp_exposure_readback.h]:::substruct
+
+    %% Effets
+    FX_BL[fx_bloom.h]:::effect
+    FX_DOF[fx_dof.h]:::effect
+    FX_AE[fx_auto_exposure.h]:::effect
+    FX_MB[fx_motion_blur.h]:::effect
+    FX_LUT[fx_lut3d.h]:::effect
+    EC[effect_context.h]:::effect
+
+    %% App → dépendances directes
+    APP --&gt; SCENE
+    APP --&gt; PP
+    APP --&gt; APP_UI
+    APP --&gt; APP_WIN
+
+    %% Sous-structs App (possédées, pas incluses par app.h)
+    APP -.-&gt;|"possédée"| APP_PROF
+    APP -.-&gt;|"possédée"| APP_INP
+
+    %% Scene → sous-structs
+    SCENE --&gt; SC_GPU
+    SCENE --&gt; SC_SH
+    SCENE --&gt; SC_CFG
+    SCENE --&gt; SC_VIS
+    SCENE --&gt; SC_SIM
+    SCENE --&gt; SC_LIT
+
+    %% PostProcess → sous-headers + effets
+    PP --&gt; PP_PAR
+    PP --&gt; PP_GPU
+    PP --&gt; PP_SHD
+    PP --&gt; PP_RDB
+    PP --&gt; FX_BL
+    PP --&gt; FX_DOF
+    PP --&gt; FX_AE
+    PP --&gt; FX_MB
+    PP --&gt; FX_LUT
+
+    %% Découplage des effets
+    FX_BL -.-&gt;|"runtime"| EC
+    FX_DOF -.-&gt;|"runtime"| EC
+    FX_AE -.-&gt;|"runtime"| EC
+    FX_MB -.-&gt;|"runtime"| EC
+    FX_LUT -.-&gt;|"runtime"| EC
+
+    %% Renderer utilise uniquement des déclarations anticipées
+    REND -.-&gt;|"décl. anticipée"| APP
+    REND -.-&gt;|"décl. anticipée"| SCENE
+    REND -.-&gt;|"décl. anticipée"| PP</code></pre>
+<p><strong>Légende</strong> : Flèches pleines = dépendance <code>#include</code>. Flèches pointillées = déclaration anticipée ou dépendance runtime. Couleurs : 🟡 agrégat, 🔵 sous-struct, 🟢 feuille, 🟣 effet.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Dernière mise à jour">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 20:44:28 UTC">29 avril 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../assets/javascripts/lang_switcher.js"></script>
+      
+        <script src="../../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../../assets/javascripts/mermaid_config.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
