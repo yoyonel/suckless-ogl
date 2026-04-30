@@ -15,6 +15,9 @@
 #include "instanced_rendering.h"
 #include "light_probes.h"
 #include "scene.h"
+#include "scene_gpu_resources.h"
+#include "scene_shaders.h"
+#include "scene_simulation.h"
 #include "scene_uniforms.h"
 #include "shockwave.h"
 #include "skybox.h"
@@ -249,10 +252,20 @@ static void reset_counters(void)
 	mock_billboard_sort_gpu_calls = 0;
 }
 
+static SceneGPUResources test_gpu;
+static SceneShaders test_shaders;
+static SceneSimulation test_simulation;
+
 static Scene make_scene(void)
 {
 	Scene s;
 	memset(&s, 0, sizeof(s));
+	memset(&test_gpu, 0, sizeof(test_gpu));
+	memset(&test_shaders, 0, sizeof(test_shaders));
+	memset(&test_simulation, 0, sizeof(test_simulation));
+	s.gpu = &test_gpu;
+	s.shaders = &test_shaders;
+	s.simulation = &test_simulation;
 	return s;
 }
 
@@ -284,10 +297,10 @@ void test_aa_mode_unknown(void)
 void test_update_gpu_buffers_binds_vao(void)
 {
 	Scene s = make_scene();
-	s.gpu.icosphere_vao = 10;
-	s.gpu.icosphere_vbo = 20;
-	s.gpu.icosphere_nbo = 30;
-	s.gpu.icosphere_ebo = 40;
+	s.gpu->icosphere_vao = 10;
+	s.gpu->icosphere_vbo = 20;
+	s.gpu->icosphere_nbo = 30;
+	s.gpu->icosphere_ebo = 40;
 	s.geometry.vertices.size = 8;
 	s.geometry.normals.size = 8;
 	s.geometry.indices.size = 12;
@@ -304,51 +317,51 @@ void test_update_gpu_buffers_binds_vao(void)
 void test_bind_ibl_textures_caches(void)
 {
 	Scene s = make_scene();
-	s.gpu.irradiance_tex = 100;
-	s.gpu.spec_prefiltered_tex = 200;
-	s.gpu.brdf_lut_tex = 300;
-	s.gpu.dummy_black_tex = 1;
-	memset(s.gpu.bound_ibl_textures, 0, sizeof(s.gpu.bound_ibl_textures));
+	s.gpu->irradiance_tex = 100;
+	s.gpu->spec_prefiltered_tex = 200;
+	s.gpu->brdf_lut_tex = 300;
+	s.gpu->dummy_black_tex = 1;
+	memset(s.gpu->bound_ibl_textures, 0, sizeof(s.gpu->bound_ibl_textures));
 
 	scene_bind_ibl_textures(&s);
 
-	TEST_ASSERT_EQUAL_UINT(100, s.gpu.bound_ibl_textures[0]);
-	TEST_ASSERT_EQUAL_UINT(200, s.gpu.bound_ibl_textures[1]);
-	TEST_ASSERT_EQUAL_UINT(300, s.gpu.bound_ibl_textures[2]);
+	TEST_ASSERT_EQUAL_UINT(100, s.gpu->bound_ibl_textures[0]);
+	TEST_ASSERT_EQUAL_UINT(200, s.gpu->bound_ibl_textures[1]);
+	TEST_ASSERT_EQUAL_UINT(300, s.gpu->bound_ibl_textures[2]);
 }
 
 void test_bind_ibl_textures_skips_when_cached(void)
 {
 	Scene s = make_scene();
-	s.gpu.irradiance_tex = 100;
-	s.gpu.spec_prefiltered_tex = 200;
-	s.gpu.brdf_lut_tex = 300;
-	s.gpu.dummy_black_tex = 1;
-	s.gpu.bound_ibl_textures[0] = 100;
-	s.gpu.bound_ibl_textures[1] = 200;
-	s.gpu.bound_ibl_textures[2] = 300;
+	s.gpu->irradiance_tex = 100;
+	s.gpu->spec_prefiltered_tex = 200;
+	s.gpu->brdf_lut_tex = 300;
+	s.gpu->dummy_black_tex = 1;
+	s.gpu->bound_ibl_textures[0] = 100;
+	s.gpu->bound_ibl_textures[1] = 200;
+	s.gpu->bound_ibl_textures[2] = 300;
 
 	reset_counters();
 	scene_bind_ibl_textures(&s);
 
 	/* Cache hit: no glBindTexture calls expected (counter unchanged) */
-	TEST_ASSERT_EQUAL_UINT(100, s.gpu.bound_ibl_textures[0]);
+	TEST_ASSERT_EQUAL_UINT(100, s.gpu->bound_ibl_textures[0]);
 }
 
 void test_bind_ibl_textures_uses_dummy_when_zero(void)
 {
 	Scene s = make_scene();
-	s.gpu.irradiance_tex = 0;
-	s.gpu.spec_prefiltered_tex = 0;
-	s.gpu.brdf_lut_tex = 0;
-	s.gpu.dummy_black_tex = 5;
-	memset(s.gpu.bound_ibl_textures, 0, sizeof(s.gpu.bound_ibl_textures));
+	s.gpu->irradiance_tex = 0;
+	s.gpu->spec_prefiltered_tex = 0;
+	s.gpu->brdf_lut_tex = 0;
+	s.gpu->dummy_black_tex = 5;
+	memset(s.gpu->bound_ibl_textures, 0, sizeof(s.gpu->bound_ibl_textures));
 
 	scene_bind_ibl_textures(&s);
 
-	TEST_ASSERT_EQUAL_UINT(5, s.gpu.bound_ibl_textures[0]);
-	TEST_ASSERT_EQUAL_UINT(5, s.gpu.bound_ibl_textures[1]);
-	TEST_ASSERT_EQUAL_UINT(5, s.gpu.bound_ibl_textures[2]);
+	TEST_ASSERT_EQUAL_UINT(5, s.gpu->bound_ibl_textures[0]);
+	TEST_ASSERT_EQUAL_UINT(5, s.gpu->bound_ibl_textures[1]);
+	TEST_ASSERT_EQUAL_UINT(5, s.gpu->bound_ibl_textures[2]);
 }
 
 /* ======================================================================
@@ -360,18 +373,18 @@ void test_bind_probe_textures_updates_cache(void)
 	Scene s = make_scene();
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 		s.lighting.probe_grid.sh_textures[i] = (GLuint)(10 + i);
-		s.gpu.bound_sh_textures[i] = 0;
+		s.gpu->bound_sh_textures[i] = 0;
 	}
 	s.lighting.probe_grid.ssbo = 42;
-	s.gpu.bound_probe_ssbo = 0;
+	s.gpu->bound_probe_ssbo = 0;
 
 	scene_bind_probe_textures(&s);
 
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 		TEST_ASSERT_EQUAL_UINT((GLuint)(10 + i),
-		                       s.gpu.bound_sh_textures[i]);
+		                       s.gpu->bound_sh_textures[i]);
 	}
-	TEST_ASSERT_EQUAL_UINT(42, s.gpu.bound_probe_ssbo);
+	TEST_ASSERT_EQUAL_UINT(42, s.gpu->bound_probe_ssbo);
 }
 
 void test_bind_probe_textures_skips_when_cached(void)
@@ -379,16 +392,16 @@ void test_bind_probe_textures_skips_when_cached(void)
 	Scene s = make_scene();
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 		s.lighting.probe_grid.sh_textures[i] = (GLuint)(10 + i);
-		s.gpu.bound_sh_textures[i] = (GLuint)(10 + i);
+		s.gpu->bound_sh_textures[i] = (GLuint)(10 + i);
 	}
 	s.lighting.probe_grid.ssbo = 42;
-	s.gpu.bound_probe_ssbo = 42;
+	s.gpu->bound_probe_ssbo = 42;
 
 	reset_counters();
 	scene_bind_probe_textures(&s);
 
 	/* Nothing changed */
-	TEST_ASSERT_EQUAL_UINT(42, s.gpu.bound_probe_ssbo);
+	TEST_ASSERT_EQUAL_UINT(42, s.gpu->bound_probe_ssbo);
 }
 
 /* ======================================================================
@@ -412,7 +425,7 @@ void test_render_instanced_no_envmap_no_nbody(void)
 	s.config.wireframe = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -442,7 +455,7 @@ void test_render_instanced_wireframe(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -466,7 +479,7 @@ void test_render_billboard_mode(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -491,7 +504,7 @@ void test_render_nbody_draws_trails_and_shockwave(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 1;
+	s.simulation->nbody_mode = 1;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -516,7 +529,7 @@ void test_render_nbody_wireframe_shockwave(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 1;
+	s.simulation->nbody_mode = 1;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -541,7 +554,7 @@ void test_render_gi_mode_triggers_probe_sync(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_3D_TEX;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -549,7 +562,7 @@ void test_render_gi_mode_triggers_probe_sync(void)
 	TEST_ASSERT_EQUAL_INT(1, mock_probe_sync_calls);
 	/* Verify SH cache was invalidated */
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		TEST_ASSERT_EQUAL_UINT(0, s.gpu.bound_sh_textures[i]);
+		TEST_ASSERT_EQUAL_UINT(0, s.gpu->bound_sh_textures[i]);
 	}
 }
 
@@ -569,7 +582,7 @@ void test_render_show_probe_grid_triggers_sync_and_debug(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 1;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -595,7 +608,7 @@ void test_render_envmap_draws_skybox(void)
 	s.config.show_envmap = 1;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -620,7 +633,7 @@ void test_render_billboard_wireframe_draws_debug(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -648,7 +661,7 @@ void test_render_billboard_sort_cpu(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -673,7 +686,7 @@ void test_render_billboard_sort_radix(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -698,7 +711,7 @@ void test_render_billboard_sort_gpu(void)
 	s.config.show_envmap = 0;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = 0;
-	s.simulation.nbody_mode = 0;
+	s.simulation->nbody_mode = 0;
 
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
@@ -779,9 +792,9 @@ void test_render_instanced_sets_uniforms(void)
 	glm_mat4_identity(view);
 	glm_mat4_identity(proj);
 	glm_mat4_identity(prev_vp);
-	s.instanced_uniforms.u_specular_aa_enabled = 5;
-	s.instanced_uniforms.u_aa_mode = 6;
-	s.instanced_uniforms.probe_grid_dim = 7;
+	s.shaders->instanced_uniforms.u_specular_aa_enabled = 5;
+	s.shaders->instanced_uniforms.u_aa_mode = 6;
+	s.shaders->instanced_uniforms.probe_grid_dim = 7;
 
 	reset_counters();
 	scene_render_instanced(&s, view, proj, cam, prev_vp);
@@ -799,9 +812,9 @@ void test_render_instanced_skips_negative_uniform_locs(void)
 	glm_mat4_identity(view);
 	glm_mat4_identity(proj);
 	glm_mat4_identity(prev_vp);
-	s.instanced_uniforms.u_specular_aa_enabled = -1;
-	s.instanced_uniforms.u_aa_mode = -1;
-	s.instanced_uniforms.probe_grid_dim = -1;
+	s.shaders->instanced_uniforms.u_specular_aa_enabled = -1;
+	s.shaders->instanced_uniforms.u_aa_mode = -1;
+	s.shaders->instanced_uniforms.probe_grid_dim = -1;
 
 	reset_counters();
 	scene_render_instanced(&s, view, proj, cam, prev_vp);
