@@ -11,6 +11,7 @@
 #include "postprocess_input.h"
 #include "profiler.h"
 #include "scene.h"
+#include "scene_simulation.h"
 #include "utils.h"
 #include <math.h>
 #include <stb_image_write.h>
@@ -456,7 +457,7 @@ static bool handle_g_key_input(AppInputContext* ctx, int mods)
 	const int ctrl_shift =
 	    (int)((unsigned)GLFW_MOD_SHIFT | (unsigned)GLFW_MOD_CONTROL);
 	if (((unsigned)mods & (unsigned)ctrl_shift) == (unsigned)ctrl_shift) {
-		NBodySim* sim = &ctx->scene->simulation.nbody_sim;
+		NBodySim* sim = &ctx->scene->simulation->nbody_sim;
 		sim->target_time_scale = -sim->target_time_scale;
 		const char* dir =
 		    (sim->target_time_scale < 0.0F) ? "REVERSE" : "FORWARD";
@@ -473,9 +474,9 @@ static bool handle_g_key_input(AppInputContext* ctx, int mods)
 	}
 	scene_toggle_nbody(ctx->scene);
 	LOG_INFO("suckless-ogl.app", "N-Body mode: %s",
-	         ctx->scene->simulation.nbody_mode ? "ON" : "OFF");
+	         ctx->scene->simulation->nbody_mode ? "ON" : "OFF");
 	action_notifier_push(ctx->notifier,
-	                     ctx->scene->simulation.nbody_mode
+	                     ctx->scene->simulation->nbody_mode
 	                         ? "N-Body Gravity: ON"
 	                         : "N-Body Gravity: OFF",
 	                     NOTIF_DUR_LONG);
@@ -484,7 +485,7 @@ static bool handle_g_key_input(AppInputContext* ctx, int mods)
 
 static void handle_sim_speed_input(AppInputContext* ctx, bool speed_up)
 {
-	NBodySim* sim = &ctx->scene->simulation.nbody_sim;
+	NBodySim* sim = &ctx->scene->simulation->nbody_sim;
 	float mag = fabsf(sim->target_time_scale);
 	float sign = (sim->target_time_scale < 0.0F) ? -1.0F : 1.0F;
 	if (speed_up) {
@@ -507,7 +508,7 @@ static void handle_sim_speed_input(AppInputContext* ctx, bool speed_up)
 
 static void handle_gravity_input(AppInputContext* ctx, bool increase)
 {
-	NBodySim* sim = &ctx->scene->simulation.nbody_sim;
+	NBodySim* sim = &ctx->scene->simulation->nbody_sim;
 	if (increase) {
 		if (sim->gravity == 0.0F) {
 			sim->gravity = GRAVITY_MIN_POSITIVE;

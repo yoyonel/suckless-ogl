@@ -7,6 +7,9 @@
 #include "light_probes.h"
 #include "profiler.h"
 #include "scene.h"
+#include "scene_gpu_resources.h"
+#include "scene_shaders.h"
+#include "scene_simulation.h"
 #include "shader.h"
 #include "shockwave.h"
 #include "skybox.h"
@@ -31,20 +34,20 @@ const char* aa_mode_to_string(AAMode mode)
 
 void scene_update_gpu_buffers(Scene* scene)
 {
-	glBindVertexArray(scene->gpu.icosphere_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->gpu.icosphere_vbo);
+	glBindVertexArray(scene->gpu->icosphere_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->gpu->icosphere_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.vertices.size * sizeof(vec3)),
 	             scene->geometry.vertices.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->gpu.icosphere_nbo);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->gpu->icosphere_nbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.normals.size * sizeof(vec3)),
 	             scene->geometry.normals.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->gpu.icosphere_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->gpu->icosphere_ebo);
 	glBufferData(
 	    GL_ELEMENT_ARRAY_BUFFER,
 	    (GLsizeiptr)(scene->geometry.indices.size * sizeof(unsigned int)),
@@ -62,37 +65,37 @@ static void scene_bind_probe_textures(Scene* scene)
 {
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 		GLuint tex = scene->lighting.probe_grid.sh_textures[i];
-		if (tex != scene->gpu.bound_sh_textures[i]) {
+		if (tex != scene->gpu->bound_sh_textures[i]) {
 			glActiveTexture(
 			    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
 			glBindTexture(GL_TEXTURE_3D, tex);
-			scene->gpu.bound_sh_textures[i] = tex;
+			scene->gpu->bound_sh_textures[i] = tex;
 		}
 	}
 
-	if (scene->lighting.probe_grid.ssbo != scene->gpu.bound_probe_ssbo) {
+	if (scene->lighting.probe_grid.ssbo != scene->gpu->bound_probe_ssbo) {
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3,
 		                 scene->lighting.probe_grid.ssbo);
-		scene->gpu.bound_probe_ssbo = scene->lighting.probe_grid.ssbo;
+		scene->gpu->bound_probe_ssbo = scene->lighting.probe_grid.ssbo;
 	}
 }
 
 static void scene_bind_ibl_textures(Scene* scene)
 {
 	GLuint textures[IBL_TEXTURE_COUNT] = {
-	    scene->gpu.irradiance_tex ? scene->gpu.irradiance_tex
-	                              : scene->gpu.dummy_black_tex,
-	    scene->gpu.spec_prefiltered_tex ? scene->gpu.spec_prefiltered_tex
-	                                    : scene->gpu.dummy_black_tex,
-	    scene->gpu.brdf_lut_tex ? scene->gpu.brdf_lut_tex
-	                            : scene->gpu.dummy_black_tex};
+	    scene->gpu->irradiance_tex ? scene->gpu->irradiance_tex
+	                               : scene->gpu->dummy_black_tex,
+	    scene->gpu->spec_prefiltered_tex ? scene->gpu->spec_prefiltered_tex
+	                                     : scene->gpu->dummy_black_tex,
+	    scene->gpu->brdf_lut_tex ? scene->gpu->brdf_lut_tex
+	                             : scene->gpu->dummy_black_tex};
 
 	for (int i = 0; i < IBL_TEXTURE_COUNT; i++) {
-		if (textures[i] != scene->gpu.bound_ibl_textures[i]) {
+		if (textures[i] != scene->gpu->bound_ibl_textures[i]) {
 			glActiveTexture(
 			    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_IBL_START + i));
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
-			scene->gpu.bound_ibl_textures[i] = textures[i];
+			scene->gpu->bound_ibl_textures[i] = textures[i];
 		}
 	}
 }
@@ -101,7 +104,7 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
                                     vec3 camera_pos, mat4 previous_view_proj,
                                     int width, int height)
 {
-	Shader* current_shader = scene->shaders.pbr_billboard;
+	Shader* current_shader = scene->shaders->pbr_billboard;
 	shader_use(current_shader);
 
 	scene_bind_ibl_textures(scene);
@@ -128,8 +131,8 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		ubo.probe_grid_dim[2] = scene->lighting.probe_grid.grid_dim[2];
 		ubo.aa_mode = scene->config.aa_mode;
 
-		if (scene->gpu.billboard_ubo_ptr) {
-			*(BillboardUBO*)scene->gpu.billboard_ubo_ptr = ubo;
+		if (scene->gpu->billboard_ubo_ptr) {
+			*(BillboardUBO*)scene->gpu->billboard_ubo_ptr = ubo;
 		}
 	}
 
@@ -150,10 +153,11 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 
-		shader_use(scene->shaders.debug_line);
-		shader_set_mat4_loc(scene->debug_uniforms.projection,
+		shader_use(scene->shaders->debug_line);
+		shader_set_mat4_loc(scene->shaders->debug_uniforms.projection,
 		                    (float*)proj);
-		shader_set_mat4_loc(scene->debug_uniforms.view, (float*)view);
+		shader_set_mat4_loc(scene->shaders->debug_uniforms.view,
+		                    (float*)view);
 
 		/* 0. Transparent Fill (Instance Albedo) */
 		/* Push fill back to avoid z-fighting with outlines */
@@ -164,12 +168,16 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		/* Disable stipple, Enable Billboard Mode, Enable Instance Color
 		 */
-		shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
-		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 1);
-		shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 1);
+		shader_set_int_loc(scene->shaders->debug_uniforms.u_stippled,
+		                   0);
+		shader_set_int_loc(
+		    scene->shaders->debug_uniforms.u_billboard_mode, 1);
+		shader_set_int_loc(
+		    scene->shaders->debug_uniforms.u_use_instance_col, 1);
 		/* Alpha 0.10 for transparency */
 		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
-		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_fill);
+		shader_set_vec4_loc(scene->shaders->debug_uniforms.u_color,
+		                    color_fill);
 		billboard_group_draw_debug_fill(&scene->billboard_group);
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_OFFSET_FILL);
@@ -181,19 +189,26 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 
 		/* Disable stipple, Enable Billboard Mode, Disable Instance
 		 * Color */
-		shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
-		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 1);
-		shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 0);
+		shader_set_int_loc(scene->shaders->debug_uniforms.u_stippled,
+		                   0);
+		shader_set_int_loc(
+		    scene->shaders->debug_uniforms.u_billboard_mode, 1);
+		shader_set_int_loc(
+		    scene->shaders->debug_uniforms.u_use_instance_col, 0);
 		float color_quad[4] = {0.0F, 1.0F, 0.0F, 1.0F};
-		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_quad);
+		shader_set_vec4_loc(scene->shaders->debug_uniforms.u_color,
+		                    color_quad);
 		billboard_group_draw_debug_quads(&scene->billboard_group);
 
 		/* 2. Bounding Box (Dotted/Stippled Red/Yellow) */
 		/* Enable stipple, Disable Billboard Mode */
-		shader_set_int_loc(scene->debug_uniforms.u_stippled, 1);
-		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 0);
+		shader_set_int_loc(scene->shaders->debug_uniforms.u_stippled,
+		                   1);
+		shader_set_int_loc(
+		    scene->shaders->debug_uniforms.u_billboard_mode, 0);
 		float color_box[4] = {1.0F, 1.0F, 0.0F, debug_box_alpha};
-		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_box);
+		shader_set_vec4_loc(scene->shaders->debug_uniforms.u_color,
+		                    color_box);
 		billboard_group_draw_debug_boxes(&scene->billboard_group);
 
 		glDisable(GL_POLYGON_OFFSET_LINE);
@@ -209,45 +224,50 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 {
 	Shader* current_shader = NULL;
 #ifdef USE_SSBO_RENDERING
-	current_shader = scene->shaders.pbr_ssbo;
+	current_shader = scene->shaders->pbr_ssbo;
 #else
-	current_shader = scene->shaders.pbr_instanced;
+	current_shader = scene->shaders->pbr_instanced;
 #endif
 
 	shader_use(current_shader);
 
 	scene_bind_ibl_textures(scene);
 
-	shader_set_int_loc(scene->instanced_uniforms.debug_mode,
+	shader_set_int_loc(scene->shaders->instanced_uniforms.debug_mode,
 	                   scene->config.pbr_debug_mode);
-	shader_set_vec3_loc(scene->instanced_uniforms.cam_pos, camera_pos);
-	shader_set_mat4_loc(scene->instanced_uniforms.projection, (float*)proj);
-	shader_set_mat4_loc(scene->instanced_uniforms.view, (float*)view);
-	shader_set_mat4_loc(scene->instanced_uniforms.previous_view_proj,
-	                    (float*)previous_view_proj);
+	shader_set_vec3_loc(scene->shaders->instanced_uniforms.cam_pos,
+	                    camera_pos);
+	shader_set_mat4_loc(scene->shaders->instanced_uniforms.projection,
+	                    (float*)proj);
+	shader_set_mat4_loc(scene->shaders->instanced_uniforms.view,
+	                    (float*)view);
+	shader_set_mat4_loc(
+	    scene->shaders->instanced_uniforms.previous_view_proj,
+	    (float*)previous_view_proj);
 
-	if (scene->instanced_uniforms.u_specular_aa_enabled != -1) {
-		glUniform1i(scene->instanced_uniforms.u_specular_aa_enabled,
-		            scene->config.specular_aa_enabled);
+	if (scene->shaders->instanced_uniforms.u_specular_aa_enabled != -1) {
+		glUniform1i(
+		    scene->shaders->instanced_uniforms.u_specular_aa_enabled,
+		    scene->config.specular_aa_enabled);
 	}
-	if (scene->instanced_uniforms.u_aa_mode != -1) {
-		glUniform1i(scene->instanced_uniforms.u_aa_mode,
+	if (scene->shaders->instanced_uniforms.u_aa_mode != -1) {
+		glUniform1i(scene->shaders->instanced_uniforms.u_aa_mode,
 		            scene->config.aa_mode);
 	}
 
 	/* Probe Grid spatial bounds and GI Toggle */
-	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,
+	shader_set_vec3_loc(scene->shaders->instanced_uniforms.probe_grid_min,
 	                    scene->lighting.probe_grid.aabb_min);
-	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_max,
+	shader_set_vec3_loc(scene->shaders->instanced_uniforms.probe_grid_max,
 	                    scene->lighting.probe_grid.aabb_max);
 
-	if (scene->instanced_uniforms.probe_grid_dim != -1) {
-		glUniform3i(scene->instanced_uniforms.probe_grid_dim,
+	if (scene->shaders->instanced_uniforms.probe_grid_dim != -1) {
+		glUniform3i(scene->shaders->instanced_uniforms.probe_grid_dim,
 		            scene->lighting.probe_grid.grid_dim[0],
 		            scene->lighting.probe_grid.grid_dim[1],
 		            scene->lighting.probe_grid.grid_dim[2]);
 	}
-	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
+	shader_set_int_loc(scene->shaders->instanced_uniforms.gi_mode,
 	                   (int)scene->config.gi_mode);
 
 	scene_bind_probe_textures(scene);
@@ -287,7 +307,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		 * via glBindTexture(GL_TEXTURE_3D, 0) — invalidate cache
 		 * so scene_bind_probe_textures() will re-bind. */
 		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-			scene->gpu.bound_sh_textures[i] = 0;
+			scene->gpu->bound_sh_textures[i] = 0;
 		}
 		PROFILE_ZONE_END(gi_sync_ctx);
 	}
@@ -299,9 +319,9 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		gl_debug_push_group("Skybox_Pass");
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
-		skybox_render(&scene->visuals.skybox, scene->shaders.skybox,
-		              scene->gpu.hdr_texture,
-		              scene->gpu.dummy_black_tex, inv_view_proj,
+		skybox_render(&scene->visuals.skybox, scene->shaders->skybox,
+		              scene->gpu->hdr_texture,
+		              scene->gpu->dummy_black_tex, inv_view_proj,
 		              scene->config.env_lod);
 		glEnable(GL_DEPTH_TEST);
 		gl_debug_pop_group();
@@ -459,7 +479,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 	/* --- N-Body orbital trails (rendered after spheres, into HDR FBO) ---
 	 */
-	if (scene->simulation.nbody_mode) {
+	if (scene->simulation->nbody_mode) {
 		GPU_STAGE_PROFILER(profiler, "NBody Trails",
 		                   GPU_PROFILER_NBODY_COLOR);
 		gl_debug_push_group("NBody_Trails");
@@ -478,7 +498,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			}
 			shockwave_draw(&scene->visuals.shockwave_renderer, view,
 			               proj, camera_pos,
-			               scene->simulation.nbody_sim.sim_time,
+			               scene->simulation->nbody_sim.sim_time,
 			               width, height);
 			if (scene->config.wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

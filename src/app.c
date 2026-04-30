@@ -13,6 +13,7 @@
 #include "profiler.h"
 #include "renderer.h"
 #include "scene.h"
+#include "scene_gpu_resources.h"
 #include "texture.h"
 #include "tracy_gpu.h"
 #include "window.h"
@@ -121,7 +122,7 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess,
-	                               app->scene.gpu.dummy_black_tex);
+	                               app->scene.gpu->dummy_black_tex);
 	postprocess_set_exposure(&app->postprocess,
 	                         app->postprocess.readback.auto_threshold);
 	postprocess_enable(&app->postprocess, POSTFX_FXAA);
@@ -334,14 +335,15 @@ void app_run(App* app)
 
 #ifdef USE_SSBO_RENDERING
 			ssbo_group_bind_mesh(&app->scene.ssbo_group,
-			                     app->scene.gpu.icosphere_vbo,
-			                     app->scene.gpu.icosphere_nbo,
-			                     app->scene.gpu.icosphere_ebo);
+			                     app->scene.gpu->icosphere_vbo,
+			                     app->scene.gpu->icosphere_nbo,
+			                     app->scene.gpu->icosphere_ebo);
 #else
-			instanced_group_bind_mesh(&app->scene.instanced_group,
-			                          app->scene.gpu.icosphere_vbo,
-			                          app->scene.gpu.icosphere_nbo,
-			                          app->scene.gpu.icosphere_ebo);
+			instanced_group_bind_mesh(
+			    &app->scene.instanced_group,
+			    app->scene.gpu->icosphere_vbo,
+			    app->scene.gpu->icosphere_nbo,
+			    app->scene.gpu->icosphere_ebo);
 #endif
 			last_subdiv = app->scene.config.subdivisions;
 			PROFILE_ZONE_END(ico_ctx);
@@ -413,10 +415,10 @@ void app_update(App* app)
 	 * frame as PBO Setup & Map.
 	 */
 	if (app->async_coord.pending_prealloc_w > 0) {
-		app->scene.gpu.recycled_hdr_tex =
+		app->scene.gpu->recycled_hdr_tex =
 		    texture_preallocate_hdr(app->async_coord.pending_prealloc_w,
 		                            app->async_coord.pending_prealloc_h,
-		                            app->scene.gpu.recycled_hdr_tex);
+		                            app->scene.gpu->recycled_hdr_tex);
 		app->async_coord.pending_prealloc_w = 0;
 		app->async_coord.pending_prealloc_h = 0;
 	}
@@ -431,7 +433,7 @@ void app_update(App* app)
 
 	if (app->env_mgr.env_map_loading_step > 0) {
 		env_manager_process_loading_step(
-		    &app->env_mgr, &app->scene.gpu.recycled_hdr_tex,
+		    &app->env_mgr, &app->scene.gpu->recycled_hdr_tex,
 		    &app->scene.lighting.ibl_coord);
 	}
 
