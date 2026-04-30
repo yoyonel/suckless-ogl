@@ -4,6 +4,7 @@
 
 #include "log.h"
 #include "perf_timer.h"
+#include "platform/platform_utils.h"
 #include "profiler.h"
 #include "render_utils.h"
 #include "shader.h"
@@ -166,7 +167,7 @@ void light_probe_grid_free_cpu(LightProbeGrid* grid)
 		free(grid->probes);
 	}
 	if (grid->scene_copy) {
-		free(grid->scene_copy);
+		platform_aligned_free(grid->scene_copy);
 	}
 	pthread_mutex_destroy(&grid->mutex);
 	pthread_cond_destroy(&grid->cond);
@@ -358,7 +359,8 @@ static void* light_probe_worker(void* arg)
 		if (local_count > 0 && grid->scene_copy) {
 			size_t data_size =
 			    (size_t)local_count * sizeof(SphereInstance);
-			local_scene = (SphereInstance*)malloc(data_size);
+			local_scene = (SphereInstance*)platform_aligned_alloc(
+			    data_size, SIMD_ALIGNMENT);
 			if (local_scene) {
 				(void)safe_memcpy(local_scene, data_size,
 				                  grid->scene_copy, data_size);
@@ -367,7 +369,7 @@ static void* light_probe_worker(void* arg)
 		pthread_mutex_unlock(&grid->mutex);
 
 		if (!local_scene || local_count <= 0) {
-			free(local_scene);
+			platform_aligned_free(local_scene);
 			continue;
 		}
 
@@ -395,7 +397,7 @@ static void* light_probe_worker(void* arg)
 			}
 		}
 
-		free(local_scene);
+		platform_aligned_free(local_scene);
 		free(cached_scene);
 
 		double worker_ms = perf_timer_elapsed_ms(&worker_timer);
@@ -499,12 +501,13 @@ void light_probe_grid_set_scene(LightProbeGrid* grid, const void* spheres,
 	pthread_mutex_lock(&grid->mutex);
 
 	if (grid->scene_copy) {
-		free(grid->scene_copy);
+		platform_aligned_free(grid->scene_copy);
 	}
 	grid->scene_count = count;
 
 	size_t size = count * sizeof(SphereInstance);
-	grid->scene_copy = (SphereInstance*)malloc(size);
+	grid->scene_copy =
+	    (SphereInstance*)platform_aligned_alloc(size, SIMD_ALIGNMENT);
 	if (grid->scene_copy) {
 		const char* src = (const char*)spheres;
 		for (int i = 0; i < count; i++) {
