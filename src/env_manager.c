@@ -5,7 +5,7 @@
 #include "gl_common.h"
 #include "ibl_coordinator.h"
 #include "log.h"
-#include "postprocess.h"
+#include "postprocess_readback.h"
 #include "scene.h"
 #include "scene_gpu_resources.h"
 #include "scene_shaders.h"
