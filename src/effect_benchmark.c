@@ -10,7 +10,7 @@
 
 #include "gpu_profiler.h"
 #include "log.h"
-#include "postprocess.h"
+#include "postprocess_internal.h"
 #include <math.h>
 #include <string.h>
 

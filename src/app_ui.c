@@ -6,7 +6,7 @@
 #include "app_ui_layout.h" /* Private: layout constants, keyboard/gamepad data */
 #include "glad/glad.h"
 #include "nbody.h"
-#include "postprocess.h"
+#include "postprocess_internal.h"
 #include "scene_simulation.h"
 #include "texture.h"
 #include "ui.h"

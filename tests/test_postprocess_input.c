@@ -10,8 +10,8 @@
 
 /* Type-providing headers — must come before mock definitions */
 #include "app_settings.h"
-#include "postprocess.h"
 #include "postprocess_input.h"
+#include "postprocess_internal.h"
 #include "unity.h"
 #include <string.h>
 

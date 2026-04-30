@@ -9,7 +9,7 @@
 #include "effect_benchmark.h"
 #include "env_manager.h"
 #include "gl_common.h"
-#include "postprocess.h"
+#include "postprocess_internal.h"
 #include "scene.h"
 #include <cglm/cglm.h>
 
