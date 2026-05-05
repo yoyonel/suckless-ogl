@@ -479,6 +479,9 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 	/* --- N-Body orbital trails (rendered after spheres, into HDR FBO) ---
 	 */
+	/* Disable writing to velocity buffer for transparent VFX overlays */
+	glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
 	if (scene->simulation->nbody_mode) {
 		GPU_STAGE_PROFILER(profiler, "NBody Trails",
 		                   GPU_PROFILER_NBODY_COLOR);
@@ -511,4 +514,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		light_probe_grid_render_debug(&scene->lighting.probe_grid, view,
 		                              proj);
 	}
+
+	/* Restore velocity buffer writes */
+	glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
