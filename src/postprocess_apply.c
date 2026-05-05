@@ -5,12 +5,10 @@
 #include "effects/fx_lut3d.h"
 #include "effects/fx_lut_viz.h"
 #include "effects/fx_motion_blur.h"
-#include "gl_common.h"
 #include "gl_debug.h"
 #include "postprocess_internal.h"
 #include "profiler.h"
 #include "render_utils.h"
-#include <stdint.h>
 
 void postprocess_begin(PostProcess* post_processing)
 {

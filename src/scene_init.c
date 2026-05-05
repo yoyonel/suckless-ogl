@@ -1,9 +1,5 @@
-#include "app_settings.h"
 #include "billboard_rendering.h"
-#include "billboard_sorting.h"
-#include "glad/glad.h"
 #include "ibl_coordinator.h"
-#include "icosphere.h"
 #include "instanced_rendering.h"
 #include "light_probes.h"
 #include "log.h"
@@ -16,7 +12,6 @@
 #include "scene_internal.h"
 #include "scene_shaders.h"
 #include "scene_simulation.h"
-#include "shader.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>

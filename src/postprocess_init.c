@@ -5,11 +5,9 @@
 #include "effects/fx_lut3d.h"
 #include "effects/fx_lut_viz.h"
 #include "effects/fx_motion_blur.h"
-#include "gl_common.h"
 #include "log.h"
 #include "postprocess_internal.h"
 #include "render_utils.h"
-#include <stdint.h>
 
 int pp_create_framebuffer(PostProcess* post_processing)
 {
