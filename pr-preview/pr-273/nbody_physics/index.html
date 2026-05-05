@@ -1,0 +1,4745 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A lean, high-performance C11 PBR Renderer">
+      
+      
+        <meta name="author" content="Latty">
+      
+      
+      
+        <link rel="prev" href="../global_illumination/">
+      
+      
+        <link rel="next" href="../shockwave_lensing/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/nbody_physics/" hreflang="fr">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>N-Body Physics - Suckless OGL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#n-body-gravity-simulation-physics-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Suckless OGL" class="md-header__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Suckless OGL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              N-Body Physics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/nbody_physics/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yoyonel/suckless-ogl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Suckless OGL" class="md-nav__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Suckless OGL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yoyonel/suckless-ogl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application_lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anatomy of a Frame: Full Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagram Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../project_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ibl_architecture_ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBL Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_ubo_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process UBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../refactoring_analysis_2026_02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Analysis (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../portability_pal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Abstraction (PAL)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rendering
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../global_illumination/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Global Illumination
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#velocity-verlet-integrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Velocity Verlet Integrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Velocity Verlet Integrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#algorithm-per-fixed-step-delta-t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm (per fixed step \(\Delta t\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-symplectic-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Symplectic Matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plummer-softening" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plummer Softening
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Plummer Softening">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-pair-adaptive-softening" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Pair Adaptive Softening
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#softened-orbital-velocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Softened Orbital Velocity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#momentum-zeroing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Momentum Zeroing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixed-timestep-with-accumulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed Timestep with Accumulator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#approaches-tried-and-rejected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Approaches Tried and Rejected
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Approaches Tried and Rejected">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-elastic-collisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Elastic Collisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-energy-clamp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Energy Clamp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-escape-brake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Escape Brake
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-per-step-momentum-re-zeroing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Per-Step Momentum Re-Zeroing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-xpbd-extended-position-based-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. XPBD (Extended Position-Based Dynamics)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#confinement-potential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confinement Potential
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Confinement Potential">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proportional-radial-damping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proportional Radial Damping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proportional Radial Damping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stability-indicator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stability Indicator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shockwave-visual-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shockwave Visual Effects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shockwave Visual Effects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#impact-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Position
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#long-run-stability-results-1-200-s-at-120-hz-144-000-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-Run Stability Results (1 200 s at 120 Hz = 144 000 steps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constants-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runtime-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime Controls
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Runtime Controls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulation-speed-time_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation Speed (time_scale)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-reversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Reversal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Time Reversal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#progressive-transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progressive Transition
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gravity-control-gravity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gravity Control (gravity)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hud-overlay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HUD Overlay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trail-length-stability-time-based-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trail Length Stability — Time-Based Sampling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profiling-zones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profiling Zones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Profiling Zones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cpu-zones-profile_zone-main-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CPU Zones (PROFILE_ZONE — Main Thread)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpu-zones-gpu_stage_profiler-opengl-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Zones (GPU_STAGE_PROFILER — OpenGL Context)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resource Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neon_trails/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neon Trails
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sphere_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PBR Sphere Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../skybox_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skybox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../progressive_ibl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Progressive IBL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cubemap_seam_resolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FXAA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FXAA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specular_aa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specular Anti-Aliasing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banding &amp; Dithering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exposure_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exposure Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_debug_histogram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug Histogram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../photographic_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Photographic Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../env_transitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Transitions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (March 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_opt_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto-Exposure Opt. Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../motion_blur_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motion Blur Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bloom_debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cinematic_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cinematic Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_bokeh_effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Bokeh Research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sony_a7siii_profile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sony A7S III Profile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controls &amp; Input
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Controls &amp; Input
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mouse_camera_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mouse Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gamepad Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../keyboard_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Help System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_visual_parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Visual Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_batching_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Batching Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu-rendering-synchronization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Synchronization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shader Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../texture_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texture Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_pbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async PBO Upload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nvidia_optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVIDIA Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader-cross-gpu-compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-GPU Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_and_notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Mode &amp; Notifs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stencil_masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stencil Buffer Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fullscreen_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fullscreen Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simd_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIMD Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_gl_call_reduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard GL Call Reduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mesa F32-to-F16 Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../justfile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Justfile Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iwyu_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IWYU Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ide_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IDE &amp; Env Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_tracy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracy Profiling (v0.13.1)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu_profiling_flamegraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CPU Profiling (FlameGraph)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_utilization_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Utilization Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_usage_monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Usage Monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../effect_benchmark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Effect Benchmark
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_benchmarking_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Benchmarking Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renderdoc_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RenderDoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visual_testing_artifacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opengl_cleanup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenGL Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../raii_cleanup_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAII Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory_management_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../standalone_testing_mocking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standalone Mocking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs_staging_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Staging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Docs System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doxygen_customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Doxygen Customization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nbody_precision_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Precision Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doxygen/html/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reports
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reports
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coverage/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Coverage (LCOV)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coverage/visual_tests/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Regression Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/nbody_physics.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="n-body-gravity-simulation-physics-reference">N-Body Gravity Simulation — Physics Reference<a class="headerlink" href="#n-body-gravity-simulation-physics-reference" title="Permanent link">¶</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>The N-body module (<code>nbody.h</code> / <code>nbody.c</code>) implements a real-time gravitational
+simulation of up to 16 bodies orbiting a central star.  The physics engine
+prioritises <strong>long-term stability</strong> (energy conservation over thousands of
+simulated seconds) using well-established techniques from computational
+astrophysics:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Technique</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integrator</td>
+<td><strong>Velocity Verlet</strong> (symplectic, 2<sup>nd</sup>-order)</td>
+</tr>
+<tr>
+<td>Regularisation</td>
+<td><strong>Plummer softening</strong> (per-pair, adaptive)</td>
+</tr>
+<tr>
+<td>Initial conditions</td>
+<td><strong>Softened orbital velocity</strong> formula</td>
+</tr>
+<tr>
+<td>Timestep</td>
+<td>Fixed <span class="arithmatex">\(\frac{1}{120}\text{s}\)</span>, accumulator-clamped</td>
+</tr>
+</tbody>
+</table>
+<p>Validated by a 1 200 s automated test with <strong>0.002 %</strong> energy drift.</p>
+<hr>
+<h2 id="velocity-verlet-integrator">Velocity Verlet Integrator<a class="headerlink" href="#velocity-verlet-integrator" title="Permanent link">¶</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet">Velocity Verlet</a>
+(also called <em>Leapfrog kick-drift-kick</em>) is a <strong>symplectic</strong> integrator: it
+preserves the geometric structure of Hamiltonian systems, which guarantees that
+total energy oscillates around the true value instead of drifting monotonically.</p>
+<h3 id="algorithm-per-fixed-step-delta-t">Algorithm (per fixed step <span class="arithmatex">\(\Delta t\)</span>)<a class="headerlink" href="#algorithm-per-fixed-step-delta-t" title="Permanent link">¶</a></h3>
+<ol>
+<li>Compute accelerations from current positions: <span class="arithmatex">\(\mathbf{a}_\text{old}\)</span></li>
+<li>Update positions:
+$<span class="arithmatex">\(\mathbf{x} \leftarrow \mathbf{x} + \mathbf{v}\,\Delta t + \tfrac{1}{2}\,\mathbf{a}_\text{old}\,\Delta t^2\)</span>$</li>
+<li>Compute accelerations from new positions: <span class="arithmatex">\(\mathbf{a}_\text{new}\)</span></li>
+<li>Update velocities:
+$<span class="arithmatex">\(\mathbf{v} \leftarrow \mathbf{v} + \tfrac{1}{2}(\mathbf{a}_\text{old} + \mathbf{a}_\text{new})\,\Delta t\)</span>$</li>
+</ol>
+<p>This is implemented in <code>integrate_step()</code> in <code>src/nbody.c</code>.</p>
+<h3 id="why-symplectic-matters">Why Symplectic Matters<a class="headerlink" href="#why-symplectic-matters" title="Permanent link">¶</a></h3>
+<p>Non-symplectic methods (Euler, RK4) accumulate a secular energy drift
+proportional to the number of steps.  Over 1 200 s at 120 Hz that is 144 000
+steps — enough for even small per-step errors to blow the system apart or
+collapse it.  A symplectic integrator's bounded energy error keeps the orbits
+qualitatively correct indefinitely.</p>
+<p><strong>References:</strong></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Symplectic_integrator">Symplectic integrator — Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Leapfrog_integration">Leapfrog integration — Wikipedia</a></li>
+<li>Hairer, Lubich &amp; Wanner, <em>Geometric Numerical Integration</em> (Springer, 2006)</li>
+</ul>
+<hr>
+<h2 id="plummer-softening">Plummer Softening<a class="headerlink" href="#plummer-softening" title="Permanent link">¶</a></h2>
+<p>In a pure <span class="arithmatex">\(1/r^2\)</span> gravitational field, two point masses passing very close
+experience arbitrarily large forces, leading to numerical slingshot effects and
+chaotic energy exchange.  The standard astrophysical cure is
+<a href="https://en.wikipedia.org/wiki/Plummer_model">Plummer softening</a>:</p>
+<div class="arithmatex">\[F = \frac{G\,m_i\,m_j}{(r^2 + \varepsilon^2)^{3/2}}\,\hat{\mathbf{r}}\]</div>
+<p>The softening length <span class="arithmatex">\(\varepsilon\)</span> regularises the singularity at <span class="arithmatex">\(r = 0\)</span>,
+turning the Newtonian <span class="arithmatex">\(1/r\)</span> potential into the finite
+<a href="https://en.wikipedia.org/wiki/Plummer_model">Plummer potential</a>
+<span class="arithmatex">\(\Phi = -G\,M / \sqrt{r^2 + \varepsilon^2}\)</span>.</p>
+<h3 id="per-pair-adaptive-softening">Per-Pair Adaptive Softening<a class="headerlink" href="#per-pair-adaptive-softening" title="Permanent link">¶</a></h3>
+<p>Rather than a single global <span class="arithmatex">\(\varepsilon\)</span>, we scale the softening to each
+body pair's physical radii:</p>
+<div class="arithmatex">\[\varepsilon^2 = \max\!\bigl(\texttt{NBODY\_SOFTENING\_SQ},\;
+      (\texttt{NBODY\_SOFTENING\_FACTOR} \cdot (r_i + r_j))^2\bigr)\]</div>
+<p>With the default constants:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBODY_SOFTENING_SQ</code></td>
+<td>0.25</td>
+<td>Absolute floor (<span class="arithmatex">\(\varepsilon_\min = 0.5\)</span>)</td>
+</tr>
+<tr>
+<td><code>NBODY_SOFTENING_FACTOR</code></td>
+<td>2.0</td>
+<td>Per-pair multiplier on combined radii</td>
+</tr>
+</tbody>
+</table>
+<p>This ensures that:</p>
+<ul>
+<li>Large bodies (the star, <span class="arithmatex">\(r = 1.5\)</span>) get strong softening (<span class="arithmatex">\(\varepsilon \geq 3.6\)</span>).</li>
+<li>Small pairs (two moons) get proportionally less, keeping their dynamics
+  more Keplerian.</li>
+<li>No pair ever reaches the singular region.</li>
+</ul>
+<p>Implemented in <code>pair_softening_sq()</code>.</p>
+<p><strong>References:</strong></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Softening">Gravitational softening — Wikipedia</a></li>
+<li>Dehnen &amp; Aly, <em>Improving convergence of N-body methods</em> (MNRAS 425, 2012)</li>
+<li>Aarseth, <em>Gravitational N-Body Simulations</em> (Cambridge, 2003)</li>
+</ul>
+<hr>
+<h2 id="softened-orbital-velocity">Softened Orbital Velocity<a class="headerlink" href="#softened-orbital-velocity" title="Permanent link">¶</a></h2>
+<p>A common mistake is to initialise circular-orbit speeds using the Kepler
+formula <span class="arithmatex">\(v = \sqrt{G\,M/r}\)</span>.  This is <strong>wrong</strong> when softening is active
+because the effective potential is shallower than <span class="arithmatex">\(1/r\)</span>.</p>
+<p>The correct circular-orbit condition for the Plummer potential is:</p>
+<div class="arithmatex">\[v = r \cdot \sqrt{\frac{G\,M}{(r^2 + \varepsilon^2)^{3/2}}}\]</div>
+<p>This comes from balancing the centripetal acceleration <span class="arithmatex">\(v^2/r\)</span> with the
+softened gravitational acceleration <span class="arithmatex">\(G\,M\,r / (r^2 + \varepsilon^2)^{3/2}\)</span>.</p>
+<p>Using the unsoftened formula over-estimates the orbital speed, injecting
+excess kinetic energy and causing bodies to spiral outward.</p>
+<p>Implemented in <code>softened_orbital_vel()</code>.</p>
+<hr>
+<h2 id="momentum-zeroing">Momentum Zeroing<a class="headerlink" href="#momentum-zeroing" title="Permanent link">¶</a></h2>
+<p>After initialising all bodies, the total momentum <span class="arithmatex">\(\mathbf{p} = \sum m_i \mathbf{v}_i\)</span>
+is set to zero by subtracting the centre-of-mass velocity from every body:</p>
+<div class="arithmatex">\[\mathbf{v}_i \leftarrow \mathbf{v}_i - \frac{\sum m_j\,\mathbf{v}_j}{\sum m_j}\]</div>
+<p>This keeps the centre of mass stationary and prevents the whole system from
+drifting across the scene.  It is done <strong>once</strong> at init, not per step (which
+would break symplecticity).</p>
+<hr>
+<h2 id="fixed-timestep-with-accumulator">Fixed Timestep with Accumulator<a class="headerlink" href="#fixed-timestep-with-accumulator" title="Permanent link">¶</a></h2>
+<p>Variable timesteps destroy the symplectic property.  The simulation uses a
+fixed <span class="arithmatex">\(\Delta t = 1/120\,\text{s}\)</span> with a standard accumulator pattern:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>accumulator += wall_dt × time_scale
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>clamp accumulator to NBODY_MAX_ACCUMULATOR (1/10 s)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>while accumulator &gt;= NBODY_FIXED_DT:
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    integrate_step(NBODY_FIXED_DT)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    accumulator -= NBODY_FIXED_DT
+</span></code></pre></div>
+<p>The max-accumulator clamp prevents a spiral of death after lag spikes or on
+the first frame.  The ceiling of <span class="arithmatex">\(1/10\,\text{s}\)</span> supports frame rates as
+low as ~10 FPS without losing simulation time (up to 12 Verlet steps per
+frame for <span class="arithmatex">\(N = 14\)</span> bodies — trivially cheap on the CPU).</p>
+<hr>
+<h2 id="approaches-tried-and-rejected">Approaches Tried and Rejected<a class="headerlink" href="#approaches-tried-and-rejected" title="Permanent link">¶</a></h2>
+<p>During development, several alternative techniques were tested and
+<strong>rejected</strong> because they broke the symplectic invariant or introduced
+unacceptable energy dissipation.</p>
+<h3 id="1-elastic-collisions">1. Elastic Collisions<a class="headerlink" href="#1-elastic-collisions" title="Permanent link">¶</a></h3>
+<p><strong>Idea:</strong> When two bodies overlap (<span class="arithmatex">\(r &lt; r_i + r_j\)</span>), reflect their velocities
+using elastic collision formulae.</p>
+<p><strong>Problem:</strong> Discrete collision detection at fixed timestep introduces
+non-time-reversible impulses.  This breaks symplecticity and causes secular
+energy drift.  In practice, bodies gained energy at every collision,
+leading to exponential blow-up.</p>
+<p><strong>Verdict:</strong> Removed entirely.  Plummer softening prevents overlap without
+the need for collision handling.</p>
+<h3 id="2-energy-clamp">2. Energy Clamp<a class="headerlink" href="#2-energy-clamp" title="Permanent link">¶</a></h3>
+<p><strong>Idea:</strong> After each step, measure total energy; if it exceeds a threshold,
+rescale all velocities to restore the target energy.</p>
+<p><strong>Problem:</strong> This is a projection step that is not derived from a Hamiltonian.
+It destroys the symplectic structure and introduces artificial damping
+or pumping depending on the sign of the correction.</p>
+<p><strong>Verdict:</strong> Removed.</p>
+<h3 id="3-escape-brake">3. Escape Brake<a class="headerlink" href="#3-escape-brake" title="Permanent link">¶</a></h3>
+<p><strong>Idea:</strong> If a body moves beyond a radius threshold, apply a drag force to
+bring it back.</p>
+<p><strong>Problem:</strong> Non-conservative force → secular energy loss → orbits decay
+and system collapses.</p>
+<p><strong>Verdict:</strong> Removed.</p>
+<h3 id="4-per-step-momentum-re-zeroing">4. Per-Step Momentum Re-Zeroing<a class="headerlink" href="#4-per-step-momentum-re-zeroing" title="Permanent link">¶</a></h3>
+<p><strong>Idea:</strong> Subtract the centre-of-mass velocity from all bodies every step.</p>
+<p><strong>Problem:</strong> This is a non-symplectic projection applied at every step.  It
+interferes with the integrator's phase-space structure and causes energy
+to drift downward.</p>
+<p><strong>Verdict:</strong> Momentum is zeroed <strong>once</strong> at init, never during simulation.</p>
+<h3 id="5-xpbd-extended-position-based-dynamics">5. XPBD (Extended Position-Based Dynamics)<a class="headerlink" href="#5-xpbd-extended-position-based-dynamics" title="Permanent link">¶</a></h3>
+<p><strong>Idea:</strong> Use XPBD constraint solver (from game physics) to enforce minimum
+distance between bodies, replacing softening with constraint-based repulsion.</p>
+<p><strong>Problem:</strong> XPBD is <strong>fundamentally dissipative by design</strong> — it solves
+constraints by projecting positions, which does not conserve energy.
+In testing, this caused <strong>21 % energy loss</strong> over 300 s, orbits decayed
+rapidly, and all bodies collapsed onto the star.</p>
+<p>XPBD is excellent for game-physics scenarios (ragdolls, cloth) where
+dissipation is acceptable and even desirable, but it is <strong>catastrophic</strong>
+for gravity simulations that require energy conservation.</p>
+<p><strong>Verdict:</strong> Rejected after testing.  Pure Verlet + strong Plummer softening
+is the correct approach for N-body gravity.</p>
+<p><strong>References:</strong></p>
+<ul>
+<li>Müller et al., <em>Detailed Rigid Body Simulation with Extended Position Based Dynamics</em> (CGF 2020)</li>
+<li><a href="https://en.wikipedia.org/wiki/Position-based_dynamics">Position Based Dynamics — Wikipedia</a></li>
+</ul>
+<hr>
+<h2 id="confinement-potential">Confinement Potential<a class="headerlink" href="#confinement-potential" title="Permanent link">¶</a></h2>
+<p>Bodies that drift too far from the central star are pushed back by a
+<strong>quadratic restoring potential</strong> — a soft wall that keeps the simulation
+visually bounded without hard-clamping positions.</p>
+<h3 id="physics">Physics<a class="headerlink" href="#physics" title="Permanent link">¶</a></h3>
+<p>For each body <span class="arithmatex">\(i\)</span> at distance <span class="arithmatex">\(r_i\)</span> from the star:</p>
+<div class="arithmatex">\[V_\text{conf}(r) = \begin{cases}
+0 &amp; r \le r_\text{max} \\
+\tfrac{1}{2} k (r - r_\text{max})^2 &amp; r &gt; r_\text{max}
+\end{cases}\]</div>
+<p>The resulting force is:</p>
+<div class="arithmatex">\[\mathbf{F}_\text{conf} = -k\,(r - r_\text{max})\,\hat{\mathbf{r}}\]</div>
+<p>where <span class="arithmatex">\(r_\text{max}\)</span> = <code>NBODY_CONFINEMENT_RADIUS</code> (25 units) and <span class="arithmatex">\(k\)</span> =
+<code>NBODY_CONFINEMENT_K</code> (5.0).</p>
+<p><strong>Newton's 3<sup>rd</sup> law reaction</strong> on the central star preserves centre-of-mass:</p>
+<div class="arithmatex">\[\mathbf{F}_\text{star} = +k\,(r - r_\text{max})\,\hat{\mathbf{r}} \times \frac{m_i}{m_0}\]</div>
+<p>The potential is conservative, so the Velocity Verlet integrator remains
+symplectic inside the confinement zone.</p>
+<h3 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBODY_CONFINEMENT_RADIUS</code></td>
+<td>25.0</td>
+<td>Soft wall distance from star</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_K</code></td>
+<td>5.0</td>
+<td>Spring stiffness (<span class="arithmatex">\(k \cdot dt^2 \approx 0.0003\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="proportional-radial-damping">Proportional Radial Damping<a class="headerlink" href="#proportional-radial-damping" title="Permanent link">¶</a></h2>
+<p>The confinement potential alone causes bodies to oscillate around the
+boundary (ping-pong trajectories).  A <strong>proportional radial damping</strong> term
+removes energy only from the outward velocity component, and only in the
+confinement zone:</p>
+<div class="arithmatex">\[\gamma_\text{eff} = \gamma \cdot \frac{r - r_\text{max}}{r_\text{max}}\]</div>
+<p>where <span class="arithmatex">\(\gamma\)</span> = <code>NBODY_CONFINEMENT_DAMPING</code> (20.0).</p>
+<ul>
+<li><strong>Radial only</strong>: only the <span class="arithmatex">\((\mathbf{v} \cdot \hat{\mathbf{r}})\)</span> component
+  is damped; tangential speed is preserved → angular momentum is conserved.</li>
+<li><strong>Outward only</strong>: damping is applied when <span class="arithmatex">\(v_\text{radial} &gt; 0\)</span> (body
+  moving away from star).</li>
+<li><strong>Proportional to overshoot</strong>: near the boundary (<span class="arithmatex">\(r \approx r_\text{max}\)</span>),
+  damping is negligible; far beyond, it is strong.  This lets the system
+  reach an equilibrium where orbits no longer cross the boundary and energy
+  drain stops (drift plateaus).</li>
+<li><strong>Momentum conservation</strong>: the impulse is transferred to the central star
+  (<span class="arithmatex">\(\Delta v_\text{star} = -(m_i/m_0) \cdot \Delta v_i\)</span>).</li>
+</ul>
+<h3 id="stability-indicator">Stability Indicator<a class="headerlink" href="#stability-indicator" title="Permanent link">¶</a></h3>
+<p>The HUD stability indicator uses <strong>signed</strong> energy drift to distinguish
+damping from divergence:</p>
+<table>
+<thead>
+<tr>
+<th>Colour</th>
+<th>State</th>
+<th>Condition</th>
+<th>Display</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Green</td>
+<td>Stable</td>
+<td>$</td>
+<td>\text{drift}</td>
+</tr>
+<tr>
+<td>Yellow</td>
+<td>Damping</td>
+<td><span class="arithmatex">\(\text{drift}_\text{signed} &lt; 0\)</span></td>
+<td><code>E: XX%</code> (retained)</td>
+</tr>
+<tr>
+<td>Red</td>
+<td>Divergent</td>
+<td><span class="arithmatex">\(\text{drift}_\text{signed} &gt; 0\)</span></td>
+<td><code>drift: X.XX%</code></td>
+</tr>
+</tbody>
+</table>
+<p>In <strong>Damping</strong> mode, the display shows <code>E: XX%</code> = <span class="arithmatex">\(100 \times (1 - |\text{drift}|)\)</span>,
+representing how much of the initial energy the system still has.  This avoids
+the confusing "drift: 349%" that would occur with the absolute metric.</p>
+<hr>
+<h2 id="shockwave-visual-effects">Shockwave Visual Effects<a class="headerlink" href="#shockwave-visual-effects" title="Permanent link">¶</a></h2>
+<p>When a body impacts the confinement boundary, a <strong>shockwave ring</strong> expands
+from the impact point, providing visual feedback for the otherwise invisible
+confinement zone.</p>
+<h3 id="impact-detection">Impact Detection<a class="headerlink" href="#impact-detection" title="Permanent link">¶</a></h3>
+<p>Each integration sub-step checks whether a body's distance from the star
+exceeds <code>NBODY_CONFINEMENT_RADIUS</code> with a positive outward radial velocity.
+Impacts are recorded per-body in <code>NBodyImpact</code> slots — only the <strong>peak
+velocity</strong> across all sub-steps of a frame is kept, naturally deduplicating
+multiple hits from the fixed-timestep accumulator (~12 sub-steps/frame).</p>
+<h3 id="rendering">Rendering<a class="headerlink" href="#rendering" title="Permanent link">¶</a></h3>
+<p>Shockwaves are rendered as <strong>additive-blended screen-aligned quads</strong> (billboard)
+with a procedural expanding ring pattern in the fragment shader:</p>
+<ul>
+<li><strong>Ring profile</strong>: <code>smoothstep</code> inner/outer edges around a time-dependent
+  centre radius</li>
+<li><strong>HDR emissive</strong>: output colour is scaled by 4× for bloom interaction</li>
+<li><strong>Fade</strong>: intensity = <span class="arithmatex">\((1 - \text{progress}^2)\)</span> for quick ramp-up, slow fade</li>
+<li><strong>Billboard</strong>: quad faces camera using right/up vectors extracted from the
+  view matrix</li>
+</ul>
+<p>Up to <code>SHOCKWAVE_MAX_ACTIVE</code> (8) simultaneous shockwaves; oldest is evicted
+when full.  Duration is <code>SHOCKWAVE_DURATION</code> (1.2 s), max ring radius is
+<code>SHOCKWAVE_MAX_RADIUS</code> (6.0 world units).</p>
+<h3 id="pipeline-position">Pipeline Position<a class="headerlink" href="#pipeline-position" title="Permanent link">¶</a></h3>
+<p>Shockwaves are drawn in the <strong>HDR FBO</strong>, after N-body trails and before
+post-processing.  This means bloom naturally amplifies the ring glow:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>scene_render() → Skybox → Spheres → NBody Trails → Shockwave VFX → Probes
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                                                      ↓
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                                              postprocess_end() → Bloom → ...
+</span></code></pre></div>
+<hr>
+<h2 id="test-validation">Test Validation<a class="headerlink" href="#test-validation" title="Permanent link">¶</a></h2>
+<p>The automated test suite (<code>tests/test_nbody_stability.c</code>) verifies physics
+invariants over long simulation runs:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>What it checks</th>
+<th>Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_nbody_single_step_sanity</code></td>
+<td>One step does not explode</td>
+<td>Positions finite</td>
+</tr>
+<tr>
+<td><code>test_nbody_energy_conservation</code></td>
+<td>Energy bounded after init boost</td>
+<td><span class="arithmatex">\(\Delta E / E_0 &lt; 65\%\)</span></td>
+</tr>
+<tr>
+<td><code>test_nbody_paused_no_change</code></td>
+<td>Paused sim is perfectly frozen</td>
+<td>Bit-exact</td>
+</tr>
+<tr>
+<td><code>test_nbody_survives_dt_spikes</code></td>
+<td>Spike frames do not destabilise</td>
+<td>All bodies <span class="arithmatex">\(&lt; 50\)</span> units</td>
+</tr>
+<tr>
+<td><code>test_nbody_long_run_stability</code></td>
+<td>1 200 s simulation invariants</td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>test_nbody_kinetic_energy_positive</code></td>
+<td><span class="arithmatex">\(E_k &gt; 0\)</span> after init</td>
+<td>Positive</td>
+</tr>
+<tr>
+<td><code>test_nbody_energy_drift_api</code></td>
+<td>Drift API: <span class="arithmatex">\(E_0\)</span> stored, drift <span class="arithmatex">\(\approx 0\)</span> at <span class="arithmatex">\(t=0\)</span></td>
+<td>drift <span class="arithmatex">\(&lt; 5\%\)</span> after 10 s</td>
+</tr>
+<tr>
+<td><code>test_nbody_zero_gravity</code></td>
+<td><span class="arithmatex">\(G = 0\)</span> means no acceleration</td>
+<td>Velocity unchanged after 120 steps</td>
+</tr>
+</tbody>
+</table>
+<h3 id="long-run-stability-results-1-200-s-at-120-hz-144-000-steps">Long-Run Stability Results (1 200 s at 120 Hz = 144 000 steps)<a class="headerlink" href="#long-run-stability-results-1-200-s-at-120-hz-144-000-steps" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Measured</th>
+<th>Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Energy drift <span class="arithmatex">\(\|\Delta E / E_0\|\)</span></td>
+<td>0.0017 %</td>
+<td>&lt; 5 %</td>
+</tr>
+<tr>
+<td>Centre-of-mass drift</td>
+<td>0.001</td>
+<td>&lt; 0.5</td>
+</tr>
+<tr>
+<td>Maximum body distance</td>
+<td>19.6</td>
+<td>&lt; 50</td>
+</tr>
+<tr>
+<td>Body count</td>
+<td>7 / 7</td>
+<td>unchanged</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="constants-reference">Constants Reference<a class="headerlink" href="#constants-reference" title="Permanent link">¶</a></h2>
+<p>All constants are defined in <code>include/nbody.h</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBODY_MAX_BODIES</code></td>
+<td>16</td>
+<td>Maximum body count</td>
+</tr>
+<tr>
+<td><code>NBODY_DEFAULT_G</code></td>
+<td>1.0</td>
+<td>Gravitational constant</td>
+</tr>
+<tr>
+<td><code>NBODY_SOFTENING_SQ</code></td>
+<td>0.25</td>
+<td>Minimum <span class="arithmatex">\(\varepsilon^2\)</span></td>
+</tr>
+<tr>
+<td><code>NBODY_SOFTENING_FACTOR</code></td>
+<td>2.0</td>
+<td>Per-pair softening multiplier</td>
+</tr>
+<tr>
+<td><code>NBODY_FIXED_DT</code></td>
+<td>1/120 s</td>
+<td>Fixed integration timestep</td>
+</tr>
+<tr>
+<td><code>NBODY_MAX_ACCUMULATOR</code></td>
+<td>1/10 s</td>
+<td>Max accumulated physics time (supports ~10 FPS)</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_RADIUS</code></td>
+<td>25.0</td>
+<td>Soft wall distance from central star</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_K</code></td>
+<td>5.0</td>
+<td>Confinement spring stiffness</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_DAMPING</code></td>
+<td>20.0</td>
+<td>Radial damping base coefficient</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MAX_ACTIVE</code></td>
+<td>8</td>
+<td>Max simultaneous shockwaves</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_DURATION</code></td>
+<td>1.2 s</td>
+<td>Shockwave ring lifetime</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MAX_RADIUS</code></td>
+<td>6.0</td>
+<td>Max ring expansion (world units)</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MIN_VELOCITY</code></td>
+<td>0.2</td>
+<td>Min velocity to trigger shockwave</td>
+</tr>
+<tr>
+<td><code>TRAIL_DURATION_DEFAULT</code></td>
+<td>4.0 s</td>
+<td>Trail lifetime in seconds (adjustable 0.5–30 s)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="runtime-controls">Runtime Controls<a class="headerlink" href="#runtime-controls" title="Permanent link">¶</a></h2>
+<h3 id="simulation-speed-time_scale">Simulation Speed (<code>time_scale</code>)<a class="headerlink" href="#simulation-speed-time_scale" title="Permanent link">¶</a></h3>
+<p>The simulation speed can be adjusted at runtime via keyboard:</p>
+<table>
+<thead>
+<tr>
+<th>Key (US layout)</th>
+<th>Key (AZERTY)</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code></td>
+<td><code>:</code></td>
+<td>Double speed (max 64×)</td>
+</tr>
+<tr>
+<td><code>,</code></td>
+<td><code>;</code></td>
+<td>Halve speed (min ⅛×)</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>time_scale</code> multiplier follows powers of 2 to ensure that <code>1.0×</code> is
+always reachable:</p>
+<div class="arithmatex">\[\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 16.0,\; 32.0,\; 64.0\}\]</div>
+<p>An overlay notification displays the current speed on each change.</p>
+<h3 id="time-reversal">Time Reversal<a class="headerlink" href="#time-reversal" title="Permanent link">¶</a></h3>
+<p>The time direction can be <strong>reversed</strong> at runtime:</p>
+<table>
+<thead>
+<tr>
+<th>Key (US layout)</th>
+<th>Key (AZERTY)</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl+Shift+G</code></td>
+<td><code>Ctrl+Shift+G</code></td>
+<td>Toggle time direction (forward/reverse)</td>
+</tr>
+</tbody>
+</table>
+<p>This exploits a fundamental property of Newtonian gravity: the equations of
+motion are <strong>invariant under <span class="arithmatex">\(t \to -t\)</span></strong>.  Reversing time is equivalent to
+negating all velocities — the system retraces its trajectory backwards.</p>
+<p>Because Velocity Verlet is both <strong>symplectic</strong> and <strong>time-reversible</strong>
+(<span class="arithmatex">\(\Phi_h^{-1} = \Phi_{-h}\)</span>), the reversed simulation follows the same
+orbit with bounded energy error.  After <span class="arithmatex">\(N\)</span> forward steps and <span class="arithmatex">\(N\)</span> backward
+steps, the system returns to the initial state (modulo floating-point
+rounding: <span class="arithmatex">\(\sim N \cdot \epsilon_{\text{machine}}\)</span> position error).</p>
+<p>When reversed, the HUD shows a ⏪ indicator next to the energy readout.
+Speed controls (<code>,</code> / <code>.</code>) adjust the magnitude without affecting the
+time direction.</p>
+<h4 id="progressive-transition">Progressive Transition<a class="headerlink" href="#progressive-transition" title="Permanent link">¶</a></h4>
+<p>The reversal is not instantaneous: <code>time_scale</code> ramps linearly toward
+its target at a rate of <strong>3.0 units/s</strong> (<code>NBODY_TIME_SCALE_RATE</code>).  At
+<span class="arithmatex">\(1\times\)</span> speed the full forward→reverse transition takes ~0.7 s:</p>
+<div class="arithmatex">\[+1.0 \xrightarrow{\text{decelerate}} 0.0 \xrightarrow{\text{accelerate}} -1.0\]</div>
+<p>This produces a natural “VHS rewind” feel where bodies slow down, pause
+briefly, then accelerate in reverse.  Higher speed multipliers take
+proportionally longer to reverse (e.g. <span class="arithmatex">\(4\times\)</span> → ~2.7 s).</p>
+<h3 id="gravity-control-gravity">Gravity Control (<code>gravity</code>)<a class="headerlink" href="#gravity-control-gravity" title="Permanent link">¶</a></h3>
+<p>The gravitational constant <span class="arithmatex">\(G\)</span> can be adjusted at runtime with Shift modifier:</p>
+<table>
+<thead>
+<tr>
+<th>Key (US layout)</th>
+<th>Key (AZERTY)</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Shift+.</code></td>
+<td><code>Shift+:</code></td>
+<td>Double G (max 128)</td>
+</tr>
+<tr>
+<td><code>Shift+,</code></td>
+<td><code>Shift+;</code></td>
+<td>Halve G (min 0.125, then OFF)</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(G\)</span> follows powers of 2 from the current value:</p>
+<div class="arithmatex">\[G \in \{0,\; 0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; \ldots,\; 128.0\}\]</div>
+<ul>
+<li><strong><span class="arithmatex">\(G = 0\)</span></strong> disables gravity entirely: bodies follow straight-line ballistic
+  trajectories at their current velocity.</li>
+<li>When <span class="arithmatex">\(G\)</span> changes, the reference energy <span class="arithmatex">\(E_0\)</span> is <strong>recalculated</strong> so the
+  stability indicator reflects only numerical integration error, not the
+  intentional physics parameter change.</li>
+</ul>
+<h3 id="hud-overlay">HUD Overlay<a class="headerlink" href="#hud-overlay" title="Permanent link">¶</a></h3>
+<p>When the N-body mode is active and text overlay is enabled (<code>F1</code>), two lines
+are displayed:</p>
+<ol>
+<li><strong>Energy &amp; Gravity:</strong> <code>Ek: 77.1 J | G: 2.000</code> — kinetic energy
+   <span class="arithmatex">\(E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2\)</span> and current <span class="arithmatex">\(G\)</span> value.</li>
+<li><strong>Stability:</strong> colour-coded indicator with context-dependent metric:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Colour</th>
+<th>State</th>
+<th>Metric</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Green</td>
+<td>Stable</td>
+<td>drift%</td>
+<td><code>Stability: Stable (drift: 0.12%)</code></td>
+</tr>
+<tr>
+<td>Yellow</td>
+<td>Damping</td>
+<td>retained energy</td>
+<td><code>Stability: Damping (E: 78%)</code></td>
+</tr>
+<tr>
+<td>Red</td>
+<td>Divergent</td>
+<td>drift%</td>
+<td><code>Stability: Divergent (drift: 6.42%)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Drift is <span class="arithmatex">\(|E(t) - E_0| / |E_0|\)</span>.  In Damping mode, retained energy is
+<span class="arithmatex">\(100 \times (1 - \text{drift})\)</span>, showing how much energy the system still has
+(avoids confusing &gt;100% drift values from long damping runs).</p>
+<h3 id="trail-length-stability-time-based-sampling">Trail Length Stability — Time-Based Sampling<a class="headerlink" href="#trail-length-stability-time-based-sampling" title="Permanent link">¶</a></h3>
+<p>Trail length is controlled by a <strong>duration parameter</strong> (<code>trail_duration</code>,
+default 4.0 s, adjustable 0.5–30 s) rather than a fixed point count.  Each
+recorded sample carries a <strong>timestamp</strong> from a monotonic simulation clock:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sim_time += wall_dt × |time_scale|
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sample_timer += wall_dt × |time_scale|
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>while sample_timer &gt;= TRAIL_SAMPLE_INTERVAL:
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    for each body:
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        ring_push(position, sim_time)   ← timestamped
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    sample_timer -= TRAIL_SAMPLE_INTERVAL
+</span></code></pre></div>
+<p>The ribbon builder then computes per-point age:</p>
+<div class="arithmatex">\[\text{age} = \frac{\text{sim\_time} - \text{timestamp}}{\text{trail\_duration}}\]</div>
+<p>Points with <span class="arithmatex">\(\text{age} &gt; 1\)</span> are discarded.  Width and intensity taper use
+this age factor instead of the point's ring-buffer index.</p>
+<p><strong>Why this matters at low FPS:</strong>  At 15 FPS only ~15 samples/sec are recorded
+(fewer unique positions), but each carries the correct timestamp.  The ribbon
+still spans exactly <code>trail_duration</code> seconds of trajectory, so trail length
+is identical at 15 and 60 FPS.  At high <code>time_scale</code> (e.g. 8×), 8 samples
+are emitted per frame, preserving spatial fidelity.</p>
+<hr>
+<h2 id="profiling-zones">Profiling Zones<a class="headerlink" href="#profiling-zones" title="Permanent link">¶</a></h2>
+<p>The N-body pipeline is instrumented with fine-grained CPU profiling zones
+(visible in Tracy or any <code>PROFILE_ZONE</code>-compatible profiler).</p>
+<h3 id="cpu-zones-profile_zone-main-thread">CPU Zones (<code>PROFILE_ZONE</code> — Main Thread)<a class="headerlink" href="#cpu-zones-profile_zone-main-thread" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Location</th>
+<th>What it measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBody Physics</code></td>
+<td><code>app.c</code></td>
+<td>Top-level wrapper (parent of all below)</td>
+</tr>
+<tr>
+<td><code>NBody Verlet</code></td>
+<td><code>scene.c</code></td>
+<td><code>nbody_step()</code> — O(N²) gravity + Velocity Verlet</td>
+</tr>
+<tr>
+<td><code>NBody Trail Sample</code></td>
+<td><code>scene.c</code></td>
+<td><code>trail_renderer_record()</code> — ring buffer writes</td>
+</tr>
+<tr>
+<td><code>NBody Instance Build</code></td>
+<td><code>scene.c</code></td>
+<td><code>nbody_write_instances()</code> — model matrix generation</td>
+</tr>
+<tr>
+<td><code>NBody VBO Upload</code></td>
+<td><code>scene.c</code></td>
+<td><code>instanced_group_update()</code> → <code>glBufferSubData</code></td>
+</tr>
+<tr>
+<td><code>Trail Ribbon Build</code></td>
+<td><code>trail_renderer.c</code></td>
+<td><code>build_ribbon()</code> × N bodies — CPU geometry staging</td>
+</tr>
+<tr>
+<td><code>Trail VBO Upload</code></td>
+<td><code>trail_renderer.c</code></td>
+<td><code>glBufferSubData</code> — GPU buffer upload</td>
+</tr>
+<tr>
+<td><code>Trail Draw Calls</code></td>
+<td><code>trail_renderer.c</code></td>
+<td><code>glMultiDrawArrays</code> — batched N strips in 1 call</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gpu-zones-gpu_stage_profiler-opengl-context">GPU Zones (<code>GPU_STAGE_PROFILER</code> — OpenGL Context)<a class="headerlink" href="#gpu-zones-gpu_stage_profiler-opengl-context" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Location</th>
+<th>What it measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Instanced Render</code></td>
+<td><code>scene.c</code></td>
+<td>Sphere draw call (shared with material grid)</td>
+</tr>
+<tr>
+<td><code>NBody Trails</code></td>
+<td><code>scene.c</code></td>
+<td>Full trail rendering pass</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="resource-lifecycle">Resource Lifecycle<a class="headerlink" href="#resource-lifecycle" title="Permanent link">¶</a></h2>
+<p>When N-body mode is toggled <strong>OFF</strong>, the engine restores the original material
+grid by calling <code>scene_init_instancing()</code> a second time.  This re-init path must
+first release every resource allocated by the previous init call to avoid GPU
+buffer and CPU memory leaks:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cm">/* Cleanup before re-init (scene.c — N-body OFF branch) */</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">trail_renderer_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">trail_renderer</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#ifdef USE_TRANSPARENT_BILLBOARDS</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">platform_aligned_free</span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">);</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">billboard_sorter_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_sorter</span><span class="p">);</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="cp">#endif</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">instanced_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">instanced_group</span><span class="p">);</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">billboard_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_group</span><span class="p">);</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">scene_init_instancing</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The cleanup mirrors what <code>scene_cleanup()</code> does at application exit.  Without it,
+each ON → OFF toggle leaked ~27 KB (4 blocks: instance VBO, billboard VBO,
+aligned instance array, sphere sorter).</p>
+<p>Validated with <code>just test-integration-valgrind-full</code> — <strong>0 bytes definitely lost</strong>.</p>
+<hr>
+<h2 id="code-map">Code Map<a class="headerlink" href="#code-map" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>include/nbody.h</code></td>
+<td>Public API, constants, data structures</td>
+</tr>
+<tr>
+<td><code>src/nbody.c</code></td>
+<td>Physics implementation (Verlet, softening, preset)</td>
+</tr>
+<tr>
+<td><code>tests/test_nbody_stability.c</code></td>
+<td>Stability test suite (8 tests)</td>
+</tr>
+<tr>
+<td><code>include/trail_renderer.h</code></td>
+<td>Trail rendering (visual ribbons behind bodies)</td>
+</tr>
+<tr>
+<td><code>src/trail_renderer.c</code></td>
+<td>Billboard ribbon trail implementation</td>
+</tr>
+<tr>
+<td><code>src/app_input.c</code></td>
+<td>Simulation speed (<code>,</code> / <code>.</code>) and gravity (Shift variants) keybindings</td>
+</tr>
+<tr>
+<td><code>src/app_ui.c</code></td>
+<td>N-body HUD overlay (energy, gravity, stability)</td>
+</tr>
+<tr>
+<td><code>src/app_binding.c</code></td>
+<td>F2 help overlay registration</td>
+</tr>
+<tr>
+<td><code>include/shockwave.h</code></td>
+<td>Shockwave VFX API and data structures</td>
+</tr>
+<tr>
+<td><code>src/shockwave.c</code></td>
+<td>Shockwave renderer (init, emit, update, draw)</td>
+</tr>
+<tr>
+<td><code>shaders/shockwave.vert</code></td>
+<td>Billboard vertex shader (camera-facing quad)</td>
+</tr>
+<tr>
+<td><code>shaders/shockwave.frag</code></td>
+<td>Procedural expanding ring fragment shader</td>
+</tr>
+<tr>
+<td><code>shaders/trail.vert</code></td>
+<td>Trail vertex shader</td>
+</tr>
+<tr>
+<td><code>shaders/trail.frag</code></td>
+<td>Trail fragment shader</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 25, 2026 12:54:33 UTC">April 25, 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
+      
+        <script src="../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../assets/javascripts/mermaid_config.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
