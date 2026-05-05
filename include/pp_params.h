@@ -174,4 +174,43 @@ typedef struct {
 	float color[3];       /**< Fog color (linear RGB). */
 } FogParams;
 
+/**
+ * @enum PostProcessEffect
+ * @brief Bitmask flags for enabling/disabling individual effects.
+ */
+typedef enum {
+	POSTFX_VIGNETTE = (1U << 0U),   /**< Vignette overlay. */
+	POSTFX_GRAIN = (1U << 1U),      /**< Film grain noise. */
+	POSTFX_EXPOSURE = (1U << 2U),   /**< Manual exposure compensation. */
+	POSTFX_CHROM_ABBR = (1U << 3U), /**< Chromatic aberration. */
+	POSTFX_BLOOM = (1U << 4U),      /**< HDR Bloom. */
+	POSTFX_COLOR_GRADING =
+	    (1U << 5U),          /**< Saturation/Contrast/Gamma adjustment. */
+	POSTFX_DOF = (1U << 6U), /**< Depth of Field. */
+	POSTFX_DOF_DEBUG = (1U << 7U), /**< Focus visualization. */
+	POSTFX_AUTO_EXPOSURE =
+	    (1U << 8U), /**< Automatic exposure adaptation. */
+	POSTFX_EXPOSURE_DEBUG =
+	    (1U << 9U), /**< Exposure histogram visualization. */
+	POSTFX_MOTION_BLUR = (1U << 10U), /**< Velocity-based motion blur. */
+	POSTFX_MOTION_BLUR_DEBUG =
+	    (1U << 11U),                 /**< Velocity buffer visualization. */
+	POSTFX_FXAA = (1U << 12U),       /**< Fast Approximate Anti-Aliasing. */
+	POSTFX_FXAA_DEBUG = (1U << 13U), /**< Edge detection visualization. */
+	POSTFX_BANDING = (1U << 14U),    /**< Color banding/quantization. */
+	POSTFX_VECTOR_FIELD_DEBUG =
+	    (1U << 15U), /**< Vector field velocity visualization. */
+	POSTFX_STENCIL_DEBUG = (1U << 16U), /**< Stencil mask visualization. */
+	POSTFX_BLOOM_DEBUG = (1U << 17U),   /**< Bloom debug view. */
+	POSTFX_FOG = (1U << 18U),           /**< Atmospheric depth fog. */
+	POSTFX_FOG_DEBUG = (1U << 19U),     /**< Fog component visualization. */
+	POSTFX_LUT3D = (1U << 20U),         /**< 3D LUT Gamut Mapping. */
+	POSTFX_LUT_VIZ = (1U << 21U), /**< 3D LUT Lattice visualization. */
+} PostProcessEffect;
+
+/** @brief Default mask of active effects. */
+#define DEFAULT_ACTIVE_EFFECTS                                                \
+	((unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING | \
+	 (unsigned int)POSTFX_FXAA)
+
 #endif /* PP_PARAMS_H */

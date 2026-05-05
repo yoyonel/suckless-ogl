@@ -8,7 +8,7 @@
 #include "gl_debug.h"
 #include "gpu_profiler.h"
 #include "gpu_profiler_ui.h"
-#include "postprocess.h"
+#include "postprocess_internal.h"
 #include "profiler.h"
 #include "scene.h"
 #include <GLFW/glfw3.h>

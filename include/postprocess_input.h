@@ -3,8 +3,9 @@
 
 #include "action_notifier.h"
 #include "effect_benchmark.h"
-#include "postprocess.h"
 #include <GLFW/glfw3.h>
+
+typedef struct PostProcess PostProcess;
 
 /**
  * @struct PostProcessInputContext

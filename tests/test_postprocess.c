@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
 #include "gpu_profiler.h"  // INDISPENSABLE: Pour la définition de GPUProfiler
-#include "postprocess.h"
+#include "postprocess_internal.h"
 #include "postprocess_presets.h"
 #include "shader.h"
 #include "unity.h"

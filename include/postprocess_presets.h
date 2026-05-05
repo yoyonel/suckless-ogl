@@ -8,7 +8,7 @@
 #ifndef POSTPROCESS_PRESETS_H
 #define POSTPROCESS_PRESETS_H
 
-#include "postprocess.h"
+#include "postprocess_internal.h"
 
 /** @brief Default balanced settings. */
 extern const PostProcessPreset PRESET_DEFAULT;

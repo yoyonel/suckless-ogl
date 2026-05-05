@@ -1,6 +1,6 @@
 #include "gl_common.h"
 #include "log.h"
-#include "postprocess.h"
+#include "postprocess_internal.h"
 
 static void postprocess_on_state_change(PostProcess* post_processing)
 {

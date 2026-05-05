@@ -5,6 +5,8 @@ HeaderFilterRegex: '^(src/|include/).*'
 WarningsAsErrors: '*'
 
 CheckOptions:
+  - key:             misc-include-cleaner.IgnoreHeaders
+    value:           'postprocess_internal\.h'
   - key:             misc-include-cleaner.MissingIncludes
     value:           'false'
   - key:             readability‑braces‑around‑statements.ShortStatementLines

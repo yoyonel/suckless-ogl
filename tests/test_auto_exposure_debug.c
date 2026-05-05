@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
 #include "gpu_profiler.h"
-#include "postprocess.h"
+#include "postprocess_internal.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
