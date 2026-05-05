@@ -366,6 +366,9 @@ if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
     set_target_properties(app PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")
 endif()
 
+# Force disable fast-math for nbody.c (Numerical stability is critical here)
+set_source_files_properties(src/nbody.c PROPERTIES COMPILE_FLAGS "-fno-fast-math")
+
 # Target properties and includes
 target_include_directories(app PRIVATE
     src

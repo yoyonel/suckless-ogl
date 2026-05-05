@@ -1,4 +1,3 @@
-#pragma GCC optimize("no-fast-math")
 #include "nbody.h"
 
 #include "utils.h"
@@ -316,12 +315,21 @@ static void integrate_step(NBodySim* sim, float delta_time)
 		glm_vec3_add(sim->bodies[i].velocity, avg,
 		             sim->bodies[i].velocity);
 
-		if (isnan(sim->bodies[i].velocity[0])) {
+		if (isnan(sim->bodies[i].velocity[0]) ||
+		    isnan(sim->bodies[i].velocity[1]) ||
+		    isnan(sim->bodies[i].velocity[2]) ||
+		    isnan(sim->bodies[i].position[0]) ||
+		    isnan(sim->bodies[i].position[1]) ||
+		    isnan(sim->bodies[i].position[2])) {
 			printf(
-			    "!!! Body %d velocity became NaN at step! "
-			    "v_prev=%f a_old=%f a_new=%f dt=%f\n",
+			    "!!! Body %d STATE became NaN at step! "
+			    "v=[%f, %f, %f] p=[%f, %f, %f] dt=%f\n",
 			    i, (double)sim->bodies[i].velocity[0],
-			    (double)accel_old[i][0], (double)accel_new[i][0],
+			    (double)sim->bodies[i].velocity[1],
+			    (double)sim->bodies[i].velocity[2],
+			    (double)sim->bodies[i].position[0],
+			    (double)sim->bodies[i].position[1],
+			    (double)sim->bodies[i].position[2],
 			    (double)delta_time);
 		}
 	}
