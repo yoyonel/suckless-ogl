@@ -10,6 +10,7 @@
 #include "scene_gpu_resources.h"
 #include "scene_shaders.h"
 #include "scene_simulation.h"
+#include "scene_visuals.h"
 #include "shader.h"
 #include "shockwave.h"
 #include "skybox.h"
@@ -319,7 +320,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		gl_debug_push_group("Skybox_Pass");
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
-		skybox_render(&scene->visuals.skybox, scene->shaders->skybox,
+		skybox_render(&scene->visuals->skybox, scene->shaders->skybox,
 		              scene->gpu->hdr_texture,
 		              scene->gpu->dummy_black_tex, inv_view_proj,
 		              scene->config.env_lod);
@@ -483,7 +484,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		GPU_STAGE_PROFILER(profiler, "NBody Trails",
 		                   GPU_PROFILER_NBODY_COLOR);
 		gl_debug_push_group("NBody_Trails");
-		trail_renderer_draw(&scene->visuals.trail_renderer, view, proj,
+		trail_renderer_draw(&scene->visuals->trail_renderer, view, proj,
 		                    camera_pos);
 		gl_debug_pop_group();
 
@@ -496,8 +497,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			if (scene->config.wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			}
-			shockwave_draw(&scene->visuals.shockwave_renderer, view,
-			               proj, camera_pos,
+			shockwave_draw(&scene->visuals->shockwave_renderer,
+			               view, proj, camera_pos,
 			               scene->simulation->nbody_sim.sim_time,
 			               width, height);
 			if (scene->config.wireframe) {

@@ -8,7 +8,6 @@
 #include "instanced_rendering.h"
 #include "scene_config.h"
 #include "scene_lighting.h"
-#include "scene_visuals.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING
@@ -20,6 +19,7 @@ typedef struct GPUProfiler GPUProfiler;
 typedef struct SceneSimulation SceneSimulation;
 typedef struct SceneShaders SceneShaders;
 typedef struct SceneGPUResources SceneGPUResources;
+typedef struct SceneVisuals SceneVisuals;
 
 /**
  * @struct Scene
@@ -46,9 +46,9 @@ typedef struct Scene {
 	SceneSimulation* simulation; /**< N-body simulation sub-system. */
 	SceneGPUResources* gpu;      /**< GPU resource handles. */
 	SceneShaders* shaders;       /**< Shader pointers + uniform caches. */
+	SceneVisuals* visuals; /**< Visual effects (skybox, trails, VFX). */
 
 	/* --- Domain Sub-Structs (by-value) --- */
-	SceneVisuals visuals;   /**< Visual effects sub-system. */
 	SceneLighting lighting; /**< IBL, probes, and materials. */
 	SceneConfig config;     /**< Render configuration. */
 

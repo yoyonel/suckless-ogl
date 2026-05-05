@@ -11,6 +11,7 @@
 #include "postprocess_internal.h"
 #include "profiler.h"
 #include "scene.h"
+#include "scene_visuals.h"
 #include <GLFW/glfw3.h>
 
 void renderer_draw_frame(const RenderContext* ctx)
@@ -53,7 +54,7 @@ void renderer_draw_frame(const RenderContext* ctx)
 
 	/* Provide scene FBO color handle so the shockwave grab pass can use
 	 * glCopyImageSubData (texture-to-texture DMA, no framebuffer read). */
-	ctx->scene->visuals.shockwave_renderer.scene_color_tex =
+	ctx->scene->visuals->shockwave_renderer.scene_color_tex =
 	    ctx->postprocess->gpu.scene_color_tex;
 
 	{

@@ -12,6 +12,7 @@
 #include "scene_internal.h"
 #include "scene_shaders.h"
 #include "scene_simulation.h"
+#include "scene_visuals.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>
@@ -416,7 +417,9 @@ int scene_init(Scene* scene)
 	scene->gpu = calloc(1, sizeof(SceneGPUResources));
 	scene->shaders = calloc(1, sizeof(SceneShaders));
 	scene->simulation = calloc(1, sizeof(SceneSimulation));
-	if (!scene->gpu || !scene->shaders || !scene->simulation) {
+	scene->visuals = calloc(1, sizeof(SceneVisuals));
+	if (!scene->gpu || !scene->shaders || !scene->simulation ||
+	    !scene->visuals) {
 		LOG_ERROR("Scene", "Failed to allocate scene sub-structs");
 		return 0;
 	}
@@ -436,7 +439,7 @@ int scene_init(Scene* scene)
 	render_utils_create_quad_vbo(&scene->gpu->quad_vbo);
 	render_utils_create_wire_cube_vbo(&scene->gpu->wire_cube_vbo);
 	render_utils_create_wire_quad_vbo(&scene->gpu->wire_quad_vbo);
-	skybox_init(&scene->visuals.skybox, scene->shaders->skybox);
+	skybox_init(&scene->visuals->skybox, scene->shaders->skybox);
 	icosphere_init(&scene->geometry);
 
 	glGenVertexArrays(1, &scene->gpu->icosphere_vao);

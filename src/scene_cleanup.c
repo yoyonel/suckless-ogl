@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "scene_gpu_resources.h"
 #include "scene_shaders.h"
+#include "scene_visuals.h"
 #include "shader.h"
 #include "skybox.h"
 #include <stdlib.h>
@@ -83,7 +84,7 @@ void scene_cleanup(Scene* scene)
 	}
 
 	icosphere_free(&scene->geometry);
-	skybox_cleanup(&scene->visuals.skybox);
+	skybox_cleanup(&scene->visuals->skybox);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->billboard_instances) {
 		platform_aligned_free(scene->billboard_instances);
@@ -93,8 +94,8 @@ void scene_cleanup(Scene* scene)
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
-	trail_renderer_cleanup(&scene->visuals.trail_renderer);
-	shockwave_renderer_cleanup(&scene->visuals.shockwave_renderer);
+	trail_renderer_cleanup(&scene->visuals->trail_renderer);
+	shockwave_renderer_cleanup(&scene->visuals->shockwave_renderer);
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&scene->ssbo_group);
 #endif
@@ -127,4 +128,6 @@ void scene_cleanup(Scene* scene)
 	scene->shaders = NULL;
 	free(scene->simulation);
 	scene->simulation = NULL;
+	free(scene->visuals);
+	scene->visuals = NULL;
 }
