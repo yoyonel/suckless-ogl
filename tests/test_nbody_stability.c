@@ -75,12 +75,12 @@ void tearDown(void)
  * Helpers
  * ---------------------------------------------------------------------------*/
 
-static void compute_center_of_mass(const NBodySim* sim, float out[3])
+static void compute_center_of_mass(const NBodySim* sim, double out[3])
 {
-	out[0] = 0.0F;
-	out[1] = 0.0F;
-	out[2] = 0.0F;
-	float total_mass = 0.0F;
+	out[0] = 0.0;
+	out[1] = 0.0;
+	out[2] = 0.0;
+	double total_mass = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int k = 0; k < 3; k++) {
 			out[k] +=
@@ -93,28 +93,28 @@ static void compute_center_of_mass(const NBodySim* sim, float out[3])
 	}
 }
 
-static float vec3_length(const float v[3])
+static double vec3_length(const double v[3])
 {
-	return sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+	return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
 static float max_body_distance(const NBodySim* sim)
 {
-	float max_dist = 0.0F;
+	double max_dist = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		float dist = vec3_length(sim->bodies[i].position);
+		double dist = vec3_length(sim->bodies[i].position);
 		if (dist > max_dist) {
 			max_dist = dist;
 		}
 	}
-	return max_dist;
+	return (float)max_dist;
 }
 
 /** Distance of each satellite (body 1..N) from the central star (body 0). */
-static void distances_from_star(const NBodySim* sim, float* out)
+static void distances_from_star(const NBodySim* sim, double* out)
 {
 	for (int i = 1; i < sim->body_count; i++) {
-		float diff[3] = {
+		double diff[3] = {
 		    sim->bodies[i].position[0] - sim->bodies[0].position[0],
 		    sim->bodies[i].position[1] - sim->bodies[0].position[1],
 		    sim->bodies[i].position[2] - sim->bodies[0].position[2]};
@@ -137,15 +137,15 @@ void test_nbody_long_run_stability(void)
 	const int initial_count = sim.body_count;
 	const float initial_energy = nbody_total_energy(&sim);
 
-	float com_initial[3];
+	double com_initial[3];
 	compute_center_of_mass(&sim, com_initial);
 
 	/* Record initial distances from star for each satellite. */
-	float dist_initial[NBODY_MAX_BODIES];
+	double dist_initial[NBODY_MAX_BODIES];
 	distances_from_star(&sim, dist_initial);
 
 	/* Track peak distance per body across the entire run. */
-	float dist_peak[NBODY_MAX_BODIES];
+	double dist_peak[NBODY_MAX_BODIES];
 	for (int i = 0; i < initial_count - 1; i++) {
 		dist_peak[i] = dist_initial[i];
 	}
@@ -163,7 +163,7 @@ void test_nbody_long_run_stability(void)
 		sim_time += STEP_DT;
 
 		/* Update peak distances from star. */
-		float dist_cur[NBODY_MAX_BODIES];
+		double dist_cur[NBODY_MAX_BODIES];
 		distances_from_star(&sim, dist_cur);
 		for (int i = 0; i < initial_count - 1; i++) {
 			if (dist_cur[i] > dist_peak[i]) {
@@ -175,9 +175,9 @@ void test_nbody_long_run_stability(void)
 			float energy = nbody_total_energy(&sim);
 			float drift = fabsf(energy - initial_energy) /
 			              (fabsf(initial_energy) + 1e-10F);
-			float com[3];
+			double com[3];
 			compute_center_of_mass(&sim, com);
-			float com_dist = vec3_length(com);
+			double com_dist = vec3_length(com);
 
 			printf(
 			    "  [%6.0fs] E=%.4f (drift=%.4f%%) "
@@ -198,17 +198,17 @@ void test_nbody_long_run_stability(void)
 	float energy_drift = fabsf(final_energy - initial_energy) /
 	                     (fabsf(initial_energy) + 1e-10F);
 
-	float com_final[3];
+	double com_final[3];
 	compute_center_of_mass(&sim, com_final);
-	float com_shift[3] = {com_final[0] - com_initial[0],
-	                      com_final[1] - com_initial[1],
-	                      com_final[2] - com_initial[2]};
-	float com_drift = vec3_length(com_shift);
+	double com_shift[3] = {com_final[0] - com_initial[0],
+	                       com_final[1] - com_initial[1],
+	                       com_final[2] - com_initial[2]};
+	double com_drift = vec3_length(com_shift);
 
 	float farthest = max_body_distance(&sim);
 
 	/* Per-body distances from star at the end. */
-	float dist_final[NBODY_MAX_BODIES];
+	double dist_final[NBODY_MAX_BODIES];
 	distances_from_star(&sim, dist_final);
 
 	printf(
@@ -326,18 +326,18 @@ void test_nbody_paused_no_change(void)
 	NBodySim sim;
 	nbody_init_preset(&sim);
 
-	float pos_before[3] = {sim.bodies[1].position[0],
-	                       sim.bodies[1].position[1],
-	                       sim.bodies[1].position[2]};
+	double pos_before[3] = {sim.bodies[1].position[0],
+	                        sim.bodies[1].position[1],
+	                        sim.bodies[1].position[2]};
 
 	sim.paused = true;
 	for (int i = 0; i < PAUSE_TEST_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
 	}
 
-	TEST_ASSERT_EQUAL_FLOAT(pos_before[0], sim.bodies[1].position[0]);
-	TEST_ASSERT_EQUAL_FLOAT(pos_before[1], sim.bodies[1].position[1]);
-	TEST_ASSERT_EQUAL_FLOAT(pos_before[2], sim.bodies[1].position[2]);
+	TEST_ASSERT_EQUAL_DOUBLE(pos_before[0], sim.bodies[1].position[0]);
+	TEST_ASSERT_EQUAL_DOUBLE(pos_before[1], sim.bodies[1].position[1]);
+	TEST_ASSERT_EQUAL_DOUBLE(pos_before[2], sim.bodies[1].position[2]);
 }
 
 /**
@@ -359,7 +359,7 @@ void test_nbody_survives_dt_spikes(void)
 		nbody_step(&sim, STEP_DT);
 	}
 
-	float dist_star[NBODY_MAX_BODIES];
+	double dist_star[NBODY_MAX_BODIES];
 	distances_from_star(&sim, dist_star);
 
 	printf(
@@ -430,9 +430,9 @@ void test_nbody_zero_gravity(void)
 	sim.gravity = 0.0F;
 
 	/* Record velocity of body 1 */
-	float vel_before[3] = {sim.bodies[1].velocity[0],
-	                       sim.bodies[1].velocity[1],
-	                       sim.bodies[1].velocity[2]};
+	double vel_before[3] = {sim.bodies[1].velocity[0],
+	                        sim.bodies[1].velocity[1],
+	                        sim.bodies[1].velocity[2]};
 
 	for (int i = 0; i < ZERO_GRAV_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
