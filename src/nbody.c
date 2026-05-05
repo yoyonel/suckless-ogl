@@ -1,3 +1,4 @@
+#pragma GCC optimize("no-fast-math")
 #include "nbody.h"
 
 #include "utils.h"
@@ -122,8 +123,13 @@ void nbody_init_preset(NBodySim* sim)
 		                sim->gravity, CENTRAL_STAR_MASS, orb->orbit_r,
 		                CENTRAL_STAR_RADIUS, orb->body_r) *
 		            orb->ecc;
-		vec3 vel = {orb->vel_dir[0] * spd, orb->vel_dir[1] * spd,
-		            orb->vel_dir[2] * spd};
+		vec3 normalized_vel_dir;
+		glm_vec3_copy((float*)orb->vel_dir, normalized_vel_dir);
+		glm_vec3_normalize(normalized_vel_dir);
+
+		vec3 vel = {normalized_vel_dir[0] * spd,
+		            normalized_vel_dir[1] * spd,
+		            normalized_vel_dir[2] * spd};
 		add_body(sim, orb->pos, vel, orb->mass, orb->body_r,
 		         orb->albedo, orb->metallic, orb->roughness);
 	}
@@ -309,6 +315,15 @@ static void integrate_step(NBodySim* sim, float delta_time)
 		glm_vec3_scale(avg, HALF * delta_time, avg);
 		glm_vec3_add(sim->bodies[i].velocity, avg,
 		             sim->bodies[i].velocity);
+
+		if (isnan(sim->bodies[i].velocity[0])) {
+			printf(
+			    "!!! Body %d velocity became NaN at step! "
+			    "v_prev=%f a_old=%f a_new=%f dt=%f\n",
+			    i, (double)sim->bodies[i].velocity[0],
+			    (double)accel_old[i][0], (double)accel_new[i][0],
+			    (double)delta_time);
+		}
 	}
 
 	/* Radial damping in the confinement zone — proportional to overshoot.
