@@ -272,7 +272,7 @@ Include dependency graph for pp_params.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="pp__params_8h__dep__incl.svg" width="100%" height="507"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="pp__params_8h__dep__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div>
@@ -365,6 +365,9 @@ Macros</h2></td></tr>
 <tr class="separator:a2730de020cb919591ad08c99d9298a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8f4b984f00cf828da892ab2aece57fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__params_8h.html#ad8f4b984f00cf828da892ab2aece57fd">DEFAULT_FILMIC_WHITE_CLIP</a>&#160;&#160;&#160;0.0F</td></tr>
 <tr class="separator:ad8f4b984f00cf828da892ab2aece57fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__params_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">DEFAULT_ACTIVE_EFFECTS</a></td></tr>
+<tr class="memdesc:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default mask of active effects.  <a href="pp__params_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">More...</a><br /></td></tr>
+<tr class="separator:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -379,11 +382,64 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a1d814419b634cf8406ae065aea9a2ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Styles of color quantization.  <a href="pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2">More...</a><br /></td></tr>
 <tr class="separator:a1d814419b634cf8406ae065aea9a2ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01df437b0efb1a48be039d241c9baf7b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> { <br />
+&#160;&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">POSTFX_VIGNETTE</a> = (1U &lt;&lt; 0U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">POSTFX_GRAIN</a> = (1U &lt;&lt; 1U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> = (1U &lt;&lt; 2U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">POSTFX_CHROM_ABBR</a> = (1U &lt;&lt; 3U)
+, <br />
+&#160;&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a> = (1U &lt;&lt; 4U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a>
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">POSTFX_DOF</a> = (1U &lt;&lt; 6U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">POSTFX_DOF_DEBUG</a> = (1U &lt;&lt; 7U)
+, <br />
+&#160;&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">POSTFX_AUTO_EXPOSURE</a>
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">POSTFX_EXPOSURE_DEBUG</a>
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">POSTFX_MOTION_BLUR</a> = (1U &lt;&lt; 10U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">POSTFX_MOTION_BLUR_DEBUG</a>
+, <br />
+&#160;&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a> = (1U &lt;&lt; 12U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a> = (1U &lt;&lt; 13U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">POSTFX_BANDING</a> = (1U &lt;&lt; 14U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122">POSTFX_VECTOR_FIELD_DEBUG</a>
+, <br />
+&#160;&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69">POSTFX_STENCIL_DEBUG</a> = (1U &lt;&lt; 16U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba0ec22d0e12d93f34e7839e9c03264f25">POSTFX_BLOOM_DEBUG</a> = (1U &lt;&lt; 17U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baf4f60aab45ed0c2134fca65191575ff3">POSTFX_FOG</a> = (1U &lt;&lt; 18U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7badc7695b4005569d6621edb888bb52d7b">POSTFX_FOG_DEBUG</a> = (1U &lt;&lt; 19U)
+, <br />
+&#160;&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7bad8b0078238cabfb8885a95c79157ed25">POSTFX_LUT3D</a> = (1U &lt;&lt; 20U)
+, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba4cd3faee9d2199483e99ee606ac02a6b">POSTFX_LUT_VIZ</a> = (1U &lt;&lt; 21U)
+<br />
+ }</td></tr>
+<tr class="memdesc:a01df437b0efb1a48be039d241c9baf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitmask flags for enabling/disabling individual effects.  <a href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">More...</a><br /></td></tr>
+<tr class="separator:a01df437b0efb1a48be039d241c9baf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Parameter structs and defaults for uber-shader post-processing effects. </p>
 <p>Contains configuration structs for effects that run inside the combined uber-shader pass (Vignette, Grain, Exposure, ChromAbbr, WhiteBalance, ColorGrading, Tonemap, FXAA, Banding, Fog). Effects with their own multi-pass pipeline (Bloom, DoF, AutoExposure, MotionBlur, LUT3D) define their params in their respective fx_*.h headers. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a1c16e8ea94b93cbf379ceca837be3d2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c16e8ea94b93cbf379ceca837be3d2d">&#9670;&nbsp;</a></span>DEFAULT_ACTIVE_EFFECTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_ACTIVE_EFFECTS</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    ((<span class="keywordtype">unsigned</span> int)<a class="code" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> | (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)<a class="code" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a> | \</div>
+<div class="line">     (<span class="keywordtype">unsigned</span> int)<a class="code" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>)</div>
+<div class="ttc" id="app__params_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition:</b> pp_params.h:187</div></div>
+<div class="ttc" id="app__params_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition:</b> pp_params.h:198</div></div>
+<div class="ttc" id="app__params_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition:</b> pp_params.h:184</div></div>
+</div><!-- fragment -->
+<p>Default mask of active effects. </p>
+
+</div>
+</div>
 <a id="a917e9af207be1811116e495774c4f546"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a917e9af207be1811116e495774c4f546">&#9670;&nbsp;</a></span>DEFAULT_BANDING_LEVELS</h2>
 
@@ -777,6 +833,68 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b"></a>BANDING_MODE_CHANNEL&#160;</td><td class="fielddoc"><p>RGB independent. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89"></a>BANDING_MODE_LUMINANCE&#160;</td><td class="fielddoc"><p>Grayscale quantization + Tint. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="a01df437b0efb1a48be039d241c9baf7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01df437b0efb1a48be039d241c9baf7b">&#9670;&nbsp;</a></span>PostProcessEffect</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Bitmask flags for enabling/disabling individual effects. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237"></a>POSTFX_VIGNETTE&#160;</td><td class="fielddoc"><p>Vignette overlay. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c"></a>POSTFX_GRAIN&#160;</td><td class="fielddoc"><p>Film grain noise. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"></a>POSTFX_EXPOSURE&#160;</td><td class="fielddoc"><p>Manual exposure compensation. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589"></a>POSTFX_CHROM_ABBR&#160;</td><td class="fielddoc"><p>Chromatic aberration. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"></a>POSTFX_BLOOM&#160;</td><td class="fielddoc"><p>HDR Bloom. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"></a>POSTFX_COLOR_GRADING&#160;</td><td class="fielddoc"><p>Saturation/Contrast/Gamma adjustment. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef"></a>POSTFX_DOF&#160;</td><td class="fielddoc"><p>Depth of Field. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583"></a>POSTFX_DOF_DEBUG&#160;</td><td class="fielddoc"><p>Focus visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b"></a>POSTFX_AUTO_EXPOSURE&#160;</td><td class="fielddoc"><p>Automatic exposure adaptation. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d"></a>POSTFX_EXPOSURE_DEBUG&#160;</td><td class="fielddoc"><p>Exposure histogram visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd"></a>POSTFX_MOTION_BLUR&#160;</td><td class="fielddoc"><p>Velocity-based motion blur. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe"></a>POSTFX_MOTION_BLUR_DEBUG&#160;</td><td class="fielddoc"><p>Velocity buffer visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"></a>POSTFX_FXAA&#160;</td><td class="fielddoc"><p>Fast Approximate Anti-Aliasing. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f"></a>POSTFX_FXAA_DEBUG&#160;</td><td class="fielddoc"><p>Edge detection visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0"></a>POSTFX_BANDING&#160;</td><td class="fielddoc"><p>Color banding/quantization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122"></a>POSTFX_VECTOR_FIELD_DEBUG&#160;</td><td class="fielddoc"><p>Vector field velocity visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69"></a>POSTFX_STENCIL_DEBUG&#160;</td><td class="fielddoc"><p>Stencil mask visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba0ec22d0e12d93f34e7839e9c03264f25"></a>POSTFX_BLOOM_DEBUG&#160;</td><td class="fielddoc"><p>Bloom debug view. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baf4f60aab45ed0c2134fca65191575ff3"></a>POSTFX_FOG&#160;</td><td class="fielddoc"><p>Atmospheric depth fog. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7badc7695b4005569d6621edb888bb52d7b"></a>POSTFX_FOG_DEBUG&#160;</td><td class="fielddoc"><p>Fog component visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7bad8b0078238cabfb8885a95c79157ed25"></a>POSTFX_LUT3D&#160;</td><td class="fielddoc"><p>3D LUT Gamut Mapping. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba4cd3faee9d2199483e99ee606ac02a6b"></a>POSTFX_LUT_VIZ&#160;</td><td class="fielddoc"><p>3D LUT Lattice visualization. </p>
 </td></tr>
 </table>
 

@@ -10,6 +10,7 @@ var pp__params_8h =
     [ "FXAAParams", "structFXAAParams.html", "structFXAAParams" ],
     [ "BandingParams", "structBandingParams.html", "structBandingParams" ],
     [ "FogParams", "structFogParams.html", "structFogParams" ],
+    [ "DEFAULT_ACTIVE_EFFECTS", "pp__params_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d", null ],
     [ "DEFAULT_BANDING_LEVELS", "pp__params_8h.html#a917e9af207be1811116e495774c4f546", null ],
     [ "DEFAULT_CHROM_ABBR_STRENGTH", "pp__params_8h.html#a5fbed1e09f43ec4d9d0587a2fe982a04", null ],
     [ "DEFAULT_EXPOSURE", "pp__params_8h.html#aaae531cfd777bb448be1f0dd3cfcb8cf", null ],
@@ -42,5 +43,29 @@ var pp__params_8h =
       [ "BANDING_MODE_PERCEPTUAL", "pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da", null ],
       [ "BANDING_MODE_CHANNEL", "pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b", null ],
       [ "BANDING_MODE_LUMINANCE", "pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89", null ]
+    ] ],
+    [ "PostProcessEffect", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b", [
+      [ "POSTFX_VIGNETTE", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237", null ],
+      [ "POSTFX_GRAIN", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c", null ],
+      [ "POSTFX_EXPOSURE", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48", null ],
+      [ "POSTFX_CHROM_ABBR", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589", null ],
+      [ "POSTFX_BLOOM", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19", null ],
+      [ "POSTFX_COLOR_GRADING", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062", null ],
+      [ "POSTFX_DOF", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef", null ],
+      [ "POSTFX_DOF_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583", null ],
+      [ "POSTFX_AUTO_EXPOSURE", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b", null ],
+      [ "POSTFX_EXPOSURE_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d", null ],
+      [ "POSTFX_MOTION_BLUR", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd", null ],
+      [ "POSTFX_MOTION_BLUR_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe", null ],
+      [ "POSTFX_FXAA", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075", null ],
+      [ "POSTFX_FXAA_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f", null ],
+      [ "POSTFX_BANDING", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0", null ],
+      [ "POSTFX_VECTOR_FIELD_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122", null ],
+      [ "POSTFX_STENCIL_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69", null ],
+      [ "POSTFX_BLOOM_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba0ec22d0e12d93f34e7839e9c03264f25", null ],
+      [ "POSTFX_FOG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baf4f60aab45ed0c2134fca65191575ff3", null ],
+      [ "POSTFX_FOG_DEBUG", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7badc7695b4005569d6621edb888bb52d7b", null ],
+      [ "POSTFX_LUT3D", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7bad8b0078238cabfb8885a95c79157ed25", null ],
+      [ "POSTFX_LUT_VIZ", "pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba4cd3faee9d2199483e99ee606ac02a6b", null ]
     ] ]
 ];

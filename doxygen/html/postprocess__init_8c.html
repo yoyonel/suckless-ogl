@@ -280,13 +280,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a6d14382f9f74ec6f92b07099e05350f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__init_8c.html#a6d14382f9f74ec6f92b07099e05350f3">pp_create_framebuffer</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="separator:a6d14382f9f74ec6f92b07099e05350f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__init_8c.html#a2bc2aa1dea945700e2e0ce539fffd53b">postprocess_init</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="structGPUProfiler.html">GPUProfiler</a> *external_profiler, int width, int height)</td></tr>
-<tr class="memdesc:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the post-processing pipeline.  <a href="postprocess__init_8c.html#a2bc2aa1dea945700e2e0ce539fffd53b">More...</a><br /></td></tr>
 <tr class="separator:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47114280aafaff716053e0b12be92dca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__init_8c.html#a47114280aafaff716053e0b12be92dca">postprocess_set_dummy_textures</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, GLuint dummy_black)</td></tr>
-<tr class="memdesc:a47114280aafaff716053e0b12be92dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal helper to set fallback textures.  <a href="postprocess__init_8c.html#a47114280aafaff716053e0b12be92dca">More...</a><br /></td></tr>
 <tr class="separator:a47114280aafaff716053e0b12be92dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeba49bd333ab21356706ac98f5b180b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__init_8c.html#aeba49bd333ab21356706ac98f5b180b5">postprocess_resize</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int width, int height)</td></tr>
-<tr class="memdesc:aeba49bd333ab21356706ac98f5b180b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recreates all internal buffers for a new resolution.  <a href="postprocess__init_8c.html#aeba49bd333ab21356706ac98f5b180b5">More...</a><br /></td></tr>
 <tr class="separator:aeba49bd333ab21356706ac98f5b180b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -327,18 +324,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Initializes the post-processing pipeline. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
-    <tr><td class="paramname">external_profiler</td><td>Pointer to the GPU profiler for timing stages. </td></tr>
-    <tr><td class="paramname">width</td><td>Initial resolution width. </td></tr>
-    <tr><td class="paramname">height</td><td>Initial resolution height. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, negative on error. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -379,16 +364,6 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Recreates all internal buffers for a new resolution. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
-    <tr><td class="paramname">width</td><td>New width. </td></tr>
-    <tr><td class="paramname">height</td><td>New height. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -423,8 +398,6 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Internal helper to set fallback textures. </p>
 
 </div>
 </div>

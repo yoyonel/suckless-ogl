@@ -261,6 +261,7 @@ $(document).ready(function(){initNavTree('postprocess__input_8c.html',''); initR
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 <code>#include &quot;effects/fx_auto_exposure.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess__internal_8h_source.html">postprocess_internal.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__presets_8h_source.html">postprocess_presets.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
@@ -279,9 +280,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aabe528913a4482ed58ea2e2fdf120b3c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#aabe528913a4482ed58ea2e2fdf120b3c">toggle_postfx</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> feature, const char *name)</td></tr>
+<tr class="memitem:aabe528913a4482ed58ea2e2fdf120b3c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#aabe528913a4482ed58ea2e2fdf120b3c">toggle_postfx</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> feature, const char *name)</td></tr>
 <tr class="separator:aabe528913a4482ed58ea2e2fdf120b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f3eda4aedf72f7b25dffa279ef567ec"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#a1f3eda4aedf72f7b25dffa279ef567ec">toggle_postfx_complex</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> feature, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> debug_feature, const char *name, const char *debug_name)</td></tr>
+<tr class="memitem:a1f3eda4aedf72f7b25dffa279ef567ec"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#a1f3eda4aedf72f7b25dffa279ef567ec">toggle_postfx_complex</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> feature, <a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> debug_feature, const char *name, const char *debug_name)</td></tr>
 <tr class="separator:a1f3eda4aedf72f7b25dffa279ef567ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfa07d9865ce43b54938a67359d48a4a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#abfa07d9865ce43b54938a67359d48a4a">handle_exposure_input</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int key)</td></tr>
 <tr class="separator:abfa07d9865ce43b54938a67359d48a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -591,7 +592,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
           <td class="paramname"><em>feature</em>, </td>
         </tr>
         <tr>
@@ -645,13 +646,13 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
           <td class="paramname"><em>feature</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
           <td class="paramname"><em>debug_feature</em>, </td>
         </tr>
         <tr>

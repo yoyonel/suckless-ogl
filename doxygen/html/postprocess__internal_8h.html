@@ -251,6 +251,8 @@ $(document).ready(function(){initNavTree('postprocess__internal_8h.html',''); in
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -258,12 +260,23 @@ $(document).ready(function(){initNavTree('postprocess__internal_8h.html',''); in
 </div><!--header-->
 <div class="contents">
 
-<p>Internal declarations shared across postprocess_*.c translation units.  
+<p><a class="el" href="structPostProcess.html" title="Main pipeline state for post-processing.">PostProcess</a> struct definition and internal helpers.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;effects/fx_auto_exposure.h&quot;</code><br />
+<code>#include &quot;effects/fx_bloom.h&quot;</code><br />
+<code>#include &quot;effects/fx_dof.h&quot;</code><br />
+<code>#include &quot;effects/fx_lut3d.h&quot;</code><br />
+<code>#include &quot;effects/fx_lut_viz.h&quot;</code><br />
+<code>#include &quot;effects/fx_motion_blur.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__exposure__readback_8h_source.html">pp_exposure_readback.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__gpu__resources_8h_source.html">pp_gpu_resources.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__params_8h_source.html">pp_params.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__shader__state_8h_source.html">pp_shader_state.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="pp__ubo_8h_source.html">pp_ubo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &lt;cglm/types.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for postprocess_internal.h:</div>
@@ -274,12 +287,40 @@ Include dependency graph for postprocess_internal.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__internal_8h__dep__incl.svg" width="100%" height="395"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__internal_8h__dep__incl.svg" width="100%" height="462"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div>
 <p><a href="postprocess__internal_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html">PostProcess</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main pipeline state for post-processing.  <a href="structPostProcess.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessPreset.html">PostProcessPreset</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Snapshot of every configurable parameter in the pipeline.  <a href="structPostProcessPreset.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a64a9e1a6bbe5e74db0f77c17c04ee918"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a64a9e1a6bbe5e74db0f77c17c04ee918">DEFAULT_BLOOM_INTENSITY</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:a64a9e1a6bbe5e74db0f77c17c04ee918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdd4a3cba1a04e1866e280b84a064dee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#acdd4a3cba1a04e1866e280b84a064dee">DEFAULT_BLOOM_THRESHOLD</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:acdd4a3cba1a04e1866e280b84a064dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a222b8356f0589002c336b3b47ef99be5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a222b8356f0589002c336b3b47ef99be5">DEFAULT_BLOOM_SOFT_THRESHOLD</a>&#160;&#160;&#160;0.5F</td></tr>
+<tr class="separator:a222b8356f0589002c336b3b47ef99be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a160badf1723b03fe88e13e84e1410a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a3a160badf1723b03fe88e13e84e1410a">DEFAULT_BLOOM_RADIUS</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:a3a160badf1723b03fe88e13e84e1410a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a8704ac8e54f944f1ff3218c4ef5f59e4">DEFAULT_DOF_FOCAL_DISTANCE</a>&#160;&#160;&#160;20.0F</td></tr>
+<tr class="separator:a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a63ba03e343f9b5cabd43b1cb6a9839d9">DEFAULT_DOF_FOCAL_RANGE</a>&#160;&#160;&#160;5.0F</td></tr>
+<tr class="separator:a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a478a7691189f64138ffea55e94d0be7b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a478a7691189f64138ffea55e94d0be7b">DEFAULT_DOF_BOKEH_SCALE</a>&#160;&#160;&#160;10.0F</td></tr>
+<tr class="separator:a478a7691189f64138ffea55e94d0be7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e0952cc10ca6b3d92996a4f7068e5ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html#a9e0952cc10ca6b3d92996a4f7068e5ed">DEFAULT_DOF_ANAMORPHIC_RATIO</a>&#160;&#160;&#160;	1.0F</td></tr>
+<tr class="separator:a9e0952cc10ca6b3d92996a4f7068e5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ae4d5251432e1a9e6803c0240cc492e18"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
@@ -318,9 +359,123 @@ Functions</h2></td></tr>
 <tr class="separator:a255fa49cbe02cfc65e5289793c60fea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Internal declarations shared across postprocess_*.c translation units. </p>
-<p>NOT part of the public API — do not include from outside src/postprocess_*.c. </p>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<div class="textblock"><p><a class="el" href="structPostProcess.html" title="Main pipeline state for post-processing.">PostProcess</a> struct definition and internal helpers. </p>
+<p>Include this header when you need access to <a class="el" href="structPostProcess.html" title="Main pipeline state for post-processing.">PostProcess</a> struct members. For the public lifecycle/render API only, include <a class="el" href="postprocess_8h.html" title="Public API for the post-processing pipeline.">postprocess.h</a> instead. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a64a9e1a6bbe5e74db0f77c17c04ee918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64a9e1a6bbe5e74db0f77c17c04ee918">&#9670;&nbsp;</a></span>DEFAULT_BLOOM_INTENSITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_INTENSITY&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a160badf1723b03fe88e13e84e1410a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a160badf1723b03fe88e13e84e1410a">&#9670;&nbsp;</a></span>DEFAULT_BLOOM_RADIUS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_RADIUS&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a222b8356f0589002c336b3b47ef99be5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a222b8356f0589002c336b3b47ef99be5">&#9670;&nbsp;</a></span>DEFAULT_BLOOM_SOFT_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_SOFT_THRESHOLD&#160;&#160;&#160;0.5F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acdd4a3cba1a04e1866e280b84a064dee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdd4a3cba1a04e1866e280b84a064dee">&#9670;&nbsp;</a></span>DEFAULT_BLOOM_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_THRESHOLD&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e0952cc10ca6b3d92996a4f7068e5ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e0952cc10ca6b3d92996a4f7068e5ed">&#9670;&nbsp;</a></span>DEFAULT_DOF_ANAMORPHIC_RATIO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_ANAMORPHIC_RATIO&#160;&#160;&#160;	1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>1.0 = Spherical, 2.0 = Anamorphic </p>
+
+</div>
+</div>
+<a id="a478a7691189f64138ffea55e94d0be7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a478a7691189f64138ffea55e94d0be7b">&#9670;&nbsp;</a></span>DEFAULT_DOF_BOKEH_SCALE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_BOKEH_SCALE&#160;&#160;&#160;10.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8704ac8e54f944f1ff3218c4ef5f59e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8704ac8e54f944f1ff3218c4ef5f59e4">&#9670;&nbsp;</a></span>DEFAULT_DOF_FOCAL_DISTANCE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_FOCAL_DISTANCE&#160;&#160;&#160;20.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a63ba03e343f9b5cabd43b1cb6a9839d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63ba03e343f9b5cabd43b1cb6a9839d9">&#9670;&nbsp;</a></span>DEFAULT_DOF_FOCAL_RANGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_FOCAL_RANGE&#160;&#160;&#160;5.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ae4d5251432e1a9e6803c0240cc492e18"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae4d5251432e1a9e6803c0240cc492e18">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
