@@ -1,6 +1,8 @@
 #ifndef TRACY_GPU_H
 #define TRACY_GPU_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

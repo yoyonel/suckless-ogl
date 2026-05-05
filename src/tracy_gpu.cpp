@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "tracy_gpu.h"
 
 #ifdef TRACY_ENABLE
