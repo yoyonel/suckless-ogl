@@ -4,7 +4,11 @@
 # GLFW maps keys by physical position (US QWERTY), not by keysym.
 # xdotool resolves keysym names to keycodes, so on non-US layouts
 # we must use the layout-specific keysym for the correct physical key.
-_layout=$(setxkbmap -query 2>/dev/null | awk '/layout/{print $2}')
+if command -v setxkbmap >/dev/null 2>&1; then
+    _layout=$(setxkbmap -query 2>/dev/null | awk '/layout/{print $2}')
+else
+    _layout=""
+fi
 case "$_layout" in
     fr)
         # AZERTY: physical key positions differ from US QWERTY.
