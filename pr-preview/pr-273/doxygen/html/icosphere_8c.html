@@ -1,0 +1,955 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/icosphere.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('icosphere_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle">
+<div class="title">icosphere.c File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="icosphere_8h_source.html">icosphere.h</a>&quot;</code><br />
+<code>#include &lt;cglm/types.h&gt;</code><br />
+<code>#include &lt;cglm/vec3.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for icosphere.c:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="icosphere_8c__incl.svg" width="614" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEdgeEntry.html">EdgeEntry</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEdgeHash.html">EdgeHash</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a207fd5507206d307cd63f95374fcd00d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a207fd5507206d307cd63f95374fcd00d">X</a>&#160;&#160;&#160;0.525731112119133606F</td></tr>
+<tr class="separator:a207fd5507206d307cd63f95374fcd00d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51591cf51bdd6c1f6015532422e7770e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a51591cf51bdd6c1f6015532422e7770e">Z</a>&#160;&#160;&#160;0.850650808352039932F</td></tr>
+<tr class="separator:a51591cf51bdd6c1f6015532422e7770e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:af3520ff6d43011872bab77edd27d4de3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a329acb3ae88741fba4e792489782463e">INITIAL_VEC3_CAPACITY</a> = 128
+, <a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3aa2a9070dd99320b9bc4f897c47220926">INITIAL_UINT_CAPACITY</a> = 256
+, <a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a6146e19be1ba08d03a7cd419cef6bf22">ICOSAHEDRON_VERTEX_COUNT</a> = 12
+, <a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a3e4dd7eb2f4986df933274b70b7a6afd">ICOSAHEDRON_INDEX_COUNT</a> = 60
+, <br />
+&#160;&#160;<a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3aa24be6570a0e4f5604c47521bed974c5">INDEX_SHIFT</a> = 32
+<br />
+ }</td></tr>
+<tr class="separator:af3520ff6d43011872bab77edd27d4de3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ac300d42875ee9e7db317f5f3bdedd91d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#ac300d42875ee9e7db317f5f3bdedd91d">vec3array_init</a> (<a class="el" href="structVec3Array.html">Vec3Array</a> *array)</td></tr>
+<tr class="memdesc:ac300d42875ee9e7db317f5f3bdedd91d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a <a class="el" href="structVec3Array.html" title="Dynamic array for cglm vec3 types.">Vec3Array</a> with zeroed fields.  <a href="icosphere_8c.html#ac300d42875ee9e7db317f5f3bdedd91d">More...</a><br /></td></tr>
+<tr class="separator:ac300d42875ee9e7db317f5f3bdedd91d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38fc23a56f4c687ecb08e3dde52b2b5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a38fc23a56f4c687ecb08e3dde52b2b5d">vec3array_push</a> (<a class="el" href="structVec3Array.html">Vec3Array</a> *array, vec3 vertex)</td></tr>
+<tr class="memdesc:a38fc23a56f4c687ecb08e3dde52b2b5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends a vec3 to the array, reallocating if necessary.  <a href="icosphere_8c.html#a38fc23a56f4c687ecb08e3dde52b2b5d">More...</a><br /></td></tr>
+<tr class="separator:a38fc23a56f4c687ecb08e3dde52b2b5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4ff3644bfe858f66d74316bbf80c39a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a">vec3array_free</a> (<a class="el" href="structVec3Array.html">Vec3Array</a> *array)</td></tr>
+<tr class="memdesc:ad4ff3644bfe858f66d74316bbf80c39a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the internal buffer of a <a class="el" href="structVec3Array.html" title="Dynamic array for cglm vec3 types.">Vec3Array</a>.  <a href="icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a">More...</a><br /></td></tr>
+<tr class="separator:ad4ff3644bfe858f66d74316bbf80c39a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70b42040760df4cb07a39ec7277675b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a70b42040760df4cb07a39ec7277675b6">uintarray_init</a> (<a class="el" href="structUintArray.html">UintArray</a> *array)</td></tr>
+<tr class="memdesc:a70b42040760df4cb07a39ec7277675b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a <a class="el" href="structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices).">UintArray</a> with zeroed fields.  <a href="icosphere_8c.html#a70b42040760df4cb07a39ec7277675b6">More...</a><br /></td></tr>
+<tr class="separator:a70b42040760df4cb07a39ec7277675b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2189f83dd8d2cf024cbcf29be0c8b45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45">uintarray_push</a> (<a class="el" href="structUintArray.html">UintArray</a> *array, unsigned int value)</td></tr>
+<tr class="memdesc:aa2189f83dd8d2cf024cbcf29be0c8b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends an unsigned int to the array, reallocating if necessary.  <a href="icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45">More...</a><br /></td></tr>
+<tr class="separator:aa2189f83dd8d2cf024cbcf29be0c8b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeabbf4b8c74fefac0070104ad779cd62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62">uintarray_free</a> (<a class="el" href="structUintArray.html">UintArray</a> *array)</td></tr>
+<tr class="memdesc:aeabbf4b8c74fefac0070104ad779cd62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the internal buffer of a <a class="el" href="structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices).">UintArray</a>.  <a href="icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62">More...</a><br /></td></tr>
+<tr class="separator:aeabbf4b8c74fefac0070104ad779cd62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af48e051641689a72f684355046f4ff0f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#af48e051641689a72f684355046f4ff0f">normalize_vec3</a> (vec3 vertex, vec3 out)</td></tr>
+<tr class="separator:af48e051641689a72f684355046f4ff0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6488726ac1005a991370448ff17cce0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#aa6488726ac1005a991370448ff17cce0">edge_hash_init</a> (<a class="el" href="structEdgeHash.html">EdgeHash</a> *hash, size_t capacity)</td></tr>
+<tr class="separator:aa6488726ac1005a991370448ff17cce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae03bb94117c96b3c6b629a914dde98cd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#ae03bb94117c96b3c6b629a914dde98cd">edge_hash_free</a> (<a class="el" href="structEdgeHash.html">EdgeHash</a> *hash)</td></tr>
+<tr class="separator:ae03bb94117c96b3c6b629a914dde98cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91438511f35ef99ee0e734ea745ea9ea"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a91438511f35ef99ee0e734ea745ea9ea">get_midpoint</a> (unsigned int point1, unsigned int point2, <a class="el" href="structVec3Array.html">Vec3Array</a> *vertices, <a class="el" href="structEdgeHash.html">EdgeHash</a> *hash)</td></tr>
+<tr class="separator:a91438511f35ef99ee0e734ea745ea9ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88db60f70d9063d3f5a7c1b1ba8538e8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a88db60f70d9063d3f5a7c1b1ba8538e8">subdivide</a> (<a class="el" href="structVec3Array.html">Vec3Array</a> *vertices, <a class="el" href="structUintArray.html">UintArray</a> *indices, int depth)</td></tr>
+<tr class="separator:a88db60f70d9063d3f5a7c1b1ba8538e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9a7be7aefc37fdcd8de17c522d47dcd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#aa9a7be7aefc37fdcd8de17c522d47dcd">compute_normals</a> (const <a class="el" href="structVec3Array.html">Vec3Array</a> *vertices, <a class="el" href="structVec3Array.html">Vec3Array</a> *normals)</td></tr>
+<tr class="separator:aa9a7be7aefc37fdcd8de17c522d47dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98ec73bfde90923b7425adee892c7529"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a98ec73bfde90923b7425adee892c7529">icosphere_init</a> (<a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> *geom)</td></tr>
+<tr class="memdesc:a98ec73bfde90923b7425adee892c7529"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes icosphere geometry buffers.  <a href="icosphere_8c.html#a98ec73bfde90923b7425adee892c7529">More...</a><br /></td></tr>
+<tr class="separator:a98ec73bfde90923b7425adee892c7529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c1eaf921d44583aa9f855097b74d4b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a7c1eaf921d44583aa9f855097b74d4b1">icosphere_generate</a> (<a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> *geom, int subdivisions)</td></tr>
+<tr class="memdesc:a7c1eaf921d44583aa9f855097b74d4b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates icosphere mesh data for a specified subdivision level.  <a href="icosphere_8c.html#a7c1eaf921d44583aa9f855097b74d4b1">More...</a><br /></td></tr>
+<tr class="separator:a7c1eaf921d44583aa9f855097b74d4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d46fa05e1dc89e653b23558a202774f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a5d46fa05e1dc89e653b23558a202774f">icosphere_free</a> (<a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> *geom)</td></tr>
+<tr class="memdesc:a5d46fa05e1dc89e653b23558a202774f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all dynamic memory in the icosphere container.  <a href="icosphere_8c.html#a5d46fa05e1dc89e653b23558a202774f">More...</a><br /></td></tr>
+<tr class="separator:a5d46fa05e1dc89e653b23558a202774f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a3a17f248c8cd96628538e037c878860e"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a3a17f248c8cd96628538e037c878860e">icosahedron_vertices</a> [<a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a6146e19be1ba08d03a7cd419cef6bf22">ICOSAHEDRON_VERTEX_COUNT</a>]</td></tr>
+<tr class="separator:a3a17f248c8cd96628538e037c878860e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a331322d23a758cda19c33705af0f98dd"><td class="memItemLeft" align="right" valign="top">static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8c.html#a331322d23a758cda19c33705af0f98dd">icosahedron_indices</a> [<a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a3e4dd7eb2f4986df933274b70b7a6afd">ICOSAHEDRON_INDEX_COUNT</a>]</td></tr>
+<tr class="separator:a331322d23a758cda19c33705af0f98dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a207fd5507206d307cd63f95374fcd00d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a207fd5507206d307cd63f95374fcd00d">&#9670;&nbsp;</a></span>X</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define X&#160;&#160;&#160;0.525731112119133606F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a51591cf51bdd6c1f6015532422e7770e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51591cf51bdd6c1f6015532422e7770e">&#9670;&nbsp;</a></span>Z</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Z&#160;&#160;&#160;0.850650808352039932F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="af3520ff6d43011872bab77edd27d4de3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3520ff6d43011872bab77edd27d4de3">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af3520ff6d43011872bab77edd27d4de3a329acb3ae88741fba4e792489782463e"></a>INITIAL_VEC3_CAPACITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af3520ff6d43011872bab77edd27d4de3aa2a9070dd99320b9bc4f897c47220926"></a>INITIAL_UINT_CAPACITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af3520ff6d43011872bab77edd27d4de3a6146e19be1ba08d03a7cd419cef6bf22"></a>ICOSAHEDRON_VERTEX_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af3520ff6d43011872bab77edd27d4de3a3e4dd7eb2f4986df933274b70b7a6afd"></a>ICOSAHEDRON_INDEX_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af3520ff6d43011872bab77edd27d4de3aa24be6570a0e4f5604c47521bed974c5"></a>INDEX_SHIFT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aa9a7be7aefc37fdcd8de17c522d47dcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9a7be7aefc37fdcd8de17c522d47dcd">&#9670;&nbsp;</a></span>compute_normals()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void compute_normals </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>normals</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="icosphere_8c_aa9a7be7aefc37fdcd8de17c522d47dcd_cgraph.svg" width="323" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ae03bb94117c96b3c6b629a914dde98cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae03bb94117c96b3c6b629a914dde98cd">&#9670;&nbsp;</a></span>edge_hash_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void edge_hash_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structEdgeHash.html">EdgeHash</a> *&#160;</td>
+          <td class="paramname"><em>hash</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa6488726ac1005a991370448ff17cce0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6488726ac1005a991370448ff17cce0">&#9670;&nbsp;</a></span>edge_hash_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void edge_hash_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structEdgeHash.html">EdgeHash</a> *&#160;</td>
+          <td class="paramname"><em>hash</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>capacity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a91438511f35ef99ee0e734ea745ea9ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91438511f35ef99ee0e734ea745ea9ea">&#9670;&nbsp;</a></span>get_midpoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static unsigned int get_midpoint </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>point1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>point2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structEdgeHash.html">EdgeHash</a> *&#160;</td>
+          <td class="paramname"><em>hash</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="icosphere_8c_a91438511f35ef99ee0e734ea745ea9ea_cgraph.svg" width="292" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a5d46fa05e1dc89e653b23558a202774f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d46fa05e1dc89e653b23558a202774f">&#9670;&nbsp;</a></span>icosphere_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void icosphere_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> *&#160;</td>
+          <td class="paramname"><em>geom</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees all dynamic memory in the icosphere container. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">geom</td><td>Pointer to the geometry container. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="icosphere_8c_a5d46fa05e1dc89e653b23558a202774f_cgraph.svg" width="298" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a7c1eaf921d44583aa9f855097b74d4b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c1eaf921d44583aa9f855097b74d4b1">&#9670;&nbsp;</a></span>icosphere_generate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void icosphere_generate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> *&#160;</td>
+          <td class="paramname"><em>geom</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>subdivisions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates icosphere mesh data for a specified subdivision level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">geom</td><td>Pointer to the geometry container. </td></tr>
+    <tr><td class="paramname">subdivisions</td><td>Number of times to split each triangle face (0-6). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="app__settings_8h.html" title="Global application constants, configuration macros, and default values.">app_settings.h</a> (<a class="el" href="group__Geometry.html#ggabc6126af1d45847bc59afa0aa3216b04ac846edb36b9f557d22d6a1166f02f344">MAX_SUBDIV</a>) </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="icosphere_8c_a7c1eaf921d44583aa9f855097b74d4b1_cgraph.svg" width="100%" height="594"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a98ec73bfde90923b7425adee892c7529"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98ec73bfde90923b7425adee892c7529">&#9670;&nbsp;</a></span>icosphere_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void icosphere_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> *&#160;</td>
+          <td class="paramname"><em>geom</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes icosphere geometry buffers. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">geom</td><td>Pointer to the geometry container. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="icosphere_8c_a98ec73bfde90923b7425adee892c7529_cgraph.svg" width="287" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af48e051641689a72f684355046f4ff0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af48e051641689a72f684355046f4ff0f">&#9670;&nbsp;</a></span>normalize_vec3()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void normalize_vec3 </td>
+          <td>(</td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>vertex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a88db60f70d9063d3f5a7c1b1ba8538e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88db60f70d9063d3f5a7c1b1ba8538e8">&#9670;&nbsp;</a></span>subdivide()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void subdivide </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUintArray.html">UintArray</a> *&#160;</td>
+          <td class="paramname"><em>indices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>depth</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="icosphere_8c_a88db60f70d9063d3f5a7c1b1ba8538e8_cgraph.svg" width="443" height="240"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aeabbf4b8c74fefac0070104ad779cd62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeabbf4b8c74fefac0070104ad779cd62">&#9670;&nbsp;</a></span>uintarray_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uintarray_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUintArray.html">UintArray</a> *&#160;</td>
+          <td class="paramname"><em>array</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees the internal buffer of a <a class="el" href="structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices).">UintArray</a>. </p>
+
+</div>
+</div>
+<a id="a70b42040760df4cb07a39ec7277675b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70b42040760df4cb07a39ec7277675b6">&#9670;&nbsp;</a></span>uintarray_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uintarray_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUintArray.html">UintArray</a> *&#160;</td>
+          <td class="paramname"><em>array</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes a <a class="el" href="structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices).">UintArray</a> with zeroed fields. </p>
+
+</div>
+</div>
+<a id="aa2189f83dd8d2cf024cbcf29be0c8b45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2189f83dd8d2cf024cbcf29be0c8b45">&#9670;&nbsp;</a></span>uintarray_push()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uintarray_push </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUintArray.html">UintArray</a> *&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Appends an unsigned int to the array, reallocating if necessary. </p>
+
+</div>
+</div>
+<a id="ad4ff3644bfe858f66d74316bbf80c39a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4ff3644bfe858f66d74316bbf80c39a">&#9670;&nbsp;</a></span>vec3array_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vec3array_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>array</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees the internal buffer of a <a class="el" href="structVec3Array.html" title="Dynamic array for cglm vec3 types.">Vec3Array</a>. </p>
+
+</div>
+</div>
+<a id="ac300d42875ee9e7db317f5f3bdedd91d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac300d42875ee9e7db317f5f3bdedd91d">&#9670;&nbsp;</a></span>vec3array_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vec3array_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>array</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes a <a class="el" href="structVec3Array.html" title="Dynamic array for cglm vec3 types.">Vec3Array</a> with zeroed fields. </p>
+
+</div>
+</div>
+<a id="a38fc23a56f4c687ecb08e3dde52b2b5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38fc23a56f4c687ecb08e3dde52b2b5d">&#9670;&nbsp;</a></span>vec3array_push()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vec3array_push </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structVec3Array.html">Vec3Array</a> *&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>vertex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Appends a vec3 to the array, reallocating if necessary. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a331322d23a758cda19c33705af0f98dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a331322d23a758cda19c33705af0f98dd">&#9670;&nbsp;</a></span>icosahedron_indices</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned int icosahedron_indices[<a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a3e4dd7eb2f4986df933274b70b7a6afd">ICOSAHEDRON_INDEX_COUNT</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    0,  4, 1, 0, 9, 4, 9, 5,  4, 4, 5,  8,  4,  8, 1, 8,  10, 1,  8, 3,</div>
+<div class="line">    10, 5, 3, 8, 5, 2, 3, 2,  7, 3, 7,  10, 3,  7, 6, 10, 7,  11, 6, 11,</div>
+<div class="line">    0,  6, 0, 1, 6, 6, 1, 10, 9, 0, 11, 9,  11, 2, 9, 2,  5,  7,  2, 11}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a3a17f248c8cd96628538e037c878860e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a17f248c8cd96628538e037c878860e">&#9670;&nbsp;</a></span>icosahedron_vertices</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const vec3 icosahedron_vertices[<a class="el" href="icosphere_8c.html#af3520ff6d43011872bab77edd27d4de3a6146e19be1ba08d03a7cd419cef6bf22">ICOSAHEDRON_VERTEX_COUNT</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {- 0.525731112119133606F , 0,  0.850650808352039932F }, { 0.525731112119133606F , 0,  0.850650808352039932F },   {- 0.525731112119133606F , 0, - 0.850650808352039932F }, { 0.525731112119133606F , 0, - 0.850650808352039932F }, {0,  0.850650808352039932F ,  0.525731112119133606F },  {0,  0.850650808352039932F , - 0.525731112119133606F },</div>
+<div class="line">    {0, - 0.850650808352039932F ,  0.525731112119133606F }, {0, - 0.850650808352039932F , - 0.525731112119133606F }, { 0.850650808352039932F ,  0.525731112119133606F , 0},   {- 0.850650808352039932F ,  0.525731112119133606F , 0}, { 0.850650808352039932F , - 0.525731112119133606F , 0}, {- 0.850650808352039932F , - 0.525731112119133606F , 0}}</div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="icosphere_8c.html">icosphere.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
