@@ -22,7 +22,7 @@ var searchData=
   ['vignette_5fsmoothness_4161',['vignette_smoothness',['../structPostProcessUBO.html#aa5d417564b872204f7b9634c584c0b17',1,'PostProcessUBO']]],
   ['visibility_5fthreshold_4162',['VISIBILITY_THRESHOLD',['../gpu__profiler__ui__layout_8h.html#add190d66a5136e9b1893c6346f3bd8fd',1,'gpu_profiler_ui_layout.h']]],
   ['visible_4163',['visible',['../structGPUProfilerUI.html#aa87fc5730d3e0b7ceeb0cd4ac4e99076',1,'GPUProfilerUI']]],
-  ['visuals_4164',['visuals',['../structScene.html#a6d8baf79ea98a4cfbbff9fda49cd6c7f',1,'Scene']]],
+  ['visuals_4164',['visuals',['../structScene.html#adb101f0662673199ca7f047ac442e90d',1,'Scene']]],
   ['vscreenuv_4165',['vScreenUV',['../shockwave_8frag.html#a43eaa5778581dfc7fb7194899dba1856',1,'vScreenUV():&#160;shockwave.frag'],['../shockwave_8vert.html#ad091037a49625e6073f25f64f7bf01b9',1,'vScreenUV():&#160;shockwave.vert']]],
   ['vu_4166',['vU',['../trail_8frag.html#af0f14d49ec50df87d4ae326b2949421b',1,'vU():&#160;trail.frag'],['../trail_8vert.html#a4a0a784b83e68be908027a941b10c4f2',1,'vU():&#160;trail.vert']]],
   ['vuv_4167',['vUV',['../shockwave_8frag.html#a39fca2c8fe34ab0c307cdd0f7e7f53d6',1,'vUV():&#160;shockwave.frag'],['../shockwave_8vert.html#ace76a4317d4c3bca0c463eeb635e48f3',1,'vUV():&#160;shockwave.vert']]],

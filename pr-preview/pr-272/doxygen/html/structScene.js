@@ -14,5 +14,5 @@ var structScene =
     [ "lighting", "structScene.html#a8450550342bef7f8dc8fe11287f2dfbb", null ],
     [ "shaders", "structScene.html#a4446dfb2592de42d77631187d95c10c5", null ],
     [ "simulation", "structScene.html#ae6d7c007b6301a3a05350da0973a7606", null ],
-    [ "visuals", "structScene.html#a6d8baf79ea98a4cfbbff9fda49cd6c7f", null ]
+    [ "visuals", "structScene.html#adb101f0662673199ca7f047ac442e90d", null ]
 ];
