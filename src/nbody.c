@@ -1,4 +1,3 @@
-#pragma GCC optimize("no-fast-math")
 #include "nbody.h"
 
 #include "utils.h"
@@ -14,16 +13,20 @@ static const float EPSILON = 1e-6F;
 /* Helpers                                                                   */
 /* ========================================================================= */
 
-static void add_body(NBodySim* sim, const vec3 pos, const vec3 vel, float mass,
-                     float radius, const vec3 albedo, float metallic,
-                     float roughness)
+static void add_body(NBodySim* sim, const double pos[3], const double vel[3],
+                     double mass, float radius, const vec3 albedo,
+                     float metallic, float roughness)
 {
 	if (sim->body_count >= NBODY_MAX_BODIES) {
 		return;
 	}
 	NBodyParticle* body = &sim->bodies[sim->body_count];
-	glm_vec3_copy((float*)pos, body->position);
-	glm_vec3_copy((float*)vel, body->velocity);
+	body->position[0] = pos[0];
+	body->position[1] = pos[1];
+	body->position[2] = pos[2];
+	body->velocity[0] = vel[0];
+	body->velocity[1] = vel[1];
+	body->velocity[2] = vel[2];
 	body->mass = mass;
 	body->radius = radius;
 	glm_vec3_copy((float*)albedo, body->albedo);
@@ -34,24 +37,25 @@ static void add_body(NBodySim* sim, const vec3 pos, const vec3 vel, float mass,
 
 /* Per-pair Plummer softening: ε² = max(NBODY_SOFTENING_SQ, (F·(r_i+r_j))²).
  * Used by forces, energy, and initial velocities for consistency. */
-static float pair_softening_sq(float radius_i, float radius_j)
+static double pair_softening_sq(double radius_i, double radius_j)
 {
-	float sum_r = radius_i + radius_j;
-	float eps = NBODY_SOFTENING_FACTOR * sum_r;
-	float eps_sq = eps * eps;
-	return eps_sq > NBODY_SOFTENING_SQ ? eps_sq : NBODY_SOFTENING_SQ;
+	double sum_r = radius_i + radius_j;
+	double eps = (double)NBODY_SOFTENING_FACTOR * sum_r;
+	double eps_sq = eps * eps;
+	return eps_sq > (double)NBODY_SOFTENING_SQ ? eps_sq
+	                                           : (double)NBODY_SOFTENING_SQ;
 }
 
 /* Circular-orbit speed in a Plummer-softened potential:
  * v = r · sqrt(G·M / (r² + ε²)^{3/2})  */
-static float softened_orbital_vel(float grav, float central_mass, float orbit_r,
-                                  float star_r, float body_r)
+static double softened_orbital_vel(double grav, double central_mass,
+                                   double orbit_r, double star_r, double body_r)
 {
-	float eps_sq = pair_softening_sq(star_r, body_r);
-	float r_sq = orbit_r * orbit_r;
-	float d_sq = r_sq + eps_sq;
-	float d_32 = d_sq * sqrtf(d_sq);
-	return orbit_r * sqrtf(grav * central_mass / d_32);
+	double eps_sq = pair_softening_sq(star_r, body_r);
+	double r_sq = orbit_r * orbit_r;
+	double d_sq = r_sq + eps_sq;
+	double d_32 = d_sq * sqrt(d_sq);
+	return orbit_r * sqrt(grav * central_mass / d_32);
 }
 
 /* ========================================================================= */
@@ -112,44 +116,64 @@ void nbody_init_preset(NBodySim* sim)
 	sim->paused = false;
 
 	/* Body 0: Central star — gold/bronze, heavy, stationary */
-	add_body(sim, (vec3){0}, (vec3){0}, CENTRAL_STAR_MASS,
-	         CENTRAL_STAR_RADIUS, CENTRAL_STAR_ALBEDO,
-	         CENTRAL_STAR_METALLIC, CENTRAL_STAR_ROUGHNESS);
+	add_body(sim, (double[]){0, 0, 0}, (double[]){0, 0, 0},
+	         (double)CENTRAL_STAR_MASS, CENTRAL_STAR_RADIUS,
+	         CENTRAL_STAR_ALBEDO, CENTRAL_STAR_METALLIC,
+	         CENTRAL_STAR_ROUGHNESS);
 
 	/* Add all orbiters from the table. */
 	for (int idx = 0; idx < ORBITER_COUNT; idx++) {
 		const struct OrbiterDef* orb = &ORBITERS[idx];
-		float spd = softened_orbital_vel(
-		                sim->gravity, CENTRAL_STAR_MASS, orb->orbit_r,
-		                CENTRAL_STAR_RADIUS, orb->body_r) *
-		            orb->ecc;
-		vec3 normalized_vel_dir;
-		glm_vec3_copy((float*)orb->vel_dir, normalized_vel_dir);
-		glm_vec3_normalize(normalized_vel_dir);
+		double spd = softened_orbital_vel((double)sim->gravity,
+		                                  (double)CENTRAL_STAR_MASS,
+		                                  (double)orb->orbit_r,
+		                                  (double)CENTRAL_STAR_RADIUS,
+		                                  (double)orb->body_r) *
+		             (double)orb->ecc;
 
-		vec3 vel = {normalized_vel_dir[0] * spd,
-		            normalized_vel_dir[1] * spd,
-		            normalized_vel_dir[2] * spd};
-		add_body(sim, orb->pos, vel, orb->mass, orb->body_r,
-		         orb->albedo, orb->metallic, orb->roughness);
+		double normalized_vel_dir[3] = {(double)orb->vel_dir[0],
+		                                (double)orb->vel_dir[1],
+		                                (double)orb->vel_dir[2]};
+		double mag =
+		    sqrt(normalized_vel_dir[0] * normalized_vel_dir[0] +
+		         normalized_vel_dir[1] * normalized_vel_dir[1] +
+		         normalized_vel_dir[2] * normalized_vel_dir[2]);
+		if (mag > 0.0) {
+			normalized_vel_dir[0] /= mag;
+			normalized_vel_dir[1] /= mag;
+			normalized_vel_dir[2] /= mag;
+		}
+
+		double vel[3] = {normalized_vel_dir[0] * spd,
+		                 normalized_vel_dir[1] * spd,
+		                 normalized_vel_dir[2] * spd};
+		add_body(sim,
+		         (double[]){(double)orb->pos[0], (double)orb->pos[1],
+		                    (double)orb->pos[2]},
+		         vel, (double)orb->mass, orb->body_r, orb->albedo,
+		         orb->metallic, orb->roughness);
 	}
 
 	/* Zero the total momentum so the center of mass stays fixed.
 	 * v_cm = Σ(m_i * v_i) / Σ(m_i), then subtract from each body. */
-	vec3 total_momentum = {0.0F, 0.0F, 0.0F};
-	float total_mass = 0.0F;
+	double total_momentum[3] = {0.0, 0.0, 0.0};
+	double total_mass = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		vec3 mom;
-		glm_vec3_scale(sim->bodies[i].velocity, sim->bodies[i].mass,
-		               mom);
-		glm_vec3_add(total_momentum, mom, total_momentum);
+		total_momentum[0] +=
+		    sim->bodies[i].velocity[0] * sim->bodies[i].mass;
+		total_momentum[1] +=
+		    sim->bodies[i].velocity[1] * sim->bodies[i].mass;
+		total_momentum[2] +=
+		    sim->bodies[i].velocity[2] * sim->bodies[i].mass;
 		total_mass += sim->bodies[i].mass;
 	}
-	vec3 vel_cm;
-	glm_vec3_scale(total_momentum, 1.0F / total_mass, vel_cm);
+	double vel_cm[3] = {total_momentum[0] / total_mass,
+	                    total_momentum[1] / total_mass,
+	                    total_momentum[2] / total_mass};
 	for (int i = 0; i < sim->body_count; i++) {
-		glm_vec3_sub(sim->bodies[i].velocity, vel_cm,
-		             sim->bodies[i].velocity);
+		sim->bodies[i].velocity[0] -= vel_cm[0];
+		sim->bodies[i].velocity[1] -= vel_cm[1];
+		sim->bodies[i].velocity[2] -= vel_cm[2];
 	}
 
 	/* Snapshot total energy as reference for stability diagnostics. */
@@ -157,8 +181,9 @@ void nbody_init_preset(NBodySim* sim)
 
 	/* Initialize prev_position = position for first frame (no motion). */
 	for (int i = 0; i < sim->body_count; i++) {
-		glm_vec3_copy(sim->bodies[i].position,
-		              sim->bodies[i].prev_position);
+		sim->bodies[i].prev_position[0] = sim->bodies[i].position[0];
+		sim->bodies[i].prev_position[1] = sim->bodies[i].position[1];
+		sim->bodies[i].prev_position[2] = sim->bodies[i].position[2];
 	}
 }
 
@@ -171,27 +196,31 @@ void nbody_init_preset(NBodySim* sim)
 
 float nbody_total_energy(const NBodySim* sim)
 {
-	float kinetic = 0.0F;
+	double kinetic = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		vec3 vel;
-		glm_vec3_copy((float*)sim->bodies[i].velocity, vel);
-		kinetic += HALF * sim->bodies[i].mass * glm_vec3_dot(vel, vel);
+		double vx = sim->bodies[i].velocity[0];
+		double vy = sim->bodies[i].velocity[1];
+		double vz = sim->bodies[i].velocity[2];
+		kinetic +=
+		    0.5 * sim->bodies[i].mass * (vx * vx + vy * vy + vz * vz);
 	}
 
-	float potential = 0.0F;
+	double potential = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int j = i + 1; j < sim->body_count; j++) {
-			vec3 diff;
-			vec3 pos_i;
-			vec3 pos_j;
-			glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
-			glm_vec3_copy((float*)sim->bodies[j].position, pos_j);
-			glm_vec3_sub(pos_j, pos_i, diff);
-			float eps2 = pair_softening_sq(sim->bodies[i].radius,
-			                               sim->bodies[j].radius);
-			float dist = sqrtf(glm_vec3_dot(diff, diff) + eps2);
-			potential -= sim->gravity * sim->bodies[i].mass *
-			             sim->bodies[j].mass / dist;
+			double dx = sim->bodies[j].position[0] -
+			            sim->bodies[i].position[0];
+			double dy = sim->bodies[j].position[1] -
+			            sim->bodies[i].position[1];
+			double dz = sim->bodies[j].position[2] -
+			            sim->bodies[i].position[2];
+
+			double eps2 = pair_softening_sq(sim->bodies[i].radius,
+			                                sim->bodies[j].radius);
+			double dist = sqrt(dx * dx + dy * dy + dz * dz + eps2);
+			potential -= (double)sim->gravity *
+			             sim->bodies[i].mass * sim->bodies[j].mass /
+			             dist;
 		}
 	}
 
@@ -199,21 +228,22 @@ float nbody_total_energy(const NBodySim* sim)
 	 * Must match the force in compute_accelerations() for energy
 	 * conservation diagnostics to remain accurate. */
 	for (int i = 1; i < sim->body_count; i++) {
-		vec3 rel;
-		vec3 pos_i;
-		vec3 pos_star;
-		glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
-		glm_vec3_copy((float*)sim->bodies[0].position, pos_star);
-		glm_vec3_sub(pos_i, pos_star, rel);
-		float dist = glm_vec3_norm(rel);
-		if (dist > NBODY_CONFINEMENT_RADIUS) {
-			float overshoot = dist - NBODY_CONFINEMENT_RADIUS;
-			potential +=
-			    HALF * NBODY_CONFINEMENT_K * overshoot * overshoot;
+		double rx =
+		    sim->bodies[i].position[0] - sim->bodies[0].position[0];
+		double ry =
+		    sim->bodies[i].position[1] - sim->bodies[0].position[1];
+		double rz =
+		    sim->bodies[i].position[2] - sim->bodies[0].position[2];
+		double dist = sqrt(rx * rx + ry * ry + rz * rz);
+		if (dist > (double)NBODY_CONFINEMENT_RADIUS) {
+			double overshoot =
+			    dist - (double)NBODY_CONFINEMENT_RADIUS;
+			potential += 0.5 * (double)NBODY_CONFINEMENT_K *
+			             overshoot * overshoot;
 		}
 	}
 
-	return kinetic + potential;
+	return (float)(kinetic + potential);
 }
 
 /* ========================================================================= */
@@ -223,34 +253,43 @@ float nbody_total_energy(const NBodySim* sim)
 /* O(N²) pairwise gravity with per-pair Plummer softening.
  * ε² = max(NBODY_SOFTENING_SQ, (F·(r_i+r_j))²)  */
 
-static void compute_accelerations(const NBodySim* sim, vec3* accel)
+static void compute_accelerations(const NBodySim* sim, double accel[][3])
 {
 	for (int i = 0; i < sim->body_count; i++) {
-		glm_vec3_zero(accel[i]);
+		accel[i][0] = 0.0;
+		accel[i][1] = 0.0;
+		accel[i][2] = 0.0;
 	}
 
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int j = i + 1; j < sim->body_count; j++) {
-			vec3 diff;
-			vec3 pos_i;
-			vec3 pos_j;
-			glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
-			glm_vec3_copy((float*)sim->bodies[j].position, pos_j);
-			glm_vec3_sub(pos_j, pos_i, diff);
+			double dx = sim->bodies[j].position[0] -
+			            sim->bodies[i].position[0];
+			double dy = sim->bodies[j].position[1] -
+			            sim->bodies[i].position[1];
+			double dz = sim->bodies[j].position[2] -
+			            sim->bodies[i].position[2];
 
-			float eps2 = pair_softening_sq(sim->bodies[i].radius,
-			                               sim->bodies[j].radius);
-			float dist_sq = glm_vec3_dot(diff, diff) + eps2;
-			float inv_dist = 1.0F / sqrtf(dist_sq);
-			float inv_dist3 = inv_dist * inv_dist * inv_dist;
-			float grav = sim->gravity * inv_dist3;
+			double eps2 = pair_softening_sq(sim->bodies[i].radius,
+			                                sim->bodies[j].radius);
+			double dist_sq = dx * dx + dy * dy + dz * dz + eps2;
+			double inv_dist = 1.0 / sqrt(dist_sq);
+			double inv_dist3 = inv_dist * inv_dist * inv_dist;
+			double grav = (double)sim->gravity * inv_dist3;
 
-			vec3 force;
-			glm_vec3_scale(diff, grav * sim->bodies[j].mass, force);
-			glm_vec3_add(accel[i], force, accel[i]);
+			double fx = dx * grav * sim->bodies[j].mass;
+			double fy = dy * grav * sim->bodies[j].mass;
+			double fz = dz * grav * sim->bodies[j].mass;
+			accel[i][0] += fx;
+			accel[i][1] += fy;
+			accel[i][2] += fz;
 
-			glm_vec3_scale(diff, grav * sim->bodies[i].mass, force);
-			glm_vec3_sub(accel[j], force, accel[j]);
+			fx = dx * grav * sim->bodies[i].mass;
+			fy = dy * grav * sim->bodies[i].mass;
+			fz = dz * grav * sim->bodies[i].mass;
+			accel[j][0] -= fx;
+			accel[j][1] -= fy;
+			accel[j][2] -= fz;
 		}
 	}
 
@@ -261,25 +300,30 @@ static void compute_accelerations(const NBodySim* sim, vec3* accel)
 	 * on the star is scaled by mass_i / mass_0.
 	 * Conservative → Verlet stays symplectic. */
 	for (int i = 1; i < sim->body_count; i++) {
-		vec3 rel;
-		vec3 pos_i;
-		vec3 pos_star;
-		glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
-		glm_vec3_copy((float*)sim->bodies[0].position, pos_star);
-		glm_vec3_sub(pos_i, pos_star, rel);
-		float dist = glm_vec3_norm(rel);
-		if (dist > NBODY_CONFINEMENT_RADIUS) {
-			float overshoot = dist - NBODY_CONFINEMENT_RADIUS;
-			float strength =
-			    -NBODY_CONFINEMENT_K * overshoot / dist;
-			vec3 confine_accel;
-			glm_vec3_scale(rel, strength, confine_accel);
-			glm_vec3_add(accel[i], confine_accel, accel[i]);
+		double rx =
+		    sim->bodies[i].position[0] - sim->bodies[0].position[0];
+		double ry =
+		    sim->bodies[i].position[1] - sim->bodies[0].position[1];
+		double rz =
+		    sim->bodies[i].position[2] - sim->bodies[0].position[2];
+		double dist = sqrt(rx * rx + ry * ry + rz * rz);
+		if (dist > (double)NBODY_CONFINEMENT_RADIUS) {
+			double overshoot =
+			    dist - (double)NBODY_CONFINEMENT_RADIUS;
+			double strength =
+			    -(double)NBODY_CONFINEMENT_K * overshoot / dist;
+			double ax = rx * strength;
+			double ay = ry * strength;
+			double az = rz * strength;
+			accel[i][0] += ax;
+			accel[i][1] += ay;
+			accel[i][2] += az;
 			/* Newton 3rd law: reaction on star, mass-weighted. */
-			float ratio = sim->bodies[i].mass / sim->bodies[0].mass;
-			vec3 reaction;
-			glm_vec3_scale(confine_accel, ratio, reaction);
-			glm_vec3_sub(accel[0], reaction, accel[0]);
+			double ratio =
+			    sim->bodies[i].mass / sim->bodies[0].mass;
+			accel[0][0] -= ax * ratio;
+			accel[0][1] -= ay * ratio;
+			accel[0][2] -= az * ratio;
 		}
 	}
 }
@@ -289,40 +333,35 @@ static void compute_accelerations(const NBodySim* sim, vec3* accel)
 
 static void integrate_step(NBodySim* sim, float delta_time)
 {
-	vec3 accel_old[NBODY_MAX_BODIES];
-	vec3 accel_new[NBODY_MAX_BODIES];
+	double accel_old[NBODY_MAX_BODIES][3];
+	double accel_new[NBODY_MAX_BODIES][3];
+	double dt = (double)delta_time;
 
 	compute_accelerations(sim, accel_old);
 
 	/* x += v·dt + ½·a·dt² */
 	for (int i = 0; i < sim->body_count; i++) {
-		vec3 tmp;
-		glm_vec3_scale(sim->bodies[i].velocity, delta_time, tmp);
-		glm_vec3_add(sim->bodies[i].position, tmp,
-		             sim->bodies[i].position);
-		glm_vec3_scale(accel_old[i], HALF * delta_time * delta_time,
-		               tmp);
-		glm_vec3_add(sim->bodies[i].position, tmp,
-		             sim->bodies[i].position);
+		sim->bodies[i].position[0] += sim->bodies[i].velocity[0] * dt +
+		                              0.5 * accel_old[i][0] * dt * dt;
+		sim->bodies[i].position[1] += sim->bodies[i].velocity[1] * dt +
+		                              0.5 * accel_old[i][1] * dt * dt;
+		sim->bodies[i].position[2] += sim->bodies[i].velocity[2] * dt +
+		                              0.5 * accel_old[i][2] * dt * dt;
 	}
 
 	compute_accelerations(sim, accel_new);
 
 	/* v += ½·(a_old + a_new)·dt */
 	for (int i = 0; i < sim->body_count; i++) {
-		vec3 avg;
-		glm_vec3_add(accel_old[i], accel_new[i], avg);
-		glm_vec3_scale(avg, HALF * delta_time, avg);
-		glm_vec3_add(sim->bodies[i].velocity, avg,
-		             sim->bodies[i].velocity);
+		sim->bodies[i].velocity[0] +=
+		    0.5 * (accel_old[i][0] + accel_new[i][0]) * dt;
+		sim->bodies[i].velocity[1] +=
+		    0.5 * (accel_old[i][1] + accel_new[i][1]) * dt;
+		sim->bodies[i].velocity[2] +=
+		    0.5 * (accel_old[i][2] + accel_new[i][2]) * dt;
 
 		if (isnan(sim->bodies[i].velocity[0])) {
-			printf(
-			    "!!! Body %d velocity became NaN at step! "
-			    "v_prev=%f a_old=%f a_new=%f dt=%f\n",
-			    i, (double)sim->bodies[i].velocity[0],
-			    (double)accel_old[i][0], (double)accel_new[i][0],
-			    (double)delta_time);
+			printf("!!! Body %d velocity became NaN at step!\n", i);
 		}
 	}
 
@@ -335,51 +374,66 @@ static void integrate_step(NBodySim* sim, float delta_time)
 	 * is preserved → angular momentum conserved.
 	 * Momentum conservation: impulse transferred to star (body 0). */
 	for (int i = 1; i < sim->body_count; i++) {
-		vec3 rel;
-		glm_vec3_sub(sim->bodies[i].position, sim->bodies[0].position,
-		             rel);
-		float dist = glm_vec3_norm(rel);
-		if (dist > NBODY_CONFINEMENT_RADIUS && dist > EPSILON) {
+		double rx =
+		    sim->bodies[i].position[0] - sim->bodies[0].position[0];
+		double ry =
+		    sim->bodies[i].position[1] - sim->bodies[0].position[1];
+		double rz =
+		    sim->bodies[i].position[2] - sim->bodies[0].position[2];
+		double dist = sqrt(rx * rx + ry * ry + rz * rz);
+		if (dist > (double)NBODY_CONFINEMENT_RADIUS && dist > 1e-9) {
 			/* Record impact for VFX — keep peak velocity per body
 			 */
-			float v_out =
-			    glm_vec3_dot(sim->bodies[i].velocity, rel) / dist;
-			if (v_out > sim->impacts[i].velocity) {
-				glm_vec3_copy(sim->bodies[i].position,
-				              sim->impacts[i].position);
+			double v_out = (sim->bodies[i].velocity[0] * rx +
+			                sim->bodies[i].velocity[1] * ry +
+			                sim->bodies[i].velocity[2] * rz) /
+			               dist;
+			if (v_out > (double)sim->impacts[i].velocity) {
+				sim->impacts[i].position[0] =
+				    (float)sim->bodies[i].position[0];
+				sim->impacts[i].position[1] =
+				    (float)sim->bodies[i].position[1];
+				sim->impacts[i].position[2] =
+				    (float)sim->bodies[i].position[2];
 				glm_vec3_copy(sim->bodies[i].albedo,
 				              sim->impacts[i].color);
-				sim->impacts[i].velocity = v_out;
+				sim->impacts[i].velocity = (float)v_out;
 				sim->impacts[i].active = true;
 			}
 
-			vec3 r_hat;
-			glm_vec3_scale(rel, 1.0F / dist, r_hat);
-			float v_radial =
-			    glm_vec3_dot(sim->bodies[i].velocity, r_hat);
-			if (v_radial > 0.0F) { /* outward only */
-				float overshoot =
-				    dist - NBODY_CONFINEMENT_RADIUS;
-				float damp =
-				    NBODY_CONFINEMENT_DAMPING *
-				    (overshoot / NBODY_CONFINEMENT_RADIUS) *
-				    delta_time;
-				if (damp > 1.0F) {
-					damp = 1.0F;
+			double r_hat_x = rx / dist;
+			double r_hat_y = ry / dist;
+			double r_hat_z = rz / dist;
+			double v_radial = sim->bodies[i].velocity[0] * r_hat_x +
+			                  sim->bodies[i].velocity[1] * r_hat_y +
+			                  sim->bodies[i].velocity[2] * r_hat_z;
+			if (v_radial > 0.0) { /* outward only */
+				double overshoot =
+				    dist - (double)NBODY_CONFINEMENT_RADIUS;
+				/* Stability fix: use abs(delta_time) for
+				 * damping to ensure energy is always removed
+				 * even in reverse. */
+				double damp =
+				    (double)NBODY_CONFINEMENT_DAMPING *
+				    (overshoot /
+				     (double)NBODY_CONFINEMENT_RADIUS) *
+				    fabs((double)delta_time);
+				if (damp > 1.0) {
+					damp = 1.0;
 				}
-				vec3 vel_damp;
-				glm_vec3_scale(r_hat, -v_radial * damp,
-				               vel_damp);
-				glm_vec3_add(sim->bodies[i].velocity, vel_damp,
-				             sim->bodies[i].velocity);
+				double dvx = -v_radial * damp * r_hat_x;
+				double dvy = -v_radial * damp * r_hat_y;
+				double dvz = -v_radial * damp * r_hat_z;
+				sim->bodies[i].velocity[0] += dvx;
+				sim->bodies[i].velocity[1] += dvy;
+				sim->bodies[i].velocity[2] += dvz;
 				/* Momentum conservation: Δp_star = -Δp_i
 				 * → Δv_star = -(m_i/m_0)·dv */
-				float ratio =
+				double ratio =
 				    sim->bodies[i].mass / sim->bodies[0].mass;
-				vec3 dv_star;
-				glm_vec3_scale(vel_damp, -ratio, dv_star);
-				glm_vec3_add(sim->bodies[0].velocity, dv_star,
-				             sim->bodies[0].velocity);
+				sim->bodies[0].velocity[0] -= dvx * ratio;
+				sim->bodies[0].velocity[1] -= dvy * ratio;
+				sim->bodies[0].velocity[2] -= dvz * ratio;
 			}
 		}
 	}
@@ -399,8 +453,9 @@ void nbody_step(NBodySim* sim, float delta_time)
 	 * prev_position will be used by nbody_write_instances() to
 	 * fill SphereInstance::prev_center for the velocity buffer. */
 	for (int i = 0; i < sim->body_count; i++) {
-		glm_vec3_copy(sim->bodies[i].position,
-		              sim->bodies[i].prev_position);
+		sim->bodies[i].prev_position[0] = sim->bodies[i].position[0];
+		sim->bodies[i].prev_position[1] = sim->bodies[i].position[1];
+		sim->bodies[i].prev_position[2] = sim->bodies[i].position[2];
 	}
 
 	float scaled_dt = delta_time * sim->time_scale;
@@ -433,14 +488,19 @@ void nbody_write_instances(const NBodySim* sim, SphereInstance* out)
 	for (int i = 0; i < sim->body_count; i++) {
 		const NBodyParticle* body = &sim->bodies[i];
 		glm_mat4_identity(out[i].model);
-		glm_translate(out[i].model, (float*)body->position);
+		vec3 pos_f = {(float)body->position[0],
+		              (float)body->position[1],
+		              (float)body->position[2]};
+		glm_translate(out[i].model, pos_f);
 		vec3 scale = {body->radius, body->radius, body->radius};
 		glm_scale(out[i].model, scale);
 		glm_vec3_copy((float*)body->albedo, out[i].albedo);
 		out[i].metallic = body->metallic;
 		out[i].roughness = body->roughness;
 		out[i].ao = 1.0F;
-		glm_vec3_copy((float*)body->prev_position, out[i].prev_center);
+		out[i].prev_center[0] = (float)body->prev_position[0];
+		out[i].prev_center[1] = (float)body->prev_position[1];
+		out[i].prev_center[2] = (float)body->prev_position[2];
 	}
 }
 
@@ -451,13 +511,15 @@ int nbody_get_count(const NBodySim* sim)
 
 float nbody_kinetic_energy(const NBodySim* sim)
 {
-	float kinetic = 0.0F;
+	double kinetic = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		vec3 vel;
-		glm_vec3_copy((float*)sim->bodies[i].velocity, vel);
-		kinetic += HALF * sim->bodies[i].mass * glm_vec3_dot(vel, vel);
+		double vx = sim->bodies[i].velocity[0];
+		double vy = sim->bodies[i].velocity[1];
+		double vz = sim->bodies[i].velocity[2];
+		kinetic +=
+		    0.5 * sim->bodies[i].mass * (vx * vx + vy * vy + vz * vz);
 	}
-	return kinetic;
+	return (float)kinetic;
 }
 
 float nbody_energy_drift(const NBodySim* sim)
