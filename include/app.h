@@ -9,7 +9,6 @@
 #include "effect_benchmark.h"
 #include "env_manager.h"
 #include "gl_common.h"
-#include "postprocess_internal.h"
 #include "scene.h"
 #include <cglm/cglm.h>
 
@@ -20,6 +19,7 @@
 /* --- Opaque sub-struct forward declarations --- */
 typedef struct AppProfiling AppProfiling;
 typedef struct AppInput AppInput;
+typedef struct PostProcess PostProcess;
 
 /**
  * @struct App
@@ -27,8 +27,8 @@ typedef struct AppInput AppInput;
  */
 typedef struct App {
 	/* --- Pointers and Dynamic Objects --- */
-	Scene scene;             /**< The 3D scene (Includes GI Probe Grid). */
-	PostProcess postprocess; /**< Main post-processing pipeline. */
+	Scene scene;              /**< The 3D scene (Includes GI Probe Grid). */
+	PostProcess* postprocess; /**< Main post-processing pipeline. */
 	AppWindow win; /**< Window handle, fullscreen & resize state. */
 	double last_frame_time;      /**< Absolute time of last frame start. */
 	double delta_time;           /**< Time elapsed since last frame. */

@@ -99,7 +99,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 {
 	return (RenderContext){
 	    .scene = &app->scene,
-	    .postprocess = &app->postprocess,
+	    .postprocess = app->postprocess,
 	    .camera = &app->input->camera,
 	    .profiler = &app->profiling->gpu_profiler,
 	    .profiler_ui = &app->profiling->timeline_ui,
@@ -485,29 +485,29 @@ static void apply_subtle_none(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
 }
 
 static void apply_subtle_bloom(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
-	postprocess_enable(&g_test_app.postprocess, POSTFX_BLOOM);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(g_test_app.postprocess, POSTFX_BLOOM);
+	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
 }
 
 static void apply_subtle_auto_exposure(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
-	postprocess_enable(&g_test_app.postprocess, POSTFX_AUTO_EXPOSURE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(g_test_app.postprocess, POSTFX_AUTO_EXPOSURE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
 	g_test_app.profiling->log_gpu_metrics = 1;
 
 	// Note: warmup frames are handled inside the app_update cycles in the
@@ -519,30 +519,30 @@ static void apply_subtle_fxaa(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
-	postprocess_enable(&g_test_app.postprocess, POSTFX_FXAA);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(g_test_app.postprocess, POSTFX_FXAA);
+	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
 }
 
 static void apply_subtle_dof(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
-	postprocess_enable(&g_test_app.postprocess, POSTFX_DOF);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(g_test_app.postprocess, POSTFX_DOF);
+	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
 }
 
 static void apply_subtle_motion_blur(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
-	postprocess_enable(&g_test_app.postprocess, POSTFX_MOTION_BLUR);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
-	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(g_test_app.postprocess, POSTFX_MOTION_BLUR);
+	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
 }
 
 static void pre_render_auto_exposure(const ViewPoint* vpoint, void* data)
@@ -602,8 +602,8 @@ static void pre_render_sony_a7siii(const ViewPoint* vpoint, void* data)
 {
 	(void)vpoint;
 	(void)data;
-	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SONY_A7SIII);
-	postprocess_load_lut3d(&g_test_app.postprocess,
+	postprocess_apply_preset(g_test_app.postprocess, &PRESET_SONY_A7SIII);
+	postprocess_load_lut3d(g_test_app.postprocess,
 	                       "assets/luts/sony_scinetone.cube");
 
 	const int warmup_frames = 128;
@@ -624,7 +624,7 @@ static void test_app_render_multi_view(void)
 {
 	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
 	                         "App should be initialized");
-	g_test_app.postprocess.active_effects = 0;
+	g_test_app.postprocess->active_effects = 0;
 	pipeline_run_test_loop(NULL, NULL, NULL);
 }
 

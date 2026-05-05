@@ -959,8 +959,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 
 static void draw_exposure_debug_text(const App* app)
 {
-	float exposure_val =
-	    postprocess_get_exposure((PostProcess*)&app->postprocess);
+	float exposure_val = postprocess_get_exposure(app->postprocess);
 
 	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
 	const float luminance =
@@ -1030,11 +1029,10 @@ static void draw_luminance_histogram_graph(const App* app, const int* buckets,
 
 static void draw_bloom_debug_status(const App* app, UILayout* layout)
 {
-	if (postprocess_is_enabled((PostProcess*)&app->postprocess,
-	                           POSTFX_BLOOM_DEBUG)) {
+	if (postprocess_is_enabled(app->postprocess, POSTFX_BLOOM_DEBUG)) {
 		char buf[DEBUG_TEXT_BUFFER_SIZE];
-		int step = app->postprocess.bloom_fx.debug_step;
-		int mip = app->postprocess.bloom_fx.debug_mip;
+		int step = app->postprocess->bloom_fx.debug_step;
+		int mip = app->postprocess->bloom_fx.debug_mip;
 		const char* stages[] = {"Final Map", "Prefilter", "Downsample",
 		                        "Upsample"};
 
@@ -1052,8 +1050,8 @@ void app_draw_debug_overlay(const App* app)
 	float max_lum = 0.0F;
 
 	if (postprocess_compute_luminance_histogram(
-	        (PostProcess*)&app->postprocess, app->frame_count, buckets,
-	        HISTO_BUCKETS, &min_lum, &max_lum) > 0) {
+	        app->postprocess, app->frame_count, buckets, HISTO_BUCKETS,
+	        &min_lum, &max_lum) > 0) {
 		draw_luminance_histogram_graph(app, buckets, HISTO_BUCKETS,
 		                               min_lum, max_lum);
 		draw_exposure_debug_text(app);
@@ -1129,7 +1127,7 @@ static void draw_cinematic_overlay(const App* app, UILayout* layout)
 		return;
 	}
 
-	const PostProcess* post_proc = &app->postprocess;
+	PostProcess* post_proc = app->postprocess;
 	char text[DEBUG_TEXT_BUFFER_SIZE];
 
 	/* White Balance */
@@ -1145,7 +1143,7 @@ static void draw_cinematic_overlay(const App* app, UILayout* layout)
 	ui_layout_text(layout, text, DEFAULT_FONT_COLOR);
 
 	/* Fog Details (Only if enabled) */
-	if (postprocess_is_enabled((PostProcess*)post_proc, POSTFX_FOG)) {
+	if (postprocess_is_enabled(post_proc, POSTFX_FOG)) {
 		(void)safe_snprintf(
 		    text, sizeof(text), "Fog: Density=%.3f, Start=%.1f",
 		    post_proc->fog.density, post_proc->fog.start);
@@ -1153,7 +1151,7 @@ static void draw_cinematic_overlay(const App* app, UILayout* layout)
 	}
 
 	/* Grain Details (Only if enabled) */
-	if (postprocess_is_enabled((PostProcess*)post_proc, POSTFX_GRAIN)) {
+	if (postprocess_is_enabled(post_proc, POSTFX_GRAIN)) {
 		(void)safe_snprintf(
 		    text, sizeof(text), "Grain: Int=%.2f, Scale=%.1f",
 		    post_proc->grain.intensity, post_proc->grain.texel_size);
@@ -1167,8 +1165,7 @@ static void draw_exposure_overlay(const App* app, UILayout* layout)
 		return;
 	}
 
-	float exposure_val =
-	    postprocess_get_exposure((PostProcess*)&app->postprocess);
+	float exposure_val = postprocess_get_exposure(app->postprocess);
 
 	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
@@ -1288,8 +1285,7 @@ void app_render_ui(const App* app)
 	draw_bloom_debug_status(app, &layout);
 	draw_loading_indicator(app);
 
-	if (postprocess_is_enabled((PostProcess*)&app->postprocess,
-	                           POSTFX_EXPOSURE_DEBUG)) {
+	if (postprocess_is_enabled(app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
 		app_draw_debug_overlay(app);
 	}
 
@@ -1312,6 +1308,6 @@ int compute_luminance_histogram(const App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum)
 {
 	return postprocess_compute_luminance_histogram(
-	    (PostProcess*)&app->postprocess, app->frame_count, buckets, size,
-	    min_lum, max_lum);
+	    app->postprocess, app->frame_count, buckets, size, min_lum,
+	    max_lum);
 }

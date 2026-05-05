@@ -4,6 +4,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "app_ui.h"
+#include "postprocess_internal.h"
 #include "profiler.h"
 #include "renderer.h"
 #include "scene.h"
@@ -29,6 +30,14 @@ int app_init(App* app, int width, int height, const char* title)
 	app->profiling = calloc(1, sizeof(*app->profiling));
 	if (!app->profiling) {
 		free(app->input);
+		app->input = NULL;
+		return 0;
+	}
+	app->postprocess = calloc(1, sizeof(*app->postprocess));
+	if (!app->postprocess) {
+		free(app->profiling);
+		free(app->input);
+		app->profiling = NULL;
 		app->input = NULL;
 		return 0;
 	}
@@ -111,24 +120,24 @@ int app_init(App* app, int width, int height, const char* title)
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
 
-	if (!postprocess_init(&app->postprocess, &app->profiling->gpu_profiler,
+	if (!postprocess_init(app->postprocess, &app->profiling->gpu_profiler,
 	                      width, height)) {
 		return 0;
 	}
-	postprocess_set_dummy_textures(&app->postprocess,
+	postprocess_set_dummy_textures(app->postprocess,
 	                               app->scene.gpu->dummy_black_tex);
-	postprocess_set_exposure(&app->postprocess,
-	                         app->postprocess.readback.auto_threshold);
-	postprocess_enable(&app->postprocess, POSTFX_FXAA);
+	postprocess_set_exposure(app->postprocess,
+	                         app->postprocess->readback.auto_threshold);
+	postprocess_enable(app->postprocess, POSTFX_FXAA);
 
 #ifdef ENABLE_SHADER_OPTIMIZATION
-	postprocess_compile_optimized(&app->postprocess,
-	                              app->postprocess.active_effects);
+	postprocess_compile_optimized(app->postprocess,
+	                              app->postprocess->active_effects);
 #endif
 
 	action_notifier_init(&app->notifier);
 
-	effect_benchmark_init(&app->effect_bench, &app->postprocess,
+	effect_benchmark_init(&app->effect_bench, app->postprocess,
 	                      &app->profiling->gpu_profiler);
 
 	return 1;
@@ -142,7 +151,9 @@ void app_cleanup(App* app)
 
 	/* 1. High-level systems first (may depend on textures/shaders) */
 	app_ui_cleanup(&app->overlay);
-	postprocess_cleanup(&app->postprocess);
+	postprocess_cleanup(app->postprocess);
+	free(app->postprocess);
+	app->postprocess = NULL;
 
 	/* Async Loader Shutdown before other resources */
 	async_loader_destroy(app->async_loader);
@@ -193,7 +204,7 @@ void app_run(App* app)
 		 * event processing are fully complete. */
 		if (app->win.resize_pending) {
 			PROFILE_ZONE(resize_ctx, "PostProcess Resize");
-			postprocess_resize(&app->postprocess,
+			postprocess_resize(app->postprocess,
 			                   app->win.pending_width,
 			                   app->win.pending_height);
 			app->win.resize_pending = 0;
@@ -237,7 +248,7 @@ void app_run(App* app)
 			action_notifier_update(&app->notifier,
 			                       (float)app->delta_time);
 			app_ui_update(&app->overlay, app->delta_time);
-			postprocess_update_time(&app->postprocess,
+			postprocess_update_time(app->postprocess,
 			                        (float)app->delta_time);
 			gpu_usage_update(&app->profiling->gpu_usage);
 			PROFILE_ZONE_END(ui_notif_ctx);
@@ -359,7 +370,7 @@ void app_run(App* app)
 			PROFILE_ZONE(render_ctx, "App Render");
 			RenderContext rctx = {
 			    .scene = &app->scene,
-			    .postprocess = &app->postprocess,
+			    .postprocess = app->postprocess,
 			    .camera = &app->input->camera,
 			    .profiler = &app->profiling->gpu_profiler,
 			    .profiler_ui = &app->profiling->timeline_ui,
@@ -431,10 +442,10 @@ void app_update(App* app)
 		    &app->scene.lighting.ibl_coord);
 	}
 
-	env_manager_update_ibl(&app->env_mgr, &app->scene, &app->postprocess,
+	env_manager_update_ibl(&app->env_mgr, &app->scene, app->postprocess,
 	                       app->frame_count, app->width, app->height);
 	env_manager_update_transition(&app->env_mgr, &app->scene,
-	                              &app->postprocess, app->delta_time,
+	                              app->postprocess, app->delta_time,
 	                              app->frame_count);
 }
 AppInputContext app_input_ctx_from_app(App* app)
@@ -443,7 +454,7 @@ AppInputContext app_input_ctx_from_app(App* app)
 	    .window = app->win.handle,
 	    .camera = &app->input->camera,
 	    .scene = &app->scene,
-	    .postprocess = &app->postprocess,
+	    .postprocess = app->postprocess,
 	    .env_mgr = &app->env_mgr,
 	    .notifier = &app->notifier,
 	    .overlay = &app->overlay,
