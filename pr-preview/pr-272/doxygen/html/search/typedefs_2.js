@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['renderuifn_4212',['RenderUIFn',['../renderer_8h.html#a70221bb688ef3a4351e2ebdc423d2525',1,'renderer.h']]]
+  ['logcallback_4213',['LogCallback',['../log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead',1,'log.h']]]
 ];

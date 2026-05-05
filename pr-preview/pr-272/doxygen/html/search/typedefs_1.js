@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logcallback_4211',['LogCallback',['../log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead',1,'log.h']]]
+  ['glfwwindow_4212',['GLFWwindow',['../window_8h.html#a3c96d80d363e67d13a41b5d1821f3242',1,'window.h']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['glfwwindow_4210',['GLFWwindow',['../window_8h.html#a3c96d80d363e67d13a41b5d1821f3242',1,'window.h']]]
+  ['asynccoordinator_4211',['AsyncCoordinator',['../app_8h.html#a847545ce6902f2938641bd0326c9ef8d',1,'app.h']]]
 ];
