@@ -1,5 +1,7 @@
 # Localité Cache vs Découplage : Analyse du Layout Mémoire
 
+*Mai 2026 — Phase 10 : Approfondissement Architectural V*
+
 ## Contexte
 
 Durant la Phase 10 d'approfondissement architectural, nous avons audité le layout des structs centrales (`App`, `Scene`, `PostProcess`) pour comprendre les compromis entre découplage par pointeurs opaques et performance du cache CPU.

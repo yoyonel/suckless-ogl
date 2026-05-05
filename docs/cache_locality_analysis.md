@@ -1,5 +1,7 @@
 # Cache Locality vs Decoupling: Memory Layout Analysis
 
+*May 2026 — Phase 10: Architecture Deepening V*
+
 ## Context
 
 During the Phase 10 architecture deepening, we audited the struct layout of the core types (`App`, `Scene`, `PostProcess`) to understand the trade-offs between opaque-pointer decoupling and CPU cache performance.
