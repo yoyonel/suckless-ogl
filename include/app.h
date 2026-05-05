@@ -4,8 +4,6 @@
 #include "action_notifier.h"
 #include "app_ui.h"
 #include "app_window.h"
-#include "async/async_coordinator.h"
-#include "async_loader.h"
 #include "effect_benchmark.h"
 #include "gl_common.h"
 #include <cglm/cglm.h>
@@ -16,6 +14,8 @@ typedef struct AppInput AppInput;
 typedef struct PostProcess PostProcess;
 typedef struct Scene Scene;
 typedef struct EnvManager EnvManager;
+typedef struct AsyncLoader AsyncLoader;
+typedef struct AsyncCoordinator AsyncCoordinator;
 
 /**
  * @struct App
@@ -53,7 +53,7 @@ typedef struct App {
 	float u_exposure;  /**< Manual exposure compensation. */
 
 	AsyncLoader* async_loader; /**< Background asset loader context. */
-	AsyncCoordinator
+	AsyncCoordinator*
 	    async_coord; /**< Manages PBO allocation & async synchronization. */
 
 } App;

@@ -4,6 +4,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "app_ui.h"
+#include "async/async_coordinator.h"
 #include "env_manager.h"
 #include "postprocess_internal.h"
 #include "profiler.h"
@@ -64,6 +65,20 @@ int app_init(App* app, int width, int height, const char* title)
 		app->input = NULL;
 		return 0;
 	}
+	app->async_coord = calloc(1, sizeof(*app->async_coord));
+	if (!app->async_coord) {
+		free(app->env_mgr);
+		free(app->scene);
+		free(app->postprocess);
+		free(app->profiling);
+		free(app->input);
+		app->env_mgr = NULL;
+		app->scene = NULL;
+		app->postprocess = NULL;
+		app->profiling = NULL;
+		app->input = NULL;
+		return 0;
+	}
 
 	app_input_state_init(app->input);
 	app->win.is_fullscreen = false;
@@ -101,7 +116,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->env_mgr->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
 	app->env_mgr->is_first_load = 1;
 
-	async_coordinator_init(&app->async_coord);
+	async_coordinator_init(app->async_coord);
 
 	app->lum_histogram_buffer =
 	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
@@ -191,7 +206,9 @@ void app_cleanup(App* app)
 	free(app->env_mgr);
 	app->env_mgr = NULL;
 
-	async_coordinator_cleanup(&app->async_coord);
+	async_coordinator_cleanup(app->async_coord);
+	free(app->async_coord);
+	app->async_coord = NULL;
 
 	app_input_state_cleanup(app->input);
 	free(app->input);
@@ -446,17 +463,17 @@ void app_update(App* app)
 	 * PBO setup, so glTexImage2D doesn't pile up on the same
 	 * frame as PBO Setup & Map.
 	 */
-	if (app->async_coord.pending_prealloc_w > 0) {
-		app->scene->gpu->recycled_hdr_tex =
-		    texture_preallocate_hdr(app->async_coord.pending_prealloc_w,
-		                            app->async_coord.pending_prealloc_h,
-		                            app->scene->gpu->recycled_hdr_tex);
-		app->async_coord.pending_prealloc_w = 0;
-		app->async_coord.pending_prealloc_h = 0;
+	if (app->async_coord->pending_prealloc_w > 0) {
+		app->scene->gpu->recycled_hdr_tex = texture_preallocate_hdr(
+		    app->async_coord->pending_prealloc_w,
+		    app->async_coord->pending_prealloc_h,
+		    app->scene->gpu->recycled_hdr_tex);
+		app->async_coord->pending_prealloc_w = 0;
+		app->async_coord->pending_prealloc_h = 0;
 	}
 
 	AsyncRequest ready_req;
-	if (async_coordinator_update(&app->async_coord, app->async_loader,
+	if (async_coordinator_update(app->async_coord, app->async_loader,
 	                             &ready_req)) {
 		/* Step 2: Begin multi-frame finalize process */
 		app->env_mgr->current_env_req = ready_req;
