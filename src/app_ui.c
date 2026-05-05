@@ -7,6 +7,7 @@
 #include "glad/glad.h"
 #include "nbody.h"
 #include "postprocess_internal.h"
+#include "scene.h"
 #include "scene_simulation.h"
 #include "texture.h"
 #include "ui.h"
@@ -1111,12 +1112,12 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	ui_layout_text(layout, pos_text, DEFAULT_FONT_COLOR);
 
 	/* 3. Environment */
-	if (app->overlay.text_overlay_mode >= 2 && app->scene.hdr_count > 0 &&
-	    app->scene.current_hdr_index >= 0) {
+	if (app->overlay.text_overlay_mode >= 2 && app->scene->hdr_count > 0 &&
+	    app->scene->current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
 		(void)safe_snprintf(
 		    env_text, sizeof(env_text), "Env: %s",
-		    app->scene.hdr_files[app->scene.current_hdr_index]);
+		    app->scene->hdr_files[app->scene->current_hdr_index]);
 		ui_layout_text(layout, env_text, ENV_TEXT_COLOR);
 	}
 }
@@ -1176,11 +1177,11 @@ static void draw_exposure_overlay(const App* app, UILayout* layout)
 static void draw_nbody_overlay(const App* app, UILayout* layout)
 {
 	if (app->overlay.text_overlay_mode < 1 ||
-	    !app->scene.simulation->nbody_mode) {
+	    !app->scene->simulation->nbody_mode) {
 		return;
 	}
 
-	const NBodySim* sim = &app->scene.simulation->nbody_sim;
+	const NBodySim* sim = &app->scene->simulation->nbody_sim;
 	char text[NBODY_TEXT_BUFFER_SIZE];
 
 	/* Kinetic energy + time direction */
@@ -1234,7 +1235,7 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 
 static void draw_loading_indicator(const App* app)
 {
-	if (app->scene.lighting.ibl_coord.state == IBL_STATE_IDLE &&
+	if (app->scene->lighting.ibl_coord.state == IBL_STATE_IDLE &&
 	    !app->env_mgr.env_map_loading) {
 		return;
 	}

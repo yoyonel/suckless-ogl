@@ -6,6 +6,7 @@
 #include "app_profiling.h"
 #include "camera_input.h"
 #include "postprocess_internal.h"
+#include "scene.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
@@ -18,7 +19,7 @@ static AppInputContext test_ctx_from_app(App* app)
 	return (AppInputContext){
 	    .window = app->win.handle,
 	    .camera = &app->input->camera,
-	    .scene = &app->scene,
+	    .scene = app->scene,
 	    .postprocess = app->postprocess,
 	    .env_mgr = &app->env_mgr,
 	    .notifier = &app->notifier,
@@ -72,6 +73,7 @@ void setUp(void)
 	test_app->profiling = calloc(1, sizeof(*test_app->profiling));
 	test_app->input = calloc(1, sizeof(*test_app->input));
 	test_app->postprocess = calloc(1, sizeof(*test_app->postprocess));
+	test_app->scene = calloc(1, sizeof(*test_app->scene));
 	action_notifier_init(&test_app->notifier);
 	gpu_profiler_init(&test_app->profiling->gpu_profiler);
 	effect_benchmark_init(&test_app->effect_bench, test_app->postprocess,
@@ -89,6 +91,7 @@ void tearDown(void)
 	free(test_app->profiling);
 	free(test_app->input);
 	free(test_app->postprocess);
+	free(test_app->scene);
 	free(test_app);
 	glfwTerminate();
 }
@@ -128,19 +131,19 @@ void test_handle_app_input_exhaustive(void)
 	handle_app_input(&ctx, GLFW_KEY_F4, 0);
 	TEST_ASSERT_TRUE(test_app->profiling->log_gpu_metrics);
 	handle_app_input(&ctx, GLFW_KEY_Z, 0);
-	TEST_ASSERT_TRUE(test_app->scene.config.wireframe);
+	TEST_ASSERT_TRUE(test_app->scene->config.wireframe);
 	handle_app_input(&ctx, GLFW_KEY_C, 0);
 	TEST_ASSERT_TRUE(test_app->input->camera_enabled);
 	handle_app_input(&ctx, GLFW_KEY_L, 0);
-	TEST_ASSERT_TRUE(test_app->scene.config.billboard_mode);
+	TEST_ASSERT_TRUE(test_app->scene->config.billboard_mode);
 	handle_app_input(&ctx, GLFW_KEY_K, 0);
-	TEST_ASSERT_TRUE(test_app->scene.config.show_envmap);
+	TEST_ASSERT_TRUE(test_app->scene->config.show_envmap);
 
 	/* PBR Debug Modes (cycle) */
-	int initial_debug = test_app->scene.config.pbr_debug_mode;
+	int initial_debug = test_app->scene->config.pbr_debug_mode;
 	handle_app_input(&ctx, GLFW_KEY_F5, 0);
 	TEST_ASSERT_EQUAL((initial_debug + 1) % 9,
-	                  test_app->scene.config.pbr_debug_mode);
+	                  test_app->scene->config.pbr_debug_mode);
 
 	/* Banding Styles (cycle) */
 	/* First press enables banding and sets idx to 0 (Linear) */
@@ -324,11 +327,11 @@ void test_key_callback_dispatch(void)
 void test_subdiv_input(void)
 {
 	AppInputContext ctx = test_ctx_from_app(test_app);
-	test_app->scene.config.subdivisions = 2;
+	test_app->scene->config.subdivisions = 2;
 	handle_app_input(&ctx, GLFW_KEY_UP, 0);
-	TEST_ASSERT_EQUAL(3, test_app->scene.config.subdivisions);
+	TEST_ASSERT_EQUAL(3, test_app->scene->config.subdivisions);
 	handle_app_input(&ctx, GLFW_KEY_DOWN, 0);
-	TEST_ASSERT_EQUAL(2, test_app->scene.config.subdivisions);
+	TEST_ASSERT_EQUAL(2, test_app->scene->config.subdivisions);
 }
 
 /**

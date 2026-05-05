@@ -4,6 +4,7 @@
 #include "app_settings.h"
 #include "env_manager.h"
 #include "postprocess_internal.h"
+#include "scene.h"
 #include "scene_gpu_resources.h"
 #include "scene_shaders.h"
 #include "unity.h"
@@ -42,8 +43,9 @@ void setUp(void)
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
 
-	g_test_app->scene.gpu = calloc(1, sizeof(SceneGPUResources));
-	g_test_app->scene.shaders = calloc(1, sizeof(SceneShaders));
+	g_test_app->scene = calloc(1, sizeof(Scene));
+	g_test_app->scene->gpu = calloc(1, sizeof(SceneGPUResources));
+	g_test_app->scene->shaders = calloc(1, sizeof(SceneShaders));
 	g_test_app->postprocess = calloc(1, sizeof(PostProcess));
 	g_test_app->width = WINDOW_WIDTH;
 	g_test_app->height = WINDOW_HEIGHT;
@@ -56,8 +58,9 @@ void tearDown(void)
 	if (g_test_app->win.handle) {
 		glfwDestroyWindow(g_test_app->win.handle);
 	}
-	free(g_test_app->scene.gpu);
-	free(g_test_app->scene.shaders);
+	free(g_test_app->scene->gpu);
+	free(g_test_app->scene->shaders);
+	free(g_test_app->scene);
 	free(g_test_app->postprocess);
 	free(g_test_app);
 	glfwTerminate();
@@ -70,10 +73,10 @@ void test_transition_initial_state(void)
 {
 	g_test_app->env_mgr.transition_state = TRANSITION_WAIT_IBL;
 	g_test_app->env_mgr.transition_alpha = 1.0F;
-	g_test_app->scene.lighting.ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene->lighting.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
-	env_manager_update_ibl(&g_test_app->env_mgr, &g_test_app->scene,
+	env_manager_update_ibl(&g_test_app->env_mgr, g_test_app->scene,
 	                       g_test_app->postprocess, g_test_app->frame_count,
 	                       g_test_app->width, g_test_app->height);
 
@@ -89,10 +92,10 @@ void test_transition_crossfade_flow(void)
 {
 	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_CROSSFADE;
 	g_test_app->env_mgr.transition_state = TRANSITION_LOADING;
-	g_test_app->scene.lighting.ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene->lighting.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
-	env_manager_update_ibl(&g_test_app->env_mgr, &g_test_app->scene,
+	env_manager_update_ibl(&g_test_app->env_mgr, g_test_app->scene,
 	                       g_test_app->postprocess, g_test_app->frame_count,
 	                       g_test_app->width, g_test_app->height);
 
@@ -102,7 +105,7 @@ void test_transition_crossfade_flow(void)
 	TEST_ASSERT_EQUAL_FLOAT(1.0F, g_test_app->env_mgr.transition_alpha);
 	/* Snapshot texture should have been generated */
 	TEST_ASSERT_NOT_EQUAL(TEXTURE_ID_ZERO,
-	                      g_test_app->scene.gpu->transition_snapshot_tex);
+	                      g_test_app->scene->gpu->transition_snapshot_tex);
 }
 
 /**
@@ -112,10 +115,10 @@ void test_transition_black_screen_flow(void)
 {
 	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_BLACK_SCREEN;
 	g_test_app->env_mgr.transition_state = TRANSITION_LOADING;
-	g_test_app->scene.lighting.ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene->lighting.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
-	env_manager_update_ibl(&g_test_app->env_mgr, &g_test_app->scene,
+	env_manager_update_ibl(&g_test_app->env_mgr, g_test_app->scene,
 	                       g_test_app->postprocess, g_test_app->frame_count,
 	                       g_test_app->width, g_test_app->height);
 
@@ -128,7 +131,7 @@ void test_transition_black_screen_flow(void)
 	static const double FADE_OUT_DURATION_FACTOR = 2.0;
 	g_test_app->delta_time =
 	    (double)TRANSITION_DURATION * FADE_OUT_DURATION_FACTOR;
-	env_manager_update_transition(&g_test_app->env_mgr, &g_test_app->scene,
+	env_manager_update_transition(&g_test_app->env_mgr, g_test_app->scene,
 	                              g_test_app->postprocess,
 	                              g_test_app->delta_time, 0);
 

@@ -30,7 +30,7 @@ static void test_render_ui_trampoline(void* user_data)
 static RenderContext test_render_ctx_from_app(App* app)
 {
 	return (RenderContext){
-	    .scene = &app->scene,
+	    .scene = app->scene,
 	    .postprocess = app->postprocess,
 	    .camera = &app->input->camera,
 	    .profiler = &app->profiling->gpu_profiler,

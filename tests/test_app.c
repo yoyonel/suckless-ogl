@@ -98,7 +98,7 @@ static void test_render_ui_trampoline(void* user_data)
 static RenderContext test_render_ctx_from_app(App* app)
 {
 	return (RenderContext){
-	    .scene = &app->scene,
+	    .scene = app->scene,
 	    .postprocess = app->postprocess,
 	    .camera = &app->input->camera,
 	    .profiler = &app->profiling->gpu_profiler,
@@ -187,7 +187,7 @@ void setUp(void)
 		int timeout = POLL_TIMEOUT_ITERATIONS;
 		double last_time = glfwGetTime();
 		while (
-		    (g_test_app.scene.gpu->hdr_texture == 0 ||
+		    (g_test_app.scene->gpu->hdr_texture == 0 ||
 		     g_test_app.env_mgr.transition_state != TRANSITION_IDLE) &&
 		    timeout-- > 0) {
 			double current_time = glfwGetTime();
@@ -201,9 +201,9 @@ void setUp(void)
 		}
 
 		// Cache the loaded texture for subsequent tests
-		if (g_test_app.scene.gpu->hdr_texture != 0) {
+		if (g_test_app.scene->gpu->hdr_texture != 0) {
 			g_cached_hdr_texture =
-			    g_test_app.scene.gpu->hdr_texture;
+			    g_test_app.scene->gpu->hdr_texture;
 		}
 
 		// Initialize PBOs for async pixel readback (optimization#2)
@@ -227,7 +227,7 @@ void setUp(void)
 		preload_all_references();
 	} else if (g_cached_hdr_texture != 0) {
 		// Reuse cached texture for subsequent tests
-		g_test_app.scene.gpu->hdr_texture = g_cached_hdr_texture;
+		g_test_app.scene->gpu->hdr_texture = g_cached_hdr_texture;
 	}
 }
 

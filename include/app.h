@@ -9,17 +9,13 @@
 #include "effect_benchmark.h"
 #include "env_manager.h"
 #include "gl_common.h"
-#include "scene.h"
 #include <cglm/cglm.h>
-
-#ifdef USE_SSBO_RENDERING
-#include "ssbo_rendering.h"
-#endif
 
 /* --- Opaque sub-struct forward declarations --- */
 typedef struct AppProfiling AppProfiling;
 typedef struct AppInput AppInput;
 typedef struct PostProcess PostProcess;
+typedef struct Scene Scene;
 
 /**
  * @struct App
@@ -27,7 +23,7 @@ typedef struct PostProcess PostProcess;
  */
 typedef struct App {
 	/* --- Pointers and Dynamic Objects --- */
-	Scene scene;              /**< The 3D scene (Includes GI Probe Grid). */
+	Scene* scene;             /**< The 3D scene (Includes GI Probe Grid). */
 	PostProcess* postprocess; /**< Main post-processing pipeline. */
 	AppWindow win; /**< Window handle, fullscreen & resize state. */
 	double last_frame_time;      /**< Absolute time of last frame start. */
