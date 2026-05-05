@@ -278,20 +278,20 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa106cd7a1da0d7c12cc8cc2fd0bf8147"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#aa106cd7a1da0d7c12cc8cc2fd0bf8147">add_body</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim, const vec3 pos, const vec3 vel, float mass, float radius, const vec3 albedo, float metallic, float roughness)</td></tr>
-<tr class="separator:aa106cd7a1da0d7c12cc8cc2fd0bf8147"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abab840d83fa7507c61eb4a4b12b6c0dc"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#abab840d83fa7507c61eb4a4b12b6c0dc">pair_softening_sq</a> (float radius_i, float radius_j)</td></tr>
-<tr class="separator:abab840d83fa7507c61eb4a4b12b6c0dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6341fdfb6c473eb326e99be46999b1cf"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a6341fdfb6c473eb326e99be46999b1cf">softened_orbital_vel</a> (float grav, float central_mass, float orbit_r, float star_r, float body_r)</td></tr>
-<tr class="separator:a6341fdfb6c473eb326e99be46999b1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad41b7c3fba85e4439c245c6b5d186dd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#aad41b7c3fba85e4439c245c6b5d186dd">add_body</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim, const double pos[3], const double vel[3], double mass, float radius, const vec3 albedo, float metallic, float roughness)</td></tr>
+<tr class="separator:aad41b7c3fba85e4439c245c6b5d186dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90ad4f2cde85500e0405e89275bf426c"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a90ad4f2cde85500e0405e89275bf426c">pair_softening_sq</a> (double radius_i, double radius_j)</td></tr>
+<tr class="separator:a90ad4f2cde85500e0405e89275bf426c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace5700a1695f3b3e7c77c5aa3de95eb4"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ace5700a1695f3b3e7c77c5aa3de95eb4">softened_orbital_vel</a> (double grav, double central_mass, double orbit_r, double star_r, double body_r)</td></tr>
+<tr class="separator:ace5700a1695f3b3e7c77c5aa3de95eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d44ddf095fb51334feb9e96d99bfcbe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a2d44ddf095fb51334feb9e96d99bfcbe">nbody_init_preset</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim)</td></tr>
 <tr class="memdesc:a2d44ddf095fb51334feb9e96d99bfcbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the simulation with a preset solar system configuration.  <a href="nbody_8c.html#a2d44ddf095fb51334feb9e96d99bfcbe">More...</a><br /></td></tr>
 <tr class="separator:a2d44ddf095fb51334feb9e96d99bfcbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a785533e1f63e381530bfb5c3531238dc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a785533e1f63e381530bfb5c3531238dc">nbody_total_energy</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim)</td></tr>
 <tr class="memdesc:a785533e1f63e381530bfb5c3531238dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the total energy (kinetic + gravitational potential).  <a href="nbody_8c.html#a785533e1f63e381530bfb5c3531238dc">More...</a><br /></td></tr>
 <tr class="separator:a785533e1f63e381530bfb5c3531238dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9e2804d731349e3f4e0f65f5a36dcfb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ae9e2804d731349e3f4e0f65f5a36dcfb">compute_accelerations</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim, vec3 *accel)</td></tr>
-<tr class="separator:ae9e2804d731349e3f4e0f65f5a36dcfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f4eb876df875f0104a0936db295efee"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a3f4eb876df875f0104a0936db295efee">compute_accelerations</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim, double accel[][3])</td></tr>
+<tr class="separator:a3f4eb876df875f0104a0936db295efee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6a96395996f9dc317f21e5c8dfaa868"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ab6a96395996f9dc317f21e5c8dfaa868">integrate_step</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim, float delta_time)</td></tr>
 <tr class="separator:ab6a96395996f9dc317f21e5c8dfaa868"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e554a86943358e558879e7073cb72b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a6e554a86943358e558879e7073cb72b8">nbody_step</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim, float delta_time)</td></tr>
@@ -337,8 +337,8 @@ Variables</h2></td></tr>
 <tr class="separator:ad888daec2563bee11dd7621881516fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aa106cd7a1da0d7c12cc8cc2fd0bf8147"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa106cd7a1da0d7c12cc8cc2fd0bf8147">&#9670;&nbsp;</a></span>add_body()</h2>
+<a id="aad41b7c3fba85e4439c245c6b5d186dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad41b7c3fba85e4439c245c6b5d186dd">&#9670;&nbsp;</a></span>add_body()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -355,19 +355,19 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const vec3&#160;</td>
-          <td class="paramname"><em>pos</em>, </td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>pos</em>[3], </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const vec3&#160;</td>
-          <td class="paramname"><em>vel</em>, </td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>vel</em>[3], </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>mass</em>, </td>
         </tr>
         <tr>
@@ -409,8 +409,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ae9e2804d731349e3f4e0f65f5a36dcfb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9e2804d731349e3f4e0f65f5a36dcfb">&#9670;&nbsp;</a></span>compute_accelerations()</h2>
+<a id="a3f4eb876df875f0104a0936db295efee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f4eb876df875f0104a0936db295efee">&#9670;&nbsp;</a></span>compute_accelerations()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -427,8 +427,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vec3 *&#160;</td>
-          <td class="paramname"><em>accel</em>&#160;</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>accel</em>[][3]&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -445,7 +445,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_ae9e2804d731349e3f4e0f65f5a36dcfb_cgraph.svg" width="368" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a3f4eb876df875f0104a0936db295efee_cgraph.svg" width="368" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -591,7 +591,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a2d44ddf095fb51334feb9e96d99bfcbe_cgraph.svg" width="536" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a2d44ddf095fb51334feb9e96d99bfcbe_cgraph.svg" width="536" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -761,8 +761,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="abab840d83fa7507c61eb4a4b12b6c0dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abab840d83fa7507c61eb4a4b12b6c0dc">&#9670;&nbsp;</a></span>pair_softening_sq()</h2>
+<a id="a90ad4f2cde85500e0405e89275bf426c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90ad4f2cde85500e0405e89275bf426c">&#9670;&nbsp;</a></span>pair_softening_sq()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -771,15 +771,15 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static float pair_softening_sq </td>
+          <td class="memname">static double pair_softening_sq </td>
           <td>(</td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>radius_i</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>radius_j</em>&#160;</td>
         </tr>
         <tr>
@@ -797,8 +797,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a6341fdfb6c473eb326e99be46999b1cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6341fdfb6c473eb326e99be46999b1cf">&#9670;&nbsp;</a></span>softened_orbital_vel()</h2>
+<a id="ace5700a1695f3b3e7c77c5aa3de95eb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace5700a1695f3b3e7c77c5aa3de95eb4">&#9670;&nbsp;</a></span>softened_orbital_vel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -807,33 +807,33 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static float softened_orbital_vel </td>
+          <td class="memname">static double softened_orbital_vel </td>
           <td>(</td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>grav</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>central_mass</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>orbit_r</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>star_r</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>body_r</em>&#160;</td>
         </tr>
         <tr>
@@ -851,7 +851,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a6341fdfb6c473eb326e99be46999b1cf_cgraph.svg" width="350" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_ace5700a1695f3b3e7c77c5aa3de95eb4_cgraph.svg" width="350" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

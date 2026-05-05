@@ -3008,10 +3008,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-optimisations-fast-math" class="md-nav__link">
+  <a href="#1-perte-de-precision-des-nombres-flottants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Optimisations Fast-Math
+        1. Perte de Précision des Nombres Flottants
       
     </span>
   </a>
@@ -3019,10 +3019,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-directions-de-vitesse-non-normalisees" class="md-nav__link">
+  <a href="#2-bug-de-damping-en-inversion-temporelle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Directions de Vitesse non Normalisées
+        2. Bug de Damping en Inversion Temporelle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-effets-secondaires-du-fast-math" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Effets Secondaires du Fast-Math
       
     </span>
   </a>
@@ -3047,10 +3058,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#desactivation-de-fast-math-pour-la-physique" class="md-nav__link">
+  <a href="#1-passage-en-double-precision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Désactivation de Fast-Math pour la Physique
+        1. Passage en Double Précision
       
     </span>
   </a>
@@ -3058,10 +3069,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#normalisation-de-la-direction-de-vitesse" class="md-nav__link">
+  <a href="#2-amortissement-symetrique" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Normalisation de la Direction de Vitesse
+        2. Amortissement Symétrique
       
     </span>
   </a>
@@ -3069,10 +3080,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#detection-de-nan" class="md-nav__link">
+  <a href="#3-gestion-des-flags-au-niveau-du-build" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Détection de NaN
+        3. Gestion des Flags au Niveau du Build
       
     </span>
   </a>
@@ -3081,6 +3092,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3434,32 +3456,30 @@
 
 <h1 id="correction-de-la-stabilite-numerique-n-body">Correction de la Stabilité Numérique N-Body<a class="headerlink" href="#correction-de-la-stabilite-numerique-n-body" title="Permanent link">¶</a></h1>
 <h2 id="description-du-probleme">Description du Problème<a class="headerlink" href="#description-du-probleme" title="Permanent link">¶</a></h2>
-<p>Une instabilité numérique a été observée dans la simulation N-body, entraînant occasionnellement des valeurs <code>NaN</code> (Not a Number) dans les vitesses des corps ou des trajectoires erratiques. Ces problèmes provenaient principalement des effets secondaires des optimisations de calculs flottants et de vecteurs de vitesse initiale non normalisés.</p>
+<p>Une instabilité numérique a été observée dans la simulation N-body, entraînant une dérive d'énergie, des trajectoires erratiques et occasionnellement des valeurs <code>NaN</code>. Ces problèmes étaient particulièrement graves dans les builds <code>release</code> et lors des opérations d'inversion temporelle.</p>
 <h2 id="causes-techniques">Causes Techniques<a class="headerlink" href="#causes-techniques" title="Permanent link">¶</a></h2>
-<h3 id="1-optimisations-fast-math">1. Optimisations Fast-Math<a class="headerlink" href="#1-optimisations-fast-math" title="Permanent link">¶</a></h3>
-<p>Les compilateurs utilisent souvent <code>-ffast-math</code> ou des optimisations agressives similaires pour améliorer les performances. Cependant, ces optimisations :
-- Sacrifient la conformité stricte à la norme IEEE 754.
-- Permettent la réassociation d'opérations mathématiques (ex: <code>(a + b) + c</code> devient <code>a + (b + c)</code>), ce qui peut entraîner une perte de précision significative dans les simulations physiques itératives.
-- Supposent qu'aucune valeur <code>NaN</code> ou <code>Inf</code> n'existe, ce qui conduit à un comportement indéfini lorsqu'elles surviennent (ex: lors de rencontres rapprochées entre corps où les forces sont extrêmement élevées).</p>
-<h3 id="2-directions-de-vitesse-non-normalisees">2. Directions de Vitesse non Normalisées<a class="headerlink" href="#2-directions-de-vitesse-non-normalisees" title="Permanent link">¶</a></h3>
-<p>Lors de l'initialisation dans <code>nbody_init_preset</code>, la vitesse orbitale était calculée en mettant à l'échelle un vecteur de direction (<code>orb-&gt;vel_dir</code>). Si ce vecteur n'était pas de longueur unitaire, la vitesse résultante était incorrectement mise à l'échelle, ce qui pouvait entraîner des vitesses extrêmes et une divergence immédiate de la simulation.</p>
+<h3 id="1-perte-de-precision-des-nombres-flottants">1. Perte de Précision des Nombres Flottants<a class="headerlink" href="#1-perte-de-precision-des-nombres-flottants" title="Permanent link">¶</a></h3>
+<p>Les simulations physiques impliquant des calculs cumulatifs sont très sensibles aux erreurs d'arrondi. L'utilisation de la précision <code>float</code> (32-bit) entraînait une dérive d'énergie importante sur de longues périodes, car de petites erreurs dans les calculs de force s'accumulaient à chaque image.</p>
+<h3 id="2-bug-de-damping-en-inversion-temporelle">2. Bug de Damping en Inversion Temporelle<a class="headerlink" href="#2-bug-de-damping-en-inversion-temporelle" title="Permanent link">¶</a></h3>
+<p>Le mécanisme d'amortissement radial (zone de confinement) utilisait directement <code>delta_time</code>. Lorsque le temps était inversé (<code>delta_time &lt; 0</code>), le terme d'amortissement devenait une force d'accélération, provoquant une explosion d'énergie des corps qui étaient alors éjectés du volume de simulation.</p>
+<h3 id="3-effets-secondaires-du-fast-math">3. Effets Secondaires du Fast-Math<a class="headerlink" href="#3-effets-secondaires-du-fast-math" title="Permanent link">¶</a></h3>
+<p>Les optimisations agressives du compilateur (<code>-ffast-math</code>) sacrifient la conformité IEEE 754 pour la vitesse. Cela peut briser les propriétés symplectiques de l'intégrateur Velocity Verlet, entraînant des comportements non physiques.</p>
 <h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">¶</a></h2>
-<h3 id="desactivation-de-fast-math-pour-la-physique">Désactivation de Fast-Math pour la Physique<a class="headerlink" href="#desactivation-de-fast-math-pour-la-physique" title="Permanent link">¶</a></h3>
-<p>Le cœur de la simulation dans <code>src/nbody.c</code> désactive désormais explicitement les optimisations fast-math via un pragma du compilateur :
-</p><div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#pragma GCC optimize ("no-fast-math")</span>
-</span></code></pre></div>
-Cela garantit que l'intégrateur Velocity Verlet conserve une précision maximale et gère correctement les cas limites numériques (comme les petites distances ou les NaNs) selon les règles standard des virgules flottantes.<p></p>
-<h3 id="normalisation-de-la-direction-de-vitesse">Normalisation de la Direction de Vitesse<a class="headerlink" href="#normalisation-de-la-direction-de-vitesse" title="Permanent link">¶</a></h3>
-<p>La logique d'initialisation garantit désormais que le vecteur de direction de la vitesse est normalisé avant d'être mis à l'échelle par la vitesse orbitale :
-</p><div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">vec3</span><span class="w"> </span><span class="n">normalized_vel_dir</span><span class="p">;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">glm_vec3_copy</span><span class="p">((</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="n">orb</span><span class="o">-&gt;</span><span class="n">vel_dir</span><span class="p">,</span><span class="w"> </span><span class="n">normalized_vel_dir</span><span class="p">);</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">glm_vec3_normalize</span><span class="p">(</span><span class="n">normalized_vel_dir</span><span class="p">);</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">vec3</span><span class="w"> </span><span class="n">vel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">normalized_vel_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">spd</span><span class="p">,</span><span class="w"> </span><span class="n">normalized_vel_dir</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">spd</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">            </span><span class="n">normalized_vel_dir</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">spd</span><span class="p">};</span>
+<h3 id="1-passage-en-double-precision">1. Passage en Double Précision<a class="headerlink" href="#1-passage-en-double-precision" title="Permanent link">¶</a></h3>
+<p>L'état de la physique et les calculs ont été migrés vers la précision <code>double</code> (64-bit).
+- <strong>Champs affectés</strong> : Position, vitesse, masse et calculs d'énergie.
+- <strong>Rendu</strong> : Le GPU reçoit toujours des données <code>float</code> via les VBO pour la performance, mais la "source de vérité" de la simulation est désormais en haute précision.</p>
+<h3 id="2-amortissement-symetrique">2. Amortissement Symétrique<a class="headerlink" href="#2-amortissement-symetrique" title="Permanent link">¶</a></h3>
+<p>La logique d'amortissement a été mise à jour pour utiliser <code>fabs(delta_time)</code>, garantissant qu'elle reste dissipative quelle que soit la direction du temps :
+</p><div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">damping_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0F</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">sim</span><span class="o">-&gt;</span><span class="n">damping</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">fabsf</span><span class="p">(</span><span class="n">delta_time</span><span class="p">));</span>
 </span></code></pre></div><p></p>
-<h3 id="detection-de-nan">Détection de NaN<a class="headerlink" href="#detection-de-nan" title="Permanent link">¶</a></h3>
-<p>Un contrôle de diagnostic a été ajouté à l'étape d'intégration pour afficher un avertissement si la vitesse d'un corps devient <code>NaN</code>, facilitant ainsi le débogage de futurs problèmes de stabilité.</p>
+<h3 id="3-gestion-des-flags-au-niveau-du-build">3. Gestion des Flags au Niveau du Build<a class="headerlink" href="#3-gestion-des-flags-au-niveau-du-build" title="Permanent link">¶</a></h3>
+<p>Au lieu de pragmas dans le code source, nous imposons désormais un comportement flottant standard via <code>CMakeLists.txt</code> :
+</p><div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">set_source_files_properties</span><span class="p">(</span><span class="s">src/nbody.c</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">COMPILE_FLAGS</span><span class="w"> </span><span class="s2">"-fno-fast-math"</span><span class="p">)</span>
+</span></code></pre></div>
+Cela garantit que le cœur de la physique est toujours compilé avec une conformité IEEE 754 stricte, même si le reste de l'application utilise des optimisations agressives.<p></p>
+<h2 id="verification">Vérification<a class="headerlink" href="#verification" title="Permanent link">¶</a></h2>
+<p>Des tests de longue durée (1200s) confirment une dérive d'énergie inférieure à 3%, et les tests d'inversion temporelle montrent une réversibilité quasi parfaite (erreur de <span class="arithmatex">\(10^{-11}\)</span>), confirmant la robustesse de la nouvelle implémentation.</p>
 
 
 
@@ -3480,7 +3500,7 @@ Cela garantit que l'intégrateur Velocity Verlet conserve une précision maximal
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="5 mai 2026 20:39:07 UTC">5 mai 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="5 mai 2026 22:00:44 UTC">5 mai 2026</span>
   </span>
 
     

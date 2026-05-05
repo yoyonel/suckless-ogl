@@ -8,7 +8,7 @@ var searchData=
   ['vbo_4147',['vbo',['../structSkybox.html#a27902314af1b0fc98c1b57792d684fd6',1,'Skybox::vbo()'],['../structUIContext.html#af50bf71d3c0b4bd5611e7aa119789d17',1,'UIContext::vbo()'],['../structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0',1,'TrailRenderer::vbo()'],['../structShockwaveRenderer.html#a799d634778fc3d9be810e4a64fe61f07',1,'ShockwaveRenderer::vbo()']]],
   ['vcolor_4148',['vColor',['../trail_8vert.html#a2331c5296749e2c75e8689f44f9d71cf',1,'vColor():&#160;trail.vert'],['../trail_8frag.html#a1ec666fc8acfd1ba7a92932fea4b2ad1',1,'vColor():&#160;trail.frag']]],
   ['vel_5fdir_4149',['vel_dir',['../structOrbiterDef.html#a1d4d593e93e82adb804952c319de2ccf',1,'OrbiterDef']]],
-  ['velocity_4150',['velocity',['../structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71',1,'Camera::velocity()'],['../structNBodyParticle.html#a876ae49b8b800363b5b44b5a1a9bdc95',1,'NBodyParticle::velocity()'],['../structNBodyImpact.html#a7b209cf02d9b290ecbb2b9225d883a0f',1,'NBodyImpact::velocity()']]],
+  ['velocity_4150',['velocity',['../structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71',1,'Camera::velocity()'],['../structNBodyParticle.html#a09dc1605d7356ef40dbdd499bb18d8ea',1,'NBodyParticle::velocity()'],['../structNBodyImpact.html#a7b209cf02d9b290ecbb2b9225d883a0f',1,'NBodyImpact::velocity()']]],
   ['velocity_5fcurrent_4151',['velocity_current',['../structCamera.html#a61bf4a7c4d9f83b3217211c75c3684dd',1,'Camera']]],
   ['velocity_5ftex_4152',['velocity_tex',['../structPPGPUResources.html#a30cbe3764998290e315505c7f7ed4498',1,'PPGPUResources']]],
   ['vendor_4153',['vendor',['../structGPUInfo.html#a048d0d93456bee48c8fbd1bb5d097b87',1,'GPUInfo']]],

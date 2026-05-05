@@ -21,7 +21,7 @@ var searchData=
   ['cmp_5funiform_5fentry_2721',['cmp_uniform_entry',['../shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d',1,'shader.c']]],
   ['compare_5fsphere_5fentries_2722',['compare_sphere_entries',['../billboard__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843',1,'billboard_sorting.c']]],
   ['compare_5fstrings_2723',['compare_strings',['../scene__init_8c.html#a8af94b56d6cef5f5143fd60907cb02f9',1,'scene_init.c']]],
-  ['compute_5faccelerations_2724',['compute_accelerations',['../nbody_8c.html#ae9e2804d731349e3f4e0f65f5a36dcfb',1,'nbody.c']]],
+  ['compute_5faccelerations_2724',['compute_accelerations',['../nbody_8c.html#a3f4eb876df875f0104a0936db295efee',1,'nbody.c']]],
   ['compute_5fdebug_2725',['compute_debug',['../pbr__functions_8glsl.html#ac09e000bb011c60d5497779ad123a3eb',1,'pbr_functions.glsl']]],
   ['compute_5fibl_5fpbr_5fadvanced_2726',['compute_IBL_PBR_Advanced',['../pbr__functions_8glsl.html#ab3d305a6b29ae770f36de317a12b8f32',1,'pbr_functions.glsl']]],
   ['compute_5fluminance_5fhistogram_2727',['compute_luminance_histogram',['../app__ui_8h.html#ae34ca930ba8175fe6d5e0e59ef5256f2',1,'compute_luminance_histogram(const App *app, int *buckets, int size, float *min_lum, float *max_lum):&#160;app_ui.c'],['../app__ui_8c.html#ae34ca930ba8175fe6d5e0e59ef5256f2',1,'compute_luminance_histogram(const App *app, int *buckets, int size, float *min_lum, float *max_lum):&#160;app_ui.c']]],

@@ -1,8 +1,8 @@
 var nbody_8c =
 [
     [ "OrbiterDef", "structOrbiterDef.html", "structOrbiterDef" ],
-    [ "add_body", "nbody_8c.html#aa106cd7a1da0d7c12cc8cc2fd0bf8147", null ],
-    [ "compute_accelerations", "nbody_8c.html#ae9e2804d731349e3f4e0f65f5a36dcfb", null ],
+    [ "add_body", "nbody_8c.html#aad41b7c3fba85e4439c245c6b5d186dd", null ],
+    [ "compute_accelerations", "nbody_8c.html#a3f4eb876df875f0104a0936db295efee", null ],
     [ "integrate_step", "nbody_8c.html#ab6a96395996f9dc317f21e5c8dfaa868", null ],
     [ "nbody_energy_drift", "nbody_8c.html#a78b7ac6a96f5c33ba9eaff7158368e17", null ],
     [ "nbody_energy_drift_signed", "nbody_8c.html#a41041d18672c901e03f26b9c9e6fced8", null ],
@@ -13,8 +13,8 @@ var nbody_8c =
     [ "nbody_total_energy", "nbody_8c.html#a785533e1f63e381530bfb5c3531238dc", null ],
     [ "nbody_update_time_scale", "nbody_8c.html#ad3b699a201318a9028b8ae81e58a5fc4", null ],
     [ "nbody_write_instances", "nbody_8c.html#acdce6fe24ec0f0cdb5ecc44872197b49", null ],
-    [ "pair_softening_sq", "nbody_8c.html#abab840d83fa7507c61eb4a4b12b6c0dc", null ],
-    [ "softened_orbital_vel", "nbody_8c.html#a6341fdfb6c473eb326e99be46999b1cf", null ],
+    [ "pair_softening_sq", "nbody_8c.html#a90ad4f2cde85500e0405e89275bf426c", null ],
+    [ "softened_orbital_vel", "nbody_8c.html#ace5700a1695f3b3e7c77c5aa3de95eb4", null ],
     [ "CENTRAL_STAR_ALBEDO", "nbody_8c.html#ab054d54b4b3cd0488ec252df71e115bc", null ],
     [ "CENTRAL_STAR_MASS", "nbody_8c.html#a5a99cac32ad7b70302025b40f7aad6fa", null ],
     [ "CENTRAL_STAR_METALLIC", "nbody_8c.html#aa5cd6cb09bcd5800016fc387219e3eed", null ],

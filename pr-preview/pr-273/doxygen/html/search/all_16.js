@@ -12,7 +12,7 @@ var searchData=
   ['vec3array_5finit_2240',['vec3array_init',['../icosphere_8c.html#ac300d42875ee9e7db317f5f3bdedd91d',1,'vec3array_init(Vec3Array *array):&#160;icosphere.c'],['../icosphere_8h.html#ac300d42875ee9e7db317f5f3bdedd91d',1,'vec3array_init(Vec3Array *array):&#160;icosphere.c']]],
   ['vec3array_5fpush_2241',['vec3array_push',['../icosphere_8c.html#a38fc23a56f4c687ecb08e3dde52b2b5d',1,'vec3array_push(Vec3Array *array, vec3 vertex):&#160;icosphere.c'],['../icosphere_8h.html#a38fc23a56f4c687ecb08e3dde52b2b5d',1,'vec3array_push(Vec3Array *array, vec3 vertex):&#160;icosphere.c']]],
   ['vel_5fdir_2242',['vel_dir',['../structOrbiterDef.html#a1d4d593e93e82adb804952c319de2ccf',1,'OrbiterDef']]],
-  ['velocity_2243',['velocity',['../structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71',1,'Camera::velocity()'],['../structNBodyParticle.html#a876ae49b8b800363b5b44b5a1a9bdc95',1,'NBodyParticle::velocity()'],['../structNBodyImpact.html#a7b209cf02d9b290ecbb2b9225d883a0f',1,'NBodyImpact::velocity()']]],
+  ['velocity_2243',['velocity',['../structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71',1,'Camera::velocity()'],['../structNBodyParticle.html#a09dc1605d7356ef40dbdd499bb18d8ea',1,'NBodyParticle::velocity()'],['../structNBodyImpact.html#a7b209cf02d9b290ecbb2b9225d883a0f',1,'NBodyImpact::velocity()']]],
   ['velocity_5fcurrent_2244',['velocity_current',['../structCamera.html#a61bf4a7c4d9f83b3217211c75c3684dd',1,'Camera']]],
   ['velocity_5ftex_2245',['velocity_tex',['../structPPGPUResources.html#a30cbe3764998290e315505c7f7ed4498',1,'PPGPUResources']]],
   ['vendor_2246',['vendor',['../structGPUInfo.html#a048d0d93456bee48c8fbd1bb5d097b87',1,'GPUInfo']]],

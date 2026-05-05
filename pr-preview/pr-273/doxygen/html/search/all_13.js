@@ -186,7 +186,7 @@ var searchData=
   ['smoothed_5fx_1931',['smoothed_x',['../structCamera.html#a92ff8aacdacb2a809ec447e3440a7f42',1,'Camera']]],
   ['smoothed_5fy_1932',['smoothed_y',['../structCamera.html#a7e9ca5e6bc696a40c77866f0449fd0f8',1,'Camera']]],
   ['smoothness_1933',['smoothness',['../structVignetteParams.html#a1c4f92e55f6bc56d5b2223d87e8a400d',1,'VignetteParams']]],
-  ['softened_5forbital_5fvel_1934',['softened_orbital_vel',['../nbody_8c.html#a6341fdfb6c473eb326e99be46999b1cf',1,'nbody.c']]],
+  ['softened_5forbital_5fvel_1934',['softened_orbital_vel',['../nbody_8c.html#ace5700a1695f3b3e7c77c5aa3de95eb4',1,'nbody.c']]],
   ['sorted_5finstance_5fssbo_1935',['sorted_instance_ssbo',['../structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6',1,'BillboardSorter']]],
   ['sorting_5fmode_1936',['sorting_mode',['../structSceneConfig.html#a60ccdd5dfeeec9409260efbdad345418',1,'SceneConfig']]],
   ['sorting_5fmode_5fcount_1937',['SORTING_MODE_COUNT',['../scene__config_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1',1,'scene_config.h']]],

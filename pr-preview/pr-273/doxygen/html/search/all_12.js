@@ -58,7 +58,7 @@ var searchData=
   ['right_1728',['right',['../structCamera.html#ab85197df3b54a775327630d16219922a',1,'Camera']]],
   ['ring_5fget_1729',['ring_get',['../trail__renderer_8c.html#ad1ee77758d40d03deee40aca196f43fb',1,'trail_renderer.c']]],
   ['ring_5fget_5ftimestamp_1730',['ring_get_timestamp',['../trail__renderer_8c.html#a08d08c27d693b5a6b2828cef23d86b73',1,'trail_renderer.c']]],
-  ['ring_5fpush_1731',['ring_push',['../trail__renderer_8c.html#ab6980a39d5e654e5ec8bba993bb1e97a',1,'trail_renderer.c']]],
+  ['ring_5fpush_1731',['ring_push',['../trail__renderer_8c.html#af1eccac3f78736179a8ef47f95ee1a65',1,'trail_renderer.c']]],
   ['ring_5fsharpness_1732',['RING_SHARPNESS',['../shockwave_8frag.html#a7ac062e5878827722a84658042fc800f',1,'shockwave.frag']]],
   ['rings_1733',['rings',['../structTrailRenderer.html#a3cca3a9b3481a85b6b18d68bbe15a264',1,'TrailRenderer']]],
   ['rng_1734',['rng',['../structAdaptiveSampler.html#a6faf2d71576af580e879ddb9d815ddef',1,'AdaptiveSampler']]],

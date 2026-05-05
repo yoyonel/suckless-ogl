@@ -3,7 +3,7 @@ var searchData=
   ['mant_5fmask_3739',['MANT_MASK',['../simd__utils_8c.html#a814a9682cd8de55bb93ee89566af0149',1,'simd_utils.c']]],
   ['mant_5fshift_5fdiff_3740',['MANT_SHIFT_DIFF',['../simd__utils_8c.html#a7af7e252f1f97506407ca9a5e81bca5e',1,'simd_utils.c']]],
   ['margin_5fy_3741',['MARGIN_Y',['../gpu__profiler__ui__layout_8h.html#acc00a78ce96d4bb641995567512e20ff',1,'gpu_profiler_ui_layout.h']]],
-  ['mass_3742',['mass',['../structOrbiterDef.html#a05adca66acc923b9b923f29888ee90ed',1,'OrbiterDef::mass()'],['../structNBodyParticle.html#a307c481a8a813b74c3e75e378554d87c',1,'NBodyParticle::mass()']]],
+  ['mass_3742',['mass',['../structOrbiterDef.html#a05adca66acc923b9b923f29888ee90ed',1,'OrbiterDef::mass()'],['../structNBodyParticle.html#a52807eee90ac25dcb7df211610dc18f7',1,'NBodyParticle::mass()']]],
   ['material_5flib_3743',['material_lib',['../structSceneLighting.html#a3640c904473fe205a8cf6da0a0776fc4',1,'SceneLighting']]],
   ['materials_3744',['materials',['../structMaterialLib.html#a1421f7bc086ca3e77678beba8fe2c37f',1,'MaterialLib']]],
   ['max_5fcamera_5fdistance_3745',['MAX_CAMERA_DISTANCE',['../group__Camera.html#ga827bc2ba868d77a659e8ec4736e856ae',1,'app_settings.h']]],

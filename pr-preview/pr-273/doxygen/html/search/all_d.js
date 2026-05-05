@@ -8,7 +8,7 @@ var searchData=
   ['mant_5fmask_1223',['MANT_MASK',['../simd__utils_8c.html#a814a9682cd8de55bb93ee89566af0149',1,'simd_utils.c']]],
   ['mant_5fshift_5fdiff_1224',['MANT_SHIFT_DIFF',['../simd__utils_8c.html#a7af7e252f1f97506407ca9a5e81bca5e',1,'simd_utils.c']]],
   ['margin_5fy_1225',['MARGIN_Y',['../gpu__profiler__ui__layout_8h.html#acc00a78ce96d4bb641995567512e20ff',1,'gpu_profiler_ui_layout.h']]],
-  ['mass_1226',['mass',['../structNBodyParticle.html#a307c481a8a813b74c3e75e378554d87c',1,'NBodyParticle::mass()'],['../structOrbiterDef.html#a05adca66acc923b9b923f29888ee90ed',1,'OrbiterDef::mass()']]],
+  ['mass_1226',['mass',['../structNBodyParticle.html#a52807eee90ac25dcb7df211610dc18f7',1,'NBodyParticle::mass()'],['../structOrbiterDef.html#a05adca66acc923b9b923f29888ee90ed',1,'OrbiterDef::mass()']]],
   ['mat4_5ffloat_5fcount_1227',['MAT4_FLOAT_COUNT',['../scene__uniforms_8h.html#aac34dfe6c6b73b43a4656c9dce041034a6818c4ecef753aa77e04ac872f381556',1,'scene_uniforms.h']]],
   ['mat_5fdefault_5falbedo_1228',['MAT_DEFAULT_ALBEDO',['../material_8c.html#ab718c0f3f47b49dc37c40edb75621e49',1,'material.c']]],
   ['mat_5fdefault_5fmetallic_1229',['MAT_DEFAULT_METALLIC',['../material_8c.html#a3428033f6d41718d8be7d89959893ec8',1,'material.c']]],
