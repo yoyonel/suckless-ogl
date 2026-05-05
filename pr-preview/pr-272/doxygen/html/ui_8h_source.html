@@ -1,0 +1,446 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/ui.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('ui_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">ui.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="ui_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef UI_H</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define UI_H</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="ui_8h.html#a8eda682933ded96c62fa6f9ddc0097b5">   13</a></span>&#160;<span class="preprocessor">#define ASCII_CHAR_COUNT 96</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;cglm/cglm.h&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structShader.html">Shader</a> <a class="code" href="structShader.html">Shader</a>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structGlyphInfo.html">   24</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9">   25</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9">x0</a>, y0, x1, y1; </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#a4c29b44f3b642fa0e570f1adc22c2ee5">   26</a></span>&#160;    <span class="keywordtype">float</span> w, <a class="code" href="structGlyphInfo.html#a4c29b44f3b642fa0e570f1adc22c2ee5">h</a>;           </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d">   27</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d">x_off</a>, y_off;   </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e">   28</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e">advance</a>;        </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;} <a class="code" href="structGlyphInfo.html">GlyphInfo</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="ui_8h.html#a89c6aa7e6080366c0ed301b4606a7c26">   32</a></span>&#160;<span class="preprocessor">#define UI_MAX_BATCH_VERTICES 8192</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="structUIVertex.html">   38</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="structUIVertex.html#abc4f881f9b18241439050f050fce487e">   39</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUIVertex.html#abc4f881f9b18241439050f050fce487e">x</a>, y;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="structUIVertex.html#a4fee68b2deb88e7dafe92823c555c22e">   40</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUIVertex.html#a4fee68b2deb88e7dafe92823c555c22e">u</a>, v;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="structUIVertex.html#a5b8666f2a8849adc5082b4b9f2228d3f">   41</a></span>&#160;    <span class="keywordtype">float</span> r, g, b, <a class="code" href="structUIVertex.html#a5b8666f2a8849adc5082b4b9f2228d3f">a</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structUIVertex.html#a3853aa5e70519a69ac9da0c419ab0527">   42</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUIVertex.html#a3853aa5e70519a69ac9da0c419ab0527">mode</a>;  <span class="comment">// 0=solid, 1=text, 2=rounded</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structUIVertex.html#a22a567bbac6289709156d7eeab42749d">   43</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUIVertex.html#a22a567bbac6289709156d7eeab42749d">rect_size_x</a>, rect_size_y;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structUIVertex.html#a78f77555598d98f7dddc38d0938faf1f">   44</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUIVertex.html#a78f77555598d98f7dddc38d0938faf1f">radius</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;} <a class="code" href="structUIVertex.html">UIVertex</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structUIContext.html">   51</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structUIContext.html#a9edeb95ac4c767d809e6ce2a4e674541">   52</a></span>&#160;    GLuint <a class="code" href="structUIContext.html#a9edeb95ac4c767d809e6ce2a4e674541">texture</a>; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">   53</a></span>&#160;    <a class="code" href="structShader.html">Shader</a>* <a class="code" href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">shader</a>; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="structShader.html">Shader</a>*</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">   55</a></span>&#160;        <a class="code" href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">spinner_shader</a>; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structUIContext.html#a4aadf19dd1934f81fa64d66c9a4bfe0f">   56</a></span>&#160;    GLuint <a class="code" href="structUIContext.html#a4aadf19dd1934f81fa64d66c9a4bfe0f">vao</a>, vbo;    </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structUIContext.html#a062dcd89e0d44d274b207da86b1b2d04">   57</a></span>&#160;    <a class="code" href="structGlyphInfo.html">GlyphInfo</a> cdata[<a class="code" href="ui_8h.html#a8eda682933ded96c62fa6f9ddc0097b5">ASCII_CHAR_COUNT</a>]; </div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">   58</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">font_size</a>;                   </div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structUIContext.html#ade1389ff1a918ac87c3409be4b0163c2">   59</a></span>&#160;    <a class="code" href="structUIVertex.html">UIVertex</a> batch_vertices[<a class="code" href="ui_8h.html#a89c6aa7e6080366c0ed301b4606a7c26">UI_MAX_BATCH_VERTICES</a>]; </div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="structUIContext.html#ad1bd151216d7ef55bd7bf781b4a47c47">   60</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structUIContext.html#ad1bd151216d7ef55bd7bf781b4a47c47">batch_count</a>;           </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structUIContext.html#a77c1f1660c195297bb0cf2172c9f081a">   61</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structUIContext.html#a77c1f1660c195297bb0cf2172c9f081a">current_screen_width</a>;  </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structUIContext.html#ab4107aff07820adb38b338d426e6a434">   62</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structUIContext.html#ab4107aff07820adb38b338d426e6a434">current_screen_height</a>; </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structUIContext.html#a4b6688815354ec56144a864e7f4dfd0d">   63</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structUIContext.html#a4b6688815354ec56144a864e7f4dfd0d">batch_active</a>;          </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structUIContext.html#a52ecf5ff0d8fbc54b9c2586c587a1dbf">   64</a></span>&#160;    GLuint <a class="code" href="structUIContext.html#a52ecf5ff0d8fbc54b9c2586c587a1dbf">current_texture</a>;    </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;} <a class="code" href="structUIContext.html">UIContext</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structUILayout.html">   71</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529">   72</a></span>&#160;    <a class="code" href="structUIContext.html">UIContext</a>* <a class="code" href="structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529">ui</a>;     </div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">   73</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">start_x</a>;     </div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="structUILayout.html#a692c37340a75ca97fb112f2402e0bd23">   74</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUILayout.html#a692c37340a75ca97fb112f2402e0bd23">cursor_y</a>;    </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structUILayout.html#a951795d8c9d444653b986658057c6cf3">   75</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structUILayout.html#a951795d8c9d444653b986658057c6cf3">padding</a>;     </div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">   76</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">screen_width</a>;  </div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">   77</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">screen_height</a>; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;} <a class="code" href="structUILayout.html">UILayout</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712">ui_init</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* font_path, <span class="keywordtype">float</span> font_size);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb">ui_destroy</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">/* --- Batch API --- */</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a5356c389352db784027765ad0ef3aca5">ui_begin</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#aa4b289c41e0a12611f72f031dda9bccd">ui_flush</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#afefa2b11544b44d05a8d2652e4e4883c">ui_end</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">/* --- Layout API --- */</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a04ff141f59212601e740294c9159dbe7">ui_layout_init</a>(<a class="code" href="structUILayout.html">UILayout</a>* <a class="code" href="background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e">layout</a>, <a class="code" href="structUIContext.html">UIContext</a>* ui_ctx, <span class="keywordtype">float</span> pos_x,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    <span class="keywordtype">float</span> pos_y, <span class="keywordtype">float</span> padding, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a741fab59d05880f3bf5362d101833451">ui_layout_text</a>(<a class="code" href="structUILayout.html">UILayout</a>* <a class="code" href="background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e">layout</a>, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keyword">const</span> vec3 color);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a822ad2f9015dc8e43f609046475a5dfe">ui_layout_separator</a>(<a class="code" href="structUILayout.html">UILayout</a>* <a class="code" href="background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e">layout</a>, <span class="keywordtype">float</span> space);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment">/* --- Low-level API --- */</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui_draw_text</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keywordtype">float</span> pos_x,</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                  <span class="keywordtype">float</span> pos_y, <span class="keyword">const</span> vec3 color, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                  <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keywordtype">float</span> <a class="code" href="ui_8h.html#a230bc2320e5c5a94d5634132ad7ecd05">ui_measure_text</a>(<span class="keyword">const</span> <a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* text);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a74067bc67d31c6d82fa3b548a3729670">ui_draw_text_ex</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keywordtype">float</span> pos_x,</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                     <span class="keywordtype">float</span> pos_y, <span class="keyword">const</span> vec3 color, <span class="keywordtype">float</span> alpha,</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                     <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#acb75a0a726f807c7362e0d26a2c8e74b">ui_draw_text_scaled</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keywordtype">float</span> pos_x,</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                         <span class="keywordtype">float</span> pos_y, <span class="keyword">const</span> vec3 color, <span class="keywordtype">float</span> alpha,</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                         <span class="keywordtype">float</span> scale, <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui_draw_rect</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> rect_x, <span class="keywordtype">float</span> rect_y,</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                  <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height, <span class="keyword">const</span> vec3 color, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                  <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a092e3880109fbbe26972f6c5e3866c17">ui_draw_rect_ex</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> rect_x, <span class="keywordtype">float</span> rect_y,</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                     <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height, <span class="keyword">const</span> vec3 color, <span class="keywordtype">float</span> alpha,</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                     <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui_draw_spinner</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> center_x, <span class="keywordtype">float</span> center_y,</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                     <span class="keywordtype">float</span> size, <span class="keywordtype">float</span> angle, <span class="keyword">const</span> vec3 color,</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                     <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#af4b8d38bd43df2b9b59611b054408f74">ui_draw_rounded_rect</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> rect_x, <span class="keywordtype">float</span> rect_y,</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                          <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height, <span class="keywordtype">float</span> radius,</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                          <span class="keyword">const</span> vec3 color, <span class="keywordtype">float</span> alpha, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                          <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#a58a7b78e7956c02bde43fa68449deb66">ui_draw_glow_rect</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> rect_x, <span class="keywordtype">float</span> rect_y,</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                       <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height, <span class="keywordtype">float</span> radius,</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                       <span class="keyword">const</span> vec3 color, <span class="keywordtype">float</span> alpha, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                       <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#ab36623b8b8e36a7938c53db20b6f54bc">ui_draw_textured_quad</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, GLuint texture, <span class="keywordtype">float</span> rect_x,</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                           <span class="keywordtype">float</span> rect_y, <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height,</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                           <span class="keyword">const</span> vec3 tint, <span class="keywordtype">float</span> alpha, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                           <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ui_8h.html#aab1c4d3b72a5751443624afa0b882801">ui_draw_bloom_quad</a>(<a class="code" href="structUIContext.html">UIContext</a>* ui_context, GLuint texture, <span class="keywordtype">float</span> rect_x,</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                        <span class="keywordtype">float</span> rect_y, <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height,</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                        <span class="keyword">const</span> vec3 tint, <span class="keywordtype">float</span> intensity, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                        <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* UI_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="abackground_8frag_html_aa502181a07bffcbf45d1a0305ea7e73e"><div class="ttname"><a href="background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e">layout</a></div><div class="ttdeci">layout(location=0) in vec3 RayDir</div></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="astructGlyphInfo_html"><div class="ttname"><a href="structGlyphInfo.html">GlyphInfo</a></div><div class="ttdoc">Metrics and texture coordinates for a single font character.</div><div class="ttdef"><b>Definition:</b> ui.h:24</div></div>
+<div class="ttc" id="astructGlyphInfo_html_a4c29b44f3b642fa0e570f1adc22c2ee5"><div class="ttname"><a href="structGlyphInfo.html#a4c29b44f3b642fa0e570f1adc22c2ee5">GlyphInfo::h</a></div><div class="ttdeci">float h</div><div class="ttdef"><b>Definition:</b> ui.h:26</div></div>
+<div class="ttc" id="astructGlyphInfo_html_a53a54f1998a5db100a6fc615a276c85e"><div class="ttname"><a href="structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e">GlyphInfo::advance</a></div><div class="ttdeci">float advance</div><div class="ttdef"><b>Definition:</b> ui.h:28</div></div>
+<div class="ttc" id="astructGlyphInfo_html_ab8030ae4d33509a98169563a68f4b19d"><div class="ttname"><a href="structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d">GlyphInfo::x_off</a></div><div class="ttdeci">float x_off</div><div class="ttdef"><b>Definition:</b> ui.h:27</div></div>
+<div class="ttc" id="astructGlyphInfo_html_aeee917883d36cc9bda1a0bf899a889c9"><div class="ttname"><a href="structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9">GlyphInfo::x0</a></div><div class="ttdeci">float x0</div><div class="ttdef"><b>Definition:</b> ui.h:25</div></div>
+<div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition:</b> shader.h:71</div></div>
+<div class="ttc" id="astructUIContext_html"><div class="ttname"><a href="structUIContext.html">UIContext</a></div><div class="ttdoc">Persistent state for the UI system.</div><div class="ttdef"><b>Definition:</b> ui.h:51</div></div>
+<div class="ttc" id="astructUIContext_html_a4aadf19dd1934f81fa64d66c9a4bfe0f"><div class="ttname"><a href="structUIContext.html#a4aadf19dd1934f81fa64d66c9a4bfe0f">UIContext::vao</a></div><div class="ttdeci">GLuint vao</div><div class="ttdef"><b>Definition:</b> ui.h:56</div></div>
+<div class="ttc" id="astructUIContext_html_a4b6688815354ec56144a864e7f4dfd0d"><div class="ttname"><a href="structUIContext.html#a4b6688815354ec56144a864e7f4dfd0d">UIContext::batch_active</a></div><div class="ttdeci">int batch_active</div><div class="ttdef"><b>Definition:</b> ui.h:63</div></div>
+<div class="ttc" id="astructUIContext_html_a52ecf5ff0d8fbc54b9c2586c587a1dbf"><div class="ttname"><a href="structUIContext.html#a52ecf5ff0d8fbc54b9c2586c587a1dbf">UIContext::current_texture</a></div><div class="ttdeci">GLuint current_texture</div><div class="ttdef"><b>Definition:</b> ui.h:64</div></div>
+<div class="ttc" id="astructUIContext_html_a6c948d739612b8dfeebc4865f3230347"><div class="ttname"><a href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">UIContext::spinner_shader</a></div><div class="ttdeci">Shader * spinner_shader</div><div class="ttdef"><b>Definition:</b> ui.h:55</div></div>
+<div class="ttc" id="astructUIContext_html_a77c1f1660c195297bb0cf2172c9f081a"><div class="ttname"><a href="structUIContext.html#a77c1f1660c195297bb0cf2172c9f081a">UIContext::current_screen_width</a></div><div class="ttdeci">int current_screen_width</div><div class="ttdef"><b>Definition:</b> ui.h:61</div></div>
+<div class="ttc" id="astructUIContext_html_a91a4a19720fbcf5908113e8da9eb755a"><div class="ttname"><a href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">UIContext::shader</a></div><div class="ttdeci">Shader * shader</div><div class="ttdef"><b>Definition:</b> ui.h:53</div></div>
+<div class="ttc" id="astructUIContext_html_a9edeb95ac4c767d809e6ce2a4e674541"><div class="ttname"><a href="structUIContext.html#a9edeb95ac4c767d809e6ce2a4e674541">UIContext::texture</a></div><div class="ttdeci">GLuint texture</div><div class="ttdef"><b>Definition:</b> ui.h:52</div></div>
+<div class="ttc" id="astructUIContext_html_ab4107aff07820adb38b338d426e6a434"><div class="ttname"><a href="structUIContext.html#ab4107aff07820adb38b338d426e6a434">UIContext::current_screen_height</a></div><div class="ttdeci">int current_screen_height</div><div class="ttdef"><b>Definition:</b> ui.h:62</div></div>
+<div class="ttc" id="astructUIContext_html_abe9242e20056a2f326d67392255c81a0"><div class="ttname"><a href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">UIContext::font_size</a></div><div class="ttdeci">float font_size</div><div class="ttdef"><b>Definition:</b> ui.h:58</div></div>
+<div class="ttc" id="astructUIContext_html_ad1bd151216d7ef55bd7bf781b4a47c47"><div class="ttname"><a href="structUIContext.html#ad1bd151216d7ef55bd7bf781b4a47c47">UIContext::batch_count</a></div><div class="ttdeci">int batch_count</div><div class="ttdef"><b>Definition:</b> ui.h:60</div></div>
+<div class="ttc" id="astructUILayout_html"><div class="ttname"><a href="structUILayout.html">UILayout</a></div><div class="ttdoc">Helper for automatic vertical stacking of UI elements.</div><div class="ttdef"><b>Definition:</b> ui.h:71</div></div>
+<div class="ttc" id="astructUILayout_html_a692c37340a75ca97fb112f2402e0bd23"><div class="ttname"><a href="structUILayout.html#a692c37340a75ca97fb112f2402e0bd23">UILayout::cursor_y</a></div><div class="ttdeci">float cursor_y</div><div class="ttdef"><b>Definition:</b> ui.h:74</div></div>
+<div class="ttc" id="astructUILayout_html_a6c80586815470c2782e7ea1105deeecc"><div class="ttname"><a href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">UILayout::screen_height</a></div><div class="ttdeci">int screen_height</div><div class="ttdef"><b>Definition:</b> ui.h:77</div></div>
+<div class="ttc" id="astructUILayout_html_a7b85b790687f2339b78851574fe1ad63"><div class="ttname"><a href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">UILayout::start_x</a></div><div class="ttdeci">float start_x</div><div class="ttdef"><b>Definition:</b> ui.h:73</div></div>
+<div class="ttc" id="astructUILayout_html_a951795d8c9d444653b986658057c6cf3"><div class="ttname"><a href="structUILayout.html#a951795d8c9d444653b986658057c6cf3">UILayout::padding</a></div><div class="ttdeci">float padding</div><div class="ttdef"><b>Definition:</b> ui.h:75</div></div>
+<div class="ttc" id="astructUILayout_html_abecaeffeb6ae4e65c39d3511e75272e5"><div class="ttname"><a href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">UILayout::screen_width</a></div><div class="ttdeci">int screen_width</div><div class="ttdef"><b>Definition:</b> ui.h:76</div></div>
+<div class="ttc" id="astructUILayout_html_ae88f53f3645f9f62eb568d2ab0e0c529"><div class="ttname"><a href="structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529">UILayout::ui</a></div><div class="ttdeci">UIContext * ui</div><div class="ttdef"><b>Definition:</b> ui.h:72</div></div>
+<div class="ttc" id="astructUIVertex_html"><div class="ttname"><a href="structUIVertex.html">UIVertex</a></div><div class="ttdoc">Vertex data for the batch renderer.</div><div class="ttdef"><b>Definition:</b> ui.h:38</div></div>
+<div class="ttc" id="astructUIVertex_html_a22a567bbac6289709156d7eeab42749d"><div class="ttname"><a href="structUIVertex.html#a22a567bbac6289709156d7eeab42749d">UIVertex::rect_size_x</a></div><div class="ttdeci">float rect_size_x</div><div class="ttdef"><b>Definition:</b> ui.h:43</div></div>
+<div class="ttc" id="astructUIVertex_html_a3853aa5e70519a69ac9da0c419ab0527"><div class="ttname"><a href="structUIVertex.html#a3853aa5e70519a69ac9da0c419ab0527">UIVertex::mode</a></div><div class="ttdeci">float mode</div><div class="ttdef"><b>Definition:</b> ui.h:42</div></div>
+<div class="ttc" id="astructUIVertex_html_a4fee68b2deb88e7dafe92823c555c22e"><div class="ttname"><a href="structUIVertex.html#a4fee68b2deb88e7dafe92823c555c22e">UIVertex::u</a></div><div class="ttdeci">float u</div><div class="ttdef"><b>Definition:</b> ui.h:40</div></div>
+<div class="ttc" id="astructUIVertex_html_a5b8666f2a8849adc5082b4b9f2228d3f"><div class="ttname"><a href="structUIVertex.html#a5b8666f2a8849adc5082b4b9f2228d3f">UIVertex::a</a></div><div class="ttdeci">float a</div><div class="ttdef"><b>Definition:</b> ui.h:41</div></div>
+<div class="ttc" id="astructUIVertex_html_a78f77555598d98f7dddc38d0938faf1f"><div class="ttname"><a href="structUIVertex.html#a78f77555598d98f7dddc38d0938faf1f">UIVertex::radius</a></div><div class="ttdeci">float radius</div><div class="ttdef"><b>Definition:</b> ui.h:44</div></div>
+<div class="ttc" id="astructUIVertex_html_abc4f881f9b18241439050f050fce487e"><div class="ttname"><a href="structUIVertex.html#abc4f881f9b18241439050f050fce487e">UIVertex::x</a></div><div class="ttdeci">float x</div><div class="ttdef"><b>Definition:</b> ui.h:39</div></div>
+<div class="ttc" id="aui_8h_html_a04ff141f59212601e740294c9159dbe7"><div class="ttname"><a href="ui_8h.html#a04ff141f59212601e740294c9159dbe7">ui_layout_init</a></div><div class="ttdeci">void ui_layout_init(UILayout *layout, UIContext *ui_ctx, float pos_x, float pos_y, float padding, int screen_width, int screen_height)</div><div class="ttdoc">Initializes a layout helper for a frame.</div><div class="ttdef"><b>Definition:</b> ui.c:553</div></div>
+<div class="ttc" id="aui_8h_html_a092e3880109fbbe26972f6c5e3866c17"><div class="ttname"><a href="ui_8h.html#a092e3880109fbbe26972f6c5e3866c17">ui_draw_rect_ex</a></div><div class="ttdeci">void ui_draw_rect_ex(UIContext *ui_context, float rect_x, float rect_y, float width, float height, const vec3 color, float alpha, int screen_width, int screen_height)</div><div class="ttdoc">Draws a solid color rectangle with custom alpha transparency.</div><div class="ttdef"><b>Definition:</b> ui.c:471</div></div>
+<div class="ttc" id="aui_8h_html_a230bc2320e5c5a94d5634132ad7ecd05"><div class="ttname"><a href="ui_8h.html#a230bc2320e5c5a94d5634132ad7ecd05">ui_measure_text</a></div><div class="ttdeci">float ui_measure_text(const UIContext *ui_context, const char *text)</div><div class="ttdoc">Measures the width of a text string in pixels.</div><div class="ttdef"><b>Definition:</b> ui.c:379</div></div>
+<div class="ttc" id="aui_8h_html_a5356c389352db784027765ad0ef3aca5"><div class="ttname"><a href="ui_8h.html#a5356c389352db784027765ad0ef3aca5">ui_begin</a></div><div class="ttdeci">void ui_begin(UIContext *ui_context, int screen_width, int screen_height)</div><div class="ttdoc">Begins a new UI batch.</div><div class="ttdef"><b>Definition:</b> ui.c:303</div></div>
+<div class="ttc" id="aui_8h_html_a58a7b78e7956c02bde43fa68449deb66"><div class="ttname"><a href="ui_8h.html#a58a7b78e7956c02bde43fa68449deb66">ui_draw_glow_rect</a></div><div class="ttdeci">void ui_draw_glow_rect(UIContext *ui_context, float rect_x, float rect_y, float width, float height, float radius, const vec3 color, float alpha, int screen_width, int screen_height)</div><div class="ttdoc">Draws an SDF neon glow border around a rounded rectangle area.</div><div class="ttdef"><b>Definition:</b> ui.c:827</div></div>
+<div class="ttc" id="aui_8h_html_a5c138218fecc5ed14d4ade5e6948d5cb"><div class="ttname"><a href="ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb">ui_destroy</a></div><div class="ttdeci">void ui_destroy(UIContext *ui_context)</div><div class="ttdoc">Releases UI resources.</div><div class="ttdef"><b>Definition:</b> ui.c:523</div></div>
+<div class="ttc" id="aui_8h_html_a74067bc67d31c6d82fa3b548a3729670"><div class="ttname"><a href="ui_8h.html#a74067bc67d31c6d82fa3b548a3729670">ui_draw_text_ex</a></div><div class="ttdeci">void ui_draw_text_ex(UIContext *ui_context, const char *text, float pos_x, float pos_y, const vec3 color, float alpha, int screen_width, int screen_height)</div><div class="ttdoc">Draws text with custom alpha transparency.</div><div class="ttdef"><b>Definition:</b> ui.c:402</div></div>
+<div class="ttc" id="aui_8h_html_a741fab59d05880f3bf5362d101833451"><div class="ttname"><a href="ui_8h.html#a741fab59d05880f3bf5362d101833451">ui_layout_text</a></div><div class="ttdeci">void ui_layout_text(UILayout *layout, const char *text, const vec3 color)</div><div class="ttdoc">Draws text and advances the layout cursor.</div><div class="ttdef"><b>Definition:</b> ui.c:565</div></div>
+<div class="ttc" id="aui_8h_html_a822ad2f9015dc8e43f609046475a5dfe"><div class="ttname"><a href="ui_8h.html#a822ad2f9015dc8e43f609046475a5dfe">ui_layout_separator</a></div><div class="ttdeci">void ui_layout_separator(UILayout *layout, float space)</div><div class="ttdoc">Adds vertical space to the layout.</div><div class="ttdef"><b>Definition:</b> ui.c:579</div></div>
+<div class="ttc" id="aui_8h_html_a89c6aa7e6080366c0ed301b4606a7c26"><div class="ttname"><a href="ui_8h.html#a89c6aa7e6080366c0ed301b4606a7c26">UI_MAX_BATCH_VERTICES</a></div><div class="ttdeci">#define UI_MAX_BATCH_VERTICES</div><div class="ttdoc">Maximum number of vertices per UI batch.</div><div class="ttdef"><b>Definition:</b> ui.h:32</div></div>
+<div class="ttc" id="aui_8h_html_a8eda682933ded96c62fa6f9ddc0097b5"><div class="ttname"><a href="ui_8h.html#a8eda682933ded96c62fa6f9ddc0097b5">ASCII_CHAR_COUNT</a></div><div class="ttdeci">#define ASCII_CHAR_COUNT</div><div class="ttdoc">Number of supported glyphs in the font atlas.</div><div class="ttdef"><b>Definition:</b> ui.h:13</div></div>
+<div class="ttc" id="aui_8h_html_aa12b42bbbbca85f3404c48a9534aa7ac"><div class="ttname"><a href="ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui_draw_text</a></div><div class="ttdeci">void ui_draw_text(UIContext *ui_context, const char *text, float pos_x, float pos_y, const vec3 color, int screen_width, int screen_height)</div><div class="ttdoc">Draws a single text string at a specific coordinate.</div><div class="ttdef"><b>Definition:</b> ui.c:371</div></div>
+<div class="ttc" id="aui_8h_html_aa4b289c41e0a12611f72f031dda9bccd"><div class="ttname"><a href="ui_8h.html#aa4b289c41e0a12611f72f031dda9bccd">ui_flush</a></div><div class="ttdeci">void ui_flush(UIContext *ui_context)</div><div class="ttdoc">Flushes the current UI batch to the GPU.</div><div class="ttdef"><b>Definition:</b> ui.c:326</div></div>
+<div class="ttc" id="aui_8h_html_aab1c4d3b72a5751443624afa0b882801"><div class="ttname"><a href="ui_8h.html#aab1c4d3b72a5751443624afa0b882801">ui_draw_bloom_quad</a></div><div class="ttdeci">void ui_draw_bloom_quad(UIContext *ui_context, GLuint texture, float rect_x, float rect_y, float width, float height, const vec3 tint, float intensity, int screen_width, int screen_height)</div><div class="ttdoc">Draws a textured quad with additive blending for bloom effects (mode 4).</div><div class="ttdef"><b>Definition:</b> ui.c:770</div></div>
+<div class="ttc" id="aui_8h_html_ab36623b8b8e36a7938c53db20b6f54bc"><div class="ttname"><a href="ui_8h.html#ab36623b8b8e36a7938c53db20b6f54bc">ui_draw_textured_quad</a></div><div class="ttdeci">void ui_draw_textured_quad(UIContext *ui_context, GLuint texture, float rect_x, float rect_y, float width, float height, const vec3 tint, float alpha, int screen_width, int screen_height)</div><div class="ttdoc">Draws a textured quad tinted by a color (mode 3).</div><div class="ttdef"><b>Definition:</b> ui.c:718</div></div>
+<div class="ttc" id="aui_8h_html_acb75a0a726f807c7362e0d26a2c8e74b"><div class="ttname"><a href="ui_8h.html#acb75a0a726f807c7362e0d26a2c8e74b">ui_draw_text_scaled</a></div><div class="ttdeci">void ui_draw_text_scaled(UIContext *ui_context, const char *text, float pos_x, float pos_y, const vec3 color, float alpha, float scale, int screen_width, int screen_height)</div><div class="ttdoc">Draws text with custom alpha transparency and a scale factor.</div><div class="ttdef"><b>Definition:</b> ui.c:410</div></div>
+<div class="ttc" id="aui_8h_html_ad120cc592f289ed7dd085d8d90b9a712"><div class="ttname"><a href="ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712">ui_init</a></div><div class="ttdeci">int ui_init(UIContext *ui_context, const char *font_path, float font_size)</div><div class="ttdoc">Initializes the UI system.</div><div class="ttdef"><b>Definition:</b> ui.c:236</div></div>
+<div class="ttc" id="aui_8h_html_ae939146f2938232fc48f970745ecf26a"><div class="ttname"><a href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui_draw_rect</a></div><div class="ttdeci">void ui_draw_rect(UIContext *ui_context, float rect_x, float rect_y, float width, float height, const vec3 color, int screen_width, int screen_height)</div><div class="ttdoc">Draws a solid color rectangle.</div><div class="ttdef"><b>Definition:</b> ui.c:463</div></div>
+<div class="ttc" id="aui_8h_html_af0a3c0de038ae56e7e6344cdfdd15bba"><div class="ttname"><a href="ui_8h.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui_draw_spinner</a></div><div class="ttdeci">void ui_draw_spinner(UIContext *ui_context, float center_x, float center_y, float size, float angle, const vec3 color, int screen_width, int screen_height)</div><div class="ttdoc">Draws a rotating loading spinner.</div><div class="ttdef"><b>Definition:</b> ui.c:587</div></div>
+<div class="ttc" id="aui_8h_html_af4b8d38bd43df2b9b59611b054408f74"><div class="ttname"><a href="ui_8h.html#af4b8d38bd43df2b9b59611b054408f74">ui_draw_rounded_rect</a></div><div class="ttdeci">void ui_draw_rounded_rect(UIContext *ui_context, float rect_x, float rect_y, float width, float height, float radius, const vec3 color, float alpha, int screen_width, int screen_height)</div><div class="ttdoc">Draws a rounded rectangle with custom alpha.</div><div class="ttdef"><b>Definition:</b> ui.c:660</div></div>
+<div class="ttc" id="aui_8h_html_afefa2b11544b44d05a8d2652e4e4883c"><div class="ttname"><a href="ui_8h.html#afefa2b11544b44d05a8d2652e4e4883c">ui_end</a></div><div class="ttdeci">void ui_end(UIContext *ui_context)</div><div class="ttdoc">Ends the current UI batch and restores OpenGL state.</div><div class="ttdef"><b>Definition:</b> ui.c:360</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="ui_8h.html">ui.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

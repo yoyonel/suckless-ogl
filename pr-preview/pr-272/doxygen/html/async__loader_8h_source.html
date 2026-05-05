@@ -1,0 +1,350 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/async_loader.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('async__loader_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">async_loader.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="async__loader_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef ASYNC_LOADER_H</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ASYNC_LOADER_H</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="async__loader_8h.html#ada1ed83ee10e19ab9cca088b280d85ee">   16</a></span>&#160;<span class="preprocessor">#define ASYNC_MAX_PATH 256</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">   22</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324">   23</a></span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324">ASYNC_IDLE</a> = 0, </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a140b746f61b307813404ecc0f6bbb6fc">ASYNC_PENDING</a>,  </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209af69125c6d0b854360346a727438a14ea">   26</a></span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209af69125c6d0b854360346a727438a14ea">ASYNC_LOADING</a>,  </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209ad047ad3d642b4e0f7f29d18a090d6f18">   27</a></span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209ad047ad3d642b4e0f7f29d18a090d6f18">ASYNC_WAITING_FOR_PBO</a>, </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a23bd260bfc224be15e3f2be28cd7208f">   28</a></span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a23bd260bfc224be15e3f2be28cd7208f">ASYNC_CONVERTING</a>,      </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a0f63b531554194e976a0e8d8770e095a">ASYNC_READY</a>,           </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435">ASYNC_FAILED</a>           </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435">   32</a></span>&#160;} <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="structAsyncRequest.html">   40</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAsyncRequest.html">AsyncRequest</a> {</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995">   41</a></span>&#160;    <span class="keywordtype">char</span> <a class="code" href="structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995">path</a>[<a class="code" href="async__loader_8h.html#ada1ed83ee10e19ab9cca088b280d85ee">ASYNC_MAX_PATH</a>]; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="comment">/* --- Internal Data for Async Ops --- */</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#af52ed4a1125b41c8d970198a62f6585b">   43</a></span>&#160;    <span class="keywordtype">float</span>* <a class="code" href="structAsyncRequest.html#af52ed4a1125b41c8d970198a62f6585b">float_data</a>;   <span class="comment">/* For loading stage */</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#a88ced47b2edb98525f0b69f22d9b18be">   44</a></span>&#160;    uint16_t* <a class="code" href="structAsyncRequest.html#a88ced47b2edb98525f0b69f22d9b18be">half_data</a>; <span class="comment">/* For legacy upload (if no PBO) */</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#a3050b10d8e5b74f241183ab01eec97b5">   45</a></span>&#160;    <span class="keywordtype">void</span>* <a class="code" href="structAsyncRequest.html#a3050b10d8e5b74f241183ab01eec97b5">pbo_mapped_ptr</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#af5954290e1bec60ae5bb883574d3c8ad">   46</a></span>&#160;    GLuint <a class="code" href="structAsyncRequest.html#af5954290e1bec60ae5bb883574d3c8ad">pbo_id</a>; <span class="comment">/* ID of the PBO used for this request */</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51">   47</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51">width</a>;     </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f">   48</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f">height</a>;    </div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15">   49</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15">channels</a>;  </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#ab3905494d911571b697b852533107e8f">   50</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="structAsyncRequest.html#ab3905494d911571b697b852533107e8f">submission_time</a>; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">volatile</span> <a class="code" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a></div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae">   52</a></span>&#160;        <a class="code" href="structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae">state</a>; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;} <a class="code" href="structAsyncRequest.html">AsyncRequest</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAsyncLoader.html">AsyncLoader</a> <a class="code" href="structAsyncLoader.html">AsyncLoader</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">struct </span><a class="code" href="structTracyManager.html">TracyManager</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<a class="code" href="structAsyncLoader.html">AsyncLoader</a>* <a class="code" href="async__loader_8h.html#aaa24a1b8651cb587df266bc1a55a015f">async_loader_create</a>(<span class="keyword">struct</span> <a class="code" href="structTracyManager.html">TracyManager</a>* mgr);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keywordtype">void</span> <a class="code" href="async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564">async_loader_destroy</a>(<a class="code" href="structAsyncLoader.html">AsyncLoader</a>* loader);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="async__loader_8h.html#a728931915db1981745d8648f661e4bce">async_loader_request</a>(<a class="code" href="structAsyncLoader.html">AsyncLoader</a>* loader, <span class="keyword">const</span> <span class="keywordtype">char</span>* path);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="async__loader_8h.html#a6de1e12f1acee74c563ec68d926092eb">async_loader_poll</a>(<a class="code" href="structAsyncLoader.html">AsyncLoader</a>* loader, <a class="code" href="structAsyncRequest.html">AsyncRequest</a>* out_req);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keywordtype">void</span> <a class="code" href="async__loader_8h.html#a5c550b2e0e880d9be179ada62e3d99e3">async_loader_provide_pbo</a>(<a class="code" href="structAsyncLoader.html">AsyncLoader</a>* loader, <span class="keywordtype">void</span>* mapped_ptr,</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                              GLuint pbo_id);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keywordtype">void</span> <a class="code" href="async__loader_8h.html#a7a9ef6b50fc1358023da343b3b6d281a">async_loader_cancel</a>(<a class="code" href="structAsyncLoader.html">AsyncLoader</a>* loader);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ASYNC_LOADER_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a></div><div class="ttdeci">AsyncState</div><div class="ttdoc">Lifecycle states for an individual asynchronous request.</div><div class="ttdef"><b>Definition:</b> async_loader.h:22</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209a0f63b531554194e976a0e8d8770e095a"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a0f63b531554194e976a0e8d8770e095a">ASYNC_READY</a></div><div class="ttdeci">@ ASYNC_READY</div><div class="ttdef"><b>Definition:</b> async_loader.h:29</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209a140b746f61b307813404ecc0f6bbb6fc"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a140b746f61b307813404ecc0f6bbb6fc">ASYNC_PENDING</a></div><div class="ttdeci">@ ASYNC_PENDING</div><div class="ttdef"><b>Definition:</b> async_loader.h:24</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209a23bd260bfc224be15e3f2be28cd7208f"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a23bd260bfc224be15e3f2be28cd7208f">ASYNC_CONVERTING</a></div><div class="ttdeci">@ ASYNC_CONVERTING</div><div class="ttdef"><b>Definition:</b> async_loader.h:28</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324">ASYNC_IDLE</a></div><div class="ttdeci">@ ASYNC_IDLE</div><div class="ttdef"><b>Definition:</b> async_loader.h:23</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435">ASYNC_FAILED</a></div><div class="ttdeci">@ ASYNC_FAILED</div><div class="ttdef"><b>Definition:</b> async_loader.h:31</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209ad047ad3d642b4e0f7f29d18a090d6f18"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209ad047ad3d642b4e0f7f29d18a090d6f18">ASYNC_WAITING_FOR_PBO</a></div><div class="ttdeci">@ ASYNC_WAITING_FOR_PBO</div><div class="ttdef"><b>Definition:</b> async_loader.h:27</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a0488a63f39b401416c2e517f89a5a209af69125c6d0b854360346a727438a14ea"><div class="ttname"><a href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209af69125c6d0b854360346a727438a14ea">ASYNC_LOADING</a></div><div class="ttdeci">@ ASYNC_LOADING</div><div class="ttdef"><b>Definition:</b> async_loader.h:26</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a5c550b2e0e880d9be179ada62e3d99e3"><div class="ttname"><a href="async__loader_8h.html#a5c550b2e0e880d9be179ada62e3d99e3">async_loader_provide_pbo</a></div><div class="ttdeci">void async_loader_provide_pbo(AsyncLoader *loader, void *mapped_ptr, GLuint pbo_id)</div><div class="ttdoc">Provides a mapped PBO pointer to the async loader for conversion.</div><div class="ttdef"><b>Definition:</b> async_loader.c:368</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a6de1e12f1acee74c563ec68d926092eb"><div class="ttname"><a href="async__loader_8h.html#a6de1e12f1acee74c563ec68d926092eb">async_loader_poll</a></div><div class="ttdeci">bool async_loader_poll(AsyncLoader *loader, AsyncRequest *out_req)</div><div class="ttdoc">Polls the loader for any completed requests.</div><div class="ttdef"><b>Definition:</b> async_loader.c:325</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a728931915db1981745d8648f661e4bce"><div class="ttname"><a href="async__loader_8h.html#a728931915db1981745d8648f661e4bce">async_loader_request</a></div><div class="ttdeci">bool async_loader_request(AsyncLoader *loader, const char *path)</div><div class="ttdoc">Submits a new file path for background loading.</div><div class="ttdef"><b>Definition:</b> async_loader.c:273</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a7a9ef6b50fc1358023da343b3b6d281a"><div class="ttname"><a href="async__loader_8h.html#a7a9ef6b50fc1358023da343b3b6d281a">async_loader_cancel</a></div><div class="ttdeci">void async_loader_cancel(AsyncLoader *loader)</div><div class="ttdoc">Cancels the current request if it is waiting for a PBO.</div><div class="ttdef"><b>Definition:</b> async_loader.c:396</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a8f4ca9abf78e333d8d7ca5762db31564"><div class="ttname"><a href="async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564">async_loader_destroy</a></div><div class="ttdeci">void async_loader_destroy(AsyncLoader *loader)</div><div class="ttdoc">Destroys the async loader and frees resources.</div><div class="ttdef"><b>Definition:</b> async_loader.c:240</div></div>
+<div class="ttc" id="aasync__loader_8h_html_aaa24a1b8651cb587df266bc1a55a015f"><div class="ttname"><a href="async__loader_8h.html#aaa24a1b8651cb587df266bc1a55a015f">async_loader_create</a></div><div class="ttdeci">AsyncLoader * async_loader_create(struct TracyManager *mgr)</div><div class="ttdoc">Creates and initializes a new async loader instance.</div><div class="ttdef"><b>Definition:</b> async_loader.c:196</div></div>
+<div class="ttc" id="aasync__loader_8h_html_ada1ed83ee10e19ab9cca088b280d85ee"><div class="ttname"><a href="async__loader_8h.html#ada1ed83ee10e19ab9cca088b280d85ee">ASYNC_MAX_PATH</a></div><div class="ttdeci">#define ASYNC_MAX_PATH</div><div class="ttdoc">Maximum path length for an asynchronous load request.</div><div class="ttdef"><b>Definition:</b> async_loader.h:16</div></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="astructAsyncLoader_html"><div class="ttname"><a href="structAsyncLoader.html">AsyncLoader</a></div><div class="ttdoc">Opaque handle to the asynchronous loader context.</div><div class="ttdef"><b>Definition:</b> async_loader.c:17</div></div>
+<div class="ttc" id="astructAsyncRequest_html"><div class="ttname"><a href="structAsyncRequest.html">AsyncRequest</a></div><div class="ttdoc">Container for asynchronous load results and metadata.</div><div class="ttdef"><b>Definition:</b> async_loader.h:40</div></div>
+<div class="ttc" id="astructAsyncRequest_html_a0d9cb4509d43875ece9e7a5142b37e15"><div class="ttname"><a href="structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15">AsyncRequest::channels</a></div><div class="ttdeci">int channels</div><div class="ttdef"><b>Definition:</b> async_loader.h:49</div></div>
+<div class="ttc" id="astructAsyncRequest_html_a3050b10d8e5b74f241183ab01eec97b5"><div class="ttname"><a href="structAsyncRequest.html#a3050b10d8e5b74f241183ab01eec97b5">AsyncRequest::pbo_mapped_ptr</a></div><div class="ttdeci">void * pbo_mapped_ptr</div><div class="ttdef"><b>Definition:</b> async_loader.h:45</div></div>
+<div class="ttc" id="astructAsyncRequest_html_a790bd417ab046e08aa8a4bdb945aa995"><div class="ttname"><a href="structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995">AsyncRequest::path</a></div><div class="ttdeci">char path[256]</div><div class="ttdef"><b>Definition:</b> async_loader.h:41</div></div>
+<div class="ttc" id="astructAsyncRequest_html_a88ced47b2edb98525f0b69f22d9b18be"><div class="ttname"><a href="structAsyncRequest.html#a88ced47b2edb98525f0b69f22d9b18be">AsyncRequest::half_data</a></div><div class="ttdeci">uint16_t * half_data</div><div class="ttdef"><b>Definition:</b> async_loader.h:44</div></div>
+<div class="ttc" id="astructAsyncRequest_html_ab3905494d911571b697b852533107e8f"><div class="ttname"><a href="structAsyncRequest.html#ab3905494d911571b697b852533107e8f">AsyncRequest::submission_time</a></div><div class="ttdeci">double submission_time</div><div class="ttdef"><b>Definition:</b> async_loader.h:50</div></div>
+<div class="ttc" id="astructAsyncRequest_html_ac4cd174106cd4357e69f05d238c753ae"><div class="ttname"><a href="structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae">AsyncRequest::state</a></div><div class="ttdeci">volatile AsyncState state</div><div class="ttdef"><b>Definition:</b> async_loader.h:52</div></div>
+<div class="ttc" id="astructAsyncRequest_html_ad4afdf0552ccb72bacdd3f7710374b51"><div class="ttname"><a href="structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51">AsyncRequest::width</a></div><div class="ttdeci">int width</div><div class="ttdef"><b>Definition:</b> async_loader.h:47</div></div>
+<div class="ttc" id="astructAsyncRequest_html_af4e953655035ef73bf310187cdb1091f"><div class="ttname"><a href="structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f">AsyncRequest::height</a></div><div class="ttdeci">int height</div><div class="ttdef"><b>Definition:</b> async_loader.h:48</div></div>
+<div class="ttc" id="astructAsyncRequest_html_af52ed4a1125b41c8d970198a62f6585b"><div class="ttname"><a href="structAsyncRequest.html#af52ed4a1125b41c8d970198a62f6585b">AsyncRequest::float_data</a></div><div class="ttdeci">float * float_data</div><div class="ttdef"><b>Definition:</b> async_loader.h:43</div></div>
+<div class="ttc" id="astructAsyncRequest_html_af5954290e1bec60ae5bb883574d3c8ad"><div class="ttname"><a href="structAsyncRequest.html#af5954290e1bec60ae5bb883574d3c8ad">AsyncRequest::pbo_id</a></div><div class="ttdeci">GLuint pbo_id</div><div class="ttdef"><b>Definition:</b> async_loader.h:46</div></div>
+<div class="ttc" id="astructTracyManager_html"><div class="ttname"><a href="structTracyManager.html">TracyManager</a></div><div class="ttdoc">Handles Tracy-specific instrumentation and asynchronous GPU screenshots.</div><div class="ttdef"><b>Definition:</b> tracy_manager.h:19</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="async__loader_8h.html">async_loader.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

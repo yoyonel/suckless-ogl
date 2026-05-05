@@ -1,0 +1,413 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Data Fields - Variables</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li class="current"><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="functions.html"><span>All</span></a></li>
+      <li class="current"><a href="functions_vars.html"><span>Variables</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="functions_vars.html#index__5F"><span>_</span></a></li>
+      <li><a href="functions_vars_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_vars_b.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_vars_c.html#index_c"><span>c</span></a></li>
+      <li><a href="functions_vars_d.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_vars_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_vars_f.html#index_f"><span>f</span></a></li>
+      <li class="current"><a href="functions_vars_g.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_vars_h.html#index_h"><span>h</span></a></li>
+      <li><a href="functions_vars_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_vars_j.html#index_j"><span>j</span></a></li>
+      <li><a href="functions_vars_k.html#index_k"><span>k</span></a></li>
+      <li><a href="functions_vars_l.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_vars_m.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_vars_n.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_vars_o.html#index_o"><span>o</span></a></li>
+      <li><a href="functions_vars_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_vars_q.html#index_q"><span>q</span></a></li>
+      <li><a href="functions_vars_r.html#index_r"><span>r</span></a></li>
+      <li><a href="functions_vars_s.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_vars_t.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_vars_u.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_vars_v.html#index_v"><span>v</span></a></li>
+      <li><a href="functions_vars_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_vars_x.html#index_x"><span>x</span></a></li>
+      <li><a href="functions_vars_y.html#index_y"><span>y</span></a></li>
+      <li><a href="functions_vars_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('functions_vars_g.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="contents">
+&#160;
+
+<h3><a id="index_g"></a>- g -</h3><ul>
+<li>g
+: <a class="el" href="structUIVertex.html#ab2a610316ec0ac43850747732301dbcd">UIVertex</a>
+</li>
+<li>gain
+: <a class="el" href="structColorGradingParams.html#a96692cdb4e1d9f93c5b65dd129a73825">ColorGradingParams</a>
+</li>
+<li>gamepad
+: <a class="el" href="structAppInput.html#a4ee0e280f1e14c3a79e07d0e61450543">AppInput</a>
+, <a class="el" href="structAppInputContext.html#a6f1a3f1b085070c54d4ecade4d548f5b">AppInputContext</a>
+</li>
+<li>gamma
+: <a class="el" href="structColorGradingParams.html#a60c4e1aee5f6f26fa98eee89f5924dd2">ColorGradingParams</a>
+</li>
+<li>geometry
+: <a class="el" href="structScene.html#ad301901a87741c2b2ad7660c752877bd">Scene</a>
+</li>
+<li>gi_mode
+: <a class="el" href="structBillboardUBO.html#a19ff206c04f6712a92eca2476916d701">BillboardUBO</a>
+, <a class="el" href="structInstancedUniforms.html#a0d2135c208d13dbd10c9dfe31b577309">InstancedUniforms</a>
+, <a class="el" href="structSceneConfig.html#ae679f6d2244271ce1b8882e8ef596b43">SceneConfig</a>
+</li>
+<li>global_alpha
+: <a class="el" href="structGPUProfilerUI.html#aa3aea768c0e27a27328b09024161b676">GPUProfilerUI</a>
+</li>
+<li>global_timer
+: <a class="el" href="structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76">IBLCoordinator</a>
+</li>
+<li>gp_axis
+: <a class="el" href="structGamepadControlPos.html#a1c36c1660e58c2181067c75588d0aada">GamepadControlPos</a>
+</li>
+<li>gp_axis2
+: <a class="el" href="structGamepadControlPos.html#a34584dc2b41f00b2433d016f1f1e2ff4">GamepadControlPos</a>
+</li>
+<li>gp_btn
+: <a class="el" href="structGamepadControlPos.html#a1fe26c4153362345d48edbda4c7e5312">GamepadControlPos</a>
+</li>
+<li>gpu
+: <a class="el" href="structHybridTimer.html#a733adeac52db45de06419e84cf61c93e">HybridTimer</a>
+, <a class="el" href="structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9">PostProcess</a>
+, <a class="el" href="structScene.html#a9406b08b6e33eca3b04c34d3d388e190">Scene</a>
+</li>
+<li>gpu_profiler
+: <a class="el" href="structAppProfiling.html#aec657f534af6d550357cb2185e5e99c8">AppProfiling</a>
+, <a class="el" href="structPostProcess.html#acb108231128817d5e9f495a70df22f1b">PostProcess</a>
+</li>
+<li>gpu_usage
+: <a class="el" href="structAppProfiling.html#a5281d3ca3fc63ed6e65475e71a283497">AppProfiling</a>
+</li>
+<li>grab_height
+: <a class="el" href="structShockwaveRenderer.html#ab4b9968e4e33ecd47bd96f9440c288df">ShockwaveRenderer</a>
+</li>
+<li>grab_tex
+: <a class="el" href="structShockwaveRenderer.html#a24a1a775f9eb7fb10d1fd324fda18bd0">ShockwaveRenderer</a>
+</li>
+<li>grab_width
+: <a class="el" href="structShockwaveRenderer.html#a592c5bc4292c7c37dbdf3f75bbc6d73a">ShockwaveRenderer</a>
+</li>
+<li>grading_contrast
+: <a class="el" href="structPostProcessUBO.html#a99c0c02fc2f06609b4f4244d62a75a29">PostProcessUBO</a>
+</li>
+<li>grading_gain
+: <a class="el" href="structPostProcessUBO.html#aec6743ba4d29c3b5a93681471dc83e44">PostProcessUBO</a>
+</li>
+<li>grading_gamma
+: <a class="el" href="structPostProcessUBO.html#a7f721ae1600da1dc33a4697bf0452c2b">PostProcessUBO</a>
+</li>
+<li>grading_lift
+: <a class="el" href="structPostProcessUBO.html#a5d9e9add44ca2aa51a2600b8d5bd07fe">PostProcessUBO</a>
+</li>
+<li>grading_offset
+: <a class="el" href="structPostProcessUBO.html#aab05187e5c4746657b8363c02f3e2c71">PostProcessUBO</a>
+</li>
+<li>grading_saturation
+: <a class="el" href="structPostProcessUBO.html#aa6bab6801073d901a92b0b0fa33b2165">PostProcessUBO</a>
+</li>
+<li>grain
+: <a class="el" href="structPostProcess.html#abbcfbc94b0f008cc6d78785d6b4b1ecc">PostProcess</a>
+, <a class="el" href="structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0">PostProcessPreset</a>
+</li>
+<li>grain_highlights_min
+: <a class="el" href="structPostProcessUBO.html#a6914a6701ec1d2de02ced6d4d53015b5">PostProcessUBO</a>
+</li>
+<li>grain_intensity
+: <a class="el" href="structPostProcessUBO.html#a1e3b6c1b48667503426b3a26f4f206e5">PostProcessUBO</a>
+</li>
+<li>grain_intensity_highlights
+: <a class="el" href="structPostProcessUBO.html#ada493a61e292289e4f96e71617e10f83">PostProcessUBO</a>
+</li>
+<li>grain_intensity_midtones
+: <a class="el" href="structPostProcessUBO.html#af3c068584c32a7c08cf419806cf8e451">PostProcessUBO</a>
+</li>
+<li>grain_intensity_shadows
+: <a class="el" href="structPostProcessUBO.html#aa2425df0b1e55edf105d49774923f429">PostProcessUBO</a>
+</li>
+<li>grain_shadows_max
+: <a class="el" href="structPostProcessUBO.html#a8a5c0301076f7a1b49a29f2e37d05706">PostProcessUBO</a>
+</li>
+<li>grain_texel_size
+: <a class="el" href="structPostProcessUBO.html#a1948c890ba8d1f6116f5fbd6e128236e">PostProcessUBO</a>
+</li>
+<li>gravity
+: <a class="el" href="structNBodySim.html#abb02795634aa7a885c486be8172f2dc7">NBodySim</a>
+</li>
+<li>grid_dim
+: <a class="el" href="structLightProbeGrid.html#a7b7ac239b2e21629e23af65a286418d9">LightProbeGrid</a>
+</li>
+<li>grid_to_idx_scale
+: <a class="el" href="structBillboardUBO.html#a3a43aba00c2857f4987c81fb4b3a683e">BillboardUBO</a>
+</li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
