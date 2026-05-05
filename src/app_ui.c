@@ -4,6 +4,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "app_ui_layout.h" /* Private: layout constants, keyboard/gamepad data */
+#include "env_manager.h"
 #include "glad/glad.h"
 #include "nbody.h"
 #include "postprocess_internal.h"
@@ -1236,12 +1237,12 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 static void draw_loading_indicator(const App* app)
 {
 	if (app->scene->lighting.ibl_coord.state == IBL_STATE_IDLE &&
-	    !app->env_mgr.env_map_loading) {
+	    !app->env_mgr->env_map_loading) {
 		return;
 	}
 
 	char loading_text[UI_LOADING_TEXT_SIZE];
-	const char* status = (app->env_mgr.env_map_loading != 0)
+	const char* status = (app->env_mgr->env_map_loading != 0)
 	                         ? "Loading HDR"
 	                         : "Generating IBL";
 	(void)safe_snprintf(loading_text, sizeof(loading_text), "%s", status);

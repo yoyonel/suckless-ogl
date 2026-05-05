@@ -7,7 +7,6 @@
 #include "async/async_coordinator.h"
 #include "async_loader.h"
 #include "effect_benchmark.h"
-#include "env_manager.h"
 #include "gl_common.h"
 #include <cglm/cglm.h>
 
@@ -16,6 +15,7 @@ typedef struct AppProfiling AppProfiling;
 typedef struct AppInput AppInput;
 typedef struct PostProcess PostProcess;
 typedef struct Scene Scene;
+typedef struct EnvManager EnvManager;
 
 /**
  * @struct App
@@ -39,7 +39,7 @@ typedef struct App {
 	/* --- App State Flags and Values --- */
 	int width;                    /**< Current window/viewport width. */
 	int height;                   /**< Current window/viewport height. */
-	EnvManager env_mgr;           /**< Environment/IBL state. */
+	EnvManager* env_mgr;          /**< Environment/IBL state. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 

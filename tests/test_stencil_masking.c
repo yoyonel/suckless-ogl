@@ -35,7 +35,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	    .camera = &app->input->camera,
 	    .profiler = &app->profiling->gpu_profiler,
 	    .profiler_ui = &app->profiling->timeline_ui,
-	    .env_mgr = &app->env_mgr,
+	    .env_mgr = app->env_mgr,
 	    .notifier = &app->notifier,
 	    .effect_bench = &app->effect_bench,
 	    .width = app->width,

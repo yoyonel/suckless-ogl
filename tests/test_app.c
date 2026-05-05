@@ -3,6 +3,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "camera.h"
+#include "env_manager.h"
 #include "main.h"
 #include "postprocess_presets.h"
 #include "renderer.h"
@@ -103,7 +104,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	    .camera = &app->input->camera,
 	    .profiler = &app->profiling->gpu_profiler,
 	    .profiler_ui = &app->profiling->timeline_ui,
-	    .env_mgr = &app->env_mgr,
+	    .env_mgr = app->env_mgr,
 	    .notifier = &app->notifier,
 	    .effect_bench = &app->effect_bench,
 	    .width = app->width,
@@ -188,7 +189,7 @@ void setUp(void)
 		double last_time = glfwGetTime();
 		while (
 		    (g_test_app.scene->gpu->hdr_texture == 0 ||
-		     g_test_app.env_mgr.transition_state != TRANSITION_IDLE) &&
+		     g_test_app.env_mgr->transition_state != TRANSITION_IDLE) &&
 		    timeout-- > 0) {
 			double current_time = glfwGetTime();
 			g_test_app.delta_time = current_time - last_time;

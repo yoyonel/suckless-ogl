@@ -4,6 +4,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "app_ui.h"
+#include "env_manager.h"
 #include "postprocess_internal.h"
 #include "profiler.h"
 #include "renderer.h"
@@ -51,12 +52,24 @@ int app_init(App* app, int width, int height, const char* title)
 		app->input = NULL;
 		return 0;
 	}
+	app->env_mgr = calloc(1, sizeof(*app->env_mgr));
+	if (!app->env_mgr) {
+		free(app->scene);
+		free(app->postprocess);
+		free(app->profiling);
+		free(app->input);
+		app->scene = NULL;
+		app->postprocess = NULL;
+		app->profiling = NULL;
+		app->input = NULL;
+		return 0;
+	}
 
 	app_input_state_init(app->input);
 	app->win.is_fullscreen = false;
 	app->win.resize_pending = 0;
 	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
-	app->env_mgr.is_first_load = true;
+	app->env_mgr->is_first_load = true;
 
 	app->win.handle = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->win.handle) {
@@ -82,11 +95,11 @@ int app_init(App* app, int width, int height, const char* title)
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
 	 */
-	app->env_mgr.transition_state = TRANSITION_WAIT_IBL;
-	app->env_mgr.transition_alpha = 1.0F;
-	app->env_mgr.transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
-	app->env_mgr.env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
-	app->env_mgr.is_first_load = 1;
+	app->env_mgr->transition_state = TRANSITION_WAIT_IBL;
+	app->env_mgr->transition_alpha = 1.0F;
+	app->env_mgr->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
+	app->env_mgr->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
+	app->env_mgr->is_first_load = 1;
 
 	async_coordinator_init(&app->async_coord);
 
@@ -117,7 +130,7 @@ int app_init(App* app, int width, int height, const char* title)
 			}
 		}
 		app->scene->current_hdr_index = default_idx;
-		env_manager_load(&app->env_mgr, app->async_loader,
+		env_manager_load(app->env_mgr, app->async_loader,
 		                 app->scene->hdr_files[default_idx]);
 	}
 
@@ -175,6 +188,8 @@ void app_cleanup(App* app)
 	app->scene = NULL;
 
 	/* 3. Common low-level resources */
+	free(app->env_mgr);
+	app->env_mgr = NULL;
 
 	async_coordinator_cleanup(&app->async_coord);
 
@@ -277,7 +292,7 @@ void app_run(App* app)
 				AppInputContext env_ctx = {
 				    .window = app->win.handle,
 				    .scene = app->scene,
-				    .env_mgr = &app->env_mgr,
+				    .env_mgr = app->env_mgr,
 				    .notifier = &app->notifier,
 				    .async_loader = app->async_loader,
 				};
@@ -386,7 +401,7 @@ void app_run(App* app)
 			    .camera = &app->input->camera,
 			    .profiler = &app->profiling->gpu_profiler,
 			    .profiler_ui = &app->profiling->timeline_ui,
-			    .env_mgr = &app->env_mgr,
+			    .env_mgr = app->env_mgr,
 			    .notifier = &app->notifier,
 			    .effect_bench = &app->effect_bench,
 			    .width = app->width,
@@ -444,19 +459,19 @@ void app_update(App* app)
 	if (async_coordinator_update(&app->async_coord, app->async_loader,
 	                             &ready_req)) {
 		/* Step 2: Begin multi-frame finalize process */
-		app->env_mgr.current_env_req = ready_req;
-		app->env_mgr.env_map_loading_step = 1;
+		app->env_mgr->current_env_req = ready_req;
+		app->env_mgr->env_map_loading_step = 1;
 	}
 
-	if (app->env_mgr.env_map_loading_step > 0) {
+	if (app->env_mgr->env_map_loading_step > 0) {
 		env_manager_process_loading_step(
-		    &app->env_mgr, &app->scene->gpu->recycled_hdr_tex,
+		    app->env_mgr, &app->scene->gpu->recycled_hdr_tex,
 		    &app->scene->lighting.ibl_coord);
 	}
 
-	env_manager_update_ibl(&app->env_mgr, app->scene, app->postprocess,
+	env_manager_update_ibl(app->env_mgr, app->scene, app->postprocess,
 	                       app->frame_count, app->width, app->height);
-	env_manager_update_transition(&app->env_mgr, app->scene,
+	env_manager_update_transition(app->env_mgr, app->scene,
 	                              app->postprocess, app->delta_time,
 	                              app->frame_count);
 }
@@ -467,7 +482,7 @@ AppInputContext app_input_ctx_from_app(App* app)
 	    .camera = &app->input->camera,
 	    .scene = app->scene,
 	    .postprocess = app->postprocess,
-	    .env_mgr = &app->env_mgr,
+	    .env_mgr = app->env_mgr,
 	    .notifier = &app->notifier,
 	    .overlay = &app->overlay,
 	    .timeline_ui = &app->profiling->timeline_ui,

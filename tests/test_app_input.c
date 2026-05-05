@@ -21,7 +21,7 @@ static AppInputContext test_ctx_from_app(App* app)
 	    .camera = &app->input->camera,
 	    .scene = app->scene,
 	    .postprocess = app->postprocess,
-	    .env_mgr = &app->env_mgr,
+	    .env_mgr = app->env_mgr,
 	    .notifier = &app->notifier,
 	    .overlay = &app->overlay,
 	    .timeline_ui = &app->profiling->timeline_ui,
