@@ -155,23 +155,28 @@ jobs:
   test-windows:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci-windows:latest
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 wine64 xvfb
+
+      - name: Cache CMake build (Windows cross-compile)
+        uses: actions/cache@v5
+        with:
+          path: build-test-win
+          key: ${{ runner.os }}-win-build-${{ hashFiles('src/**/*.c', 'include/**/*.h', 'tests/**/*.c', 'CMakeLists.txt', 'toolchain-mingw.cmake') }}
+          restore-keys: |
+            ${{ runner.os }}-win-build-
+
       - name: Build tests for Windows
         run: |
           git config --global --add safe.directory '*'
           cmake -B build-test-win -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -DBUILD_TESTS=ON -DENABLE_NATIVE_ARCH=OFF
           cmake --build build-test-win --parallel $(nproc)
+
       - name: Run Windows tests under Wine
         run: |
-          export WINEPREFIX=$HOME/.wine
-          export WINEDEBUG=-all
           cd build-test-win && ctest --output-on-failure
 
 
@@ -304,18 +309,12 @@ jobs:
     needs: [lint-and-format, test-windows]
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci-windows:latest
     steps:
       - uses: actions/checkout@v6
-      - name: Install MinGW and Dependencies
-        run: sudo apt-get update && sudo apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
       - name: Build Windows Release
         run: |
           git config --global --add safe.directory '*'
-          # Install rust just tool
-          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-          # Run the cross-compilation target specifying UltraRelease/Release
-          # 'just build-win' uses the default Profile=Debug. Let's explicitly invoke cmake
-          # with UltraRelease for the final artifact using the toolchain.
           cmake -B build-win -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_NATIVE_ARCH=ON
           cmake --build build-win --parallel $(nproc)
           mv build-win/app.exe build-win/app-Windows-Release.exe
