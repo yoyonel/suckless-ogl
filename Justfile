@@ -530,6 +530,10 @@ lint-full:
 check-nolint base_ref="origin/master":
     @bash scripts/check_nolint.sh {{base_ref}}
 
+# Check dependency metrics (include fan-out thresholds)
+dep-metrics:
+    @bash scripts/check_dep_metrics.sh
+
 # Trace Performance Analysis
 trace-perf:
     @echo "Analyzing GPU performance (Advanced Analysis)..."
