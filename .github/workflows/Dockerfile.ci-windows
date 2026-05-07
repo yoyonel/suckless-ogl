@@ -1,0 +1,38 @@
+# CI Container for Suckless-OGL Windows Cross-Compilation (MinGW + Wine)
+# Pre-installs heavy dependencies to avoid ~25min apt-get in every CI run.
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    gcc-mingw-w64-x86-64 \
+    g++-mingw-w64-x86-64 \
+    wine64 \
+    xvfb \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    && pip3 install --no-cache-dir --break-system-packages glad2 \
+    && ln -sf /usr/lib/wine/wine64 /usr/bin/wine64 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pre-initialize Wine prefix to avoid first-run delays
+RUN WINEPREFIX=/home/ciuser/.wine WINEDEBUG=-all wine64 wineboot --init 2>/dev/null || true
+
+RUN useradd -m -u 1001 ciuser && \
+    mkdir -p /home/ciuser/.wine && \
+    chown -R ciuser:ciuser /home/ciuser
+
+WORKDIR /workspace
+RUN chown ciuser:ciuser /workspace
+
+USER ciuser
+
+ENV WINEPREFIX=/home/ciuser/.wine
+ENV WINEDEBUG=-all
+
+CMD ["/bin/bash"]

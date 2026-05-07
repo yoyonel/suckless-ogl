@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "scene_internal.h"
 #include "scene_simulation.h"
+#include "scene_visuals.h"
 #include "shockwave.h"
 #include "trail_renderer.h"
 #include "utils.h"
@@ -21,15 +22,15 @@ void scene_toggle_nbody(Scene* scene)
 		nbody_init_preset(&scene->simulation->nbody_sim);
 
 		int count = nbody_get_count(&scene->simulation->nbody_sim);
-		if (!trail_renderer_init(&scene->visuals.trail_renderer,
+		if (!trail_renderer_init(&scene->visuals->trail_renderer,
 		                         count)) {
 			scene->simulation->nbody_mode = 0;
 			return;
 		}
 
 		if (!shockwave_renderer_init(
-		        &scene->visuals.shockwave_renderer)) {
-			trail_renderer_cleanup(&scene->visuals.trail_renderer);
+		        &scene->visuals->shockwave_renderer)) {
+			trail_renderer_cleanup(&scene->visuals->trail_renderer);
 			scene->simulation->nbody_mode = 0;
 			return;
 		}
@@ -37,7 +38,7 @@ void scene_toggle_nbody(Scene* scene)
 		/* Set trail colors from body albedos (HDR-scaled) */
 		for (int i = 0; i < count; i++) {
 			trail_renderer_set_color(
-			    &scene->visuals.trail_renderer, i,
+			    &scene->visuals->trail_renderer, i,
 			    scene->simulation->nbody_sim.bodies[i].albedo);
 		}
 
@@ -60,8 +61,8 @@ void scene_toggle_nbody(Scene* scene)
 	} else {
 		/* Restore original material grid — clean up before re-init
 		 * to avoid leaking GPU buffers and CPU allocations */
-		trail_renderer_cleanup(&scene->visuals.trail_renderer);
-		shockwave_renderer_cleanup(&scene->visuals.shockwave_renderer);
+		trail_renderer_cleanup(&scene->visuals->trail_renderer);
+		shockwave_renderer_cleanup(&scene->visuals->shockwave_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 		if (scene->billboard_instances) {
 			platform_aligned_free(scene->billboard_instances);
@@ -96,18 +97,18 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		const NBodyImpact* imp =
 		    &scene->simulation->nbody_sim.impacts[i];
 		if (imp->active) {
-			shockwave_emit(&scene->visuals.shockwave_renderer,
+			shockwave_emit(&scene->visuals->shockwave_renderer,
 			               imp->position, imp->color, imp->velocity,
 			               scene->simulation->nbody_sim.sim_time);
 		}
 	}
-	shockwave_update(&scene->visuals.shockwave_renderer,
+	shockwave_update(&scene->visuals->shockwave_renderer,
 	                 scene->simulation->nbody_sim.sim_time);
 
 	/* Record trail positions into ring buffers */
 	{
 		PROFILE_ZONE(trail_ctx, "NBody Trail Sample");
-		trail_renderer_record(&scene->visuals.trail_renderer,
+		trail_renderer_record(&scene->visuals->trail_renderer,
 		                      &scene->simulation->nbody_sim,
 		                      delta_time);
 		PROFILE_ZONE_END(trail_ctx);

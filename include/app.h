@@ -4,22 +4,18 @@
 #include "action_notifier.h"
 #include "app_ui.h"
 #include "app_window.h"
-#include "async/async_coordinator.h"
-#include "async_loader.h"
 #include "effect_benchmark.h"
-#include "env_manager.h"
 #include "gl_common.h"
-#include "postprocess_internal.h"
-#include "scene.h"
 #include <cglm/cglm.h>
-
-#ifdef USE_SSBO_RENDERING
-#include "ssbo_rendering.h"
-#endif
 
 /* --- Opaque sub-struct forward declarations --- */
 typedef struct AppProfiling AppProfiling;
 typedef struct AppInput AppInput;
+typedef struct PostProcess PostProcess;
+typedef struct Scene Scene;
+typedef struct EnvManager EnvManager;
+typedef struct AsyncLoader AsyncLoader;
+typedef struct AsyncCoordinator AsyncCoordinator;
 
 /**
  * @struct App
@@ -27,8 +23,8 @@ typedef struct AppInput AppInput;
  */
 typedef struct App {
 	/* --- Pointers and Dynamic Objects --- */
-	Scene scene;             /**< The 3D scene (Includes GI Probe Grid). */
-	PostProcess postprocess; /**< Main post-processing pipeline. */
+	Scene* scene;             /**< The 3D scene (Includes GI Probe Grid). */
+	PostProcess* postprocess; /**< Main post-processing pipeline. */
 	AppWindow win; /**< Window handle, fullscreen & resize state. */
 	double last_frame_time;      /**< Absolute time of last frame start. */
 	double delta_time;           /**< Time elapsed since last frame. */
@@ -43,7 +39,7 @@ typedef struct App {
 	/* --- App State Flags and Values --- */
 	int width;                    /**< Current window/viewport width. */
 	int height;                   /**< Current window/viewport height. */
-	EnvManager env_mgr;           /**< Environment/IBL state. */
+	EnvManager* env_mgr;          /**< Environment/IBL state. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 
@@ -57,7 +53,7 @@ typedef struct App {
 	float u_exposure;  /**< Manual exposure compensation. */
 
 	AsyncLoader* async_loader; /**< Background asset loader context. */
-	AsyncCoordinator
+	AsyncCoordinator*
 	    async_coord; /**< Manages PBO allocation & async synchronization. */
 
 } App;

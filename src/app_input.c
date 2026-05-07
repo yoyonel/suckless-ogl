@@ -12,6 +12,7 @@
 #include "profiler.h"
 #include "scene.h"
 #include "scene_simulation.h"
+#include "scene_visuals.h"
 #include "utils.h"
 #include <math.h>
 #include <stb_image_write.h>
@@ -580,7 +581,7 @@ static const char* const NEON_PARAM_NAMES[] = {"Intensity", "Core", "Width"};
 
 static void handle_neon_cycle(AppInputContext* ctx)
 {
-	TrailNeonParams* neon = &ctx->scene->visuals.trail_renderer.neon;
+	TrailNeonParams* neon = &ctx->scene->visuals->trail_renderer.neon;
 	neon->active = (neon->active + 1) % TRAIL_NEON_PARAM_COUNT;
 	char buf[NOTIF_BUF_SIZE];
 	(void)safe_snprintf(buf, sizeof(buf), "Neon: %s selected",
@@ -590,7 +591,7 @@ static void handle_neon_cycle(AppInputContext* ctx)
 
 static void handle_neon_adjust(AppInputContext* ctx, int increase)
 {
-	TrailNeonParams* neon = &ctx->scene->visuals.trail_renderer.neon;
+	TrailNeonParams* neon = &ctx->scene->visuals->trail_renderer.neon;
 	float sign = (increase != 0) ? 1.0F : -1.0F;
 	const char* name = NEON_PARAM_NAMES[neon->active];
 	float val = 0.0F;

@@ -4,6 +4,7 @@
 #include "app_profiling.h"
 #include "gl_common.h"
 #include "main.h"
+#include "postprocess_internal.h"
 #include "renderer.h"
 #include "scene.h"
 #include "unity.h"
@@ -29,12 +30,12 @@ static void test_render_ui_trampoline(void* user_data)
 static RenderContext test_render_ctx_from_app(App* app)
 {
 	return (RenderContext){
-	    .scene = &app->scene,
-	    .postprocess = &app->postprocess,
+	    .scene = app->scene,
+	    .postprocess = app->postprocess,
 	    .camera = &app->input->camera,
 	    .profiler = &app->profiling->gpu_profiler,
 	    .profiler_ui = &app->profiling->timeline_ui,
-	    .env_mgr = &app->env_mgr,
+	    .env_mgr = app->env_mgr,
 	    .notifier = &app->notifier,
 	    .effect_bench = &app->effect_bench,
 	    .width = app->width,
@@ -98,7 +99,8 @@ void test_stencil_depth_consistency(void)
 	}
 
 	/* 5. Bind the scene FBO to read from it */
-	glBindFramebuffer(GL_FRAMEBUFFER, g_test_app.postprocess.gpu.scene_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER,
+	                  g_test_app.postprocess->gpu.scene_fbo);
 
 	size_t pixel_count = (size_t)(TEST_WIDTH * TEST_HEIGHT);
 
