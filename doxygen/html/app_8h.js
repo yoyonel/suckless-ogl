@@ -1,6 +1,7 @@
 var app_8h =
 [
     [ "App", "structApp.html", "structApp" ],
+    [ "AsyncCoordinator", "app_8h.html#a847545ce6902f2938641bd0326c9ef8d", null ],
     [ "app_cleanup", "app_8h.html#a201c8d0c1a848c34571be7266d0f691d", null ],
     [ "app_init", "app_8h.html#a3fba3cd076f4d3741e107df1f4d69c39", null ],
     [ "app_run", "app_8h.html#a1d3b9d4294ec4a01762c962902b9063d", null ],

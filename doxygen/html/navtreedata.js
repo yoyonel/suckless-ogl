@@ -82,19 +82,19 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60",
-"effect__benchmark_8c.html#ab2258d0fffc9b1ed65bf0e0310341153",
-"globals_vars_t.html",
-"ibl__coordinator_8c.html#a897ce59e5e3e582ff1385f4c9e2c7f82",
-"nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c",
-"postprocess__readback_8c.html#a0e8b6b0e9bf0223724fc753271afe815",
-"scene__config_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1",
-"ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f",
-"structCamera.html#aefce35f5e3696809239d092200df58f6",
-"structIncludeContext.html",
-"structPostProcessUBO.html#a5d6535eff8e1d25edced0ba342f14f77",
-"structUIQuad.html",
-"utils_8h_source.html"
+"app__ui__layout_8h.html#a74ff0575436fcd1a9b154650bc840442",
+"effect__benchmark_8c.html#aad4decdb1046f72a12447643599656be",
+"globals_vars_s.html",
+"ibl__coordinator_8c.html#a7f01277e23e73c88a937e3771351252c",
+"nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4",
+"postprocess__readback_8c.html",
+"scene__config_8h.html#a77089f19a96b4dfc89e234b29626a85fac43ea93596533981819af745bb23626a",
+"ssbo__rendering_8h.html#a73e2cabf9e00de5334f443463ccee660",
+"structCamera.html#adf50dca74d27c3fa2dc3ee44d9edc03c",
+"structIcosphereGeometry.html#afb2289f736fe4b146cfa99a06411e99f",
+"structPostProcessUBO.html#a5b24c09724575d011993acc1aed9a649",
+"structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529",
+"utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
