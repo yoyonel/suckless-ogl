@@ -49,6 +49,9 @@ jobs:
           BASE="origin/${{ github.base_ref || 'master' }}"
           make check-nolint CONTAINER_RUN="" NOLINT_BASE_REF="${BASE}"
 
+      - name: Dependency metrics gate
+        run: bash scripts/check_dep_metrics.sh
+
       - name: Run Format & Lint
         run: |
           git config --global --add safe.directory '*'
