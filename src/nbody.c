@@ -1,5 +1,6 @@
 #include "nbody.h"
 
+#include "dvec3.h"
 #include "utils.h"
 #include <cglm/affine.h>
 #include <cglm/mat4.h>
@@ -8,6 +9,9 @@
 
 /** Small epsilon to avoid division by zero. */
 static const float EPSILON = 1e-6F;
+
+/** Minimum distance threshold to avoid division by near-zero. */
+static const double MIN_DIST = 1e-9;
 
 /* ========================================================================= */
 /* Helpers                                                                   */
@@ -21,12 +25,8 @@ static void add_body(NBodySim* sim, const double pos[3], const double vel[3],
 		return;
 	}
 	NBodyParticle* body = &sim->bodies[sim->body_count];
-	body->position[0] = pos[0];
-	body->position[1] = pos[1];
-	body->position[2] = pos[2];
-	body->velocity[0] = vel[0];
-	body->velocity[1] = vel[1];
-	body->velocity[2] = vel[2];
+	dvec3_copy(pos, body->position);
+	dvec3_copy(vel, body->velocity);
 	body->mass = mass;
 	body->radius = radius;
 	glm_vec3_copy((float*)albedo, body->albedo);
@@ -134,19 +134,10 @@ void nbody_init_preset(NBodySim* sim)
 		double normalized_vel_dir[3] = {(double)orb->vel_dir[0],
 		                                (double)orb->vel_dir[1],
 		                                (double)orb->vel_dir[2]};
-		double mag =
-		    sqrt(normalized_vel_dir[0] * normalized_vel_dir[0] +
-		         normalized_vel_dir[1] * normalized_vel_dir[1] +
-		         normalized_vel_dir[2] * normalized_vel_dir[2]);
-		if (mag > 0.0) {
-			normalized_vel_dir[0] /= mag;
-			normalized_vel_dir[1] /= mag;
-			normalized_vel_dir[2] /= mag;
-		}
+		dvec3_normalize(normalized_vel_dir);
 
-		double vel[3] = {normalized_vel_dir[0] * spd,
-		                 normalized_vel_dir[1] * spd,
-		                 normalized_vel_dir[2] * spd};
+		dvec3 vel;
+		dvec3_scale(normalized_vel_dir, spd, vel);
 		add_body(sim,
 		         (double[]){(double)orb->pos[0], (double)orb->pos[1],
 		                    (double)orb->pos[2]},
@@ -156,24 +147,18 @@ void nbody_init_preset(NBodySim* sim)
 
 	/* Zero the total momentum so the center of mass stays fixed.
 	 * v_cm = Σ(m_i * v_i) / Σ(m_i), then subtract from each body. */
-	double total_momentum[3] = {0.0, 0.0, 0.0};
+	dvec3 total_momentum = {0.0, 0.0, 0.0};
 	double total_mass = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		total_momentum[0] +=
-		    sim->bodies[i].velocity[0] * sim->bodies[i].mass;
-		total_momentum[1] +=
-		    sim->bodies[i].velocity[1] * sim->bodies[i].mass;
-		total_momentum[2] +=
-		    sim->bodies[i].velocity[2] * sim->bodies[i].mass;
+		dvec3 mom;
+		dvec3_scale(sim->bodies[i].velocity, sim->bodies[i].mass, mom);
+		dvec3_addto(total_momentum, mom);
 		total_mass += sim->bodies[i].mass;
 	}
-	double vel_cm[3] = {total_momentum[0] / total_mass,
-	                    total_momentum[1] / total_mass,
-	                    total_momentum[2] / total_mass};
+	dvec3 vel_cm;
+	dvec3_scale(total_momentum, 1.0 / total_mass, vel_cm);
 	for (int i = 0; i < sim->body_count; i++) {
-		sim->bodies[i].velocity[0] -= vel_cm[0];
-		sim->bodies[i].velocity[1] -= vel_cm[1];
-		sim->bodies[i].velocity[2] -= vel_cm[2];
+		dvec3_subfrom(sim->bodies[i].velocity, vel_cm);
 	}
 
 	/* Snapshot total energy as reference for stability diagnostics. */
@@ -181,9 +166,8 @@ void nbody_init_preset(NBodySim* sim)
 
 	/* Initialize prev_position = position for first frame (no motion). */
 	for (int i = 0; i < sim->body_count; i++) {
-		sim->bodies[i].prev_position[0] = sim->bodies[i].position[0];
-		sim->bodies[i].prev_position[1] = sim->bodies[i].position[1];
-		sim->bodies[i].prev_position[2] = sim->bodies[i].position[2];
+		dvec3_copy(sim->bodies[i].position,
+		           sim->bodies[i].prev_position);
 	}
 }
 
@@ -198,26 +182,20 @@ float nbody_total_energy(const NBodySim* sim)
 {
 	double kinetic = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		double vx = sim->bodies[i].velocity[0];
-		double vy = sim->bodies[i].velocity[1];
-		double vz = sim->bodies[i].velocity[2];
-		kinetic +=
-		    0.5 * sim->bodies[i].mass * (vx * vx + vy * vy + vz * vz);
+		kinetic += ((double)HALF) * sim->bodies[i].mass *
+		           dvec3_norm2(sim->bodies[i].velocity);
 	}
 
 	double potential = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int j = i + 1; j < sim->body_count; j++) {
-			double dx = sim->bodies[j].position[0] -
-			            sim->bodies[i].position[0];
-			double dy = sim->bodies[j].position[1] -
-			            sim->bodies[i].position[1];
-			double dz = sim->bodies[j].position[2] -
-			            sim->bodies[i].position[2];
+			dvec3 diff;
+			dvec3_sub(sim->bodies[j].position,
+			          sim->bodies[i].position, diff);
 
 			double eps2 = pair_softening_sq(sim->bodies[i].radius,
 			                                sim->bodies[j].radius);
-			double dist = sqrt(dx * dx + dy * dy + dz * dz + eps2);
+			double dist = sqrt(dvec3_norm2(diff) + eps2);
 			potential -= (double)sim->gravity *
 			             sim->bodies[i].mass * sim->bodies[j].mass /
 			             dist;
@@ -228,18 +206,16 @@ float nbody_total_energy(const NBodySim* sim)
 	 * Must match the force in compute_accelerations() for energy
 	 * conservation diagnostics to remain accurate. */
 	for (int i = 1; i < sim->body_count; i++) {
-		double rx =
-		    sim->bodies[i].position[0] - sim->bodies[0].position[0];
-		double ry =
-		    sim->bodies[i].position[1] - sim->bodies[0].position[1];
-		double rz =
-		    sim->bodies[i].position[2] - sim->bodies[0].position[2];
-		double dist = sqrt(rx * rx + ry * ry + rz * rz);
+		dvec3 rel;
+		dvec3_sub(sim->bodies[i].position, sim->bodies[0].position,
+		          rel);
+		double dist = dvec3_norm(rel);
 		if (dist > (double)NBODY_CONFINEMENT_RADIUS) {
 			double overshoot =
 			    dist - (double)NBODY_CONFINEMENT_RADIUS;
-			potential += 0.5 * (double)NBODY_CONFINEMENT_K *
-			             overshoot * overshoot;
+			potential += ((double)HALF) *
+			             (double)NBODY_CONFINEMENT_K * overshoot *
+			             overshoot;
 		}
 	}
 
@@ -256,40 +232,28 @@ float nbody_total_energy(const NBodySim* sim)
 static void compute_accelerations(const NBodySim* sim, double accel[][3])
 {
 	for (int i = 0; i < sim->body_count; i++) {
-		accel[i][0] = 0.0;
-		accel[i][1] = 0.0;
-		accel[i][2] = 0.0;
+		dvec3_zero(accel[i]);
 	}
 
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int j = i + 1; j < sim->body_count; j++) {
-			double dx = sim->bodies[j].position[0] -
-			            sim->bodies[i].position[0];
-			double dy = sim->bodies[j].position[1] -
-			            sim->bodies[i].position[1];
-			double dz = sim->bodies[j].position[2] -
-			            sim->bodies[i].position[2];
+			dvec3 diff;
+			dvec3_sub(sim->bodies[j].position,
+			          sim->bodies[i].position, diff);
 
 			double eps2 = pair_softening_sq(sim->bodies[i].radius,
 			                                sim->bodies[j].radius);
-			double dist_sq = dx * dx + dy * dy + dz * dz + eps2;
+			double dist_sq = dvec3_norm2(diff) + eps2;
 			double inv_dist = 1.0 / sqrt(dist_sq);
 			double inv_dist3 = inv_dist * inv_dist * inv_dist;
 			double grav = (double)sim->gravity * inv_dist3;
 
-			double fx = dx * grav * sim->bodies[j].mass;
-			double fy = dy * grav * sim->bodies[j].mass;
-			double fz = dz * grav * sim->bodies[j].mass;
-			accel[i][0] += fx;
-			accel[i][1] += fy;
-			accel[i][2] += fz;
+			dvec3 force;
+			dvec3_scale(diff, grav * sim->bodies[j].mass, force);
+			dvec3_addto(accel[i], force);
 
-			fx = dx * grav * sim->bodies[i].mass;
-			fy = dy * grav * sim->bodies[i].mass;
-			fz = dz * grav * sim->bodies[i].mass;
-			accel[j][0] -= fx;
-			accel[j][1] -= fy;
-			accel[j][2] -= fz;
+			dvec3_scale(diff, grav * sim->bodies[i].mass, force);
+			dvec3_subfrom(accel[j], force);
 		}
 	}
 
@@ -300,30 +264,24 @@ static void compute_accelerations(const NBodySim* sim, double accel[][3])
 	 * on the star is scaled by mass_i / mass_0.
 	 * Conservative → Verlet stays symplectic. */
 	for (int i = 1; i < sim->body_count; i++) {
-		double rx =
-		    sim->bodies[i].position[0] - sim->bodies[0].position[0];
-		double ry =
-		    sim->bodies[i].position[1] - sim->bodies[0].position[1];
-		double rz =
-		    sim->bodies[i].position[2] - sim->bodies[0].position[2];
-		double dist = sqrt(rx * rx + ry * ry + rz * rz);
+		dvec3 rel;
+		dvec3_sub(sim->bodies[i].position, sim->bodies[0].position,
+		          rel);
+		double dist = dvec3_norm(rel);
 		if (dist > (double)NBODY_CONFINEMENT_RADIUS) {
 			double overshoot =
 			    dist - (double)NBODY_CONFINEMENT_RADIUS;
 			double strength =
 			    -(double)NBODY_CONFINEMENT_K * overshoot / dist;
-			double ax = rx * strength;
-			double ay = ry * strength;
-			double az = rz * strength;
-			accel[i][0] += ax;
-			accel[i][1] += ay;
-			accel[i][2] += az;
+			dvec3 acc;
+			dvec3_scale(rel, strength, acc);
+			dvec3_addto(accel[i], acc);
 			/* Newton 3rd law: reaction on star, mass-weighted. */
 			double ratio =
 			    sim->bodies[i].mass / sim->bodies[0].mass;
-			accel[0][0] -= ax * ratio;
-			accel[0][1] -= ay * ratio;
-			accel[0][2] -= az * ratio;
+			dvec3 reaction;
+			dvec3_scale(acc, ratio, reaction);
+			dvec3_subfrom(accel[0], reaction);
 		}
 	}
 }
@@ -335,30 +293,26 @@ static void integrate_step(NBodySim* sim, float delta_time)
 {
 	double accel_old[NBODY_MAX_BODIES][3];
 	double accel_new[NBODY_MAX_BODIES][3];
-	double dt = (double)delta_time;
+	double delta_t = (double)delta_time;
 
 	compute_accelerations(sim, accel_old);
 
-	/* x += v·dt + ½·a·dt² */
+	/* x += v·delta_t + ½·a·delta_t² */
 	for (int i = 0; i < sim->body_count; i++) {
-		sim->bodies[i].position[0] += sim->bodies[i].velocity[0] * dt +
-		                              0.5 * accel_old[i][0] * dt * dt;
-		sim->bodies[i].position[1] += sim->bodies[i].velocity[1] * dt +
-		                              0.5 * accel_old[i][1] * dt * dt;
-		sim->bodies[i].position[2] += sim->bodies[i].velocity[2] * dt +
-		                              0.5 * accel_old[i][2] * dt * dt;
+		dvec3_muladds(sim->bodies[i].position, sim->bodies[i].velocity,
+		              delta_t);
+		dvec3_muladds(sim->bodies[i].position, accel_old[i],
+		              ((double)HALF) * delta_t * delta_t);
 	}
 
 	compute_accelerations(sim, accel_new);
 
-	/* v += ½·(a_old + a_new)·dt */
+	/* v += ½·(a_old + a_new)·delta_t */
 	for (int i = 0; i < sim->body_count; i++) {
-		sim->bodies[i].velocity[0] +=
-		    0.5 * (accel_old[i][0] + accel_new[i][0]) * dt;
-		sim->bodies[i].velocity[1] +=
-		    0.5 * (accel_old[i][1] + accel_new[i][1]) * dt;
-		sim->bodies[i].velocity[2] +=
-		    0.5 * (accel_old[i][2] + accel_new[i][2]) * dt;
+		dvec3 accel_avg;
+		dvec3_add(accel_old[i], accel_new[i], accel_avg);
+		dvec3_muladds(sim->bodies[i].velocity, accel_avg,
+		              ((double)HALF) * delta_t);
 
 		if (isnan(sim->bodies[i].velocity[0])) {
 			printf("!!! Body %d velocity became NaN at step!\n", i);
@@ -374,20 +328,16 @@ static void integrate_step(NBodySim* sim, float delta_time)
 	 * is preserved → angular momentum conserved.
 	 * Momentum conservation: impulse transferred to star (body 0). */
 	for (int i = 1; i < sim->body_count; i++) {
-		double rx =
-		    sim->bodies[i].position[0] - sim->bodies[0].position[0];
-		double ry =
-		    sim->bodies[i].position[1] - sim->bodies[0].position[1];
-		double rz =
-		    sim->bodies[i].position[2] - sim->bodies[0].position[2];
-		double dist = sqrt(rx * rx + ry * ry + rz * rz);
-		if (dist > (double)NBODY_CONFINEMENT_RADIUS && dist > 1e-9) {
+		dvec3 rel;
+		dvec3_sub(sim->bodies[i].position, sim->bodies[0].position,
+		          rel);
+		double dist = dvec3_norm(rel);
+		if (dist > (double)NBODY_CONFINEMENT_RADIUS &&
+		    dist > MIN_DIST) {
 			/* Record impact for VFX — keep peak velocity per body
 			 */
-			double v_out = (sim->bodies[i].velocity[0] * rx +
-			                sim->bodies[i].velocity[1] * ry +
-			                sim->bodies[i].velocity[2] * rz) /
-			               dist;
+			double v_out =
+			    dvec3_dot(sim->bodies[i].velocity, rel) / dist;
 			if (v_out > (double)sim->impacts[i].velocity) {
 				sim->impacts[i].position[0] =
 				    (float)sim->bodies[i].position[0];
@@ -401,12 +351,10 @@ static void integrate_step(NBodySim* sim, float delta_time)
 				sim->impacts[i].active = true;
 			}
 
-			double r_hat_x = rx / dist;
-			double r_hat_y = ry / dist;
-			double r_hat_z = rz / dist;
-			double v_radial = sim->bodies[i].velocity[0] * r_hat_x +
-			                  sim->bodies[i].velocity[1] * r_hat_y +
-			                  sim->bodies[i].velocity[2] * r_hat_z;
+			dvec3 r_hat;
+			dvec3_scale(rel, 1.0 / dist, r_hat);
+			double v_radial =
+			    dvec3_dot(sim->bodies[i].velocity, r_hat);
 			if (v_radial > 0.0) { /* outward only */
 				double overshoot =
 				    dist - (double)NBODY_CONFINEMENT_RADIUS;
@@ -421,19 +369,16 @@ static void integrate_step(NBodySim* sim, float delta_time)
 				if (damp > 1.0) {
 					damp = 1.0;
 				}
-				double dvx = -v_radial * damp * r_hat_x;
-				double dvy = -v_radial * damp * r_hat_y;
-				double dvz = -v_radial * damp * r_hat_z;
-				sim->bodies[i].velocity[0] += dvx;
-				sim->bodies[i].velocity[1] += dvy;
-				sim->bodies[i].velocity[2] += dvz;
+				dvec3 delta_v;
+				dvec3_scale(r_hat, -v_radial * damp, delta_v);
+				dvec3_addto(sim->bodies[i].velocity, delta_v);
 				/* Momentum conservation: Δp_star = -Δp_i
 				 * → Δv_star = -(m_i/m_0)·dv */
 				double ratio =
 				    sim->bodies[i].mass / sim->bodies[0].mass;
-				sim->bodies[0].velocity[0] -= dvx * ratio;
-				sim->bodies[0].velocity[1] -= dvy * ratio;
-				sim->bodies[0].velocity[2] -= dvz * ratio;
+				dvec3 star_dv;
+				dvec3_scale(delta_v, ratio, star_dv);
+				dvec3_subfrom(sim->bodies[0].velocity, star_dv);
 			}
 		}
 	}
@@ -453,9 +398,8 @@ void nbody_step(NBodySim* sim, float delta_time)
 	 * prev_position will be used by nbody_write_instances() to
 	 * fill SphereInstance::prev_center for the velocity buffer. */
 	for (int i = 0; i < sim->body_count; i++) {
-		sim->bodies[i].prev_position[0] = sim->bodies[i].position[0];
-		sim->bodies[i].prev_position[1] = sim->bodies[i].position[1];
-		sim->bodies[i].prev_position[2] = sim->bodies[i].position[2];
+		dvec3_copy(sim->bodies[i].position,
+		           sim->bodies[i].prev_position);
 	}
 
 	float scaled_dt = delta_time * sim->time_scale;
@@ -513,11 +457,8 @@ float nbody_kinetic_energy(const NBodySim* sim)
 {
 	double kinetic = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		double vx = sim->bodies[i].velocity[0];
-		double vy = sim->bodies[i].velocity[1];
-		double vz = sim->bodies[i].velocity[2];
-		kinetic +=
-		    0.5 * sim->bodies[i].mass * (vx * vx + vy * vy + vz * vz);
+		kinetic += ((double)HALF) * sim->bodies[i].mass *
+		           dvec3_norm2(sim->bodies[i].velocity);
 	}
 	return (float)kinetic;
 }
