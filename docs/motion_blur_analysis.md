@@ -61,6 +61,23 @@ vec4 prevClip = previousViewProj * vec4(prevHitPos, 1.0);
 - Static grid spheres have `prev_center == current center` → zero object velocity
 - `SphereInstance` remains 128 bytes (SIMD-aligned, validated by `_Static_assert`)
 
+### 🐛 Transparent VFX Artifact Fix (glColorMaski)
+
+Transparent rendering passes (trails, shockwaves) were writing undefined values into the velocity buffer (color attachment 1) because their shaders have no velocity output. On some GPUs (notably NVidia 950m under Bazzite), this caused visible motion blur artifacts — streaks and ghosting in areas covered by transparent effects.
+
+**Root cause:** When a fragment shader doesn't explicitly write to `gl_FragData[1]` (or equivalent `layout(location=1)` output), the GPU may write garbage or stale register values to that attachment if writing is enabled.
+
+**Fix:** Use `glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE)` before transparent VFX draw calls to disable writing to the velocity buffer, and restore with `glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)` after:
+
+```c
+/* Disable writing to the velocity buffer (Attachment 1) */
+glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+/* ... draw transparent geometry ... */
+glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+```
+
+Note: The billboard renderer already handled this via `glDisablei(GL_BLEND, 1)` in `scene_render.c`, but trails and shockwaves used a different rendering path without this protection.
+
 ---
 
 ## 2. Improvement Paths (Speed and Quality)
