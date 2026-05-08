@@ -260,6 +260,8 @@ void glBindImageTexture(GLuint unit, GLuint texture, GLint level,
 void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
                       const GLchar* message);
 void glPopDebugGroup(void);
+void glColorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b,
+                  GLboolean a);
 void glObjectLabel(GLenum identifier, GLuint name, GLsizei length,
                    const GLchar* label);
 void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize,

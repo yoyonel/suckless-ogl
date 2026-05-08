@@ -61,6 +61,23 @@ vec4 prevClip = previousViewProj * vec4(prevHitPos, 1.0);
 - Les sphères statiques de la grille ont `prev_center == centre actuel` → vélocité objet nulle
 - `SphereInstance` reste à 128 octets (aligné SIMD, validé par `_Static_assert`)
 
+### 🐛 Correction d'artefact des VFX transparents (glColorMaski)
+
+Les passes de rendu transparentes (trails, shockwaves) écrivaient des valeurs indéfinies dans le velocity buffer (color attachment 1) car leurs shaders ne possèdent pas de sortie vélocité. Sur certains GPU (notamment NVidia 950m sous Bazzite), cela causait des artefacts de motion blur visibles — des traînées et du ghosting dans les zones couvertes par les effets transparents.
+
+**Cause racine :** Quand un fragment shader n'écrit pas explicitement dans `gl_FragData[1]` (ou la sortie `layout(location=1)` équivalente), le GPU peut écrire des valeurs parasites ou des registres obsolètes dans cet attachment si l'écriture est activée.
+
+**Correction :** Utiliser `glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE)` avant les draw calls des VFX transparents pour désactiver l'écriture dans le velocity buffer, et restaurer avec `glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)` après :
+
+```c
+/* Désactiver l'écriture dans le velocity buffer (Attachment 1) */
+glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+/* ... rendu de la géométrie transparente ... */
+glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+```
+
+Note : Le renderer de billboards gérait déjà ce cas via `glDisablei(GL_BLEND, 1)` dans `scene_render.c`, mais les trails et shockwaves utilisaient un chemin de rendu différent sans cette protection.
+
 ---
 
 ## 2. Pistes d'Améliorations (Vitesse et Qualité)

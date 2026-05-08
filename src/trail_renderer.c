@@ -331,6 +331,10 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	/* Read depth but don't write — trails are transparent overlay */
 	glDepthMask(GL_FALSE);
 
+	/* Disable writing to the velocity buffer (Attachment 1) to prevent
+	 * motion blur artifacts */
+	glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
 	/* Draw all body trails in a single batched call.
 	 * glMultiDrawArrays draws N independent triangle strips without
 	 * degenerate vertices or per-strip driver overhead. */
@@ -342,6 +346,7 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	}
 
 	/* Restore state */
+	glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 	glBindVertexArray(0);
