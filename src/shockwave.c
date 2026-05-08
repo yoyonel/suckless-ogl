@@ -195,6 +195,10 @@ void shockwave_draw(const ShockwaveRenderer* renderer, mat4 view, mat4 proj,
 	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 
+	/* Disable writing to the velocity buffer (Attachment 1) to prevent
+	 * motion blur artifacts */
+	glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
 	glBindVertexArray(renderer->vao);
 
 	for (int i = 0; i < renderer->count; i++) {
@@ -217,6 +221,7 @@ void shockwave_draw(const ShockwaveRenderer* renderer, mat4 view, mat4 proj,
 	}
 
 	glBindVertexArray(0);
+	glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 }

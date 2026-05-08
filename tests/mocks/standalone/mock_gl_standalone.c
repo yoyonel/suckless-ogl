@@ -737,3 +737,13 @@ void glStencilMask(GLuint mask)
 {
 	(void)mask;
 }
+
+void glColorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b,
+                  GLboolean a)
+{
+	(void)index;
+	(void)r;
+	(void)g;
+	(void)b;
+	(void)a;
+}

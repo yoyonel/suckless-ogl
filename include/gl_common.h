@@ -102,6 +102,8 @@ void glUseProgram(GLuint program);
 void glPopDebugGroup(void);
 void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
                       const GLchar* message);
+void glColorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b,
+                  GLboolean a);
 #endif
 
 #ifndef GL_COMMON_NO_GLFW
