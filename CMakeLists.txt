@@ -361,6 +361,12 @@ if(ENABLE_AGGRESSIVE_MATH)
     endif()
 endif()
 
+# Force standard floating point behavior for the N-body physics core
+# even if aggressive math is enabled for the rest of the application.
+if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+    set_source_files_properties(src/nbody.c PROPERTIES COMPILE_FLAGS "-fno-fast-math")
+endif()
+
 # Apply Clang-Tidy only to this target
 if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
     set_target_properties(app PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")

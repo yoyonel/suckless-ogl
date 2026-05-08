@@ -46,6 +46,12 @@ list(FILTER TEST_LIB_SOURCES EXCLUDE REGEX ".*main\\.c$")
 if(ENABLE_TRACY)
     list(APPEND TEST_LIB_SOURCES "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
+
+# Force Unity to support doubles
+if(TARGET unity)
+    target_compile_definitions(unity PUBLIC UNITY_INCLUDE_DOUBLE)
+endif()
+
 add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
 target_include_directories(app_testlib PUBLIC ${TEST_INCLUDE_DIRS})
 target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})

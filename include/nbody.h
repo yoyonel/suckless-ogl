@@ -68,14 +68,15 @@ static const float NBODY_CONFINEMENT_DAMPING = 20.0F;
  * @brief A single gravitational body.
  */
 typedef struct {
-	vec3 position;      /**< World position. */
-	float mass;         /**< Gravitational mass. */
-	vec3 velocity;      /**< Current velocity. */
+	double position[3]; /**< World position. */
+	double mass;        /**< Gravitational mass. */
+	double velocity[3]; /**< Current velocity. */
 	float radius;       /**< Visual sphere radius (for rendering scale). */
 	vec3 albedo;        /**< PBR base color for this body. */
 	float metallic;     /**< PBR metallic factor. */
 	float roughness;    /**< PBR roughness factor. */
-	vec3 prev_position; /**< Position from previous frame (motion blur). */
+	double prev_position[3]; /**< Position from previous frame (motion
+	                            blur). */
 } NBodyParticle;
 
 /**

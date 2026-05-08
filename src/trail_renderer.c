@@ -24,10 +24,12 @@ static const float HALF = 0.5F;
  * Ring buffer helpers
  * ---------------------------------------------------------------------------*/
 
-static void ring_push(TrailRing* ring, const vec3 pos, float timestamp)
+static void ring_push(TrailRing* ring, const double pos[3], float timestamp)
 {
 	ring->head = (ring->head + 1) % TRAIL_MAX_POINTS;
-	glm_vec3_copy((float*)pos, ring->points[ring->head]);
+	ring->points[ring->head][0] = (float)pos[0];
+	ring->points[ring->head][1] = (float)pos[1];
+	ring->points[ring->head][2] = (float)pos[2];
 	ring->timestamps[ring->head] = timestamp;
 	if (ring->count < TRAIL_MAX_POINTS) {
 		ring->count++;
