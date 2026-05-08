@@ -16,12 +16,13 @@ var nbody_8c =
     [ "pair_softening_sq", "nbody_8c.html#a90ad4f2cde85500e0405e89275bf426c", null ],
     [ "softened_orbital_vel", "nbody_8c.html#ace5700a1695f3b3e7c77c5aa3de95eb4", null ],
     [ "CENTRAL_STAR_ALBEDO", "nbody_8c.html#ab054d54b4b3cd0488ec252df71e115bc", null ],
-    [ "CENTRAL_STAR_MASS", "nbody_8c.html#a5a99cac32ad7b70302025b40f7aad6fa", null ],
+    [ "CENTRAL_STAR_MASS", "nbody_8c.html#ab52aad8d4338284c97c43d86598a3ea8", null ],
     [ "CENTRAL_STAR_METALLIC", "nbody_8c.html#aa5cd6cb09bcd5800016fc387219e3eed", null ],
     [ "CENTRAL_STAR_RADIUS", "nbody_8c.html#a7ede174920bd38216f842f697f50ac60", null ],
     [ "CENTRAL_STAR_ROUGHNESS", "nbody_8c.html#a370b1d72840f536b26c878c68b7cda5d", null ],
     [ "EPSILON", "nbody_8c.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9", null ],
-    [ "HALF", "nbody_8c.html#afa3135741751552ed8178c386a2cad14", null ],
+    [ "HALF", "nbody_8c.html#a6e4b39ab3eabdf7ede4f1a1d8b1bcedd", null ],
+    [ "MIN_DIST", "nbody_8c.html#a193b3c0099aeea10b7e61a31ba03b7fe", null ],
     [ "ORBITER_COUNT", "nbody_8c.html#ad888daec2563bee11dd7621881516fc9", null ],
     [ "ORBITERS", "nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081", null ]
 ];

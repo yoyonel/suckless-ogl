@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logcallback_4211',['LogCallback',['../log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead',1,'log.h']]]
+  ['dvec3_4243',['dvec3',['../dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76',1,'dvec3.h']]]
 ];

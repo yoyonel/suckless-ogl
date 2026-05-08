@@ -259,6 +259,7 @@ $(document).ready(function(){initNavTree('nbody_8c.html',''); initResizable(); }
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="nbody_8h_source.html">nbody.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="dvec3_8h_source.html">dvec3.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;cglm/affine.h&gt;</code><br />
 <code>#include &lt;cglm/mat4.h&gt;</code><br />
@@ -319,8 +320,10 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:ab84b0a39a5bcd3e4bd1a2d19b015bde9"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">EPSILON</a> = 1e-6F</td></tr>
 <tr class="separator:ab84b0a39a5bcd3e4bd1a2d19b015bde9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a99cac32ad7b70302025b40f7aad6fa"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a5a99cac32ad7b70302025b40f7aad6fa">CENTRAL_STAR_MASS</a> = 100.0F</td></tr>
-<tr class="separator:a5a99cac32ad7b70302025b40f7aad6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a193b3c0099aeea10b7e61a31ba03b7fe"><td class="memItemLeft" align="right" valign="top">static const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a193b3c0099aeea10b7e61a31ba03b7fe">MIN_DIST</a> = 1e-9</td></tr>
+<tr class="separator:a193b3c0099aeea10b7e61a31ba03b7fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab52aad8d4338284c97c43d86598a3ea8"><td class="memItemLeft" align="right" valign="top">static const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ab52aad8d4338284c97c43d86598a3ea8">CENTRAL_STAR_MASS</a> = 100.0</td></tr>
+<tr class="separator:ab52aad8d4338284c97c43d86598a3ea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ede174920bd38216f842f697f50ac60"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a7ede174920bd38216f842f697f50ac60">CENTRAL_STAR_RADIUS</a> = 1.5F</td></tr>
 <tr class="separator:a7ede174920bd38216f842f697f50ac60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab054d54b4b3cd0488ec252df71e115bc"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ab054d54b4b3cd0488ec252df71e115bc">CENTRAL_STAR_ALBEDO</a> = {1.0F, 0.76F, 0.34F}</td></tr>
@@ -329,8 +332,8 @@ Variables</h2></td></tr>
 <tr class="separator:aa5cd6cb09bcd5800016fc387219e3eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a370b1d72840f536b26c878c68b7cda5d"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a370b1d72840f536b26c878c68b7cda5d">CENTRAL_STAR_ROUGHNESS</a> = 0.2F</td></tr>
 <tr class="separator:a370b1d72840f536b26c878c68b7cda5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa3135741751552ed8178c386a2cad14"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#afa3135741751552ed8178c386a2cad14">HALF</a> = 0.5F</td></tr>
-<tr class="separator:afa3135741751552ed8178c386a2cad14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e4b39ab3eabdf7ede4f1a1d8b1bcedd"><td class="memItemLeft" align="right" valign="top">static const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a6e4b39ab3eabdf7ede4f1a1d8b1bcedd">HALF</a> = 0.5</td></tr>
+<tr class="separator:a6e4b39ab3eabdf7ede4f1a1d8b1bcedd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad892a791c6e4bf3115a2c5b1bac46081"><td class="memItemLeft" align="right" valign="top">static const struct <a class="el" href="structOrbiterDef.html">OrbiterDef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081">ORBITERS</a> []</td></tr>
 <tr class="separator:ad892a791c6e4bf3115a2c5b1bac46081"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad888daec2563bee11dd7621881516fc9"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ad888daec2563bee11dd7621881516fc9">ORBITER_COUNT</a> = (int)(sizeof(<a class="el" href="nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081">ORBITERS</a>) / sizeof(<a class="el" href="nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081">ORBITERS</a>[0]))</td></tr>
@@ -406,6 +409,12 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_aad41b7c3fba85e4439c245c6b5d186dd_cgraph.svg" width="243" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -445,7 +454,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a3f4eb876df875f0104a0936db295efee_cgraph.svg" width="368" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a3f4eb876df875f0104a0936db295efee_cgraph.svg" width="664" height="392"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -487,7 +496,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_ab6a96395996f9dc317f21e5c8dfaa868_cgraph.svg" width="532" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="nbody_8c_ab6a96395996f9dc317f21e5c8dfaa868_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -514,7 +523,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a78b7ac6a96f5c33ba9eaff7158368e17_cgraph.svg" width="540" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="nbody_8c_a78b7ac6a96f5c33ba9eaff7158368e17_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -539,7 +548,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a41041d18672c901e03f26b9c9e6fced8_cgraph.svg" width="540" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="nbody_8c_a41041d18672c901e03f26b9c9e6fced8_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -591,7 +600,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a2d44ddf095fb51334feb9e96d99bfcbe_cgraph.svg" width="536" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="nbody_8c_a2d44ddf095fb51334feb9e96d99bfcbe_cgraph.svg" width="100%" height="480"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -614,6 +623,12 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Computes kinetic energy only: Σ ½ m v². </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_ad6106b8761eae4cb34102c0d18fc705c_cgraph.svg" width="472" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -654,7 +669,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="nbody_8c_a6e554a86943358e558879e7073cb72b8_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="nbody_8c_a6e554a86943358e558879e7073cb72b8_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -681,7 +696,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a785533e1f63e381530bfb5c3531238dc_cgraph.svg" width="346" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a785533e1f63e381530bfb5c3531238dc_cgraph.svg" width="642" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -880,8 +895,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a5a99cac32ad7b70302025b40f7aad6fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a99cac32ad7b70302025b40f7aad6fa">&#9670;&nbsp;</a></span>CENTRAL_STAR_MASS</h2>
+<a id="ab52aad8d4338284c97c43d86598a3ea8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab52aad8d4338284c97c43d86598a3ea8">&#9670;&nbsp;</a></span>CENTRAL_STAR_MASS</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -890,7 +905,7 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const float CENTRAL_STAR_MASS = 100.0F</td>
+          <td class="memname">const double CENTRAL_STAR_MASS = 100.0</td>
         </tr>
       </table>
   </td>
@@ -991,8 +1006,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="afa3135741751552ed8178c386a2cad14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa3135741751552ed8178c386a2cad14">&#9670;&nbsp;</a></span>HALF</h2>
+<a id="a6e4b39ab3eabdf7ede4f1a1d8b1bcedd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e4b39ab3eabdf7ede4f1a1d8b1bcedd">&#9670;&nbsp;</a></span>HALF</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1001,7 +1016,7 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const float HALF = 0.5F</td>
+          <td class="memname">const double HALF = 0.5</td>
         </tr>
       </table>
   </td>
@@ -1010,6 +1025,29 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a193b3c0099aeea10b7e61a31ba03b7fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a193b3c0099aeea10b7e61a31ba03b7fe">&#9670;&nbsp;</a></span>MIN_DIST</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double MIN_DIST = 1e-9</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Minimum distance threshold to avoid division by near-zero. </p>
 
 </div>
 </div>
