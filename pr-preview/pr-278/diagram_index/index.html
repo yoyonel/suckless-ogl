@@ -1,0 +1,5030 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A lean, high-performance C11 PBR Renderer">
+      
+      
+        <meta name="author" content="Latty">
+      
+      
+      
+        <link rel="prev" href="../glossary/">
+      
+      
+        <link rel="next" href="../project_structure/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/diagram_index/" hreflang="fr">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Diagram Index - Suckless OGL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#diagram-index" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Suckless OGL" class="md-header__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Suckless OGL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diagram Index
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/diagram_index/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yoyonel/suckless-ogl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Suckless OGL" class="md-nav__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Suckless OGL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yoyonel/suckless-ogl" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application_lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anatomy of a Frame: Full Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagram Index
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagram Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#anatomy-of-a-frame-the-complete-lifecycle-of-suckless-ogl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anatomy of a Frame: The Complete Lifecycle of suckless-ogl
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-documentation-refactoring-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Documentation - Refactoring Core
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asynchronous-environment-map-loader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Environment Map Loader
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asynchronous-texture-upload-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Texture Upload Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auto-exposure-optimization-report-march-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-Exposure Optimization Report (March 2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-transitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Transitions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aggressive-test-with-asan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggressive test with ASan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gamepad-camera-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gamepad Camera Control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-illumination-1-bounce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global Illumination (1-Bounce)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-model-ubiquitous-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Model — Ubiquitous Language
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gpu-usage-monitor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Usage Monitor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motion-blur-implementation-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motion Blur Implementation Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neon-trail-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neon Trail Rendering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-mode-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Mode &amp; Notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-abstraction-layer-pal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform Abstraction Layer (PAL)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#progressive-asynchronous-ibl-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progressive &amp; Asynchronous IBL Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shockwave-lensing-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shockwave Lensing Effect
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synchronization-asynchrony-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronization &amp; Asynchrony Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ui-visual-parameters-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI Visual Parameters Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../project_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ibl_architecture_ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBL Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_ubo_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process UBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../refactoring_analysis_2026_02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Analysis (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache_locality_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Locality vs Decoupling (May 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../portability_pal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Abstraction (PAL)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rendering
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../global_illumination/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Global Illumination
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neon_trails/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neon Trails
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sphere_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PBR Sphere Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../skybox_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skybox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../progressive_ibl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Progressive IBL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cubemap_seam_resolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FXAA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FXAA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specular_aa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specular Anti-Aliasing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banding &amp; Dithering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exposure_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exposure Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_debug_histogram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug Histogram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../photographic_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Photographic Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../env_transitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Transitions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (March 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_opt_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto-Exposure Opt. Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../motion_blur_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motion Blur Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bloom_debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cinematic_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cinematic Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_bokeh_effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Bokeh Research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sony_a7siii_profile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sony A7S III Profile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Controls &amp; Input
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Controls &amp; Input
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mouse_camera_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mouse Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gamepad Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../keyboard_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Help System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_visual_parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Visual Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_batching_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Batching Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu-rendering-synchronization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Synchronization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shader Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../texture_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texture Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_pbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async PBO Upload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nvidia_optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVIDIA Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader-cross-gpu-compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-GPU Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_and_notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Mode &amp; Notifs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stencil_masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stencil Buffer Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fullscreen_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fullscreen Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simd_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIMD Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_gl_call_reduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard GL Call Reduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mesa F32-to-F16 Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../justfile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Justfile Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iwyu_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IWYU Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ide_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IDE &amp; Env Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_tracy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracy Profiling (v0.13.1)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu_profiling_flamegraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CPU Profiling (FlameGraph)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_utilization_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Utilization Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_usage_monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Usage Monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../effect_benchmark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Effect Benchmark
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_benchmarking_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Benchmarking Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renderdoc_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RenderDoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visual_testing_artifacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opengl_cleanup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenGL Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../raii_cleanup_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAII Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory_management_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../standalone_testing_mocking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standalone Mocking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs_staging_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Staging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Docs System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doxygen_customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Doxygen Customization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nbody_precision_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Precision Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doxygen/html/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reports
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reports
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coverage/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Coverage (LCOV)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coverage/visual_tests/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Regression Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/diagram_index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="diagram-index">Diagram Index<a class="headerlink" href="#diagram-index" title="Permanent link">¶</a></h1>
+<p><em>This page is auto-generated. <strong>Hover over the titles</strong> to preview the diagram.</em></p>
+<style>
+.diagram-item { position: relative; display: block; padding: 12px 0; border-bottom: 1px solid var(--md-code-bg-color); }
+.mermaid-preview { 
+  opacity: 0; 
+  visibility: hidden; 
+  position: absolute; 
+  left: max(300px, 30%); 
+  top: -80px; 
+  z-index: 999; 
+  background: #1a1b26; 
+  border: 2px solid #7aa2f7; 
+  padding: 24px; 
+  border-radius: 12px; 
+  box-shadow: 0 15px 55px rgba(0,0,0,0.9); 
+  width: 750px; 
+  max-height: 600px; 
+  overflow: auto; 
+  pointer-events: none; 
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  transform: translateX(30px) scale(0.95); 
+}
+.diagram-item:hover .mermaid-preview { 
+  opacity: 1; 
+  visibility: visible; 
+  transform: translateX(0) scale(1); 
+}
+.mermaid-preview .mermaid { background: transparent !important; color: white !important; }
+</style>
+
+<h2 id="anatomy-of-a-frame-the-complete-lifecycle-of-suckless-ogl"><a href="../application_lifecycle/">Anatomy of a Frame: The Complete Lifecycle of suckless-ogl</a><a class="headerlink" href="#anatomy-of-a-frame-the-complete-lifecycle-of-suckless-ogl" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../application_lifecycle/#introduction" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Introduction</a> : <span style="opacity: 0.6; font-size: 0.85em;">This article traces the complete lifecycle of the application: from the first byte allocated in `main()` to the moment the GPU presents the first fully-lit frame on screen. We'll cover every layer — CPU memory, GPU resources, the X11/GLFW windowing handshake, OpenGL context creation, shader compilation, asynchronous texture loading, and the multi-pass rendering architecture that produces each frame.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "Application Lifecycle"
+A["main()"] --&gt; B["app_init()"]
+B --&gt; C["app_run() - Main Loop"]
+C --&gt; D["app_cleanup()"]
+end
+subgraph "app_init()"
+B --&gt; B1["Window + OpenGL Context"]
+B --&gt; B2["Camera &amp; Input"]
+B --&gt; B3["Scene Init (GPU Resources)"]
+B --&gt; B4["Async Loader Thread"]
+B --&gt; B5["Post-Processing Pipeline"]
+B --&gt; B6["Profiling Systems"]
+end
+subgraph "Each Frame in app_run()"
+C --&gt; C1["Poll Events"]
+C --&gt; C2["Camera Physics"]
+C --&gt; C3["renderer_draw_frame()"]
+C --&gt; C4["SwapBuffers"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#21-glfw-initialization-window-hints" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">2.1 — GLFW Initialization &amp; Window Hints</a> : <span style="opacity: 0.6; font-size: 0.85em;">Behind the scenes, GLFW performs an X11 handshake:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>sequenceDiagram
+participant App as Application
+participant GLFW as GLFW Library
+participant X11 as X11 Server
+participant Mesa as Mesa/GPU Driver
+participant GPU as GPU Hardware
+App-&gt;&gt;GLFW: glfwInit()
+GLFW-&gt;&gt;X11: XOpenDisplay()
+X11--&gt;&gt;GLFW: Display* connection
+App-&gt;&gt;GLFW: glfwCreateWindow(1920, 1080)
+GLFW-&gt;&gt;X11: XCreateWindow() + GLX setup
+X11-&gt;&gt;Mesa: glXCreateContextAttribsARB(4.4 Core, Debug)
+Mesa-&gt;&gt;GPU: Allocate command buffer, context state
+Mesa--&gt;&gt;X11: GLXContext
+X11--&gt;&gt;GLFW: Window + Context ready
+App-&gt;&gt;GLFW: glfwMakeContextCurrent()
+GLFW-&gt;&gt;Mesa: glXMakeCurrent()
+Mesa-&gt;&gt;GPU: Bind context to calling thread</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#31-camera" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">3.1 — Camera</a> : <span style="opacity: 0.6; font-size: 0.85em;">The camera uses a fixed-timestep physics model (60 Hz) with exponential smoothing for rotation. Mouse input is filtered through an EMA (Exponential Moving Average) to dampen jitter.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+subgraph "Camera Update Pipeline"
+A["Mouse Delta"] --&gt;|EMA filter| B["yaw_target / pitch_target"]
+B --&gt;|Lerp α=0.1| C["yaw / pitch (smooth)"]
+C --&gt; D["camera_update_vectors()"]
+D --&gt; E["front, right, up vectors"]
+E --&gt; F["View Matrix (lookAt)"]
+end
+subgraph "Physics (Fixed 60Hz)"
+G["WASD Keys"] --&gt; H["Target Velocity"]
+H --&gt;|acceleration × dt| I["Current Velocity"]
+I --&gt;|friction| J["Position += vel × dt"]
+J --&gt; K["Head Bobbing (sin wave)"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#32-async-loader-thread" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">3.2 — Async Loader Thread</a> : <span style="opacity: 0.6; font-size: 0.85em;">A dedicated POSIX thread is spawned for background I/O. It sleeps on a condition variable (`pthreadcondwait`) until work is queued. This prevents disk reads from stalling the render loop.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>stateDiagram-v2
+[*] --&gt; IDLE
+IDLE --&gt; PENDING: async_loader_request()
+PENDING --&gt; LOADING: Worker wakes up
+LOADING --&gt; WAITING_FOR_PBO: I/O complete, need GPU buffer
+WAITING_FOR_PBO --&gt; CONVERTING: Main thread provides PBO
+CONVERTING --&gt; READY: Float-&gt;Half SIMD conversion done
+READY --&gt; IDLE: Main thread consumes result</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#42-dummy-textures-brdf-lut" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.2 — Dummy Textures &amp; BRDF LUT</a> : <span style="opacity: 0.6; font-size: 0.85em;">This texture maps `(NdotV, roughness)` → `(F0scale, F0bias)` and is used every frame by the PBR fragment shader to avoid expensive real-time BRDF integration.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+subgraph "BRDF LUT Generation (One-Time)"
+A["Compute Shader&lt;br/&gt;spbrdf.glsl"] --&gt;|"Importance Sampling&lt;br/&gt;GGX Distribution"| B["512×512 RG16F Texture"]
+B --&gt; C["Bound to Texture Unit 2&lt;br/&gt;every PBR draw call"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#44-two-rendering-modes-billboard-ray-tracing-vs-icosphere-mesh" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.4 — Two Rendering Modes: Billboard Ray-Tracing vs. Icosphere Mesh</a> : <span style="opacity: 0.6; font-size: 0.85em;">The quad geometry is a simple unit quad (±0.5), but the vertex shader projects it to tightly enclose the sphere's screen-space bounding box via analytical tangent-line computation (see `computeBillboardSphere()` in `projectionutils.glsl`).</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+subgraph "Billboard Ray-Tracing (Default)"
+A["4-vertex Quad&lt;br/&gt;(per instance)"] --&gt;|"Vertex Shader:&lt;br/&gt;project to sphere bounds"| B["Screen-space quad"]
+B --&gt;|"Fragment Shader:&lt;br/&gt;ray-sphere intersection"| C["Perfect sphere&lt;br/&gt;per-pixel normal + depth"]
+end
+subgraph "Icosphere Mesh (Fallback)"
+D["642-vertex mesh&lt;br/&gt;(subdivided icosahedron)"] --&gt;|"Rasterized as&lt;br/&gt;triangles"| E["Polygon approximation&lt;br/&gt;(faceted at low subdiv)"]
+end
+style A fill:#4CAF50,stroke:#333,stroke-width:2px
+style D fill:#999,stroke:#333,stroke-width:1px</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#44-two-rendering-modes-billboard-ray-tracing-vs-icosphere-mesh" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.4 — Two Rendering Modes: Billboard Ray-Tracing vs. Icosphere Mesh</a> : <span style="opacity: 0.6; font-size: 0.85em;">icospheregenerate(&amp;scene-&gt;geometry, INITIALSUBDIVISIONS);  // Level 3</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+A["Level 0&lt;br/&gt;12 vertices&lt;br/&gt;20 triangles"] --&gt;|"Subdivide"| B["Level 1&lt;br/&gt;42 vertices&lt;br/&gt;80 triangles"]
+B --&gt;|"Subdivide"| C["Level 2&lt;br/&gt;162 vertices&lt;br/&gt;320 triangles"]
+C --&gt;|"Subdivide"| D["Level 3&lt;br/&gt;642 vertices&lt;br/&gt;1280 triangles"]
+D --&gt;|"..."| E["Level 6&lt;br/&gt;~40k vertices"]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#47-instance-grid-setup" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.7 — Instance Grid Setup</a> : <span style="opacity: 0.6; font-size: 0.85em;">Camera at distance 20, looking at origin → sees entire grid</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+subgraph "Scene Layout (Top View)"
+direction TB
+A["Camera (0, 0, 20)&lt;br/&gt;Looking −Z"]
+A -.-&gt;|"20 units"| B["Origin (0, 0, 0)"]
+B --- C["10×10 Sphere Grid&lt;br/&gt;22.5 × 22.5 units&lt;br/&gt;Z = 0 plane"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#410-shader-compilation" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.10 — Shader Compilation</a> : <span style="opacity: 0.6; font-size: 0.85em;">All shaders are compiled during `sceneinit()`:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "Shader Programs"
+direction TB
+PBR["PBR Instanced&lt;br/&gt;pbr_ibl_instanced.vert/.frag"]
+BB["PBR Billboard&lt;br/&gt;pbr_ibl_billboard.vert/.frag"]
+SKY["Skybox&lt;br/&gt;background.vert/.frag"]
+DBG["Debug Lines&lt;br/&gt;debug_line.vert/.frag"]
+UI["UI Overlay&lt;br/&gt;ui.vert/.frag"]
+end
+subgraph "Compute Shaders"
+SPMAP["Specular Prefilter&lt;br/&gt;IBL/spmap.glsl"]
+IRMAP["Irradiance Conv.&lt;br/&gt;IBL/irmap.glsl"]
+BRDF["BRDF LUT&lt;br/&gt;IBL/spbrdf.glsl"]
+LUM1["Luminance Pass 1&lt;br/&gt;IBL/luminance_reduce_pass1.glsl"]
+LUM2["Luminance Pass 2&lt;br/&gt;IBL/luminance_reduce_pass2.glsl"]
+end
+subgraph "Post-Process Shaders"
+PP["Final Composite&lt;br/&gt;postprocess.vert/.frag"]
+BD["Bloom Down&lt;br/&gt;bloom_downsample.frag"]
+BU["Bloom Up&lt;br/&gt;bloom_upsample.frag"]
+BP["Bloom Prefilter&lt;br/&gt;bloom_prefilter.frag"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#51-the-scene-fbo-multi-render-target" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">5.1 — The Scene FBO (Multi-Render Target)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The core offscreen framebuffer uses MRT (Multiple Render Targets):</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+subgraph "Scene FBO"
+C0["Color 0&lt;br/&gt;GL_RGBA16F&lt;br/&gt;HDR Scene Color"]
+C1["Color 1&lt;br/&gt;GL_RG16F&lt;br/&gt;Velocity Vectors"]
+DS["Depth/Stencil&lt;br/&gt;GL_DEPTH32F_STENCIL8"]
+SV["Stencil View&lt;br/&gt;GL_R8UI&lt;br/&gt;(TextureView)"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#61-async-loading-sequence" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">6.1 — Async Loading Sequence</a> : <span style="opacity: 0.6; font-size: 0.85em;">This triggers the asynchronous environment loading pipeline — the most complex multi-frame operation in the engine.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>sequenceDiagram
+participant Main as Main Thread (Render)
+participant Worker as Async Worker Thread
+participant GPU as GPU
+Main-&gt;&gt;Worker: async_loader_request("env.hdr")
+Note over Worker: State: PENDING -&gt; LOADING
+Worker-&gt;&gt;Worker: stbi_loadf() - decode HDR to float RGBA
+Note over Worker: ~50ms for 2K HDR on NVMe
+Worker--&gt;&gt;Main: State: WAITING_FOR_PBO
+Main-&gt;&gt;GPU: glGenBuffers() -&gt; PBO
+Main-&gt;&gt;GPU: glMapBuffer(PBO, WRITE)
+Main--&gt;&gt;Worker: async_loader_provide_pbo(pbo_ptr)
+Note over Worker: State: CONVERTING
+Worker-&gt;&gt;Worker: SIMD float32 -&gt; float16 conversion
+Note over Worker: ~2ms for 2048×1024
+Worker--&gt;&gt;Main: State: READY
+Main-&gt;&gt;GPU: glUnmapBuffer(PBO)
+Main-&gt;&gt;GPU: glTexSubImage2D(from PBO)
+Note over GPU: DMA transfer: PBO -&gt; VRAM
+Main-&gt;&gt;GPU: glGenerateMipmap()</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#62-transition-state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">6.2 — Transition State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">During the first load, the screen stays black (no crossfade from a previous scene):</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>stateDiagram-v2
+[*] --&gt; WAIT_IBL: "First load"
+WAIT_IBL --&gt; WAIT_IBL: "IBL in progress..."
+WAIT_IBL --&gt; FADE_IN: "IBL complete"
+FADE_IN --&gt; IDLE: "Alpha reaches 0"
+note right of WAIT_IBL
+transition_alpha = 1.0 (fully opaque black)
+Screen is black during the first few frames
+end note
+note right of FADE_IN
+Alpha decreases: 1.0 -&gt; 0.0
+over 250ms (DEFAULT duration)
+end note</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#71-the-three-ibl-maps" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">7.1 — The Three IBL Maps</a> : <span style="opacity: 0.6; font-size: 0.85em;">Once the HDR texture is uploaded, the IBL Coordinator ([src/iblcoordinator.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/iblcoordinator.c)) takes over. It computes three maps across multiple frames to avoid GPU stalls.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+HDR["HDR Environment Map&lt;br/&gt;2048×1024 equirectangular&lt;br/&gt;GL_RGBA16F"] --&gt; SPEC
+HDR --&gt; IRR
+HDR --&gt; LUM
+SPEC["Specular Prefilter Map&lt;br/&gt;1024×1024 × 5 mip levels&lt;br/&gt;Compute: spmap.glsl"]
+IRR["Irradiance Map&lt;br/&gt;64×64&lt;br/&gt;Compute: irmap.glsl"]
+LUM["Luminance Reduction&lt;br/&gt;1×1 average&lt;br/&gt;Compute: luminance_reduce"]
+SPEC --&gt;|"Per-pixel reflection&lt;br/&gt;roughness -&gt; mip level"| PBR["PBR Shader"]
+IRR --&gt;|"Diffuse hemisphere&lt;br/&gt;integral"| PBR
+LUM --&gt;|"Auto exposure&lt;br/&gt;threshold"| PP["Post-Process"]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#72-progressive-slicing-strategy" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">7.2 — Progressive Slicing Strategy</a> : <span style="opacity: 0.6; font-size: 0.85em;">| Luminance | 2 dispatches (pass 1 + 2) | 2 dispatches |</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>gantt
+title IBL Progressive Generation Timeline
+dateFormat X
+axisFormat Frame %s
+section Luminance
+Luminance Pass 1      :lum1, 0, 1
+Luminance Wait (fence) :lum2, 1, 2
+Luminance Readback     :lum3, 2, 3
+section Specular Mip 0
+Slice 1/24            :s1, 3, 4
+Slice 2/24            :s2, 4, 5
+Slice ...             :s3, 5, 6
+Slice 24/24           :s4, 6, 7
+section Specular Mip 1
+Slice 1/8             :m1, 7, 8
+Slice 8/8             :m2, 8, 9
+section Specular Mips 2-4
+Grouped dispatch      :m3, 9, 10
+section Irradiance
+Slice 1/12            :i1, 10, 11
+Slice 12/12           :i2, 11, 12
+section Done
+IBL Complete -&gt; Fade In :done, 12, 13</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#chapter-8-the-main-loop" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Chapter 8 — The Main Loop</a> : <span style="opacity: 0.6; font-size: 0.85em;">`apprun()` ([src/app.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/app.c)) is the heartbeat — a classic uncapped game loop with fixed-timestep physics.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "Main Loop - One Iteration"
+A["glfwPollEvents()&lt;br/&gt;Process keyboard, mouse, resize"] --&gt; B
+B["Time &amp; FPS update&lt;br/&gt;delta_time, frame_count"] --&gt; C
+C["Camera Physics&lt;br/&gt;Fixed timestep 60Hz&lt;br/&gt;Smooth rotation lerp"] --&gt; D
+D["Geometry Update&lt;br/&gt;(if subdivisions changed)"] --&gt; E
+E["app_update()&lt;br/&gt;Process input state"] --&gt; F
+F["renderer_draw_frame()&lt;br/&gt;THE BIG ONE"] --&gt; G
+G["Tracy screenshots&lt;br/&gt;(profiling)"] --&gt; H
+H["glfwSwapBuffers()&lt;br/&gt;Present to screen"] --&gt; I
+I["GPU profiler collect&lt;br/&gt;(query results)"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#91-high-level-frame-architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.1 — High-Level Frame Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">`rendererdrawframe(const RenderContext ctx)` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestrates the full rendering pipeline for each frame. It receives a single `RenderContext` struct containing all per-frame state (scene, camera, postprocess, profiler, dimensions, etc.) instead of individual parameters, decoupling the renderer from the `App` God Object.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "renderer_draw_frame()"
+A["GPU Profiler Begin"] --&gt; B
+B["postprocess_begin()&lt;br/&gt;Bind Scene FBO&lt;br/&gt;Clear color/depth/stencil"] --&gt; C
+subgraph "View Setup"
+C["camera_get_view_matrix()"]
+C --&gt; D["glm_perspective()&lt;br/&gt;FOV=60°, near=0.1, far=1000"]
+D --&gt; E["ViewProj = Proj × View"]
+E --&gt; F["InvViewProj = inverse(ViewProj)"]
+end
+F --&gt; G["scene_render()"]
+subgraph "scene_render()"
+G --&gt; G1["Skybox Pass&lt;br/&gt;(depth disabled)"]
+G1 --&gt; G2["Sphere Sorting&lt;br/&gt;(GPU Bitonic)"]
+G2 --&gt; G3["PBR Sphere Pass&lt;br/&gt;(instanced draw)"]
+end
+G3 --&gt; H["postprocess_end()&lt;br/&gt;7-Stage Pipeline"]
+H --&gt; I["UI Overlay&lt;br/&gt;+ Env Transition"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#93-pass-2-sphere-sorting-gpu-bitonic-sort" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.3 — Pass 2: Sphere Sorting (GPU Bitonic Sort)</a> : <span style="opacity: 0.6; font-size: 0.85em;">For transparent billboard rendering, spheres must be drawn back-to-front. The default sorting mode is GPU Bitonic Sort:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+A["100 sphere distances&lt;br/&gt;computed on GPU"] --&gt;|"Bitonic sort&lt;br/&gt;O(n·log²n)"| B["Sorted index SSBO"]
+B --&gt; C["Billboard draw&lt;br/&gt;back-to-front"]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#94-pass-3-pbr-spheres-billboard-ray-tracing-default" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.4 — Pass 3: PBR Spheres — Billboard Ray-Tracing (Default)</a> : <span style="opacity: 0.6; font-size: 0.85em;">This is the core rendering pass. In the default billboard mode, each sphere is a 4-vertex quad whose fragment shader performs per-pixel ray-sphere intersection.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "Billboard Ray-Tracing Pipeline"
+A["shader_use(pbr_billboard_shader)"] --&gt; B
+subgraph "Texture Bindings"
+B["Unit 0: Irradiance Map (64×64)"]
+B --&gt; C["Unit 1: Spec. Prefilter Map (1024²)"]
+C --&gt; D["Unit 2: BRDF LUT (512²)"]
+D --&gt; E["Units 8–14: SH Probes (L0–L2)"]
+end
+E --&gt; F["Set Uniforms&lt;br/&gt;view, proj, camPos, screenSize"]
+F --&gt; G["Probe Grid + GI Uniforms"]
+G --&gt; H
+subgraph "Draw Call"
+H["glDrawArraysInstanced(&lt;br/&gt;  GL_TRIANGLE_STRIP,&lt;br/&gt;  0,&lt;br/&gt;  4,             // quad vertices&lt;br/&gt;  100            // instances&lt;br/&gt;)"]
+end
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#95-the-billboard-fragment-shader-ray-sphere-intersection" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.5 — The Billboard Fragment Shader (Ray-Sphere Intersection)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The fragment shader (`pbriblbillboard.frag`) is where the real magic happens. Instead of shading a rasterized triangle mesh, it analytically intersects a ray with a perfect sphere:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "Billboard Fragment Shader Pipeline"
+R["Build Ray&lt;br/&gt;origin = camPos&lt;br/&gt;dir = normalize(WorldPos - camPos)"] --&gt; INT
+INT["Ray-Sphere Intersection&lt;br/&gt;oc = origin - center&lt;br/&gt;b = dot(oc, dir)&lt;br/&gt;c = dot(oc,oc) - r²&lt;br/&gt;discriminant = b² - c"] --&gt; HIT{"Hit?"}
+HIT --&gt;|"No (disc &lt; 0)"| DISCARD["discard;&lt;br/&gt;(pixel outside sphere)"]
+HIT --&gt;|"Yes"| HITPOS["hitPos = origin + t × dir"]
+HITPOS --&gt; NORMAL["N = normalize(hitPos - center)&lt;br/&gt;(analytically perfect)"]
+HITPOS --&gt; DEPTH["gl_FragDepth = project(hitPos)&lt;br/&gt;(correct Z-buffer)"]
+NORMAL --&gt; PBR
+subgraph "PBR Shading (Cook-Torrance + IBL)"
+PBR["V = -rayDir"]
+PBR --&gt; FRESNEL["Fresnel-Schlick"]
+PBR --&gt; GGX["Smith-GGX Geometry"]
+PBR --&gt; NDF["GGX NDF Distribution"]
+FRESNEL --&gt; SPEC["IBL Specular:&lt;br/&gt;prefilterMap(R, roughness)&lt;br/&gt;× brdfLUT(NdotV, roughness)"]
+GGX --&gt; SPEC
+NDF --&gt; SPEC
+PBR --&gt; DIFF["IBL Diffuse:&lt;br/&gt;irradiance(N) × albedo"]
+SPEC --&gt; FINAL["color = Diffuse + Specular"]
+DIFF --&gt; FINAL
+end
+FINAL --&gt; AA["Edge Anti-Aliasing&lt;br/&gt;smoothstep on discriminant"]
+AA --&gt; ALPHA["FragColor = vec4(color, edgeFactor)&lt;br/&gt;(true alpha transparency)"]
+HITPOS --&gt; VEL["Velocity = project(hitPos, prevViewProj)&lt;br/&gt;(per-pixel motion vectors)"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#101-the-7-stage-pipeline" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">10.1 — The 7-Stage Pipeline</a> : <span style="opacity: 0.6; font-size: 0.85em;">After the 3D scene is rendered into the MRT FBO, `postprocessend()` applies up to 8 effects in a carefully ordered pipeline.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "Post-Processing Pipeline"
+A["Memory Barrier&lt;br/&gt;(flush MRT writes)"]
+A --&gt; B["① Bloom&lt;br/&gt;Downsample -&gt; Threshold -&gt; Upsample"]
+B --&gt; C["② Depth of Field&lt;br/&gt;CoC -&gt; Bokeh blur"]
+C --&gt; D["③ Auto-Exposure&lt;br/&gt;Luminance reduction -&gt; PBO readback"]
+D --&gt; E["④ Motion Blur&lt;br/&gt;Tile-max velocity -&gt; Neighbor-max"]
+E --&gt; F
+subgraph "⑤ Final Composite (Fullscreen Quad)"
+F["Bind 9 Textures&lt;br/&gt;Scene + Bloom + Depth + Exposure&lt;br/&gt;+ Velocity + NeighborMax + DoF&lt;br/&gt;+ Stencil + LUT3D"]
+F --&gt; G["Upload UBO&lt;br/&gt;(all effect params)"]
+G --&gt; H["Draw fullscreen quad"]
+end
+subgraph "Fragment Shader Effects"
+H --&gt; I["Chromatic Aberration"]
+I --&gt; J["Vignette"]
+J --&gt; K["Film Grain"]
+K --&gt; L["White Balance"]
+L --&gt; M["Color Grading&lt;br/&gt;(Sat, Contrast, Gamma, Gain)"]
+M --&gt; N["Tonemapping&lt;br/&gt;(Filmic curve)"]
+N --&gt; O["3D LUT Grading"]
+O --&gt; P["FXAA"]
+P --&gt; Q["Dithering&lt;br/&gt;(Anti-banding)"]
+Q --&gt; R["Atmospheric Fog"]
+end
+R --&gt; S["⑥ LUT Visualization&lt;br/&gt;(if enabled)"]
+S --&gt; T["⑦ Texture Cleanup&lt;br/&gt;(reset units to dummy)"]
+end</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#appendix-c-rendering-pipeline-data-flow" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Appendix C — Rendering Pipeline Data Flow</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TB
+subgraph "CPU (per frame)"
+POLL["glfwPollEvents()"] --&gt; TIME["Δt calculation"]
+TIME --&gt; CAM["Camera physics&lt;br/&gt;(fixed 60Hz)"]
+CAM --&gt; SORT["Sphere sorting&lt;br/&gt;(GPU dispatch)"]
+end
+subgraph "GPU Pass 1: Scene"
+FBO["Bind Scene FBO&lt;br/&gt;Clear (0,0,0,1)"]
+FBO --&gt; SKY["Skybox Pass&lt;br/&gt;Fullscreen quad&lt;br/&gt;Equirectangular sampling"]
+SKY --&gt; STENCIL["Enable Stencil"]
+STENCIL --&gt; SPHERES["Billboard Ray-Trace Pass&lt;br/&gt;1 draw call, 100 instances&lt;br/&gt;4 verts/quad, perfect spheres&lt;br/&gt;per-pixel intersection + depth"]
+end
+subgraph "GPU Pass 2: Post-Process"
+BLOOM["Bloom&lt;br/&gt;Downsample -&gt; Upsample"]
+DOF["Depth of Field&lt;br/&gt;CoC -&gt; Blur"]
+EXPO["Auto-Exposure&lt;br/&gt;Luminance reduction"]
+MBLUR["Motion Blur&lt;br/&gt;Velocity field"]
+BLOOM --&gt; COMP
+DOF --&gt; COMP
+EXPO --&gt; COMP
+MBLUR --&gt; COMP
+COMP["Final Composite&lt;br/&gt;9 texture units&lt;br/&gt;UBO parameters&lt;br/&gt;Fullscreen quad draw"]
+end
+subgraph "GPU Pass 3: UI"
+UI["Text Overlay&lt;br/&gt;Profiler Timeline&lt;br/&gt;Env Transition"]
+end
+SORT --&gt; FBO
+SPHERES --&gt; BLOOM
+COMP --&gt; UI
+UI --&gt; SWAP["glfwSwapBuffers()"]</code></pre>
+
+  </div>
+</div>
+
+<h2 id="architecture-documentation-refactoring-core"><a href="../architecture/">Architecture Documentation - Refactoring Core</a><a class="headerlink" href="#architecture-documentation-refactoring-core" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../architecture/#postprocess-translation-unit-split" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">PostProcess Translation-Unit Split</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `postprocesscleanup.c` | 97 | Resource teardown (FBOs, quad, readback buffers, shader cache) |</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+PP_H[postprocess.h&lt;br/&gt;&lt;i&gt;public API&lt;/i&gt;]
+PP_INT[postprocess_internal.h&lt;br/&gt;&lt;i&gt;shared enums + pp_ decls&lt;/i&gt;]
+PP_INT --&gt; PP_H
+INIT[postprocess_init.c] --&gt; PP_INT
+APPLY[postprocess_apply.c] --&gt; PP_INT
+SHADER[postprocess_shader.c] --&gt; PP_INT
+CLEANUP[postprocess_cleanup.c] --&gt; PP_INT
+SETTERS[postprocess_setters.c] --&gt; PP_H
+READBACK[postprocess_readback.c] --&gt; PP_H</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../architecture/#include-dependency-graph" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Include-Dependency Graph</a> : <span style="opacity: 0.6; font-size: 0.85em;">Top-level module dependencies (project headers only, excludes system and vendor headers):</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+classDef aggregate fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+classDef substruct fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+classDef leaf fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+classDef effect fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+APP[app.h]:::aggregate
+SCENE[scene.h]:::aggregate
+PP[postprocess.h]:::aggregate
+REND[renderer.h]:::leaf
+%% App sub-structs
+APP_PROF[app_profiling.h]:::substruct
+APP_INP[app_input_state.h]:::substruct
+APP_WIN[app_window.h]:::substruct
+APP_UI[app_ui.h]:::substruct
+%% Scene sub-structs
+SC_GPU[scene_gpu_resources.h]:::substruct
+SC_SH[scene_shaders.h]:::substruct
+SC_CFG[scene_config.h]:::substruct
+SC_VIS[scene_visuals.h]:::substruct
+SC_SIM[scene_simulation.h]:::substruct
+SC_LIT[scene_lighting.h]:::substruct
+%% PostProcess sub-headers
+PP_PAR[pp_params.h]:::substruct
+PP_GPU[pp_gpu_resources.h]:::substruct
+PP_SHD[pp_shader_state.h]:::substruct
+PP_RDB[pp_exposure_readback.h]:::substruct
+%% Effects
+FX_BL[fx_bloom.h]:::effect
+FX_DOF[fx_dof.h]:::effect
+FX_AE[fx_auto_exposure.h]:::effect
+FX_MB[fx_motion_blur.h]:::effect
+FX_LUT[fx_lut3d.h]:::effect
+EC[effect_context.h]:::effect
+%% App -&gt; direct deps
+APP --&gt; SCENE
+APP --&gt; PP
+APP --&gt; APP_UI
+APP --&gt; APP_WIN
+%% App sub-structs (owned, not included by app.h)
+APP -.-&gt;|"owned"| APP_PROF
+APP -.-&gt;|"owned"| APP_INP
+%% Scene -&gt; sub-structs
+SCENE --&gt; SC_GPU
+SCENE --&gt; SC_SH
+SCENE --&gt; SC_CFG
+SCENE --&gt; SC_VIS
+SCENE --&gt; SC_SIM
+SCENE --&gt; SC_LIT
+%% PostProcess -&gt; sub-headers + effects
+PP --&gt; PP_PAR
+PP --&gt; PP_GPU
+PP --&gt; PP_SHD
+PP --&gt; PP_RDB
+PP --&gt; FX_BL
+PP --&gt; FX_DOF
+PP --&gt; FX_AE
+PP --&gt; FX_MB
+PP --&gt; FX_LUT
+%% Effect decoupling
+FX_BL -.-&gt;|"runtime"| EC
+FX_DOF -.-&gt;|"runtime"| EC
+FX_AE -.-&gt;|"runtime"| EC
+FX_MB -.-&gt;|"runtime"| EC
+FX_LUT -.-&gt;|"runtime"| EC
+%% Renderer uses forward-decls only
+REND -.-&gt;|"fwd-decl"| APP
+REND -.-&gt;|"fwd-decl"| SCENE
+REND -.-&gt;|"fwd-decl"| PP</code></pre>
+
+  </div>
+</div>
+
+<h2 id="asynchronous-environment-map-loader"><a href="../async_loader/">Asynchronous Environment Map Loader</a><a class="headerlink" href="#asynchronous-environment-map-loader" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../async_loader/#scheduling-sequence" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Scheduling Sequence</a> : <span style="opacity: 0.6; font-size: 0.85em;">The complexity of the PBO-based approach is handled by spliting the work across several frames:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"primaryColor": "#24283b",
+"primaryTextColor": "#ffffff",
+"primaryBorderColor": "#7aa2f7",
+"lineColor": "#7aa2f7",
+"signalColor": "#ffffff",
+"signalTextColor": "#ffffff",
+"messageColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"actorBorder": "#7aa2f7",
+"actorBkg": "#24283b",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26"
+}
+}%%
+sequenceDiagram
+participant M as Main Thread
+participant W as Worker Thread
+participant G as GPU / VRAM
+Note over M,W: Frame 1
+M-&gt;&gt;W: Request Load (path)
+W-&gt;&gt;W: I/O Read + Decode (CPU RAM)
+Note over M,W: Frame N (Worker finishes I/O)
+W--&gt;&gt;M: State = WAITING_FOR_PBO
+M-&gt;&gt;M: Map PBO (Unsynchronized)
+M-&gt;&gt;W: Pass PBO Pointer
+Note over M,W: Frame N+1 (Worker does SIMD)
+W-&gt;&gt;W: SIMD Convert (F32 to F16) into PBO
+W--&gt;&gt;M: State = READY
+Note over M,W: Frame N+2 (Final Integration)
+M-&gt;&gt;M: Unmap PBO
+M-&gt;&gt;G: glTexSubImage2D (Fast DMA)
+M-&gt;&gt;G: glGenerateMipmap
+M-&gt;&gt;M: Start Progressive IBL</code></pre>
+
+  </div>
+</div>
+
+<h2 id="asynchronous-texture-upload-strategy"><a href="../async_pbo/">Asynchronous Texture Upload Strategy</a><a class="headerlink" href="#asynchronous-texture-upload-strategy" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../async_pbo/#architecture-overview" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture Overview</a> : <span style="opacity: 0.6; font-size: 0.85em;">- Monolithic Upload: Even with PBOs, performing all GPU work (texture storage allocation, data upload, mipmap generation) in a single frame creates a ~60ms spike.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"signalTextColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26",
+"lineColor": "#7aa2f7"
+}
+}%%
+sequenceDiagram
+participant Main as Main Thread
+participant Worker as Async Worker
+participant GPU as GPU / Driver
+Note over Main: Frame N - PBO Setup
+Main-&gt;&gt;GPU: texture_ensure_pbo() + texture_map_pbo()
+Main-&gt;&gt;Worker: async_loader_provide_pbo(mapped_ptr)
+Note over Main: Frame N+1 - VRAM Pre-allocation
+Main-&gt;&gt;GPU: texture_preallocate_hdr()&lt;br/&gt;glTexImage2D(level 0, NULL)
+Note over GPU: Allocate ~64MB base level only
+Note over Worker: Frames N..N+M - Background Conversion
+Worker-&gt;&gt;Worker: float32 -&gt; float16 (SIMD)&lt;br/&gt;directly into mapped PBO
+Note over Main: Frame N+M - Upload &amp; Mipmaps
+Main-&gt;&gt;GPU: glUnmapBuffer(PBO)
+Main-&gt;&gt;GPU: glTexSubImage2D(from PBO)
+Main-&gt;&gt;GPU: glGenerateMipmap()
+Note over GPU: DMA transfer + mipmap chain</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../async_pbo/#the-strategy-spread-work-across-3-frames" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">The Strategy: Spread Work Across 3 Frames</a> : <span style="opacity: 0.6; font-size: 0.85em;">Instead of doing everything in one frame, we distribute the work using the async loader's multi-step protocol as natural frame boundaries:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>gantt
+title Frame Time Distribution
+dateFormat X
+axisFormat %s ms
+section Before (1 frame)
+PBO Setup + TexStorage + Upload + Mipmap + 3×glGetError :done, 0, 60
+section After (3 frames)
+Frame N  - PBO Setup &amp; Map        :active, 0, 5
+Frame N+1 - TexPrealloc (level 0) :active, 8, 15
+Frame N+M - Upload + Mipmap       :active, 18, 38</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../async_pbo/#deferred-pre-allocation-flow" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Deferred Pre-allocation Flow</a> : <span style="opacity: 0.6; font-size: 0.85em;">Cost: ~20-30ms (irreducible GPU work)</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"primaryColor": "#24283b",
+"primaryTextColor": "#ffffff",
+"primaryBorderColor": "#7aa2f7",
+"lineColor": "#7aa2f7",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"actorBorder": "#7aa2f7",
+"actorBkg": "#24283b",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26"
+}
+}%%
+flowchart TD
+A["app_update() called"] --&gt; B{"pending_prealloc_w &gt; 0?"}
+B -- Yes --&gt; C["texture_preallocate_hdr()"]
+C --&gt; D{"recycled_hdr_tex matches?"}
+D -- Yes --&gt; E["Zero-cost reuse (OK)"]
+D -- No --&gt; F["glTexImage2D(level 0, NULL)"]
+F --&gt; G["Store in app-&gt;recycled_hdr_tex"]
+B -- No --&gt; H["async_loader_poll()"]
+E --&gt; H
+G --&gt; H
+H --&gt; I{"req.state?"}
+I -- WAITING_FOR_PBO --&gt; J["PBO Setup &amp; Map"]
+J --&gt; K["Schedule pending_prealloc_w/h"]
+I -- ASYNC_READY --&gt; L["texture_upload_hdr_from_pbo()"]
+L --&gt; M{"reuse_tex matches?"}
+M -- Yes --&gt; N["Skip glTexStorage2D (OK)"]
+M -- No --&gt; O["Fallback: glTexStorage2D"]
+N --&gt; P["glUnmapBuffer + glTexSubImage2D"]
+O --&gt; P
+P --&gt; Q["glGenerateMipmap"]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../async_pbo/#why-glgeterror-stalls-the-pipeline" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Why `glGetError()` Stalls the Pipeline</a> : <span style="opacity: 0.6; font-size: 0.85em;">`glGetError()` is a synchronous query: the CPU must wait for the GPU to process all pending commands before returning the error state. In a pipelined architecture, this defeats the purpose of asynchronous uploads.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"signalTextColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26",
+"lineColor": "#7aa2f7"
+}
+}%%
+sequenceDiagram
+participant CPU
+participant CmdQueue as GPU Command Queue
+participant GPU
+CPU-&gt;&gt;CmdQueue: glTexSubImage2D (async, returns immediately)
+CPU-&gt;&gt;CmdQueue: glGetError() -&gt; STALL
+Note over CPU: (Waiting) Blocked waiting for GPU
+CmdQueue-&gt;&gt;GPU: Execute TexSubImage...
+GPU--&gt;&gt;CmdQueue: Done
+CmdQueue--&gt;&gt;CPU: GL_NO_ERROR
+Note over CPU: Can finally continue</code></pre>
+
+  </div>
+</div>
+
+<h2 id="auto-exposure-optimization-report-march-2026"><a href="../auto_exposure_opt_report/">Auto-Exposure Optimization Report (March 2026)</a><a class="headerlink" href="#auto-exposure-optimization-report-march-2026" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#baseline-hybrid" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Baseline (Hybrid)</a> : <span style="opacity: 0.6; font-size: 0.85em;">In the baseline version, the screen-space luminance was calculated using traditional rendering passes.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+SCENE[Scene Color Tex] --&gt; DS[FS: Downsample 64x64]
+DS --&gt; FBO[Downsample FBO]
+FBO -- "RASTER-TO-COMPUTE SYNC" --&gt; ADAPT[CS: Adaptation 1x1]
+ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#optimized-unified-compute" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Optimized (Unified Compute)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The new implementation eliminates the intermediate Framebuffer (FBO) and stays entirely within the GPU's compute domain.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+SCENE[Scene Color Tex] --&gt; DS[CS: Downsample 64x64]
+DS -- "MEMORY BARRIER (Light)" --&gt; ADAPT[CS: Adaptation 1x1]
+ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">A notification ("AE Path: Fragment" / "AE Path: Compute") confirms the switch. The GPU Profiler label also changes dynamically to reflect which path is active.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+SCENE[Scene Color Texture]
+SCENE --&gt; SWITCH{active_path?}
+SWITCH --&gt;|Fragment| FRAG["FS Quad -&gt; FBO 64x64"]
+SWITCH --&gt;|Compute| COMP["CS Dispatch 4x4 WG"]
+FRAG --&gt; DS_TEX[Downsample Tex R32F]
+COMP --&gt; DS_TEX
+DS_TEX --&gt; ADAPT["CS: Adaptation 1x1"]
+ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
+<h2 id="environment-transitions"><a href="../env_transitions/">Environment Transitions</a><a class="headerlink" href="#environment-transitions" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../env_transitions/#state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">Transitions are governed by a state machine in `src/appenv.c`.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>stateDiagram-v2
+state "  IDLE  " as idle
+state "  LOADING  " as loading
+state "  FADE_OUT  " as fade_out
+state "  FADE_IN  " as fade_in
+state "  WAIT_IBL  " as wait_ibl
+idle --&gt; loading : app_trigger_env_transition
+loading --&gt; fade_out : IBL Done (Black Screen Mode)
+loading --&gt; fade_in : IBL Done (Crossfade Mode)
+fade_out --&gt; fade_in : Alpha &gt;= 1.0 (Swap Textures)
+fade_in --&gt; idle : Alpha &lt;= 0.0
+idle --&gt; wait_ibl : Initial Startup
+wait_ibl --&gt; fade_in : IBL Done (Initial Load)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="aggressive-test-with-asan"><a href="../fullscreen_deadlock/">Aggressive test with ASan</a><a class="headerlink" href="#aggressive-test-with-asan" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../fullscreen_deadlock/#sequence-before-deadlock" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Sequence Before (DEADLOCK)</a> : <span style="opacity: 0.6; font-size: 0.85em;">   The Application is blocked inside the resize callback, trying to allocate/delete GPU resources, but the driver's command queue is often locked or stalled during the mode switch handshake.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "base",
+"themeVariables": {
+"primaryColor": "#7aa2f7",
+"primaryTextColor": "#ffffff",
+"primaryBorderColor": "#7aa2f7",
+"lineColor": "#9aa5ce",
+"secondaryColor": "#f7768e",
+"tertiaryColor": "#1a1b26",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26",
+"actorBkg": "#24283b",
+"actorBorder": "#7aa2f7",
+"actorTextColor": "#ffffff",
+"actorLineColor": "#7aa2f7",
+"labelBoxBkgColor": "#1a1b26",
+"labelBoxBorderColor": "#7aa2f7",
+"labelTextColor": "#ffffff",
+"loopTextColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"signalTextColor": "#ffffff",
+"activationBkgColor": "#414868",
+"sequenceNumberColor": "#ffffff"
+}
+}%%
+sequenceDiagram
+participant Main as Main Thread
+participant GLFW as GLFW
+participant Driver as NVIDIA Driver
+participant GPU as GPU Pipeline
+Main-&gt;&gt;GLFW: glfwPollEvents()
+GLFW-&gt;&gt;Main: key_callback(F)
+Main-&gt;&gt;GLFW: glfwSetWindowMonitor()
+GLFW-&gt;&gt;Driver: Mode switch request
+Note over Driver: Waits for GPU fence...
+Driver--&gt;&gt;GLFW: Resize event
+GLFW-&gt;&gt;Main: framebuffer_size_callback()
+Main-&gt;&gt;GPU: glDeleteTextures / glGenTextures
+Note over GPU,Driver: GPU blocked by pending swap
+Note over Main,GPU: (DEADLOCK)</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../fullscreen_deadlock/#sequence-after-fixed" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Sequence After (FIXED)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The solution is a Deferred Resize pattern, which decouples the window manager's resize event from the expensive GPU resource recreation.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "base",
+"themeVariables": {
+"primaryColor": "#7aa2f7",
+"primaryTextColor": "#ffffff",
+"primaryBorderColor": "#7aa2f7",
+"lineColor": "#9aa5ce",
+"secondaryColor": "#f7768e",
+"tertiaryColor": "#1a1b26",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26",
+"actorBkg": "#24283b",
+"actorBorder": "#7aa2f7",
+"actorTextColor": "#ffffff",
+"actorLineColor": "#7aa2f7",
+"labelBoxBkgColor": "#1a1b26",
+"labelBoxBorderColor": "#7aa2f7",
+"labelTextColor": "#ffffff",
+"loopTextColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"signalTextColor": "#ffffff",
+"activationBkgColor": "#414868",
+"sequenceNumberColor": "#ffffff"
+}
+}%%
+sequenceDiagram
+participant Main as Main Thread
+participant GLFW as GLFW
+participant Driver as NVIDIA Driver
+participant GPU as GPU Pipeline
+Main-&gt;&gt;GPU: glFinish() - drain pipeline
+GPU--&gt;&gt;Main: All commands complete
+Main-&gt;&gt;GLFW: glfwSetWindowMonitor()
+GLFW-&gt;&gt;Driver: Mode switch request
+Driver--&gt;&gt;GLFW: Resize event
+GLFW-&gt;&gt;Main: framebuffer_size_callback()
+Note over Main: Only stores dimensions + flag
+Main--&gt;&gt;GLFW: Return immediately
+GLFW--&gt;&gt;Main: glfwSetWindowMonitor() returns
+Note over Main: Next frame begins...
+Main-&gt;&gt;Main: app_run: resize_pending? YES
+Main-&gt;&gt;GPU: postprocess_resize() - safe context
+GPU--&gt;&gt;Main: FBOs recreated (OK)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="gamepad-camera-control"><a href="../gamepad/">Gamepad Camera Control</a><a class="headerlink" href="#gamepad-camera-control" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../gamepad/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">physics step.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+subgraph "Per Frame (1x)"
+GLFW[GLFW Gamepad API] --&gt; POLL[gamepad_input_poll]
+POLL --&gt;|deadzone filter| AXES[state.axes cache]
+POLL --&gt;|edge detect| BTN[GamepadActions: L1/R1/Share]
+end
+subgraph "Per Physics Step (Nx)"
+KB[camera_build_keyboard_input] --&gt; MI[cam.move_input]
+AXES --&gt; WRITE[gamepad_write_input]
+WRITE --&gt;|overlay| MI
+MI --&gt; PHYS[camera_fixed_update]
+end</code></pre>
+
+  </div>
+</div>
+
+<h2 id="global-illumination-1-bounce"><a href="../global_illumination/">Global Illumination (1-Bounce)</a><a class="headerlink" href="#global-illumination-1-bounce" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../global_illumination/#implementation-architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Implementation Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">The system combines asynchronous CPU computation with GPU sampling, with no interruption (stall) to the main render thread.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"signalTextColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26",
+"lineColor": "#7aa2f7"
+}
+}%%
+sequenceDiagram
+participant Main as Main Thread (CPU)
+participant Worker as GI Worker Thread (CPU)
+participant GPU as SSBO &amp; Shaders (GPU)
+Main-&gt;&gt;Worker: Send scene copy (Positions, Colors)
+Main-&gt;&gt;Worker: Signal update (CondVar)
+activate Worker
+Note over Worker: Compute Form Factor and project to Spherical Harmonics (SH)
+Worker--&gt;&gt;Main: Signal computations complete (results_ready)
+deactivate Worker
+Main-&gt;&gt;GPU: Upload SH data to SSBO (glBufferSubData)
+Main-&gt;&gt;GPU: Draw call (Instanced or SSBO)
+Note over GPU: Fragments sample irradiance from 8 adjacent probes (Trilinear Filtering)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="domain-model-ubiquitous-language"><a href="../glossary/">Domain Model — Ubiquitous Language</a><a class="headerlink" href="#domain-model-ubiquitous-language" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../glossary/#relationships" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">🔗 Relationships</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+Scene --&gt; InstancedGroup["Instanced Group"]
+Scene --&gt; BillboardGroup["Billboard Group"]
+Scene --&gt; Skybox
+Scene --&gt; NBody["N-Body Simulation"]
+Scene --&gt; TrailRenderer["Trail Renderer"]
+Scene --&gt; IBLCoordinator["IBL Coordinator"]
+Scene --&gt; LightProbeGrid["Light Probe Grid"]
+NBody --&gt;|"contains up to 32"| Body
+Body --&gt;|"produces per frame"| SphereInstance["Sphere Instance"]
+TrailRenderer --&gt;|"one per Body"| TrailRing["Trail Ring"]
+IBLCoordinator --&gt;|"generates"| IrradianceMap["Irradiance Map"]
+IBLCoordinator --&gt;|"generates"| SpecularMap["Prefiltered Specular Map"]
+LightProbeGrid --&gt;|"lattice of"| LightProbe["Light Probe"]
+LightProbe --&gt;|"stores"| SH9
+PostProcess --&gt;|"chain of"| Effect</code></pre>
+
+  </div>
+</div>
+
+<h2 id="gpu-usage-monitor"><a href="../gpu_usage_monitor/">GPU Usage Monitor</a><a class="headerlink" href="#gpu-usage-monitor" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../gpu_usage_monitor/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `nouveau` | `drm-engine-gr` | NVIDIA (open-source driver) |</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>flowchart TD
+A[gpu_usage_init] --&gt; B[Scan /proc/self/fdinfo/]
+B --&gt; C{DRM render node?}
+C --&gt;|Yes| D[Read drm-driver &amp; drm-client-id]
+C --&gt;|No| B
+D --&gt; E{Duplicate client-id?}
+E --&gt;|Yes| B
+E --&gt;|No| F[Keep FILE* stream open]
+F --&gt; B
+B --&gt;|Done| G[Store driver + engine_key]
+H[gpu_usage_update] --&gt; I{500ms elapsed?}
+I --&gt;|No| J[Return early]
+I --&gt;|Yes| K[Re-read all streams]
+K --&gt; L[Sum engine time across FDs]
+L --&gt; M["GPU% = Δgpu / Δwall × 100"]
+M --&gt; N[Clamp 0–100%]</code></pre>
+
+  </div>
+</div>
+
+<h2 id="motion-blur-implementation-analysis"><a href="../motion_blur_analysis/">Motion Blur Implementation Analysis</a><a class="headerlink" href="#motion-blur-implementation-analysis" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../motion_blur_analysis/#render-pipeline" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Render Pipeline</a> : <span style="opacity: 0.6; font-size: 0.85em;">The current architecture is based on modern rendering principles using the Tile-Based / Neighbor Max approach, originally introduced by Jean-Yves Bouguet and real-time rendering researchers. The main idea is to prevent blur "bleeding" when a fast object passes in front of a static background — a very common artifact in early implementations of this post-process.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+V[Velocity Buffer] --&gt; T[Tile Max Velocity Compute]
+T --&gt;|Reduction at 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
+TTex --&gt; N[Neighbor Max Velocity Compute]
+N --&gt;|textureGather over 3x3 Neighborhood| NTex(Texture RG16F - Neighbor Max)
+C[Color Buffer Raw] --&gt; M(Final Motion Blur Pass)
+D[Depth Buffer] --&gt; M
+V --&gt; M
+NTex --&gt; M
+M --&gt;|8-frame Sampling + Interleaved Gradient Noise + Depth Weighting| O[Blurred Color Buffer]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../motion_blur_analysis/#4-the-street-fighter-6-case-study-re-engine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4. The Street Fighter 6 Case Study (RE Engine)</a> : <span style="opacity: 0.6; font-size: 0.85em;">Unlike standard linear blur ("take a vector and trace a straight line"), Capcom's engine stores acceleration information in addition to velocity. The blur sampling is thus "curved" in space to simulate the radial trajectory of limbs and fists.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+A[Linear Blur \nStandard Suckless OGL] --&gt;|Creates straight lines and artifacts| B(Punch trajectory)
+C[Curved Blur \nRE Engine / SF6] --&gt;|Sampling along a circular arc| D(Anime/Manga-style stylized blur)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="neon-trail-rendering"><a href="../neon_trails/">Neon Trail Rendering</a><a class="headerlink" href="#neon-trail-rendering" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../neon_trails/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">Each change displays an on-screen notification with the current value.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+A[TrailRenderer::neon] --&gt;|intensity, width| B[build_ribbon CPU]
+A --&gt;|core_exp| C[trail.frag GPU]
+B --&gt;|HDR vertices| D[VBO Upload]
+D --&gt; E[glMultiDrawArrays]
+C --&gt;|Neon profile| E
+E --&gt;|HDR output| F[Bloom Post-Process]
+F --&gt;|Wide halo| G[Final Composite]</code></pre>
+
+  </div>
+</div>
+
+<h2 id="performance-mode-notifications"><a href="../perf_and_notifications/">Performance Mode &amp; Notifications</a><a class="headerlink" href="#performance-mode-notifications" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../perf_and_notifications/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">2.  Native: Fallback using Linux scheduling syscalls (`schedsetscheduler`, `setpriority`).</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>classDiagram
+class App {
++perf_context
++perf_mode_active
++init()
++cleanup()
+}
+class PerfModeContext {
++state
++backend
++original_policy
++original_param
++original_nice
++initialized
+}
+class Backend
+&lt;&lt;interface&gt;&gt; Backend
+Backend : +activate()
+Backend : +deactivate()
+class GameModeBackend {
++libgamemode_init
+}
+class NativeBackend {
++sched_setscheduler_FIFO
++setpriority_nice
+}
+App *-- PerfModeContext
+PerfModeContext ..&gt; GameModeBackend : Tries_First
+PerfModeContext ..&gt; NativeBackend : Fallback</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../perf_and_notifications/#design" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Design</a> : <span style="opacity: 0.6; font-size: 0.85em;">-   FIFO Replacement: If the buffer is full, the oldest active notification is overwritten.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>sequenceDiagram
+participant User
+participant AppInput
+participant ActionNotifier
+participant UI
+User-&gt;&gt;AppInput: Press Key (e.g., F9)
+AppInput-&gt;&gt;AppInput: Toggle Feature (PerfMode)
+AppInput-&gt;&gt;ActionNotifier: action_notifier_push("Perf Mode: ON", 2.0s)
+activate ActionNotifier
+ActionNotifier-&gt;&gt;ActionNotifier: Find free slot / Overwrite oldest
+ActionNotifier-&gt;&gt;ActionNotifier: Copy text (safe_strncpy)
+ActionNotifier--&gt;&gt;AppInput: Done
+deactivate ActionNotifier
+loop Every Frame
+AppInput-&gt;&gt;ActionNotifier: action_notifier_update(dt)
+ActionNotifier-&gt;&gt;ActionNotifier: Increase lifetime, deactivate if expired
+AppInput-&gt;&gt;ActionNotifier: action_notifier_draw(ui_ctx)
+ActionNotifier-&gt;&gt;UI: ui_draw_text_ex(...)
+end</code></pre>
+
+  </div>
+</div>
+
+<h2 id="platform-abstraction-layer-pal"><a href="../portability_pal/">Platform Abstraction Layer (PAL)</a><a class="headerlink" href="#platform-abstraction-layer-pal" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../portability_pal/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">The PAL acts as an intermediary between the core application logic and the underlying Operating System.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+subgraph Core Application
+A[log.c]
+B[scene.c]
+C[perf_mode.c]
+end
+subgraph PAL [Platform Abstraction Layer]
+D[platform_utils.h]
+E[platform_time.h]
+F[platform_fs.h]
+end
+subgraph OS Backends
+G[Linux / POSIX]
+H[Windows API]
+I[macOS / Darwin]
+end
+A --&gt; D
+A --&gt; E
+B --&gt; F
+B --&gt; D
+C --&gt; E
+D -.-&gt; G
+D -.-&gt; H
+E -.-&gt; G
+E -.-&gt; H
+F -.-&gt; G
+F -.-&gt; H</code></pre>
+
+  </div>
+</div>
+
+<h2 id="progressive-asynchronous-ibl-architecture"><a href="../progressive_ibl/">Progressive &amp; Asynchronous IBL Architecture</a><a class="headerlink" href="#progressive-asynchronous-ibl-architecture" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../progressive_ibl/#d-specular-map-1024x1024" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">D. Specular Map (1024x1024)</a> : <span style="opacity: 0.6; font-size: 0.85em;">Total "Tail Grouping": Grouping small mips (3 to 10) avoids wasting 7 frames of latency for tiny jobs (&lt;1ms each).</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"primaryColor": "#24283b",
+"primaryTextColor": "#ffffff",
+"primaryBorderColor": "#7aa2f7",
+"lineColor": "#7aa2f7",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"actorBorder": "#7aa2f7",
+"actorBkg": "#24283b",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26"
+}
+}%%
+flowchart LR
+subgraph HeavyGroup["Heavy Workload Sliced"]
+Mip0["Mip 0 4 Frames"]
+Mip1["Mip 1 2 Frames"]
+end
+subgraph LightGroup["Fast Workload Grouped"]
+Mip2["Mip 2 1 Frame"]
+Tail["Mips 3-10 1 Frame"]
+end
+Start(["Start"]) --&gt; Mip0
+Mip0 --&gt; Mip1
+Mip1 --&gt; Mip2
+Mip2 --&gt; Tail
+Tail --&gt; End(["Done"])
+style HeavyGroup fill:#24283b,stroke:#f7768e,stroke-dasharray: 5, 5
+style LightGroup fill:#24283b,stroke:#9ece6a
+style Start fill:#7aa2f7,color:#ffffff
+style End fill:#9ece6a,color:#ffffff
+style Mip0 fill:#414868,stroke:#f7768e
+style Mip1 fill:#414868,stroke:#f7768e
+style Mip2 fill:#414868,stroke:#9ece6a
+style Tail fill:#414868,stroke:#9ece6a</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../progressive_ibl/#43-solution-single-deferred-barrier" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.3 Solution: Single Deferred Barrier</a> : <span style="opacity: 0.6; font-size: 0.85em;">coherency path is flushed.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"signalTextColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26",
+"lineColor": "#7aa2f7"
+}
+}%%
+sequenceDiagram
+participant CPU
+participant GPU
+Note over CPU,GPU: Old approach (per-slice barrier)
+loop Each Slice
+CPU-&gt;&gt;GPU: glDispatchCompute()
+CPU-&gt;&gt;GPU: glMemoryBarrier(ALL_BARRIER_BITS)
+Note right of GPU: Pipeline drain + cache flush
+end
+Note over CPU,GPU: New approach (deferred barrier)
+loop Each Slice
+CPU-&gt;&gt;GPU: glDispatchCompute()
+Note right of GPU: Work queued, no stall
+end
+CPU-&gt;&gt;GPU: glMemoryBarrier(IMAGE_ACCESS_BIT)
+Note right of GPU: Single flush before sampling</code></pre>
+
+  </div>
+</div>
+
+<h2 id="shockwave-lensing-effect"><a href="../shockwave_lensing/">Shockwave Lensing Effect</a><a class="headerlink" href="#shockwave-lensing-effect" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../shockwave_lensing/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">3. Additive HDR glow — ring edge emits body-colored light that drives bloom</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+A[Scene Geometry] --&gt; B[Scene FBO - RGBA16F]
+B --&gt; C{Any active shockwaves?}
+C --&gt;|No| E[Post-Processing]
+C --&gt;|Yes| D[Grab Pass: glCopyImageSubData]
+D --&gt; F[Billboard Draw]
+F --&gt; G[Fragment Shader: sample grab_tex + distort]
+G --&gt; B
+B --&gt; E</code></pre>
+
+  </div>
+</div>
+
+<h2 id="synchronization-asynchrony-overview"><a href="../synchronization_overview/">Synchronization &amp; Asynchrony Overview</a><a class="headerlink" href="#synchronization-asynchrony-overview" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../synchronization_overview/#frame-scheduling-task-interleaving" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Frame Scheduling &amp; Task Interleaving</a> : <span style="opacity: 0.6; font-size: 0.85em;">The following diagram illustrates how the various asynchronous and progressive tasks are interleaved within the main application loop to avoid frame spikes.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>%%{init: {
+"theme": "dark",
+"themeVariables": {
+"primaryColor": "#24283b",
+"primaryTextColor": "#ffffff",
+"primaryBorderColor": "#7aa2f7",
+"lineColor": "#7aa2f7",
+"signalColor": "#ffffff",
+"signalTextColor": "#ffffff",
+"messageColor": "#ffffff",
+"messageTextColor": "#ffffff",
+"labelTextColor": "#ffffff",
+"actorTextColor": "#ffffff",
+"actorBorder": "#7aa2f7",
+"actorBkg": "#24283b",
+"noteBkgColor": "#e0af68",
+"noteTextColor": "#1a1b26"
+}
+}%%
+sequenceDiagram
+participant M as Main Thread
+participant W as Worker Threads
+participant G as GPU
+Note over M: Frame N starts
+M-&gt;&gt;M: 1. Poll Async Loader (5ms)
+M-&gt;&gt;M: 2. Update IBL Slice (10ms)
+par Parallel Execution
+W-&gt;&gt;W: Background I/O &amp; SH Projection
+M-&gt;&gt;G: 3. Upload GI Probes (5ms)
+end
+M-&gt;&gt;G: 4. Render Scene (15ms)
+M-&gt;&gt;G: 5. Swap Buffers (5ms)
+Note over M: Frame N ends (~40ms)
+Note over M: Frame N+1 starts
+M-&gt;&gt;M: Poll &amp; Process...</code></pre>
+
+  </div>
+</div>
+
+<h2 id="ui-visual-parameters-reference"><a href="../ui_visual_parameters/">UI Visual Parameters Reference</a><a class="headerlink" href="#ui-visual-parameters-reference" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../ui_visual_parameters/#hover-decay-stabilization" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Hover Decay Stabilization</a> : <span style="opacity: 0.6; font-size: 0.85em;">Logic parameters that ensure a smooth "Premium" feel during mouse or keyboard usage.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+A[Mouse over Key] --&gt; B[Target Dim: 0.3]
+B --&gt; C{Mouse leaves?}
+C -- Yes --&gt; D[Wait 150ms]
+D -- Still Empty --&gt; E[Target Dim: 1.0]
+D -- Enters New Key --&gt; B</code></pre>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 26, 2026 17:00:45 UTC">April 26, 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
+      
+        <script src="../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../assets/javascripts/mermaid_config.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
