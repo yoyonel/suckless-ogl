@@ -63,14 +63,14 @@ static double softened_orbital_vel(double grav, double central_mass,
 /* ========================================================================= */
 
 /* Central star properties for the default preset. */
-static const float CENTRAL_STAR_MASS = 100.0F;
+static const double CENTRAL_STAR_MASS = 100.0;
 static const float CENTRAL_STAR_RADIUS = 1.5F;
 static const vec3 CENTRAL_STAR_ALBEDO = {1.0F, 0.76F, 0.34F};
 static const float CENTRAL_STAR_METALLIC = 1.0F;
 static const float CENTRAL_STAR_ROUGHNESS = 0.2F;
 
 /* Physics half-factor for kinetic energy (½mv²) and Verlet integration. */
-static const float HALF = 0.5F;
+static const double HALF = 0.5;
 
 /* Descriptor for an orbiting body in the preset. */
 struct OrbiterDef {
@@ -117,15 +117,14 @@ void nbody_init_preset(NBodySim* sim)
 
 	/* Body 0: Central star — gold/bronze, heavy, stationary */
 	add_body(sim, (double[]){0, 0, 0}, (double[]){0, 0, 0},
-	         (double)CENTRAL_STAR_MASS, CENTRAL_STAR_RADIUS,
-	         CENTRAL_STAR_ALBEDO, CENTRAL_STAR_METALLIC,
-	         CENTRAL_STAR_ROUGHNESS);
+	         CENTRAL_STAR_MASS, CENTRAL_STAR_RADIUS, CENTRAL_STAR_ALBEDO,
+	         CENTRAL_STAR_METALLIC, CENTRAL_STAR_ROUGHNESS);
 
 	/* Add all orbiters from the table. */
 	for (int idx = 0; idx < ORBITER_COUNT; idx++) {
 		const struct OrbiterDef* orb = &ORBITERS[idx];
 		double spd = softened_orbital_vel((double)sim->gravity,
-		                                  (double)CENTRAL_STAR_MASS,
+		                                  CENTRAL_STAR_MASS,
 		                                  (double)orb->orbit_r,
 		                                  (double)CENTRAL_STAR_RADIUS,
 		                                  (double)orb->body_r) *
@@ -182,7 +181,7 @@ float nbody_total_energy(const NBodySim* sim)
 {
 	double kinetic = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		kinetic += ((double)HALF) * sim->bodies[i].mass *
+		kinetic += HALF * sim->bodies[i].mass *
 		           dvec3_norm2(sim->bodies[i].velocity);
 	}
 
@@ -213,9 +212,8 @@ float nbody_total_energy(const NBodySim* sim)
 		if (dist > (double)NBODY_CONFINEMENT_RADIUS) {
 			double overshoot =
 			    dist - (double)NBODY_CONFINEMENT_RADIUS;
-			potential += ((double)HALF) *
-			             (double)NBODY_CONFINEMENT_K * overshoot *
-			             overshoot;
+			potential += HALF * (double)NBODY_CONFINEMENT_K *
+			             overshoot * overshoot;
 		}
 	}
 
@@ -302,7 +300,7 @@ static void integrate_step(NBodySim* sim, float delta_time)
 		dvec3_muladds(sim->bodies[i].position, sim->bodies[i].velocity,
 		              delta_t);
 		dvec3_muladds(sim->bodies[i].position, accel_old[i],
-		              ((double)HALF) * delta_t * delta_t);
+		              HALF * delta_t * delta_t);
 	}
 
 	compute_accelerations(sim, accel_new);
@@ -312,7 +310,7 @@ static void integrate_step(NBodySim* sim, float delta_time)
 		dvec3 accel_avg;
 		dvec3_add(accel_old[i], accel_new[i], accel_avg);
 		dvec3_muladds(sim->bodies[i].velocity, accel_avg,
-		              ((double)HALF) * delta_t);
+		              HALF * delta_t);
 
 		if (isnan(sim->bodies[i].velocity[0])) {
 			printf("!!! Body %d velocity became NaN at step!\n", i);
@@ -457,7 +455,7 @@ float nbody_kinetic_energy(const NBodySim* sim)
 {
 	double kinetic = 0.0;
 	for (int i = 0; i < sim->body_count; i++) {
-		kinetic += ((double)HALF) * sim->bodies[i].mass *
+		kinetic += HALF * sim->bodies[i].mass *
 		           dvec3_norm2(sim->bodies[i].velocity);
 	}
 	return (float)kinetic;
