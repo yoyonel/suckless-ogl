@@ -3,7 +3,7 @@ var trail__renderer_8c =
     [ "build_ribbon", "trail__renderer_8c.html#ad0060fa27d83d5262bfbcaa7438e70a3", null ],
     [ "ring_get", "trail__renderer_8c.html#ad1ee77758d40d03deee40aca196f43fb", null ],
     [ "ring_get_timestamp", "trail__renderer_8c.html#a08d08c27d693b5a6b2828cef23d86b73", null ],
-    [ "ring_push", "trail__renderer_8c.html#ab6980a39d5e654e5ec8bba993bb1e97a", null ],
+    [ "ring_push", "trail__renderer_8c.html#af1eccac3f78736179a8ef47f95ee1a65", null ],
     [ "trail_renderer_cleanup", "trail__renderer_8c.html#aff7e69ac17c34ee473f7a2df615f2f75", null ],
     [ "trail_renderer_clear", "trail__renderer_8c.html#a101d2c6f325143f862c094e67f2aeef6", null ],
     [ "trail_renderer_draw", "trail__renderer_8c.html#acd763c8aeaa80e4bfcdb166ea113af07", null ],

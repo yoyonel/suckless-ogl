@@ -20,6 +20,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "camera.h", "camera_8h.html", "camera_8h" ],
     [ "camera_input.h", "camera__input_8h.html", "camera__input_8h" ],
     [ "cli.h", "cli_8h.html", "cli_8h" ],
+    [ "dvec3.h", "dvec3_8h.html", "dvec3_8h" ],
     [ "effect_benchmark.h", "effect__benchmark_8h.html", "effect__benchmark_8h" ],
     [ "env_manager.h", "env__manager_8h.html", "env__manager_8h" ],
     [ "fps.h", "fps_8h.html", "fps_8h" ],

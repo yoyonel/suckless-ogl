@@ -46,7 +46,7 @@ var searchData=
   ['adaptivesampler_60',['AdaptiveSampler',['../structAdaptiveSampler.html',1,'']]],
   ['add_5fbinding_61',['add_binding',['../app__binding_8c.html#aa3e093f1458c7a92f39e8d1e3e42c7bc',1,'app_binding.c']]],
   ['add_5fbinding_5fimpl_62',['add_binding_impl',['../app__binding_8c.html#a4a08572fb1820a66550941ff8a24f23b',1,'app_binding.c']]],
-  ['add_5fbody_63',['add_body',['../nbody_8c.html#aa106cd7a1da0d7c12cc8cc2fd0bf8147',1,'nbody.c']]],
+  ['add_5fbody_63',['add_body',['../nbody_8c.html#aad41b7c3fba85e4439c245c6b5d186dd',1,'nbody.c']]],
   ['advance_64',['advance',['../structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e',1,'GlyphInfo']]],
   ['albedo_65',['albedo',['../structCachedSphere.html#a262effba8c06d662f7b763ec63d4386e',1,'CachedSphere::albedo()'],['../structPBRMaterial.html#a080d9fec8ffd04454686d6299176c5a4',1,'PBRMaterial::albedo()'],['../structNBodyParticle.html#a562713ac6e3cd427e26d63afe0a10db6',1,'NBodyParticle::albedo()'],['../structSphereInstance.html#a966983667d6838d7ba423aca6b0bca88',1,'SphereInstance::albedo()'],['../structInstanceData.html#afdc09c528eb87a521e68a0348ba6f8d8',1,'InstanceData::albedo()'],['../structOrbiterDef.html#a4224daad21a5c6e6d038b25fddd64fcf',1,'OrbiterDef::albedo()'],['../structSphereInstanceSSBO.html#a36e944158ecc66dac537e683355c3612',1,'SphereInstanceSSBO::albedo()']]],
   ['all_5feffects_66',['ALL_EFFECTS',['../postprocess__shader_8c.html#adfd51418acbfeee92a289eedfdd1ea20',1,'postprocess_shader.c']]],

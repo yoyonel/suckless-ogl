@@ -1,0 +1,389 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/dvec3.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('dvec3_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">dvec3.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="dvec3_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#ifndef DVEC3_H</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#define DVEC3_H</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;math.h&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">   25</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">double</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>[3];</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">/* ── Element access ─────────────────────────────────────────────────── */</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a8703e51b10a3c9c8d86ca4fd7e2dc448">   30</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a8703e51b10a3c9c8d86ca4fd7e2dc448">dvec3_zero</a>(<a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    dest[0] = 0.0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    dest[1] = 0.0;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    dest[2] = 0.0;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a3a15baf17277eef1ec62a9620447e7b7">   38</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a3a15baf17277eef1ec62a9620447e7b7">dvec3_copy</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> src, <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    dest[0] = src[0];</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    dest[1] = src[1];</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    dest[2] = src[2];</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a1a8e0201888680fea9d22ab221cf3ef2">   46</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a1a8e0201888680fea9d22ab221cf3ef2">dvec3_set</a>(<a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, <span class="keywordtype">double</span> x_val, <span class="keywordtype">double</span> y_val,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                             <span class="keywordtype">double</span> z_val)</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    dest[0] = x_val;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    dest[1] = y_val;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    dest[2] = z_val;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">/* ── Arithmetic ─────────────────────────────────────────────────────── */</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a2d849fcb19a084760155076d918ed7dd">   57</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a2d849fcb19a084760155076d918ed7dd">dvec3_add</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> a_vec, <span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec, <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    dest[0] = a_vec[0] + b_vec[0];</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    dest[1] = a_vec[1] + b_vec[1];</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    dest[2] = a_vec[2] + b_vec[2];</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="dvec3_8h.html#af5b644711571fd1897922d8cb710098f">   65</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#af5b644711571fd1897922d8cb710098f">dvec3_addto</a>(<a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, <span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec)</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;{</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    dest[0] += b_vec[0];</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    dest[1] += b_vec[1];</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    dest[2] += b_vec[2];</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a98af61b1fa7c66fd349618f272188ac2">   73</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a98af61b1fa7c66fd349618f272188ac2">dvec3_sub</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> a_vec, <span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec, <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;{</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    dest[0] = a_vec[0] - b_vec[0];</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    dest[1] = a_vec[1] - b_vec[1];</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    dest[2] = a_vec[2] - b_vec[2];</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a14226d4f4bde9722bad5b7a4c3953073">   81</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a14226d4f4bde9722bad5b7a4c3953073">dvec3_subfrom</a>(<a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, <span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec)</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;{</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    dest[0] -= b_vec[0];</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    dest[1] -= b_vec[1];</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    dest[2] -= b_vec[2];</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a359f74777b0cdd5bc99c7c24cb4180b5">   89</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a359f74777b0cdd5bc99c7c24cb4180b5">dvec3_scale</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec, <span class="keywordtype">double</span> scalar, <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;{</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    dest[0] = v_vec[0] * scalar;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    dest[1] = v_vec[1] * scalar;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    dest[2] = v_vec[2] * scalar;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a18813adf5ab40d610ef0278761b2dfd7">   97</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a18813adf5ab40d610ef0278761b2dfd7">dvec3_muladds</a>(<a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, <span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec, <span class="keywordtype">double</span> scalar)</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;{</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    dest[0] += v_vec[0] * scalar;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    dest[1] += v_vec[1] * scalar;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    dest[2] += v_vec[2] * scalar;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment">/* ── Products ───────────────────────────────────────────────────────── */</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a2d1901301689257333f9d6bf88cf6d27">  107</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="dvec3_8h.html#a2d1901301689257333f9d6bf88cf6d27">dvec3_dot</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> a_vec, <span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;{</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span> (a_vec[0] * b_vec[0]) + (a_vec[1] * b_vec[1]) +</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;           (a_vec[2] * b_vec[2]);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">/* ── Length / Normalize ──────────────────────────────────────────────── */</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097">  116</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097">dvec3_norm2</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec)</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;{</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="dvec3_8h.html#a2d1901301689257333f9d6bf88cf6d27">dvec3_dot</a>(v_vec, v_vec);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;}</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a22e38b31ee09d7da21b47b57392a1eba">  122</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="dvec3_8h.html#a22e38b31ee09d7da21b47b57392a1eba">dvec3_norm</a>(<span class="keyword">const</span> <a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec)</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;{</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">return</span> sqrt(<a class="code" href="dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097">dvec3_norm2</a>(v_vec));</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="dvec3_8h.html#a5200b49d2532d1c65147935560e6fabc">  128</a></span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="dvec3_8h.html#a5200b49d2532d1c65147935560e6fabc">dvec3_normalize</a>(<a class="code" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec)</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;{</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keywordtype">double</span> len = <a class="code" href="dvec3_8h.html#a22e38b31ee09d7da21b47b57392a1eba">dvec3_norm</a>(v_vec);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">if</span> (len &gt; 0.0) {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordtype">double</span> inv = 1.0 / len;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        v_vec[0] *= inv;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        v_vec[1] *= inv;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        v_vec[2] *= inv;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    }</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;}</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* DVEC3_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="advec3_8h_html_a14226d4f4bde9722bad5b7a4c3953073"><div class="ttname"><a href="dvec3_8h.html#a14226d4f4bde9722bad5b7a4c3953073">dvec3_subfrom</a></div><div class="ttdeci">static void dvec3_subfrom(dvec3 dest, const dvec3 b_vec)</div><div class="ttdef"><b>Definition:</b> dvec3.h:81</div></div>
+<div class="ttc" id="advec3_8h_html_a18813adf5ab40d610ef0278761b2dfd7"><div class="ttname"><a href="dvec3_8h.html#a18813adf5ab40d610ef0278761b2dfd7">dvec3_muladds</a></div><div class="ttdeci">static void dvec3_muladds(dvec3 dest, const dvec3 v_vec, double scalar)</div><div class="ttdef"><b>Definition:</b> dvec3.h:97</div></div>
+<div class="ttc" id="advec3_8h_html_a1a8e0201888680fea9d22ab221cf3ef2"><div class="ttname"><a href="dvec3_8h.html#a1a8e0201888680fea9d22ab221cf3ef2">dvec3_set</a></div><div class="ttdeci">static void dvec3_set(dvec3 dest, double x_val, double y_val, double z_val)</div><div class="ttdef"><b>Definition:</b> dvec3.h:46</div></div>
+<div class="ttc" id="advec3_8h_html_a22e38b31ee09d7da21b47b57392a1eba"><div class="ttname"><a href="dvec3_8h.html#a22e38b31ee09d7da21b47b57392a1eba">dvec3_norm</a></div><div class="ttdeci">static double dvec3_norm(const dvec3 v_vec)</div><div class="ttdef"><b>Definition:</b> dvec3.h:122</div></div>
+<div class="ttc" id="advec3_8h_html_a2d1901301689257333f9d6bf88cf6d27"><div class="ttname"><a href="dvec3_8h.html#a2d1901301689257333f9d6bf88cf6d27">dvec3_dot</a></div><div class="ttdeci">static double dvec3_dot(const dvec3 a_vec, const dvec3 b_vec)</div><div class="ttdef"><b>Definition:</b> dvec3.h:107</div></div>
+<div class="ttc" id="advec3_8h_html_a2d849fcb19a084760155076d918ed7dd"><div class="ttname"><a href="dvec3_8h.html#a2d849fcb19a084760155076d918ed7dd">dvec3_add</a></div><div class="ttdeci">static void dvec3_add(const dvec3 a_vec, const dvec3 b_vec, dvec3 dest)</div><div class="ttdef"><b>Definition:</b> dvec3.h:57</div></div>
+<div class="ttc" id="advec3_8h_html_a359f74777b0cdd5bc99c7c24cb4180b5"><div class="ttname"><a href="dvec3_8h.html#a359f74777b0cdd5bc99c7c24cb4180b5">dvec3_scale</a></div><div class="ttdeci">static void dvec3_scale(const dvec3 v_vec, double scalar, dvec3 dest)</div><div class="ttdef"><b>Definition:</b> dvec3.h:89</div></div>
+<div class="ttc" id="advec3_8h_html_a3a15baf17277eef1ec62a9620447e7b7"><div class="ttname"><a href="dvec3_8h.html#a3a15baf17277eef1ec62a9620447e7b7">dvec3_copy</a></div><div class="ttdeci">static void dvec3_copy(const dvec3 src, dvec3 dest)</div><div class="ttdef"><b>Definition:</b> dvec3.h:38</div></div>
+<div class="ttc" id="advec3_8h_html_a5200b49d2532d1c65147935560e6fabc"><div class="ttname"><a href="dvec3_8h.html#a5200b49d2532d1c65147935560e6fabc">dvec3_normalize</a></div><div class="ttdeci">static void dvec3_normalize(dvec3 v_vec)</div><div class="ttdef"><b>Definition:</b> dvec3.h:128</div></div>
+<div class="ttc" id="advec3_8h_html_a6dd1988231447f1f4a0dde45f1d0eb76"><div class="ttname"><a href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a></div><div class="ttdeci">double dvec3[3]</div><div class="ttdef"><b>Definition:</b> dvec3.h:25</div></div>
+<div class="ttc" id="advec3_8h_html_a8703e51b10a3c9c8d86ca4fd7e2dc448"><div class="ttname"><a href="dvec3_8h.html#a8703e51b10a3c9c8d86ca4fd7e2dc448">dvec3_zero</a></div><div class="ttdeci">static void dvec3_zero(dvec3 dest)</div><div class="ttdef"><b>Definition:</b> dvec3.h:30</div></div>
+<div class="ttc" id="advec3_8h_html_a98af61b1fa7c66fd349618f272188ac2"><div class="ttname"><a href="dvec3_8h.html#a98af61b1fa7c66fd349618f272188ac2">dvec3_sub</a></div><div class="ttdeci">static void dvec3_sub(const dvec3 a_vec, const dvec3 b_vec, dvec3 dest)</div><div class="ttdef"><b>Definition:</b> dvec3.h:73</div></div>
+<div class="ttc" id="advec3_8h_html_add751e32ff88cf485914ecdb54bcf097"><div class="ttname"><a href="dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097">dvec3_norm2</a></div><div class="ttdeci">static double dvec3_norm2(const dvec3 v_vec)</div><div class="ttdef"><b>Definition:</b> dvec3.h:116</div></div>
+<div class="ttc" id="advec3_8h_html_af5b644711571fd1897922d8cb710098f"><div class="ttname"><a href="dvec3_8h.html#af5b644711571fd1897922d8cb710098f">dvec3_addto</a></div><div class="ttdeci">static void dvec3_addto(dvec3 dest, const dvec3 b_vec)</div><div class="ttdef"><b>Definition:</b> dvec3.h:65</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dvec3_8h.html">dvec3.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
