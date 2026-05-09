@@ -98,6 +98,7 @@ static const float UI_SPINNER_SIZE = 64.0F;
 static const float UI_TEXT_OFFSET_FACTOR = 0.8F;
 static const vec3 UI_SPINNER_COLOR = {90.0F / 255.0F, 111.0F / 255.0F,
                                       185.0F / 255.0F};
+
 enum { UI_LOADING_TEXT_SIZE = 64 };
 
 /* ================================================================

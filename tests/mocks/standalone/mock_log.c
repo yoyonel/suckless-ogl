@@ -12,14 +12,17 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	va_end(args);
 	printf("\n");
 }
+
 void log_set_callback(LogCallback callback)
 {
 	(void)callback;
 }
+
 void log_set_level(LogLevel level)
 {
 	(void)level;
 }
+
 LogLevel log_get_level(void)
 {
 	return LOG_LEVEL_DEBUG;

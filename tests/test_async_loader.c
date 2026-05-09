@@ -61,6 +61,7 @@ void tracy_manager_async_transition(struct TracyManager* mgr, AsyncState state)
 	(void)mgr;
 	(void)state;
 }
+
 void tracy_manager_async_end(struct TracyManager* mgr)
 {
 	(void)mgr;
@@ -73,16 +74,19 @@ void glGenQueries(GLsizei n, GLuint* ids)
 		ids[i] = 300 + i;
 	}
 }
+
 void glDeleteQueries(GLsizei n, const GLuint* ids)
 {
 	(void)n;
 	(void)ids;
 }
+
 void glQueryCounter(GLuint id, GLenum target)
 {
 	(void)id;
 	(void)target;
 }
+
 void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params)
 {
 	(void)id;
@@ -91,6 +95,7 @@ void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params)
 		*params = 1;
 	}
 }
+
 void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
 {
 	(void)id;
@@ -99,9 +104,11 @@ void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
 		*params = 1000;
 	}
 }
+
 void glFlush(void)
 {
 }
+
 void glFinish(void)
 {
 }
@@ -114,6 +121,7 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 	(void)name;
 	(void)color;
 }
+
 void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
 	(void)profiler;

@@ -12,24 +12,31 @@ Shader* shader_load(const char* v, const char* f)
 {
 	return (Shader*)1;
 }
+
 void shader_use(Shader* s)
 {
 }
+
 void shader_destroy(Shader* s)
 {
 }
+
 void shader_set_mat4(Shader* s, const char* n, const float* v)
 {
 }
+
 void shader_set_vec3(Shader* s, const char* n, const float* v)
 {
 }
+
 void shader_set_int(Shader* s, const char* n, int v)
 {
 }
+
 void shader_set_vec4(Shader* s, const char* n, const float* v)
 {
 }
+
 GLint shader_get_uniform_location(Shader* s, const char* n)
 {
 	return 0;

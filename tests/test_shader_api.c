@@ -25,6 +25,7 @@ enum {
 	GL_COMPUTE_MIN_MAJOR = 4,
 	GL_COMPUTE_MIN_MINOR = 3
 };
+
 static const GLint UNIFORM_NOT_FOUND = -1;
 static const GLuint PROGRAM_INVALID = 0;
 static const float TEST_INTENSITY = 0.5F;

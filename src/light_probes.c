@@ -49,12 +49,14 @@
  * Beyond this, form factor < 0.0025 — negligible. */
 #define GI_MAX_DIST_RADII 3.0F
 #define GI_EPSILON 0.000001F
+
 enum {
 	GI_DEBUG_PROBE_VERTICES = 6,
 	GI_WIRE_CUBE_VERTICES = 24,
 	GI_LOG_BUF_SIZE = 128,
 	GI_SMALL_LOG_BUF_SIZE = 64
 };
+
 #define GI_HALF 0.5F
 #define GI_ZERO 0.0F
 

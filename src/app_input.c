@@ -361,7 +361,9 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 			if (!check_flag(mods, GLFW_MOD_SHIFT)) {
 				return false;
 			}
+
 			enum { FILENAME_BUF_SIZE = 64 };
+
 			char filename[FILENAME_BUF_SIZE];
 			time_t now = time(NULL);
 			struct tm* time_info = localtime(&now);

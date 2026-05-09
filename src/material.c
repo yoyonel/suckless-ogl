@@ -13,6 +13,7 @@
 // Constantes pour les limites
 
 enum { MAX_MATERIAL_CONFIG_SIZE = 2 * 1024 * 1024 };
+
 // Constantes en enum au lieu de defines
 enum { MAX_MATERIAL_COUNT = 10000, RGB_COMPONENTS = 3 };
 

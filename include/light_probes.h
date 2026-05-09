@@ -11,6 +11,7 @@ typedef struct SphereInstance SphereInstance;
 /** @brief Number of 3D textures used for packing SH coefficients (7 = 28
  * channels for 9 L2 coeffs) */
 enum { SH_TEXTURE_COUNT = 7 };
+
 /** @brief Starting texture unit for SH 3D textures */
 enum { TEXTURE_UNIT_SH_START = 8 };
 

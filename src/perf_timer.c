@@ -224,6 +224,7 @@ HybridTimer perf_hybrid_start(void)
 
 	return timer_struct;
 }
+
 /*
  * X-macro: generates the perf_hybrid_stop body parameterized by log level.
  * The log_fn argument is resolved at compile time (LOG_INFO or LOG_DEBUG),

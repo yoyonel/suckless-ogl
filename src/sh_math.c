@@ -119,4 +119,5 @@ void sh_eval_irradiance(const vec3 normal, const SH9* sh_ptr, vec3 out_color)
 	glm_vec3_muladds((float*)sh_ptr->coeffs[7], A2 * c21, out_color);
 	glm_vec3_muladds((float*)sh_ptr->coeffs[8], A2 * c22, out_color);
 }
+
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)

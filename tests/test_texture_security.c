@@ -21,11 +21,13 @@ void glGenBuffers(GLsizei n, GLuint* ids)
 		ids[i] = 100 + i;
 	}
 }
+
 void glBindBuffer(GLenum target, GLuint id)
 {
 	(void)target;
 	(void)id;
 }
+
 void glBufferData(GLenum target, GLsizeiptr size, const void* data,
                   GLenum usage)
 {
@@ -34,6 +36,7 @@ void glBufferData(GLenum target, GLsizeiptr size, const void* data,
 	(void)data;
 	(void)usage;
 }
+
 void* glMapBuffer(GLenum target, GLenum access)
 {
 	(void)target;
@@ -41,6 +44,7 @@ void* glMapBuffer(GLenum target, GLenum access)
 	static char dummy[2048];
 	return dummy;
 }
+
 void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
                        GLbitfield access)
 {
@@ -51,31 +55,37 @@ void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
 	static char dummy[2048];
 	return dummy;
 }
+
 GLboolean glUnmapBuffer(GLenum target)
 {
 	(void)target;
 	return GL_TRUE;
 }
+
 GLenum glGetError(void)
 {
 	return GL_NO_ERROR;
 }
+
 void glGenTextures(GLsizei n, GLuint* ids)
 {
 	for (int i = 0; i < n; i++) {
 		ids[i] = 200 + i;
 	}
 }
+
 void glBindTexture(GLenum target, GLuint id)
 {
 	(void)target;
 	(void)id;
 }
+
 void glPixelStorei(GLenum pname, GLint param)
 {
 	(void)pname;
 	(void)param;
 }
+
 void glTexImage2D(GLenum t, GLint l, GLint i, GLsizei w, GLsizei h, GLint b,
                   GLenum f, GLenum ty, const void* p)
 {
@@ -89,6 +99,7 @@ void glTexImage2D(GLenum t, GLint l, GLint i, GLsizei w, GLsizei h, GLint b,
 	(void)ty;
 	(void)p;
 }
+
 void glTexSubImage2D(GLenum t, GLint l, GLint x, GLint y, GLsizei w, GLsizei h,
                      GLenum f, GLenum ty, const void* p)
 {
@@ -102,29 +113,35 @@ void glTexSubImage2D(GLenum t, GLint l, GLint x, GLint y, GLsizei w, GLsizei h,
 	(void)ty;
 	(void)p;
 }
+
 void glTexParameteri(GLenum target, GLenum pname, GLint param)
 {
 	(void)target;
 	(void)pname;
 	(void)param;
 }
+
 void glGenerateMipmap(GLenum target)
 {
 	(void)target;
 }
+
 void glDeleteTextures(GLsizei n, const GLuint* ids)
 {
 	(void)n;
 	(void)ids;
 }
+
 void glDeleteBuffers(GLsizei n, const GLuint* ids)
 {
 	(void)n;
 	(void)ids;
 }
+
 void glPopDebugGroup(void)
 {
 }
+
 void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
                       const char* message)
 {
@@ -133,14 +150,17 @@ void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
 	(void)length;
 	(void)message;
 }
+
 void glUseProgram(GLuint program)
 {
 	(void)program;
 }
+
 void glActiveTexture(GLenum texture)
 {
 	(void)texture;
 }
+
 void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
                     GLsizei width, GLsizei height)
 {
@@ -150,6 +170,7 @@ void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
 	(void)width;
 	(void)height;
 }
+
 void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
                               GLint* params)
 {
@@ -169,6 +190,7 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 	(void)name;
 	(void)color;
 }
+
 void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
 	(void)profiler;

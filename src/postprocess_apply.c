@@ -371,6 +371,7 @@ void postprocess_end(PostProcess* post_processing)
 				float time;
 			} header = {post_processing->active_effects,
 			            post_processing->time};
+
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(header),
 			                &header);
 		}

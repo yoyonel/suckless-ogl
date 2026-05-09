@@ -85,6 +85,7 @@ static uint16_t float_to_half_soft(float value)
 		float f;
 		uint32_t u;
 	} val_union;
+
 	val_union.f = value;
 
 	/* Align sign bit for half (bit 15) */

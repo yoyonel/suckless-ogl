@@ -237,26 +237,31 @@ void tracy_manager_async_end(TracyManager* mgr)
 void tracy_manager_init_global(void)
 {
 }
+
 void tracy_manager_init(TracyManager* mgr, int width, int height)
 {
 	(void)mgr;
 	(void)width;
 	(void)height;
 }
+
 void tracy_manager_cleanup(TracyManager* mgr)
 {
 	(void)mgr;
 }
+
 void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 {
 	(void)mgr;
 	(void)app;
 }
+
 void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)
 {
 	(void)mgr;
 	(void)new_state;
 }
+
 void tracy_manager_async_end(TracyManager* mgr)
 {
 	(void)mgr;

@@ -58,10 +58,14 @@ typedef struct {
 } IncludeContext;
 
 enum { MAX_INCLUDE_DEPTH = 16 };
+
 /* 16MB limit for shader source to prevent abuse/taint issues */
 enum { MAX_SHADER_SOURCE_SIZE = 16 * 1024 * 1024 };
+
 enum { PATH_BUFFER_SIZE = 256 };
+
 enum { RESOLVED_PATH_BUFFER_SIZE = 512 };
+
 enum { HEADER_TAG_LEN = 7 };
 
 /* Forward declaration */

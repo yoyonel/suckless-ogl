@@ -34,6 +34,7 @@ static void setup_mock_profiler(GPUProfiler* profiler)
 void setUp(void)
 {
 }
+
 void tearDown(void)
 {
 }
@@ -94,6 +95,7 @@ void test_app_metrics_log_gpu_stats_no_samples(void)
 
 /* Global buffer for log interception */
 static char g_last_log[2048];
+
 static void mock_log_callback(LogLevel level, const char* tag,
                               const char* message)
 {

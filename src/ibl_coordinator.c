@@ -62,6 +62,7 @@ static int ibl_irradiance_slices(void)
 	}
 	return IBL_IRRADIANCE_HARDWARE_SLICES;
 }
+
 static int ibl_specular_mip0_slices(void)
 {
 	if (is_software_renderer()) {
@@ -69,6 +70,7 @@ static int ibl_specular_mip0_slices(void)
 	}
 	return IBL_SPECULAR_MIP0_HARDWARE_SLICES;
 }
+
 static int ibl_specular_mip1_slices(void)
 {
 	if (is_software_renderer()) {
@@ -76,6 +78,7 @@ static int ibl_specular_mip1_slices(void)
 	}
 	return IBL_SPECULAR_MIP1_HARDWARE_SLICES;
 }
+
 static int ibl_specular_mips_grouping_start(void)
 {
 	if (is_software_renderer()) {

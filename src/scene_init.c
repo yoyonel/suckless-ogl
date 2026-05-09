@@ -305,6 +305,7 @@ static int scene_init_billboard_shader(Scene* scene)
 		shader_use(scene->shaders->pbr_billboard);
 		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 			enum { MAX_UNIFORM_NAME_LEN = 32 };
+
 			char name[MAX_UNIFORM_NAME_LEN];
 			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
 			                    i);
@@ -395,6 +396,7 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 		shader_use(*out_shader);
 		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 			enum { MAX_UNIFORM_NAME_LEN = 32 };
+
 			char name[MAX_UNIFORM_NAME_LEN];
 			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
 			                    i);

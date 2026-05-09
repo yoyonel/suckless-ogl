@@ -9,6 +9,7 @@ static const double ZERO_THRESHOLD = 0.0;
 void setUp(void)
 {
 }
+
 void tearDown(void)
 {
 }

@@ -32,30 +32,37 @@ GLuint mock_gl_get_generated_buffer_id(void)
 {
 	return g_generated_buffer_id;
 }
+
 GLuint mock_gl_get_generated_vao_id(void)
 {
 	return DEFAULT_VAO_ID;
 }
+
 GLuint mock_gl_get_last_deleted_buffer(void)
 {
 	return g_last_deleted_buffer;
 }
+
 int mock_gl_get_delete_buffer_call_count(void)
 {
 	return g_delete_buffer_call_count;
 }
+
 int mock_gl_get_buffer_data_call_count(void)
 {
 	return g_buffer_data_call_count;
 }
+
 int mock_gl_get_buffer_sub_data_call_count(void)
 {
 	return g_buffer_sub_data_call_count;
 }
+
 GLsizeiptr mock_gl_get_last_buffer_data_size(void)
 {
 	return g_last_buffer_data_size;
 }
+
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void)
 {
 	return g_last_buffer_sub_data_size;
@@ -69,27 +76,32 @@ void glActiveTexture(GLenum texture)
 {
 	(void)texture;
 }
+
 void glGenTextures(GLsizei n, GLuint* textures)
 {
 	for (int i = 0; i < n; i++)
 		if (textures)
 			textures[i] = (GLuint)(i + 1);
 }
+
 void glDeleteTextures(GLsizei n, const GLuint* textures)
 {
 	(void)n;
 	(void)textures;
 }
+
 void glBindTexture(GLenum target, GLuint texture)
 {
 	(void)target;
 	(void)texture;
 }
+
 void glPixelStorei(GLenum pname, GLint param)
 {
 	(void)pname;
 	(void)param;
 }
+
 void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
                     GLsizei width, GLsizei height)
 {
@@ -99,6 +111,7 @@ void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
 	(void)width;
 	(void)height;
 }
+
 void glTexImage2D(GLenum target, GLint level, GLint internalformat,
                   GLsizei width, GLsizei height, GLint border, GLenum format,
                   GLenum type, const void* pixels)
@@ -113,6 +126,7 @@ void glTexImage2D(GLenum target, GLint level, GLint internalformat,
 	(void)type;
 	(void)pixels;
 }
+
 void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLsizei width, GLsizei height, GLenum format, GLenum type,
                      const void* pixels)
@@ -127,6 +141,7 @@ void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 	(void)type;
 	(void)pixels;
 }
+
 void glTexImage3D(GLenum target, GLint level, GLint internalformat,
                   GLsizei width, GLsizei height, GLsizei depth, GLint border,
                   GLenum format, GLenum type, const void* pixels)
@@ -142,6 +157,7 @@ void glTexImage3D(GLenum target, GLint level, GLint internalformat,
 	(void)type;
 	(void)pixels;
 }
+
 void glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLint zoffset, GLsizei width, GLsizei height,
                      GLsizei depth, GLenum format, GLenum type,
@@ -159,25 +175,30 @@ void glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 	(void)type;
 	(void)pixels;
 }
+
 void glTexParameteri(GLenum target, GLenum pname, GLint param)
 {
 	(void)target;
 	(void)pname;
 	(void)param;
 }
+
 void glGenerateMipmap(GLenum target)
 {
 	(void)target;
 }
+
 GLenum glGetError(void)
 {
 	return 0;
 }
+
 const GLchar* glGetString(GLenum name)
 {
 	(void)name;
 	return "Mock GL";
 }
+
 void glGetIntegerv(GLenum pname, GLint* data)
 {
 	if (data) {
@@ -189,6 +210,7 @@ void glGetIntegerv(GLenum pname, GLint* data)
 		}
 	}
 }
+
 void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
                               GLint* params)
 {
@@ -205,11 +227,13 @@ void glGenBuffers(GLsizei n, GLuint* buffers)
 	if (buffers)
 		*buffers = g_generated_buffer_id;
 }
+
 void glBindBuffer(GLenum target, GLuint buffer)
 {
 	(void)target;
 	(void)buffer;
 }
+
 void glBufferData(GLenum target, GLsizeiptr size, const void* data,
                   GLenum usage)
 {
@@ -219,6 +243,7 @@ void glBufferData(GLenum target, GLsizeiptr size, const void* data,
 	g_buffer_data_call_count++;
 	g_last_buffer_data_size = size;
 }
+
 void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
                      const void* data)
 {
@@ -228,6 +253,7 @@ void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
 	g_buffer_sub_data_call_count++;
 	g_last_buffer_sub_data_size = size;
 }
+
 void glDeleteBuffers(GLsizei n, const GLuint* buffers)
 {
 	if (buffers) {
@@ -236,6 +262,7 @@ void glDeleteBuffers(GLsizei n, const GLuint* buffers)
 	}
 	(void)n;
 }
+
 void glBufferStorage(GLenum target, GLsizeiptr size, const void* data,
                      GLbitfield flags)
 {
@@ -244,12 +271,14 @@ void glBufferStorage(GLenum target, GLsizeiptr size, const void* data,
 	(void)data;
 	(void)flags;
 }
+
 void glBindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
 	(void)target;
 	(void)index;
 	(void)buffer;
 }
+
 void glCopyBufferSubData(GLenum readTarget, GLenum writeTarget,
                          GLintptr readOffset, GLintptr writeOffset,
                          GLsizeiptr size)
@@ -260,6 +289,7 @@ void glCopyBufferSubData(GLenum readTarget, GLenum writeTarget,
 	(void)writeOffset;
 	(void)size;
 }
+
 void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
                         void* data)
 {
@@ -269,6 +299,7 @@ void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
 	if (data)
 		*(float*)data = 1.0f;
 }
+
 void* glMapBuffer(GLenum target, GLenum access)
 {
 	(void)target;
@@ -276,6 +307,7 @@ void* glMapBuffer(GLenum target, GLenum access)
 	static char buf[1024];
 	return buf;
 }
+
 void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
                        GLbitfield access)
 {
@@ -286,6 +318,7 @@ void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
 	static char buf[1024];
 	return buf;
 }
+
 GLboolean glUnmapBuffer(GLenum target)
 {
 	(void)target;
@@ -298,23 +331,28 @@ void glGenVertexArrays(GLsizei n, GLuint* arrays)
 	if (arrays)
 		*arrays = DEFAULT_VAO_ID;
 }
+
 void glDeleteVertexArrays(GLsizei n, const GLuint* arrays)
 {
 	(void)n;
 	(void)arrays;
 }
+
 void glBindVertexArray(GLuint array)
 {
 	(void)array;
 }
+
 void glEnableVertexAttribArray(GLuint index)
 {
 	(void)index;
 }
+
 void glDisableVertexAttribArray(GLuint index)
 {
 	(void)index;
 }
+
 void glVertexAttribPointer(GLuint index, GLint size, GLenum type,
                            GLboolean normalized, GLsizei stride,
                            const void* pointer)
@@ -326,11 +364,13 @@ void glVertexAttribPointer(GLuint index, GLint size, GLenum type,
 	(void)stride;
 	(void)pointer;
 }
+
 void glVertexAttrib4fv(GLuint index, const GLfloat* v)
 {
 	(void)index;
 	(void)v;
 }
+
 void glVertexAttribDivisor(GLuint index, GLuint divisor)
 {
 	(void)index;
@@ -343,6 +383,7 @@ void glDrawArrays(GLenum mode, GLint first, GLsizei count)
 	(void)first;
 	(void)count;
 }
+
 void glDrawElements(GLenum mode, GLsizei count, GLenum type,
                     const void* indices)
 {
@@ -351,6 +392,7 @@ void glDrawElements(GLenum mode, GLsizei count, GLenum type,
 	(void)type;
 	(void)indices;
 }
+
 void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
                            GLsizei instancecount)
 {
@@ -359,6 +401,7 @@ void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
 	(void)count;
 	(void)instancecount;
 }
+
 void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
                              const void* indices, GLsizei instancecount)
 {
@@ -374,6 +417,7 @@ uint32_t glCreateShader(GLenum type)
 	(void)type;
 	return 1;
 }
+
 void glShaderSource(GLuint shader, GLsizei count, const char* const* string,
                     const GLint* length)
 {
@@ -382,10 +426,12 @@ void glShaderSource(GLuint shader, GLsizei count, const char* const* string,
 	(void)string;
 	(void)length;
 }
+
 void glCompileShader(GLuint shader)
 {
 	(void)shader;
 }
+
 void glGetShaderiv(GLuint shader, GLenum pname, GLint* params)
 {
 	(void)shader;
@@ -393,6 +439,7 @@ void glGetShaderiv(GLuint shader, GLenum pname, GLint* params)
 	if (params)
 		*params = GL_TRUE;
 }
+
 void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei* length,
                         GLchar* infoLog)
 {
@@ -403,6 +450,7 @@ void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei* length,
 	if (infoLog)
 		infoLog[0] = '\0';
 }
+
 void glDeleteShader(GLuint shader)
 {
 	(void)shader;
@@ -412,15 +460,18 @@ uint32_t glCreateProgram(void)
 {
 	return 1;
 }
+
 void glAttachShader(GLuint program, GLuint shader)
 {
 	(void)program;
 	(void)shader;
 }
+
 void glLinkProgram(GLuint program)
 {
 	(void)program;
 }
+
 void glGetProgramiv(GLuint program, GLenum pname, GLint* params)
 {
 	(void)program;
@@ -428,6 +479,7 @@ void glGetProgramiv(GLuint program, GLenum pname, GLint* params)
 	if (params)
 		*params = GL_TRUE;
 }
+
 void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei* length,
                          GLchar* infoLog)
 {
@@ -438,10 +490,12 @@ void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei* length,
 	if (infoLog)
 		infoLog[0] = '\0';
 }
+
 void glUseProgram(GLuint program)
 {
 	(void)program;
 }
+
 void glDeleteProgram(GLuint program)
 {
 	(void)program;
@@ -453,28 +507,33 @@ GLint glGetUniformLocation(GLuint program, const GLchar* name)
 	(void)name;
 	return 0;
 }
+
 void glUniform1i(GLint location, GLint v0)
 {
 	(void)location;
 	(void)v0;
 }
+
 void glUniform1iv(GLint location, GLsizei count, const GLint* value)
 {
 	(void)location;
 	(void)count;
 	(void)value;
 }
+
 void glUniform1f(GLint location, GLfloat v0)
 {
 	(void)location;
 	(void)v0;
 }
+
 void glUniform2f(GLint location, GLfloat v0, GLfloat v1)
 {
 	(void)location;
 	(void)v0;
 	(void)v1;
 }
+
 void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
 {
 	(void)location;
@@ -482,6 +541,7 @@ void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
 	(void)v1;
 	(void)v2;
 }
+
 void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 {
 	(void)location;
@@ -490,6 +550,7 @@ void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 	(void)v2;
 	(void)v3;
 }
+
 void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2)
 {
 	(void)location;
@@ -497,29 +558,34 @@ void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2)
 	(void)v1;
 	(void)v2;
 }
+
 void glUniform1ui(GLint location, GLuint v0)
 {
 	(void)location;
 	(void)v0;
 }
+
 void glUniform2fv(GLint location, GLsizei count, const GLfloat* value)
 {
 	(void)location;
 	(void)count;
 	(void)value;
 }
+
 void glUniform3fv(GLint location, GLsizei count, const GLfloat* value)
 {
 	(void)location;
 	(void)count;
 	(void)value;
 }
+
 void glUniform4fv(GLint location, GLsizei count, const GLfloat* value)
 {
 	(void)location;
 	(void)count;
 	(void)value;
 }
+
 void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const GLfloat* value)
 {
@@ -533,34 +599,41 @@ void glEnable(GLenum cap)
 {
 	(void)cap;
 }
+
 void glDisable(GLenum cap)
 {
 	(void)cap;
 }
+
 GLboolean glIsEnabled(GLenum cap)
 {
 	(void)cap;
 	return GL_FALSE;
 }
+
 void glPolygonMode(GLenum face, GLenum mode)
 {
 	(void)face;
 	(void)mode;
 }
+
 void glBlendFunc(GLenum sfactor, GLenum dfactor)
 {
 	(void)sfactor;
 	(void)dfactor;
 }
+
 GLenum glCheckFramebufferStatus(GLenum target)
 {
 	(void)target;
 	return GL_FRAMEBUFFER_COMPLETE;
 }
+
 void glClear(GLbitfield mask)
 {
 	(void)mask;
 }
+
 void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
 	(void)red;
@@ -568,6 +641,7 @@ void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 	(void)blue;
 	(void)alpha;
 }
+
 void glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
 	(void)x;
@@ -582,16 +656,19 @@ void glGenQueries(GLsizei n, GLuint* ids)
 		if (ids)
 			ids[i] = (GLuint)(i + 1);
 }
+
 void glDeleteQueries(GLsizei n, const GLuint* ids)
 {
 	(void)n;
 	(void)ids;
 }
+
 void glQueryCounter(GLuint id, GLenum target)
 {
 	(void)id;
 	(void)target;
 }
+
 void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
 {
 	(void)id;
@@ -599,6 +676,7 @@ void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
 	if (params)
 		*params = 1000;
 }
+
 void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params)
 {
 	(void)id;
@@ -610,6 +688,7 @@ void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params)
 void glFlush(void)
 {
 }
+
 void glFinish(void)
 {
 }
@@ -621,10 +700,12 @@ void glDispatchCompute(GLuint num_groups_x, GLuint num_groups_y,
 	(void)num_groups_y;
 	(void)num_groups_z;
 }
+
 void glMemoryBarrier(GLbitfield barriers)
 {
 	(void)barriers;
 }
+
 void glBindImageTexture(GLuint unit, GLuint texture, GLint level,
                         GLboolean layered, GLint layer, GLenum access,
                         GLenum format)
@@ -646,9 +727,11 @@ void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
 	(void)length;
 	(void)message;
 }
+
 void glPopDebugGroup(void)
 {
 }
+
 void glObjectLabel(GLenum identifier, GLuint name, GLsizei length,
                    const GLchar* label)
 {
@@ -657,6 +740,7 @@ void glObjectLabel(GLenum identifier, GLuint name, GLsizei length,
 	(void)length;
 	(void)label;
 }
+
 void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize,
                         GLsizei* length, GLint* size, GLenum* type,
                         GLchar* name)
@@ -681,6 +765,7 @@ GLsync glFenceSync(GLenum condition, GLbitfield flags)
 	static int s;
 	return (GLsync)&s;
 }
+
 GLenum glClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
 {
 	(void)sync;
@@ -688,6 +773,7 @@ GLenum glClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
 	(void)timeout;
 	return GL_CONDITION_SATISFIED;
 }
+
 void glDeleteSync(GLsync sync)
 {
 	(void)sync;
@@ -706,33 +792,39 @@ void glDepthMask(GLboolean flag)
 {
 	(void)flag;
 }
+
 void glEnablei(GLenum target, GLuint index)
 {
 	(void)target;
 	(void)index;
 }
+
 void glDisablei(GLenum target, GLuint index)
 {
 	(void)target;
 	(void)index;
 }
+
 void glPolygonOffset(GLfloat factor, GLfloat units)
 {
 	(void)factor;
 	(void)units;
 }
+
 void glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass)
 {
 	(void)sfail;
 	(void)dpfail;
 	(void)dppass;
 }
+
 void glStencilFunc(GLenum func, GLint ref, GLuint mask)
 {
 	(void)func;
 	(void)ref;
 	(void)mask;
 }
+
 void glStencilMask(GLuint mask)
 {
 	(void)mask;
