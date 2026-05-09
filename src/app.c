@@ -20,64 +20,55 @@
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 
+static void app_load_initial_hdr(App* app)
+{
+	if (app->scene->hdr_count <= 0) {
+		return;
+	}
+	int default_idx = 0;
+	for (int i = 0; i < app->scene->hdr_count; i++) {
+		if (strcmp(app->scene->hdr_files[i], DEFAULT_ENV_FILENAME) ==
+		    0) {
+			default_idx = i;
+			break;
+		}
+	}
+	app->scene->current_hdr_index = default_idx;
+	env_manager_load(app->env_mgr, app->async_loader,
+	                 app->scene->hdr_files[default_idx]);
+}
+
 int app_init(App* app, int width, int height, const char* title)
 {
 	app->width = width;
 	app->height = height;
 
+	/* Phase 1: Heap allocations (goto cleanup_alloc on failure).
+	 * calloc zero-initialises, so free(NULL) is safe in the cleanup
+	 * block regardless of which allocation failed (C99 §7.20.3.2). */
 	app->input = calloc(1, sizeof(*app->input));
 	if (!app->input) {
-		return 0;
+		goto cleanup_alloc;
 	}
 	app->profiling = calloc(1, sizeof(*app->profiling));
 	if (!app->profiling) {
-		free(app->input);
-		app->input = NULL;
-		return 0;
+		goto cleanup_alloc;
 	}
 	app->postprocess = calloc(1, sizeof(*app->postprocess));
 	if (!app->postprocess) {
-		free(app->profiling);
-		free(app->input);
-		app->profiling = NULL;
-		app->input = NULL;
-		return 0;
+		goto cleanup_alloc;
 	}
 	app->scene = calloc(1, sizeof(*app->scene));
 	if (!app->scene) {
-		free(app->postprocess);
-		free(app->profiling);
-		free(app->input);
-		app->postprocess = NULL;
-		app->profiling = NULL;
-		app->input = NULL;
-		return 0;
+		goto cleanup_alloc;
 	}
 	app->env_mgr = calloc(1, sizeof(*app->env_mgr));
 	if (!app->env_mgr) {
-		free(app->scene);
-		free(app->postprocess);
-		free(app->profiling);
-		free(app->input);
-		app->scene = NULL;
-		app->postprocess = NULL;
-		app->profiling = NULL;
-		app->input = NULL;
-		return 0;
+		goto cleanup_alloc;
 	}
 	app->async_coord = calloc(1, sizeof(*app->async_coord));
 	if (!app->async_coord) {
-		free(app->env_mgr);
-		free(app->scene);
-		free(app->postprocess);
-		free(app->profiling);
-		free(app->input);
-		app->env_mgr = NULL;
-		app->scene = NULL;
-		app->postprocess = NULL;
-		app->profiling = NULL;
-		app->input = NULL;
-		return 0;
+		goto cleanup_alloc;
 	}
 
 	app_input_state_init(app->input);
@@ -86,9 +77,11 @@ int app_init(App* app, int width, int height, const char* title)
 	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr->is_first_load = true;
 
+	/* Phase 2: Window & GL context (goto cleanup_alloc on failure —
+	 * no GL resources exist yet). */
 	app->win.handle = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->win.handle) {
-		return 0;
+		goto cleanup_alloc;
 	}
 
 	glfwSwapInterval(0);
@@ -104,10 +97,11 @@ int app_init(App* app, int width, int height, const char* title)
 		                 GLFW_CURSOR_DISABLED);
 	}
 
-	/* Initialize all profiling sub-systems (needs GL context) */
+	/* Phase 3: Sub-system initialisation (GL context available).
+	 * Failures after this point use app_cleanup() which handles
+	 * partially-initialised state via NULL guards. */
 	app_profiling_init(app->profiling, width, height);
 
-	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
 	 */
 	app->env_mgr->transition_state = TRANSITION_WAIT_IBL;
@@ -122,32 +116,19 @@ int app_init(App* app, int width, int height, const char* title)
 	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
 	           sizeof(float));
 	if (!app->lum_histogram_buffer) {
-		return 0;
+		goto cleanup_full;
 	}
 
 	app->async_loader = async_loader_create(&app->profiling->tracy_mgr);
 	if (!app->async_loader) {
-		return 0;
+		goto cleanup_full;
 	}
 
 	if (!scene_init(app->scene)) {
-		return 0;
+		goto cleanup_full;
 	}
 
-	/* Initial HDR load */
-	if (app->scene->hdr_count > 0) {
-		int default_idx = 0;
-		for (int i = 0; i < app->scene->hdr_count; i++) {
-			if (strcmp(app->scene->hdr_files[i],
-			           DEFAULT_ENV_FILENAME) == 0) {
-				default_idx = i;
-				break;
-			}
-		}
-		app->scene->current_hdr_index = default_idx;
-		env_manager_load(app->env_mgr, app->async_loader,
-		                 app->scene->hdr_files[default_idx]);
-	}
+	app_load_initial_hdr(app);
 
 	app->u_metallic = DEFAULT_METALLIC;
 	app->u_roughness = DEFAULT_ROUGHNESS;
@@ -160,7 +141,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	if (!postprocess_init(app->postprocess, &app->profiling->gpu_profiler,
 	                      width, height)) {
-		return 0;
+		goto cleanup_full;
 	}
 	postprocess_set_dummy_textures(app->postprocess,
 	                               app->scene->gpu->dummy_black_tex);
@@ -179,6 +160,26 @@ int app_init(App* app, int width, int height, const char* title)
 	                      &app->profiling->gpu_profiler);
 
 	return 1;
+
+	/* --- Centralised error exits (see docs/goto_cleanup_pattern.md) --- */
+cleanup_full:
+	app_cleanup(app);
+	return 0;
+
+cleanup_alloc:
+	free(app->async_coord);
+	app->async_coord = NULL;
+	free(app->env_mgr);
+	app->env_mgr = NULL;
+	free(app->scene);
+	app->scene = NULL;
+	free(app->postprocess);
+	app->postprocess = NULL;
+	free(app->profiling);
+	app->profiling = NULL;
+	free(app->input);
+	app->input = NULL;
+	return 0;
 }
 
 void app_cleanup(App* app)
