@@ -11,16 +11,24 @@
 
 /* Verify that C struct matches the GLSL layout (128 bytes). */
 enum { EXPECTED_SPHERE_INSTANCE_SIZE = 128 };
+
 _Static_assert(sizeof(SphereInstance) == EXPECTED_SPHERE_INSTANCE_SIZE,
                "SphereInstance size must match GLSL std430 layout (128 B)");
 
 enum { WORKGROUP_SIZE = 1024 };
+
 enum { DEFAULT_MIN_CAPACITY = 64 };
+
 enum { MAX_SINGLE_PASS_COUNT = 1024 };
+
 enum { RADIX_BITS_PER_PASS = 8 };
+
 enum { RADIX_BUCKETS = 256 };
+
 enum { RADIX_SHIFT_LIMIT = 32 };
+
 enum { RADIX_MASK = 0xFFU };
+
 static const uint32_t FLOAT_SIGN_MASK = 0x80000000U;
 static const uint32_t FLOAT_COMPLEMENT_MASK = 0xFFFFFFFFU;
 
@@ -307,6 +315,7 @@ GLuint billboard_sorter_sort_gpu(BillboardSorter* sorter,
 
 	return sorter->sorted_instance_ssbo;
 }
+
 static int compare_sphere_entries(const void* lhs, const void* rhs)
 {
 	const BillboardSortEntry* entry_lhs = (const BillboardSortEntry*)lhs;
@@ -375,6 +384,7 @@ static inline uint32_t float_to_sortable_uint(float f_val)
 		float float_val;
 		uint32_t uint_val;
 	} val_conv;
+
 	val_conv.float_val = f_val;
 	uint32_t mask = (val_conv.uint_val & FLOAT_SIGN_MASK)
 	                    ? FLOAT_COMPLEMENT_MASK
@@ -403,6 +413,7 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
 		float depth = glm_vec3_distance2((float*)instances[i].model[3],
 		                                 (float*)camera_pos);
 		sorter->entries[i].original_index = i;
+
 		/* Write sortable key into the depth field via union to avoid
 		 * strict aliasing issues (same approach as
 		 * float_to_sortable_uint). */
@@ -410,6 +421,7 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
 			float f;
 			uint32_t u;
 		} pun;
+
 		pun.u = float_to_sortable_uint(depth);
 		sorter->entries[i].depth = pun.f;
 	}
@@ -426,6 +438,7 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
 				float f;
 				uint32_t u;
 			} pun;
+
 			pun.f = current_in[i].depth;
 			counts[((unsigned int)pun.u >> (unsigned int)shift) &
 			       (unsigned int)RADIX_MASK]++;
@@ -445,6 +458,7 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
 				float f;
 				uint32_t u;
 			} pun;
+
 			pun.f = current_in[i].depth;
 			unsigned int bucket =
 			    ((unsigned int)pun.u >> (unsigned int)shift) &

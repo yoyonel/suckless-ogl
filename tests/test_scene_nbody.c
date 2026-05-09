@@ -308,6 +308,7 @@ void test_nbody_update_multiple_steps(void)
 	reset_mocks();
 
 	enum { STEP_COUNT = 10 };
+
 	for (int i = 0; i < STEP_COUNT; i++) {
 		scene_nbody_update(&scene, 1.0F / 60.0F);
 	}

@@ -8,6 +8,7 @@ layout(binding = 0) uniform sampler2D environmentMap;
 layout(location = 4) uniform float blur_lod;
 
 const vec2 invAtan = vec2(0.1591, 0.3183);
+
 vec2 SampleEquirectangular(vec3 v)
 {
 	float phi = (abs(v.z) < 1e-5 && abs(v.x) < 1e-5) ? 0.0 : atan(v.z, v.x);

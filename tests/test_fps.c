@@ -10,6 +10,7 @@ static const double ONE_SECOND = 1.0;
 void setUp(void)
 {
 }
+
 void tearDown(void)
 {
 }

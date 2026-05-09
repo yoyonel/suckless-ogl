@@ -111,6 +111,7 @@ void* texture_map_pbo(GLuint pbo, size_t size)
 void setUp(void)
 {
 }
+
 void tearDown(void)
 {
 }

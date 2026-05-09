@@ -57,24 +57,28 @@ void shader_use(Shader* s)
 	(void)s;
 	mock_shader_use_calls++;
 }
+
 void shader_set_int_loc(GLint loc, int val)
 {
 	(void)loc;
 	(void)val;
 	mock_shader_set_int_loc_calls++;
 }
+
 void shader_set_vec3_loc(GLint loc, const float* v)
 {
 	(void)loc;
 	(void)v;
 	mock_shader_set_vec3_loc_calls++;
 }
+
 void shader_set_vec4_loc(GLint loc, const float* v)
 {
 	(void)loc;
 	(void)v;
 	mock_shader_set_vec4_loc_calls++;
 }
+
 void shader_set_mat4_loc(GLint loc, const float* m)
 {
 	(void)loc;
@@ -99,6 +103,7 @@ void light_probe_grid_sync(LightProbeGrid* g)
 	(void)g;
 	mock_probe_sync_calls++;
 }
+
 void light_probe_grid_render_debug(LightProbeGrid* g, mat4 v, mat4 p)
 {
 	(void)g;
@@ -112,21 +117,25 @@ void billboard_group_draw(BillboardGroup* bg)
 	(void)bg;
 	mock_billboard_draw_calls++;
 }
+
 void billboard_group_draw_debug_fill(BillboardGroup* bg)
 {
 	(void)bg;
 	mock_billboard_draw_debug_fill_calls++;
 }
+
 void billboard_group_draw_debug_quads(BillboardGroup* bg)
 {
 	(void)bg;
 	mock_billboard_draw_debug_quads_calls++;
 }
+
 void billboard_group_draw_debug_boxes(BillboardGroup* bg)
 {
 	(void)bg;
 	mock_billboard_draw_debug_boxes_calls++;
 }
+
 void billboard_group_update_from_buffer(BillboardGroup* bg, GLuint ssbo,
                                         int count)
 {
@@ -173,6 +182,7 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 	(void)color;
 	mock_profiler_start_calls++;
 }
+
 void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
 	(void)profiler;
@@ -190,6 +200,7 @@ GLuint billboard_sorter_sort_cpu(BillboardSorter* s, const SphereInstance* inst,
 	mock_billboard_sort_cpu_calls++;
 	return 42;
 }
+
 GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* s,
                                        const SphereInstance* inst, int count,
                                        const vec3 cam)
@@ -201,6 +212,7 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* s,
 	mock_billboard_sort_cpu_radix_calls++;
 	return 43;
 }
+
 GLuint billboard_sorter_sort_gpu(BillboardSorter* s, const SphereInstance* inst,
                                  int count, const vec3 cam)
 {
@@ -830,6 +842,7 @@ void setUp(void)
 {
 	reset_counters();
 }
+
 void tearDown(void)
 {
 }

@@ -22,6 +22,7 @@ static const float TOLERANCE = 0.01F;
 void setUp(void)
 {
 }
+
 void tearDown(void)
 {
 }

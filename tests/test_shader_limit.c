@@ -14,14 +14,17 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	(void)tag;
 	(void)format;
 }
+
 void log_set_callback(LogCallback callback)
 {
 	(void)callback;
 }
+
 void log_set_level(LogLevel level)
 {
 	(void)level;
 }
+
 LogLevel log_get_level(void)
 {
 	return LOG_LEVEL_INFO;
@@ -34,6 +37,7 @@ void setUp(void)
 {
 	mock_gl_reset_calls();
 }
+
 void tearDown(void)
 {
 }

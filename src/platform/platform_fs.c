@@ -57,6 +57,7 @@ bool platform_dir_list(const char* path, PlatformDirCallback callback,
 #endif
 				// Fallback to stat if d_type is not available
 				enum { MAX_PATH_SIZE = 1024 };
+
 				char full_path[MAX_PATH_SIZE];
 				if (safe_snprintf(full_path, sizeof(full_path),
 				                  "%s/%s", path,

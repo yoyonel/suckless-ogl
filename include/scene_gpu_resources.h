@@ -13,6 +13,7 @@
 #include "light_probes.h" /* SH_TEXTURE_COUNT */
 
 enum { IBL_TEXTURE_COUNT = 3 };
+
 enum { TEXTURE_UNIT_IBL_START = 15 };
 
 /**

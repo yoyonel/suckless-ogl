@@ -18,6 +18,7 @@ static const int MODULO_DIVISOR = 10;
 void setUp(void)
 {
 }
+
 void tearDown(void)
 {
 }

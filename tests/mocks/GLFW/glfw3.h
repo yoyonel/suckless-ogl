@@ -3,6 +3,7 @@
 
 typedef void GLFWwindow;
 typedef struct GLFWmonitor GLFWmonitor;
+
 typedef struct GLFWvidmode {
 	int width;
 	int height;

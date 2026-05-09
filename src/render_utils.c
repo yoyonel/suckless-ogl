@@ -126,6 +126,7 @@ void render_utils_create_wire_quad_vbo(GLuint* vbo)
 void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 {
 	enum { TEX_COORD_OFFSET = 8 };
+
 	static const float
 	    screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] = {
 	        /* positions     texCoords */

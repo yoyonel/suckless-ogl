@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 enum { TEST_INITIAL_CAPACITY = 1024 };
+
 enum { TEST_COUNT = 1000 };
 
 int main()

@@ -37,16 +37,19 @@ void perf_timer_start(PerfTimer* timer)
 {
 	(void)timer;
 }
+
 double perf_timer_elapsed_ms(PerfTimer* timer)
 {
 	(void)timer;
 	return TEST_ELAPSED_MS;
 }
+
 double perf_timer_elapsed_us(PerfTimer* timer)
 {
 	(void)timer;
 	return TEST_ELAPSED_US;
 }
+
 double perf_timer_elapsed_s(PerfTimer* timer)
 {
 	(void)timer;
@@ -58,16 +61,19 @@ void gpu_timer_start(GPUTimer* timer)
 {
 	(void)timer;
 }
+
 void gpu_timer_stop(GPUTimer* timer)
 {
 	(void)timer;
 }
+
 double gpu_timer_elapsed_ms(GPUTimer* timer, int wait)
 {
 	(void)timer;
 	(void)wait;
 	return TEST_GPU_MS;
 }
+
 void gpu_timer_cleanup(GPUTimer* timer)
 {
 	(void)timer;
@@ -79,11 +85,13 @@ HybridTimer perf_hybrid_start(void)
 	HybridTimer timer = {0};
 	return timer;
 }
+
 void perf_hybrid_stop(HybridTimer* timer, const char* label)
 {
 	(void)timer;
 	(void)label;
 }
+
 double perf_hybrid_stop_debug(HybridTimer* timer, const char* label)
 {
 	(void)timer;
@@ -102,12 +110,14 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env, int width,
 	(void)threshold;
 	return 0;
 }
+
 GLuint pbr_prefilter_init(int width, int height)
 {
 	(void)width;
 	(void)height;
 	return TEST_SHADER_ID;
 }
+
 void pbr_prefilter_mip(GLuint shader, const PBRSpecUniforms* uniforms,
                        GLuint env, GLuint dest, int width, int height,
                        int level, int total, int slice, int slices,
@@ -125,6 +135,7 @@ void pbr_prefilter_mip(GLuint shader, const PBRSpecUniforms* uniforms,
 	(void)slices;
 	(void)threshold;
 }
+
 GLuint build_irradiance_map(GLuint shader, GLuint env, int size,
                             float threshold)
 {
@@ -134,11 +145,13 @@ GLuint build_irradiance_map(GLuint shader, GLuint env, int size,
 	(void)threshold;
 	return 0;
 }
+
 GLuint pbr_irradiance_init(int size)
 {
 	(void)size;
 	return TEST_IRRADIANCE_ID;
 }
+
 void pbr_irradiance_slice_compute(GLuint shader, const PBRIrrUniforms* uniforms,
                                   GLuint env, GLuint dest, int size, int slice,
                                   int slices, float threshold)
@@ -152,11 +165,13 @@ void pbr_irradiance_slice_compute(GLuint shader, const PBRIrrUniforms* uniforms,
 	(void)slices;
 	(void)threshold;
 }
+
 GLuint build_brdf_lut_map(int size)
 {
 	(void)size;
 	return TEST_BRDF_ID;
 }
+
 void compute_mean_luminance_gpu_start(GLuint shader_pass1, GLuint shader_pass2,
                                       GLuint hdr_tex, int width, int height,
                                       GLuint ssbos[2],
@@ -201,6 +216,7 @@ void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
 		memset(out, 0, sizeof(*out));
 	}
 }
+
 /* ------------------------------------------------ */
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)

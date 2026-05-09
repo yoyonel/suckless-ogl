@@ -56,6 +56,7 @@ typedef struct {
  * @note Must match layout(std140, binding = 1) in billboard_ubo.glsl.
  */
 enum { MAT4_FLOAT_COUNT = 16 };
+
 typedef struct {
 	float projection[MAT4_FLOAT_COUNT]; /**< mat4 projection (offset   0) */
 	float view[MAT4_FLOAT_COUNT];       /**< mat4 view       (offset  64) */

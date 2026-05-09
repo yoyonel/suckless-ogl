@@ -492,6 +492,7 @@ void app_update(App* app)
 	                              app->postprocess, app->delta_time,
 	                              app->frame_count);
 }
+
 AppInputContext app_input_ctx_from_app(App* app)
 {
 	return (AppInputContext){

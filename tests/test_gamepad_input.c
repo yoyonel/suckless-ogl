@@ -79,6 +79,7 @@ void setUp(void)
 {
 	mock_gamepad_reset();
 }
+
 void tearDown(void)
 {
 }

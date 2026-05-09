@@ -78,6 +78,7 @@ typedef struct EffectBenchmark {
 		const char* name;
 		unsigned int bit;
 	} effects[BENCH_MAX_EFFECTS];
+
 	int effect_count;
 
 	/* Current sweep position */
