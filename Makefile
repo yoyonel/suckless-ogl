@@ -143,7 +143,13 @@ format:
 
 format-check:
 	@echo "Checking C and Shader formatting..."
-	@$(DISTROBOX) sh -c "find src include tests shaders -name \"_deps\" -prune -o -name \"*.c\" -print -o -name \"*.h\" -print -o -name \"*.glsl\" -print -o -name \"*.vert\" -print -o -name \"*.frag\" -print | xargs clang-format --dry-run --Werror"
+	@$(DISTROBOX) sh -c "find src include tests shaders -name \"_deps\" -prune -o -name \"*.c\" -print -o -name \"*.h\" -print -o -name \"*.glsl\" -print -o -name \"*.vert\" -print -o -name \"*.frag\" -print | xargs clang-format -i"
+	@if ! git diff --quiet -- src/ include/ tests/ shaders/; then \
+		echo "❌ C/Shader formatting violations:"; \
+		git diff --stat -- src/ include/ tests/ shaders/; \
+		git checkout -- src/ include/ tests/ shaders/; \
+		exit 1; \
+	fi
 	@echo "Checking Python scripts formatting..."
 	@$(TOOL_RUN) ruff format --check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 	@echo "✓ Formatting check passed"
