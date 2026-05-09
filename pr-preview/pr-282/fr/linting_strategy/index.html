@@ -2285,6 +2285,95 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
+  <a href="#philosophie-du-style-de-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Philosophie du style de code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Philosophie du style de code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pourquoi-le-style-du-noyau-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pourquoi le style du noyau Linux ?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principes-fondamentaux-issus-du-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principes fondamentaux (issus du kernel)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formatage-du-code-clang-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formatage du code (Clang-Format)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formatage du code (Clang-Format)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reference-des-regles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Référence des règles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#separatedefinitionblocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SeparateDefinitionBlocks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#application-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application en CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#strategie-clang-tidy" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3573,7 +3662,140 @@
 
 
 <h1 id="strategie-de-lint-et-mise-en-cache">Stratégie de lint et mise en cache<a class="headerlink" href="#strategie-de-lint-et-mise-en-cache" title="Permanent link">¶</a></h1>
-<p>Ce document présente la stratégie d'analyse statique du projet <code>suckless-ogl</code> et l'implémentation de son mécanisme de mise en cache haute performance.</p>
+<p>Ce document présente la stratégie d'analyse statique et de formatage du projet <code>suckless-ogl</code> et l'implémentation de son mécanisme de mise en cache haute performance.</p>
+<h2 id="philosophie-du-style-de-code">Philosophie du style de code<a class="headerlink" href="#philosophie-du-style-de-code" title="Permanent link">¶</a></h2>
+<p>Ce projet suit un style de code fortement inspiré du <strong>noyau Linux</strong> (<a href="https://www.kernel.org/doc/html/latest/process/coding-style.html"><code>Documentation/process/coding-style.rst</code></a>), adapté pour un moteur de rendu OpenGL en C11.</p>
+<h3 id="pourquoi-le-style-du-noyau-linux">Pourquoi le style du noyau Linux ?<a class="headerlink" href="#pourquoi-le-style-du-noyau-linux" title="Permanent link">¶</a></h3>
+<p>Le style du noyau a été conçu pour des bases de code C à grande échelle, maintenues par des milliers de contributeurs pendant des décennies. Ses règles optimisent la <strong>lisibilité à l'échelle</strong>, la <strong>facilité de recherche</strong> (grep-ability) et la <strong>charge cognitive minimale</strong> — les mêmes qualités que nous valorisons dans ce projet.</p>
+<p>Autres conventions C notables dont nous nous sommes inspirés :</p>
+<table>
+<thead>
+<tr>
+<th>Convention</th>
+<th>Origine</th>
+<th>Point clé</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.kernel.org/doc/html/latest/process/coding-style.html"><strong>Linux kernel coding style</strong></a></td>
+<td>Torvalds, communauté kernel</td>
+<td>Inspiration principale : tabs-8, accolades, 80 cols, <code>goto</code> cleanup, fonctions courtes</td>
+</tr>
+<tr>
+<td><a href="https://wiki.sei.cmu.edu/confluence/display/c"><strong>SEI CERT C</strong></a></td>
+<td>Carnegie Mellon SEI</td>
+<td>Règles orientées sécurité (MEM, ERR, STR) — appliquées via les checks <code>clang-tidy cert-*</code></td>
+</tr>
+<tr>
+<td><a href="https://man.freebsd.org/cgi/man.cgi?query=style&amp;sektion=9"><strong>FreeBSD style(9)</strong></a></td>
+<td>Projet FreeBSD</td>
+<td>Proche du style kernel ; explicite sur les lignes vides entre fonctions, <code>return</code> sans parenthèses</td>
+</tr>
+<tr>
+<td><a href="https://www.sqlite.org/codeofethics.html"><strong>SQLite</strong></a></td>
+<td>D. Richard Hipp</td>
+<td>100% couverture de branches, <code>goto</code> cleanup, C autonome — un modèle de qualité</td>
+</tr>
+<tr>
+<td><a href="https://github.com/id-Software/Quake-III-Arena"><strong>id Software</strong></a> (Quake/Doom)</td>
+<td>John Carmack</td>
+<td>C pragmatique pour le graphisme temps réel ; nommage et disposition orientés performance</td>
+</tr>
+</tbody>
+</table>
+<h3 id="principes-fondamentaux-issus-du-kernel">Principes fondamentaux (issus du kernel)<a class="headerlink" href="#principes-fondamentaux-issus-du-kernel" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Indentation = 8 espaces (tabulations)</strong> — Force un nesting court ; si 3+ niveaux sont nécessaires, refactorer (kernel §1)</li>
+<li><strong>Limite de 80 colonnes</strong> — Encourage la séparation des expressions complexes et l'extraction de fonctions helpers (kernel §2)</li>
+<li><strong>Accolade ouvrante sur la même ligne</strong> (sauf fonctions) — Style Linux/K&amp;R (kernel §3)</li>
+<li><strong>Une ligne vide entre les définitions de fonctions</strong> — Séparation visuelle ; ne jamais empiler des définitions sans respiration</li>
+<li><strong>Les fonctions doivent être courtes</strong> — Faire une seule chose ; tenir sur un ou deux écrans (kernel §6)</li>
+<li><strong><code>goto</code> pour le cleanup centralisé</strong> — Chemin de sortie unique pour la gestion d'erreurs, pas de <code>if/else</code> en cascade (kernel §7). Voir <a href="../goto_cleanup_pattern/">Pattern goto cleanup</a></li>
+<li><strong><code>snake_case</code> partout</strong> — Fonctions, variables, membres de struct. <code>UPPER_CASE</code> uniquement pour les macros (kernel §4)</li>
+<li><strong>Pas de typedef sur les structs</strong> — Exception : handles opaques et pointeurs de fonctions (kernel §5)</li>
+</ol>
+<h2 id="formatage-du-code-clang-format">Formatage du code (Clang-Format)<a class="headerlink" href="#formatage-du-code-clang-format" title="Permanent link">¶</a></h2>
+<p>Tous les fichiers C, en-têtes et GLSL sont formatés avec <code>clang-format</code>. La configuration se trouve dans <code>.clang-format</code> à la racine du dépôt.</p>
+<h3 id="reference-des-regles">Référence des règles<a class="headerlink" href="#reference-des-regles" title="Permanent link">¶</a></h3>
+<p>Chaque règle est associée à sa justification dans le style kernel :</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Valeur</th>
+<th>Référence kernel</th>
+<th>Effet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BasedOnStyle</code></td>
+<td><code>Google</code></td>
+<td>—</td>
+<td>Style de base (surchargé ci-dessous pour correspondre aux conventions kernel)</td>
+</tr>
+<tr>
+<td><code>IndentWidth</code></td>
+<td><code>8</code></td>
+<td>§1 : « Tabs are 8 characters »</td>
+<td>Indentation logique de 8 espaces ; décourage le nesting profond</td>
+</tr>
+<tr>
+<td><code>UseTab</code></td>
+<td><code>ForIndentation</code></td>
+<td>§1 : « use tabs »</td>
+<td>Tabulations pour l'indentation, espaces pour l'alignement</td>
+</tr>
+<tr>
+<td><code>BreakBeforeBraces</code></td>
+<td><code>Linux</code></td>
+<td>§3 : « K&amp;R brace placement »</td>
+<td>Accolade ouvrante sur la même ligne ; fonctions sur la ligne suivante</td>
+</tr>
+<tr>
+<td><code>PointerAlignment</code></td>
+<td><code>Left</code></td>
+<td>§4 : « declare close to the type »</td>
+<td>Style <code>int* p</code> (convention C)</td>
+</tr>
+<tr>
+<td><code>ColumnLimit</code></td>
+<td><code>80</code></td>
+<td>§2 : « the preferred limit is 80 columns »</td>
+<td>Retour à la ligne strict à 80 colonnes</td>
+</tr>
+<tr>
+<td><code>AllowShortFunctionsOnASingleLine</code></td>
+<td><code>None</code></td>
+<td>§6 : les fonctions doivent être lisibles</td>
+<td>Ne jamais compacter les corps de fonctions sur une seule ligne</td>
+</tr>
+<tr>
+<td><code>SeparateDefinitionBlocks</code></td>
+<td><code>Always</code></td>
+<td>§1, FreeBSD style(9)</td>
+<td><strong>Impose une ligne vide entre chaque définition de top-level</strong> (fonctions, structs, enums)</td>
+</tr>
+<tr>
+<td><code>SortIncludes</code></td>
+<td><code>true</code></td>
+<td>—</td>
+<td>Tri alphabétique des includes (GLAD en priorité via <code>IncludeCategories</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="separatedefinitionblocks"><code>SeparateDefinitionBlocks</code><a class="headerlink" href="#separatedefinitionblocks" title="Permanent link">¶</a></h3>
+<p>Cette règle (disponible depuis clang-format 14) garantit une séparation visuelle cohérente entre les définitions de fonctions, les déclarations de structs et les définitions d'enums. Sans elle, <code>clang-format</code> ne touche pas à l'espacement entre les définitions — des corps de fonctions adjacents sans ligne vide passent silencieusement.</p>
+<p>Avec <code>Always</code>, <code>clang-format</code> insère automatiquement une ligne vide là où il en manque une, et supprime les doubles lignes vides superflues.</p>
+<p>Le noyau Linux applique cette règle par convention lors des revues de code. Le <code>style(9)</code> de FreeBSD l'énonce explicitement : <em>« Use blank lines to separate logical sections of code, including between function definitions. »</em> Nous l'automatisons via clang-format.</p>
+<h3 id="application-en-ci">Application en CI<a class="headerlink" href="#application-en-ci" title="Permanent link">¶</a></h3>
+<p>Le formatage est appliqué en CI par le job <code>lint-and-format</code> :</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># .github/workflows/main.yml (extrait)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="l l-Scalar l-Scalar-Plain">make format CONTAINER_RUN=""</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="l l-Scalar l-Scalar-Plain">git diff --exit-code || (echo "❌ Format error" &amp;&amp; exit 1)</span>
+</span></code></pre></div>
+<p>Tout fichier qui serait reformaté par <code>clang-format</code> fait échouer le job. Exécutez <code>just format</code> localement avant de commiter.</p>
 <h2 id="strategie-clang-tidy">Stratégie : Clang-Tidy<a class="headerlink" href="#strategie-clang-tidy" title="Permanent link">¶</a></h2>
 <p>Nous utilisons <code>clang-tidy</code> pour l'analyse statique. La configuration est définie dans <code>.clang-tidy</code>, axée sur :</p>
 <ul>
@@ -3614,18 +3836,18 @@
 </ul>
 <h2 id="maintenance">Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">¶</a></h2>
 <p>Pour vider le cache et forcer un re-lint complet :</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>make<span class="w"> </span>lint-clean
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>make<span class="w"> </span>lint
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>lint-clean
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>make<span class="w"> </span>lint
 </span></code></pre></div>
 <p>L'ajout d'une nouvelle règle dans <code>.clang-tidy</code> invalidera également automatiquement l'intégralité du cache, garantissant la conformité à l'échelle du projet.</p>
 <h2 id="hygiene-des-includes-misc-include-cleaner">Hygiène des includes (misc-include-cleaner)<a class="headerlink" href="#hygiene-des-includes-misc-include-cleaner" title="Permanent link">¶</a></h2>
 <p>Le check <code>misc-include-cleaner</code> est activé dans <code>.clang-tidy</code> pour détecter les directives <code>#include</code> inutilisées au moment du lint.</p>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># .clang-tidy (extrait)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">Checks</span><span class="p">:</span><span class="w"> </span><span class="s">'...,misc-*,...'</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">CheckOptions</span><span class="p">:</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">misc-include-cleaner.MissingIncludes</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># .clang-tidy (extrait)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">Checks</span><span class="p">:</span><span class="w"> </span><span class="s">'...,misc-*,...'</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">CheckOptions</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">misc-include-cleaner.MissingIncludes</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
 </span></code></pre></div>
 <ul>
 <li><strong>UnusedIncludes</strong> : Activé — signale les headers inclus mais jamais directement utilisés.</li>
@@ -3635,12 +3857,12 @@
 <h2 id="validation-glsl-des-shaders">Validation GLSL des shaders<a class="headerlink" href="#validation-glsl-des-shaders" title="Permanent link">¶</a></h2>
 <p>Les shaders sont validés au moment du lint via <code>glslangValidator</code> et le script <code>scripts/lint_shaders.sh</code>.</p>
 <h3 id="mode-standard-integre-dans-just-lint">Mode standard (intégré dans <code>just lint</code>)<a class="headerlink" href="#mode-standard-integre-dans-just-lint" title="Permanent link">¶</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>just<span class="w"> </span>lint
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Inclut : clang-tidy + ruff + validation GLSL (26 shaders)</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>just<span class="w"> </span>lint
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Inclut : clang-tidy + ruff + validation GLSL (26 shaders)</span>
 </span></code></pre></div>
 <p>Valide tous les shaders <code>.vert</code>, <code>.frag</code> et <code>.comp</code> dans <code>shaders/</code>. Le script résout les directives d'inclusion <code>@header</code> personnalisées avant de passer le source résolu à <code>glslangValidator</code>.</p>
 <h3 id="mode-strict-optionnel-cible-spir-v">Mode strict (optionnel, cible SPIR-V)<a class="headerlink" href="#mode-strict-optionnel-cible-spir-v" title="Permanent link">¶</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>just<span class="w"> </span>lint-shaders-strict
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>just<span class="w"> </span>lint-shaders-strict
 </span></code></pre></div>
 <p>Exécute la validation avec <code>--target-env opengl</code> (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs <code>layout(location=N)</code> manquants, qui empêchent silencieusement le debugger de shaders RenderDoc de fonctionner.</p>
 <p>Depuis mars 2026, <strong>les 33 fichiers shader passent la validation SPIR-V stricte</strong>. Le projet impose des <code>layout(location=N)</code> explicites sur tous les varyings et uniforms non-opaques, et <code>layout(binding=N)</code> sur tous les samplers/images. Voir <a href="../renderdoc_guide/#8-debogage-des-shaders-compatibilite-spir-v">renderdoc_guide.fr.md</a> pour le détail complet.</p>
@@ -3696,10 +3918,10 @@
 <li><strong>Changements stagés</strong> : <code>git diff --cached &lt;base_ref&gt;</code> détecte les NOLINT dans le contenu sur le point d'être commité (index). C'est essentiel lors du <code>pre-commit</code>, où <code>HEAD</code> pointe encore sur le commit précédent et le contenu stagé serait autrement invisible.</li>
 </ol>
 <p>Lorsque des fichiers stagés existent, leur contenu final est comparé à la ref de base, gérant correctement les cas où les changements stagés <em>ajoutent</em> ou <em>suppriment</em> des suppressions NOLINT. Si des lignes NOLINT nettes sont trouvées, le check échoue avec la liste de toutes les violations.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Utilisation locale</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>just<span class="w"> </span>check-nolint<span class="w">                    </span><span class="c1"># Compare vs origin/master (défaut)</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>just<span class="w"> </span>check-nolint<span class="w"> </span>origin/main<span class="w">        </span><span class="c1"># Ref de base personnalisée</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>make<span class="w"> </span>check-nolint<span class="w"> </span><span class="nv">NOLINT_BASE_REF</span><span class="o">=</span>origin/main
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Utilisation locale</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>just<span class="w"> </span>check-nolint<span class="w">                    </span><span class="c1"># Compare vs origin/master (défaut)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>just<span class="w"> </span>check-nolint<span class="w"> </span>origin/main<span class="w">        </span><span class="c1"># Ref de base personnalisée</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>make<span class="w"> </span>check-nolint<span class="w"> </span><span class="nv">NOLINT_BASE_REF</span><span class="o">=</span>origin/main
 </span></code></pre></div>
 <h3 id="politique-dexception">Politique d'exception<a class="headerlink" href="#politique-dexception" title="Permanent link">¶</a></h3>
 <p>Si la suppression est la <strong>seule option viable</strong>, elle nécessite :</p>
@@ -3729,7 +3951,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="24 avril 2026 12:39:27 UTC">24 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="9 mai 2026 14:11:12 UTC">9 mai 2026</span>
   </span>
 
     
