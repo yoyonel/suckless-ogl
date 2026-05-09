@@ -1,5 +1,6 @@
 var NAVTREEINDEX8 =
 {
+"sphere__sort_8glsl.html#a44148d067b950368e31a5be64fe322e8":[6,0,3,27,3],
 "sphere__sort_8glsl.html#a7121a10b559750db51fbc41416945728":[6,0,3,27,9],
 "sphere__sort_8glsl.html#a783290ed66db149184d1fa8be9ab9654":[6,0,3,27,8],
 "sphere__sort_8glsl.html#a78930339a9df7c85d6172ad0cc25618e":[6,0,3,27,5],
@@ -248,6 +249,5 @@ var NAVTREEINDEX8 =
 "structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71":[5,0,21,29],
 "structCamera.html#a5431c8caefafb42a667ca4c801bef07f":[5,0,21,25],
 "structCamera.html#a5a91e47215b603f52859e3e3228d668a":[5,0,21,13],
-"structCamera.html#a61bf4a7c4d9f83b3217211c75c3684dd":[5,0,21,30],
-"structCamera.html#a61c5b5a1bf17abeea9ac2cd4a46cc033":[5,0,21,1]
+"structCamera.html#a61bf4a7c4d9f83b3217211c75c3684dd":[5,0,21,30]
 };

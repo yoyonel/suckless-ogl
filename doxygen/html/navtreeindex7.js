@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"scene_8h_source.html":[6,0,2,58],
 "scene__cleanup_8c.html":[6,0,4,47],
 "scene__cleanup_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3":[6,0,4,47,3],
 "scene__cleanup_8c.html#a24bdb02de96abeaa6a2fbdc577022c24":[6,0,4,47,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "skybox_8h_source.html":[6,0,2,71],
 "sphere__sort_8glsl.html":[6,0,3,27],
 "sphere__sort_8glsl.html#a082a7ac2902638e140916987e6dff95c":[6,0,3,27,2],
-"sphere__sort_8glsl.html#a1a9494a3fb2bfffa87ffdbdb6124f49c":[6,0,3,27,11],
-"sphere__sort_8glsl.html#a44148d067b950368e31a5be64fe322e8":[6,0,3,27,3]
+"sphere__sort_8glsl.html#a1a9494a3fb2bfffa87ffdbdb6124f49c":[6,0,3,27,11]
 };

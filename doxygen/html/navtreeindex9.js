@@ -1,5 +1,6 @@
 var NAVTREEINDEX9 =
 {
+"structCamera.html#a61c5b5a1bf17abeea9ac2cd4a46cc033":[5,0,21,1],
 "structCamera.html#a63e30b404a845c654ac4da0e6dfea836":[5,0,21,6],
 "structCamera.html#a6bd96884fb5fb652b71042f2d7f0122c":[5,0,21,22],
 "structCamera.html#a7daeac31156375ca3f4523d4e269b401":[5,0,21,14],
@@ -248,6 +249,5 @@ var NAVTREEINDEX9 =
 "structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70":[5,0,58,8],
 "structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1":[5,0,58,25],
 "structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a":[5,0,58,16],
-"structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76":[5,0,58,24],
-"structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de":[5,0,58,23]
+"structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76":[5,0,58,24]
 };

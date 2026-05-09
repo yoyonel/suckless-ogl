@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76":[6,0,2,18,0],
 "dvec3_8h.html#a8703e51b10a3c9c8d86ca4fd7e2dc448":[6,0,2,18,13],
 "dvec3_8h.html#a98af61b1fa7c66fd349618f272188ac2":[6,0,2,18,11],
 "dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097":[6,0,2,18,7],
@@ -210,8 +211,8 @@ var NAVTREEINDEX2 =
 "globals_eval_v.html":[6,1,5,19],
 "globals_eval_w.html":[6,1,5,20],
 "globals_f.html":[6,1,0,6],
-"globals_func.html":[6,1,1,0],
 "globals_func.html":[6,1,1],
+"globals_func.html":[6,1,1,0],
 "globals_func_a.html":[6,1,1,1],
 "globals_func_b.html":[6,1,1,2],
 "globals_func_c.html":[6,1,1,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "globals_type.html":[6,1,3],
 "globals_u.html":[6,1,0,20],
 "globals_v.html":[6,1,0,21],
-"globals_vars.html":[6,1,2],
-"globals_vars.html":[6,1,2,0]
+"globals_vars.html":[6,1,2]
 };

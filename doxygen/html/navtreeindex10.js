@@ -1,5 +1,6 @@
 var NAVTREEINDEX10 =
 {
+"structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de":[5,0,58,23],
 "structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def":[5,0,58,0],
 "structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0":[5,0,58,18],
 "structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f":[5,0,58,9],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd":[5,0,84,8],
 "structPostProcessPreset.html#aba5562c520b09436141bdaa254886af2":[5,0,84,7],
 "structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0":[5,0,84,9],
-"structPostProcessPreset.html#affd57f46b38e3b7f6a9f8c207b2aad15":[5,0,84,10],
-"structPostProcessUBO.html":[5,0,85]
+"structPostProcessPreset.html#affd57f46b38e3b7f6a9f8c207b2aad15":[5,0,84,10]
 };
