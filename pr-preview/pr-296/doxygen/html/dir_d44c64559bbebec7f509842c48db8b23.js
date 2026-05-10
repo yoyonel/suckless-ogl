@@ -39,6 +39,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "io.h", "io_8h.html", "io_8h" ],
     [ "light_probes.h", "light__probes_8h.html", "light__probes_8h" ],
     [ "log.h", "log_8h.html", "log_8h" ],
+    [ "lum_histogram.h", "lum__histogram_8h.html", "lum__histogram_8h" ],
     [ "main.h", "main_8h.html", null ],
     [ "material.h", "material_8h.html", "material_8h" ],
     [ "mem.h", "mem_8h.html", null ],

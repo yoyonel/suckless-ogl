@@ -1,6 +1,7 @@
 var async__loader_8h =
 [
     [ "AsyncRequest", "structAsyncRequest.html", "structAsyncRequest" ],
+    [ "APP_ASYNC_LOADER_DESCRIPTOR", "async__loader_8h.html#a1acfe8a071c91afc6fa14a5e9297cbf2", null ],
     [ "ASYNC_MAX_PATH", "async__loader_8h.html#ada1ed83ee10e19ab9cca088b280d85ee", null ],
     [ "AsyncState", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209", [
       [ "ASYNC_IDLE", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324", null ],
@@ -16,5 +17,7 @@ var async__loader_8h =
     [ "async_loader_destroy", "async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564", null ],
     [ "async_loader_poll", "async__loader_8h.html#a6de1e12f1acee74c563ec68d926092eb", null ],
     [ "async_loader_provide_pbo", "async__loader_8h.html#a5c550b2e0e880d9be179ada62e3d99e3", null ],
-    [ "async_loader_request", "async__loader_8h.html#a728931915db1981745d8648f661e4bce", null ]
+    [ "async_loader_request", "async__loader_8h.html#a728931915db1981745d8648f661e4bce", null ],
+    [ "async_loader_subsys_cleanup", "async__loader_8h.html#a0141d790d88e5a56e09cc3a5661105ce", null ],
+    [ "async_loader_subsys_init", "async__loader_8h.html#a02ab478fb17288fbda4d1dba9c2b9b20", null ]
 ];

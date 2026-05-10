@@ -32,6 +32,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "io.c", "io_8c.html", "io_8c" ],
     [ "light_probes.c", "light__probes_8c.html", "light__probes_8c" ],
     [ "log.c", "log_8c.html", "log_8c" ],
+    [ "lum_histogram.c", "lum__histogram_8c.html", "lum__histogram_8c" ],
     [ "main.c", "main_8c.html", "main_8c" ],
     [ "material.c", "material_8c.html", "material_8c" ],
     [ "metric_stack.c", "metric__stack_8c.html", "metric__stack_8c" ],

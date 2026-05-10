@@ -271,6 +271,8 @@ $(document).ready(function(){initNavTree('async__loader_8c.html',''); initResiza
 <code>#include &lt;stb_image.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__profiling_8h_source.html">app_profiling.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for async_loader.c:</div>
 <div class="dyncontent">
@@ -325,6 +327,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a7a9ef6b50fc1358023da343b3b6d281a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a">async_loader_cancel</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
 <tr class="memdesc:a7a9ef6b50fc1358023da343b3b6d281a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels the current request if it is waiting for a PBO.  <a href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a">More...</a><br /></td></tr>
 <tr class="separator:a7a9ef6b50fc1358023da343b3b6d281a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0156f7f57cd9d249e3f0f73a8877082"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#af0156f7f57cd9d249e3f0f73a8877082">async_loader_subsys_init</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:af0156f7f57cd9d249e3f0f73a8877082"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade98bf6dc7e452f0bdbd19dc72cc4706"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#ade98bf6dc7e452f0bdbd19dc72cc4706">async_loader_subsys_cleanup</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ade98bf6dc7e452f0bdbd19dc72cc4706"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="afeedc868310865204c7be3df933c55d0"></a>
@@ -689,6 +695,54 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a728931915db1981745d8648f661e4bce_cgraph.svg" width="398" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ade98bf6dc7e452f0bdbd19dc72cc4706"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade98bf6dc7e452f0bdbd19dc72cc4706">&#9670;&nbsp;</a></span>async_loader_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="async__loader_8c_ade98bf6dc7e452f0bdbd19dc72cc4706_cgraph.svg" width="383" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af0156f7f57cd9d249e3f0f73a8877082"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0156f7f57cd9d249e3f0f73a8877082">&#9670;&nbsp;</a></span>async_loader_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int async_loader_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_af0156f7f57cd9d249e3f0f73a8877082_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

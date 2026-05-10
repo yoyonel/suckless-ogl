@@ -83,18 +83,18 @@ var NAVTREEINDEX =
 [
 "../../index.html",
 "app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17",
-"debug__probe_8frag.html#af76936b4f5273c1c4f09fb3586560fa9",
-"globals_func_e.html",
-"group__Renderer.html#gaa21ac8099a8b2310e9a42661d676cc51",
-"metric__stack_8c.html#aa8f8c6a6a6c2ff5a5ffc57a2ac0a6e38",
-"postprocess__input_8c.html#aabe528913a4482ed58ea2e2fdf120b3c",
-"render__utils_8c.html#aa6f98bd6406323d50aa3beb34f2bd8a9",
-"shockwave_8h.html#aeb88aeac407851462596fea063905785",
-"structBillboardSorter.html#ac3d3ca74ea3932296c64db0f799a0146",
-"structGamepadState.html#a7864a4d8855432b5528f9fcae4f49ba2",
-"structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9",
-"structSphereInstance.html#ae9dc1911c50fb529ab5196478c64cfe0",
-"ui_8c.html#af0a3c0de038ae56e7e6344cdfdd15bba"
+"debug__probe_8frag.html#abb9977a0ac90dfc1d1e10bdff6ef4a4a",
+"globals_func.html",
+"group__PostProcess.html#gafa325fb5020f368cddf0ab9a216d4e85",
+"md_docs_billboard_optimization.html#autotoc_md2",
+"postprocess__cleanup_8c.html#a9ad5053871c219c0dd7585fab39c18b0",
+"render__utils_8c.html#a14b5c2c05c8237ed479c12883a7513e5",
+"shockwave_8frag.html#acdef7a1fd863a6d3770c1268cb06add3",
+"structBillboardSortEntry.html#adb408c3b2fc98a5000340adcd18dec2f",
+"structGamepadControlPos.html#a18bc251bef92d74ab3fcff6b55088ad9",
+"structPerfModeContext.html#aec9d63a4a531c188dcd633a978c3f1f3",
+"structSkybox.html#ab3d7a3af5730ce49577956316e452c5b",
+"ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
