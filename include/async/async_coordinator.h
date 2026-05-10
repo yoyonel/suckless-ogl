@@ -22,4 +22,13 @@ void async_coordinator_cleanup(AsyncCoordinator* coord);
 bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
                               AsyncRequest* out_req);
 
+/* --- Subsystem descriptor (alloc-only Phase 1) --- */
+#include "app_subsystem.h"
+
+int async_coord_subsys_init(struct App* app);
+void async_coord_subsys_cleanup(struct App* app);
+
+#define APP_ASYNC_COORD_DESCRIPTOR \
+	{"async_coord", async_coord_subsys_init, async_coord_subsys_cleanup}
+
 #endif /* ASYNC_COORDINATOR_H */

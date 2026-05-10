@@ -46,4 +46,10 @@ void app_profiling_init(AppProfiling* prof, int width, int height);
  */
 void app_profiling_cleanup(AppProfiling* prof);
 
+#include "app_subsystem.h"
+int app_profiling_subsys_init(struct App* app);
+void app_profiling_subsys_cleanup(struct App* app);
+#define APP_PROFILING_DESCRIPTOR \
+	{"profiling", app_profiling_subsys_init, app_profiling_subsys_cleanup}
+
 #endif /* APP_PROFILING_H */

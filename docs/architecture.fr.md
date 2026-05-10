@@ -79,11 +79,50 @@ La structure `App` est décomposée en sous-structs par domaine :
 
 - **`AppProfiling`** (`include/app_profiling.h`) : regroupe le profiling et les métriques — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Accès via `app->profiling->gpu_profiler`, etc. Init/cleanup délégués à `app_profiling_init()` / `app_profiling_cleanup()` dans `src/app_profiling.c`.
 - **`AppInput`** (`include/app_input_state.h`) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Accès via `app->input->camera`, etc. Init/cleanup délégués à `app_input_state_init()` / `app_input_state_cleanup()` dans `src/app_input_state.c`.
-- **`AppWindow`** (`include/app_window.h`) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Accès via `app->win.handle`, `app->win.is_fullscreen`, etc.
+- **`AppWindow`** (`include/app_window.h`) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Accès via `app->win.handle`, `app->win.is_fullscreen`, etc. Init/cleanup délégués à `app_window_subsys_init()` / `app_window_subsys_cleanup()` dans `src/app_window.c`. Le descripteur fenêtre est **premier** dans la table des sous-systèmes — il crée le contexte OpenGL nécessaire à tous les autres sous-systèmes, et est nettoyé en **dernier** (ordre inverse) pour garantir que le contexte GL survit à toutes les libérations de ressources GPU.
 
 > **Note de nommage** : `app_input_state.h` héberge la définition de la sous-struct `AppInput`, tandis que le fichier existant `app_input.h` héberge le seam `AppInputContext` (bundle de pointeurs ciblés pour les handlers d'entrée, issue #204).
 
 Cela réduit le nombre de champs directs de `App` de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant `app.c` focalisé sur l'orchestration.
+
+### Pattern SubsystemDescriptor
+
+L'initialisation et le nettoyage des sous-structs de `App` sont pilotés par une **table de descripteurs terminée par sentinelle** au lieu de séquences `calloc`/`init`/`cleanup` écrites à la main dans `app_init()` / `app_cleanup()`.
+
+**Types fondamentaux** (`include/app_subsystem.h`) :
+
+```c
+typedef struct SubsystemDescriptor {
+    const char* name;
+    int (*init)(struct App* app);
+    void (*cleanup)(struct App* app);
+} SubsystemDescriptor;
+```
+
+**Déclaration de la table** (`src/app.c`) :
+
+```c
+static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_WINDOW_DESCRIPTOR,      // Crée le contexte GL — doit être premier
+    APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,
+    APP_POSTPROCESS_DESCRIPTOR,
+    APP_SCENE_DESCRIPTOR,
+    APP_ENV_MGR_DESCRIPTOR,
+    APP_ASYNC_COORD_DESCRIPTOR,
+    {0},  /* sentinelle */
+};
+```
+
+Chaque module possède sa macro descripteur (ex. `APP_WINDOW_DESCRIPTOR` dans `app_window.h`), gardant la définition co-localisée avec les fonctions init/cleanup.
+
+**Contrainte d'ordre** : `APP_WINDOW_DESCRIPTOR` doit être la **première** entrée car il crée le contexte OpenGL. Le cleanup s'exécutant en ordre inverse, la fenêtre est détruite en **dernier**, garantissant que le contexte GL reste valide pendant la libération de tous les sous-systèmes dépendants du GPU (requêtes profiler, FBOs, VAOs, shaders, etc.).
+
+**Sémantique** :
+
+- `app_subsystems_init()` parcourt la table en avant jusqu'à la sentinelle `{0}`. Sur le premier échec à l'index *N*, il appelle `cleanup()` en ordre inverse pour les entrées *[N-1 .. 0]* (rollback automatique).
+- `app_subsystems_cleanup()` compte les entrées, puis parcourt la table en ordre inverse — garantissant que le démontage est le miroir de l'initialisation.
+- Pas de paramètre count explicite : la sentinelle élimine une source de désynchronisation.
 
 ### Décomposition du header PostProcess
 
@@ -208,15 +247,15 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 
 ## Métriques & Santé
 
-> Dernière mise à jour : avril 2026 (Phase 10 — Architecture Deepening V)
+> Dernière mise à jour : mai 2026 (SubsystemDescriptor MVP — Issue #285)
 
 ### Taille du codebase
 
 | Catégorie | Fichiers | LOC total |
 |-----------|----------:|----------:|
-| Sources (`src/*.c`) | 66 | 20 556 |
-| En-têtes (`include/*.h`) | 87 | 7 839 |
-| Tests (`tests/test_*.c`) | 69 | 12 666 |
+| Sources (`src/*.c`) | 67 | 20 556 |
+| En-têtes (`include/*.h`) | 88 | 7 839 |
+| Tests (`tests/test_*.c`) | 70 | 12 666 |
 | Shaders (`shaders/`) | 60 | — |
 
 ### LOC par module (top 15)
@@ -266,7 +305,7 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 | Fonctions | 83,1 % | ≥ 85 % |
 | Branches | 53,6 % | ≥ 50 % ✅ |
 
-68 tests passent (unitaires + intégration, CTest).
+69 tests passent (unitaires + intégration, CTest).
 
 ## Graphe de dépendances include
 

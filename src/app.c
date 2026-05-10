@@ -3,6 +3,7 @@
 #include "app_input.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
+#include "app_subsystem.h"
 #include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "env_manager.h"
@@ -13,12 +14,21 @@
 #include "scene_gpu_resources.h"
 #include "texture.h"
 #include "tracy_gpu.h"
-#include "window.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <string.h>
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
+
+/* Subsystem descriptor table — each module owns its own descriptor.
+ * Order matters: init runs forward, cleanup runs in reverse.
+ * Sentinel-terminated: last entry is {0}. */
+static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_WINDOW_DESCRIPTOR,      APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,   APP_POSTPROCESS_DESCRIPTOR,
+    APP_SCENE_DESCRIPTOR,       APP_ENV_MGR_DESCRIPTOR,
+    APP_ASYNC_COORD_DESCRIPTOR, {0},
+};
 
 static void app_load_initial_hdr(App* app)
 {
@@ -42,55 +52,11 @@ int app_init(App* app, int width, int height, const char* title)
 {
 	app->width = width;
 	app->height = height;
+	app->title = title;
 
-	/* Phase 1: Heap allocations (goto cleanup_alloc on failure).
-	 * calloc zero-initialises, so free(NULL) is safe in the cleanup
-	 * block regardless of which allocation failed (C99 §7.20.3.2). */
-	app->input = calloc(1, sizeof(*app->input));
-	if (!app->input) {
-		goto cleanup_alloc;
+	if (!app_subsystems_init(app, APP_SUBSYSTEM_TABLE)) {
+		return 0;
 	}
-	app->profiling = calloc(1, sizeof(*app->profiling));
-	if (!app->profiling) {
-		goto cleanup_alloc;
-	}
-	app->postprocess = calloc(1, sizeof(*app->postprocess));
-	if (!app->postprocess) {
-		goto cleanup_alloc;
-	}
-	app->scene = calloc(1, sizeof(*app->scene));
-	if (!app->scene) {
-		goto cleanup_alloc;
-	}
-	app->env_mgr = calloc(1, sizeof(*app->env_mgr));
-	if (!app->env_mgr) {
-		goto cleanup_alloc;
-	}
-	app->async_coord = calloc(1, sizeof(*app->async_coord));
-	if (!app->async_coord) {
-		goto cleanup_alloc;
-	}
-
-	app_input_state_init(app->input);
-	app->win.is_fullscreen = false;
-	app->win.resize_pending = 0;
-	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
-	app->env_mgr->is_first_load = true;
-
-	/* Phase 2: Window & GL context (goto cleanup_alloc on failure —
-	 * no GL resources exist yet). */
-	app->win.handle = window_create(width, height, title, DEFAULT_SAMPLES);
-	if (!app->win.handle) {
-		goto cleanup_alloc;
-	}
-
-	glfwSwapInterval(0);
-	glfwSetWindowUserPointer(app->win.handle, app);
-	glfwSetKeyCallback(app->win.handle, key_callback);
-	glfwSetCursorPosCallback(app->win.handle, mouse_callback);
-	glfwSetScrollCallback(app->win.handle, scroll_callback);
-	glfwSetFramebufferSizeCallback(app->win.handle,
-	                               framebuffer_size_callback);
 
 	if (app->input->camera_enabled) {
 		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
@@ -165,21 +131,6 @@ int app_init(App* app, int width, int height, const char* title)
 cleanup_full:
 	app_cleanup(app);
 	return 0;
-
-cleanup_alloc:
-	free(app->async_coord);
-	app->async_coord = NULL;
-	free(app->env_mgr);
-	app->env_mgr = NULL;
-	free(app->scene);
-	app->scene = NULL;
-	free(app->postprocess);
-	app->postprocess = NULL;
-	free(app->profiling);
-	app->profiling = NULL;
-	free(app->input);
-	app->input = NULL;
-	return 0;
 }
 
 void app_cleanup(App* app)
@@ -191,8 +142,6 @@ void app_cleanup(App* app)
 	/* 1. High-level systems first (may depend on textures/shaders) */
 	app_ui_cleanup(&app->overlay);
 	postprocess_cleanup(app->postprocess);
-	free(app->postprocess);
-	app->postprocess = NULL;
 
 	/* Async Loader Shutdown before other resources */
 	async_loader_destroy(app->async_loader);
@@ -200,32 +149,17 @@ void app_cleanup(App* app)
 
 	/* 2. Scene / Rendering groups */
 	scene_cleanup(app->scene);
-	free(app->scene);
-	app->scene = NULL;
 
 	/* 3. Common low-level resources */
-	free(app->env_mgr);
-	app->env_mgr = NULL;
-
 	async_coordinator_cleanup(app->async_coord);
-	free(app->async_coord);
-	app->async_coord = NULL;
-
-	app_input_state_cleanup(app->input);
-	free(app->input);
-	app->input = NULL;
 
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
 		app->lum_histogram_buffer = NULL;
 	}
 
-	app_profiling_cleanup(app->profiling);
-	free(app->profiling);
-	app->profiling = NULL;
-
-	window_destroy(app->win.handle);
-	app->win.handle = NULL;
+	/* Reverse-order cleanup of descriptor-managed subsystems */
+	app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
 }
 
 static void app_render_ui_trampoline(void* user_data)

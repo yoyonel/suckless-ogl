@@ -97,7 +97,9 @@ set(SOURCES
     src/app_input_state.c
     src/app_metrics.c
     src/app_profiling.c
+    src/app_subsystem.c
     src/app_ui.c
+    src/app_window.c
     src/async_loader.c
     src/async_coordinator.c
     src/billboard_rendering.c

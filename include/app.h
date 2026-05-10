@@ -37,10 +37,11 @@ typedef struct App {
 	AppUIOverlay overlay; /**< Overlay and text rendering state. */
 
 	/* --- App State Flags and Values --- */
-	int width;                    /**< Current window/viewport width. */
-	int height;                   /**< Current window/viewport height. */
-	EnvManager* env_mgr;          /**< Environment/IBL state. */
-	ActionNotifier notifier;      /**< Temporary user notifications. */
+	const char* title;       /**< Window title (borrowed, not owned). */
+	int width;               /**< Current window/viewport width. */
+	int height;              /**< Current window/viewport height. */
+	EnvManager* env_mgr;     /**< Environment/IBL state. */
+	ActionNotifier notifier; /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 
 	/* --- Global GPU Resources --- */

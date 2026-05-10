@@ -43,4 +43,13 @@ void postprocess_apply_preset(PostProcess* post_processing,
 #include "postprocess_readback.h"
 #include "postprocess_setters.h"
 
+/* --- Subsystem descriptor (alloc-only Phase 1) --- */
+#include "app_subsystem.h"
+
+int postprocess_subsys_init(struct App* app);
+void postprocess_subsys_cleanup(struct App* app);
+
+#define APP_POSTPROCESS_DESCRIPTOR \
+	{"postprocess", postprocess_subsys_init, postprocess_subsys_cleanup}
+
 #endif /* POSTPROCESS_H */

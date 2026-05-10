@@ -1,3 +1,5 @@
+#include "app.h"
+#include "app_settings.h"
 #include "billboard_rendering.h"
 #include "ibl_coordinator.h"
 #include "instanced_rendering.h"
@@ -489,4 +491,26 @@ int scene_init(Scene* scene)
 	    shader_get_uniform_location(scene->shaders->debug_line, "u_color");
 
 	return 1;
+}
+
+/* --- Subsystem descriptor (Phase 1: alloc + defaults) --- */
+
+int scene_subsys_init(App* app)
+{
+	app->scene =
+	    platform_aligned_alloc(sizeof(*app->scene), SIMD_ALIGNMENT);
+	if (!app->scene) {
+		return 0;
+	}
+	*app->scene = (Scene){0};
+	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
+	return 1;
+}
+
+void scene_subsys_cleanup(App* app)
+{
+	if (app->scene) {
+		platform_aligned_free(app->scene);
+		app->scene = NULL;
+	}
 }

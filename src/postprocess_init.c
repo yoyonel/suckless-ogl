@@ -1,3 +1,4 @@
+#include "app.h"
 #include "app_settings.h"
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
@@ -6,6 +7,7 @@
 #include "effects/fx_lut_viz.h"
 #include "effects/fx_motion_blur.h"
 #include "log.h"
+#include "platform/platform_utils.h"
 #include "postprocess_internal.h"
 #include "render_utils.h"
 
@@ -370,4 +372,25 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
+}
+
+/* --- Subsystem descriptor (Phase 1: alloc only) --- */
+
+int postprocess_subsys_init(App* app)
+{
+	app->postprocess =
+	    platform_aligned_alloc(sizeof(*app->postprocess), SIMD_ALIGNMENT);
+	if (!app->postprocess) {
+		return 0;
+	}
+	*app->postprocess = (PostProcess){0};
+	return 1;
+}
+
+void postprocess_subsys_cleanup(App* app)
+{
+	if (app->postprocess) {
+		platform_aligned_free(app->postprocess);
+		app->postprocess = NULL;
+	}
 }
