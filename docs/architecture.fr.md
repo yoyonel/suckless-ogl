@@ -85,6 +85,40 @@ La structure `App` est décomposée en sous-structs par domaine :
 
 Cela réduit le nombre de champs directs de `App` de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant `app.c` focalisé sur l'orchestration.
 
+### Pattern SubsystemDescriptor
+
+L'initialisation et le nettoyage des sous-structs de `App` (actuellement `AppInput` et `AppProfiling`) sont pilotés par une **table de descripteurs terminée par sentinelle** au lieu de séquences `calloc`/`init`/`cleanup` écrites à la main dans `app_init()` / `app_cleanup()`.
+
+**Types fondamentaux** (`include/app_subsystem.h`) :
+
+```c
+typedef struct SubsystemDescriptor {
+    const char* name;
+    int (*init)(struct App* app);
+    void (*cleanup)(struct App* app);
+} SubsystemDescriptor;
+```
+
+**Déclaration de la table** (`src/app.c`) :
+
+```c
+static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,
+    {0},  /* sentinelle */
+};
+```
+
+Chaque module possède sa macro descripteur (ex. `APP_INPUT_DESCRIPTOR` dans `app_input_state.h`), gardant la définition co-localisée avec les fonctions init/cleanup.
+
+**Sémantique** :
+
+- `app_subsystems_init()` parcourt la table en avant jusqu'à la sentinelle `{0}`. Sur le premier échec à l'index *N*, il appelle `cleanup()` en ordre inverse pour les entrées *[N-1 .. 0]* (rollback automatique).
+- `app_subsystems_cleanup()` compte les entrées, puis parcourt la table en ordre inverse — garantissant que le démontage est le miroir de l'initialisation.
+- Pas de paramètre count explicite : la sentinelle élimine une source de désynchronisation.
+
+Ce pattern est conçu pour s'étendre à mesure que d'autres sous-systèmes migrent vers les descripteurs (voir issues #286–#290).
+
 ### Décomposition du header PostProcess
 
 Les définitions de types de `PostProcess` sont décomposées en cinq sous-headers, suivant le même pattern que la décomposition de Scene. `postprocess.h` (648 → 330 lignes) ne contient plus que la struct agrégat `PostProcess`, l'enum `PostProcessEffect`, `PostProcessPreset` et les signatures de fonctions.
@@ -208,15 +242,15 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 
 ## Métriques & Santé
 
-> Dernière mise à jour : avril 2026 (Phase 10 — Architecture Deepening V)
+> Dernière mise à jour : mai 2026 (SubsystemDescriptor MVP — Issue #285)
 
 ### Taille du codebase
 
 | Catégorie | Fichiers | LOC total |
 |-----------|----------:|----------:|
-| Sources (`src/*.c`) | 66 | 20 556 |
-| En-têtes (`include/*.h`) | 87 | 7 839 |
-| Tests (`tests/test_*.c`) | 69 | 12 666 |
+| Sources (`src/*.c`) | 67 | 20 556 |
+| En-têtes (`include/*.h`) | 88 | 7 839 |
+| Tests (`tests/test_*.c`) | 70 | 12 666 |
 | Shaders (`shaders/`) | 60 | — |
 
 ### LOC par module (top 15)
@@ -266,7 +300,7 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 | Fonctions | 83,1 % | ≥ 85 % |
 | Branches | 53,6 % | ≥ 50 % ✅ |
 
-68 tests passent (unitaires + intégration, CTest).
+69 tests passent (unitaires + intégration, CTest).
 
 ## Graphe de dépendances include
 

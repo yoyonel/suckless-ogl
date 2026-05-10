@@ -125,6 +125,40 @@ The `App` struct is decomposed into domain-aligned sub-structs:
 
 This reduces `App`'s direct field count from 24 to ~17. Each sub-struct header owns its type dependencies and its delegation functions, keeping `app.c` focused on orchestration.
 
+### Subsystem Descriptor Pattern
+
+Initialization and cleanup of `App` sub-structs (currently `AppInput` and `AppProfiling`) are driven by a **sentinel-terminated descriptor table** instead of hand-written `calloc`/`init`/`cleanup` sequences in `app_init()` / `app_cleanup()`.
+
+**Core types** (`include/app_subsystem.h`):
+
+```c
+typedef struct SubsystemDescriptor {
+    const char* name;
+    int (*init)(struct App* app);
+    void (*cleanup)(struct App* app);
+} SubsystemDescriptor;
+```
+
+**Table declaration** (`src/app.c`):
+
+```c
+static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,
+    {0},  /* sentinel */
+};
+```
+
+Each module owns its descriptor macro (e.g. `APP_INPUT_DESCRIPTOR` in `app_input_state.h`), keeping the definition co-located with the init/cleanup functions.
+
+**Semantics**:
+
+- `app_subsystems_init()` walks the table forward until the `{0}` sentinel. On the first failure at index *N*, it calls `cleanup()` in reverse for entries *[N-1 .. 0]* (automatic rollback).
+- `app_subsystems_cleanup()` counts entries, then walks the table in reverse — ensuring teardown is the mirror image of initialization.
+- No explicit count parameter: the sentinel removes one source of mismatch.
+
+This pattern is designed to scale as more subsystems migrate to descriptors (see issues #286–#290).
+
 ### PostProcess Header Decomposition
 
 The `PostProcess` struct's type definitions are decomposed into five sub-headers, following the same pattern as the Scene decomposition. `postprocess.h` (648 → 330 lines) now only contains the aggregate `PostProcess` struct, `PostProcessEffect` enum, `PostProcessPreset`, and function signatures.
@@ -241,15 +275,15 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 
 ## Metrics & Health
 
-> Last updated: April 2026 (Phase 10 — Architecture Deepening V)
+> Last updated: May 2026 (SubsystemDescriptor MVP — Issue #285)
 
 ### Codebase Size
 
 | Category | Files | Total LOC |
 |----------|------:|----------:|
-| Sources (`src/*.c`) | 66 | 20 556 |
-| Headers (`include/*.h`) | 87 | 7 839 |
-| Tests (`tests/test_*.c`) | 69 | 12 666 |
+| Sources (`src/*.c`) | 67 | 20 556 |
+| Headers (`include/*.h`) | 88 | 7 839 |
+| Tests (`tests/test_*.c`) | 70 | 12 666 |
 | Shaders (`shaders/`) | 60 | — |
 
 ### LOC per Module (top 15)
@@ -299,7 +333,7 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 | Functions | 83.1% | ≥ 85% |
 | Branches | 53.6% | ≥ 50% ✅ |
 
-68 tests pass (unit + integration, CTest).
+69 tests pass (unit + integration, CTest).
 
 ## Include-Dependency Graph
 
