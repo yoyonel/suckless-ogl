@@ -3,6 +3,7 @@
 #include "app_input.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
+#include "app_subsystem.h"
 #include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "env_manager.h"
@@ -19,6 +20,15 @@
 #include <string.h>
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
+
+/* Subsystem descriptor table — each module owns its own descriptor.
+ * Order matters: init runs forward, cleanup runs in reverse.
+ * Sentinel-terminated: last entry is {0}. */
+static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,
+    {0},
+};
 
 static void app_load_initial_hdr(App* app)
 {
@@ -43,17 +53,11 @@ int app_init(App* app, int width, int height, const char* title)
 	app->width = width;
 	app->height = height;
 
-	/* Phase 1: Heap allocations (goto cleanup_alloc on failure).
-	 * calloc zero-initialises, so free(NULL) is safe in the cleanup
-	 * block regardless of which allocation failed (C99 §7.20.3.2). */
-	app->input = calloc(1, sizeof(*app->input));
-	if (!app->input) {
-		goto cleanup_alloc;
+	if (!app_subsystems_init(app, APP_SUBSYSTEM_TABLE)) {
+		return 0;
 	}
-	app->profiling = calloc(1, sizeof(*app->profiling));
-	if (!app->profiling) {
-		goto cleanup_alloc;
-	}
+
+	/* Remaining allocations (not yet migrated to descriptors). */
 	app->postprocess = calloc(1, sizeof(*app->postprocess));
 	if (!app->postprocess) {
 		goto cleanup_alloc;
@@ -71,7 +75,6 @@ int app_init(App* app, int width, int height, const char* title)
 		goto cleanup_alloc;
 	}
 
-	app_input_state_init(app->input);
 	app->win.is_fullscreen = false;
 	app->win.resize_pending = 0;
 	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
@@ -175,10 +178,7 @@ cleanup_alloc:
 	app->scene = NULL;
 	free(app->postprocess);
 	app->postprocess = NULL;
-	free(app->profiling);
-	app->profiling = NULL;
-	free(app->input);
-	app->input = NULL;
+	app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
 	return 0;
 }
 
@@ -211,18 +211,13 @@ void app_cleanup(App* app)
 	free(app->async_coord);
 	app->async_coord = NULL;
 
-	app_input_state_cleanup(app->input);
-	free(app->input);
-	app->input = NULL;
-
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
 		app->lum_histogram_buffer = NULL;
 	}
 
-	app_profiling_cleanup(app->profiling);
-	free(app->profiling);
-	app->profiling = NULL;
+	/* Reverse-order cleanup of descriptor-managed subsystems */
+	app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
 
 	window_destroy(app->win.handle);
 	app->win.handle = NULL;
