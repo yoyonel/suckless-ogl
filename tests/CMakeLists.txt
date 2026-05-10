@@ -124,6 +124,7 @@ set(OPENGL_TESTS
     test_gpu_profiler
     test_app_input
     test_app_metrics
+    test_app_subsystem
     test_billboard_perf
     test_shader_uniforms_loc
     test_stencil_masking
