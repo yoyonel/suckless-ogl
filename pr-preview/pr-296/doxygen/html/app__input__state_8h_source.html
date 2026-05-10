@@ -1,0 +1,315 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/app_input_state.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('app__input__state_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">app_input_state.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="app__input__state_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef APP_INPUT_STATE_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define APP_INPUT_STATE_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="adaptive__sampler_8h.html">adaptive_sampler.h</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="app__binding_8h.html">app_binding.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="camera_8h.html">camera.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gamepad__input_8h.html">gamepad_input.h</a>&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structAppInput.html">   22</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAppInput.html">AppInput</a> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structAppInput.html#a66f6fb1021767de4306408f1cdb989b2">   23</a></span>&#160;    <a class="code" href="structCamera.html">Camera</a> <a class="code" href="structAppInput.html#a66f6fb1021767de4306408f1cdb989b2">camera</a>;        </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structAppInput.html#a4ee0e280f1e14c3a79e07d0e61450543">   24</a></span>&#160;    <a class="code" href="structGamepadState.html">GamepadState</a> <a class="code" href="structAppInput.html#a4ee0e280f1e14c3a79e07d0e61450543">gamepad</a>; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="structAppBindingRegistry.html">AppBindingRegistry</a></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structAppInput.html#a18cf140c485df4abf2c09ae08d2bfcac">   26</a></span>&#160;        <a class="code" href="structAppInput.html#a18cf140c485df4abf2c09ae08d2bfcac">binding_registry</a>;        </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structAppInput.html#a07903d36b50ec9e3ceb57aebb33af0f9">   27</a></span>&#160;    <a class="code" href="structAdaptiveSampler.html">AdaptiveSampler</a> <a class="code" href="structAppInput.html#a07903d36b50ec9e3ceb57aebb33af0f9">fps_sampler</a>; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structAppInput.html#a26e60fb79381924b2b979576f0c12dc0">   28</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structAppInput.html#a26e60fb79381924b2b979576f0c12dc0">camera_enabled</a>;          </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;} <a class="code" href="structAppInput.html">AppInput</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input__state_8h.html#aa0ce3ce1420b102dc22930f9cee0649e">app_input_state_init</a>(<a class="code" href="structAppInput.html">AppInput</a>* input);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input__state_8h.html#af571ae27438a1080557417aa42c62947">app_input_state_cleanup</a>(<a class="code" href="structAppInput.html">AppInput</a>* input);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="app__subsystem_8h.html">app_subsystem.h</a>&quot;</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">int</span> <a class="code" href="app__input__state_8h.html#a2212103b11e242e91a344996a99548d0">app_input_subsys_init</a>(<span class="keyword">struct</span> <a class="code" href="structApp.html">App</a>* app);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input__state_8h.html#a439a748d92a4a02c787b3954d3be42d7">app_input_subsys_cleanup</a>(<span class="keyword">struct</span> <a class="code" href="structApp.html">App</a>* app);</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="app__input__state_8h.html#a2b62faef4c1ec9fe33bf1ca2b2b56222">   46</a></span>&#160;<span class="preprocessor">#define APP_INPUT_DESCRIPTOR \</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">    {&quot;input&quot;</span>, app_input_subsys_init, app_input_subsys_cleanup}</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* APP_INPUT_STATE_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aadaptive__sampler_8h_html"><div class="ttname"><a href="adaptive__sampler_8h.html">adaptive_sampler.h</a></div><div class="ttdoc">Adaptive sampling utility for performance metrics.</div></div>
+<div class="ttc" id="aapp__binding_8h_html"><div class="ttname"><a href="app__binding_8h.html">app_binding.h</a></div></div>
+<div class="ttc" id="aapp__input__state_8h_html_a2212103b11e242e91a344996a99548d0"><div class="ttname"><a href="app__input__state_8h.html#a2212103b11e242e91a344996a99548d0">app_input_subsys_init</a></div><div class="ttdeci">int app_input_subsys_init(struct App *app)</div><div class="ttdef"><b>Definition:</b> app_input_state.c:25</div></div>
+<div class="ttc" id="aapp__input__state_8h_html_a439a748d92a4a02c787b3954d3be42d7"><div class="ttname"><a href="app__input__state_8h.html#a439a748d92a4a02c787b3954d3be42d7">app_input_subsys_cleanup</a></div><div class="ttdeci">void app_input_subsys_cleanup(struct App *app)</div><div class="ttdef"><b>Definition:</b> app_input_state.c:37</div></div>
+<div class="ttc" id="aapp__input__state_8h_html_aa0ce3ce1420b102dc22930f9cee0649e"><div class="ttname"><a href="app__input__state_8h.html#aa0ce3ce1420b102dc22930f9cee0649e">app_input_state_init</a></div><div class="ttdeci">void app_input_state_init(AppInput *input)</div><div class="ttdoc">Initialize all input sub-systems to default state.</div><div class="ttdef"><b>Definition:</b> app_input_state.c:9</div></div>
+<div class="ttc" id="aapp__input__state_8h_html_af571ae27438a1080557417aa42c62947"><div class="ttname"><a href="app__input__state_8h.html#af571ae27438a1080557417aa42c62947">app_input_state_cleanup</a></div><div class="ttdeci">void app_input_state_cleanup(AppInput *input)</div><div class="ttdoc">Release all input resources.</div><div class="ttdef"><b>Definition:</b> app_input_state.c:20</div></div>
+<div class="ttc" id="aapp__subsystem_8h_html"><div class="ttname"><a href="app__subsystem_8h.html">app_subsystem.h</a></div><div class="ttdoc">Subsystem descriptor pattern for structured init/cleanup.</div></div>
+<div class="ttc" id="acamera_8h_html"><div class="ttname"><a href="camera_8h.html">camera.h</a></div><div class="ttdoc">First-person camera module with realistic physics and head-bobbing.</div></div>
+<div class="ttc" id="agamepad__input_8h_html"><div class="ttname"><a href="gamepad__input_8h.html">gamepad_input.h</a></div><div class="ttdoc">Gamepad/controller input adapter for camera control.</div></div>
+<div class="ttc" id="astructAdaptiveSampler_html"><div class="ttname"><a href="structAdaptiveSampler.html">AdaptiveSampler</a></div><div class="ttdoc">Collector for performance samples within a rolling or fixed window.</div><div class="ttdef"><b>Definition:</b> adaptive_sampler.h:38</div></div>
+<div class="ttc" id="astructAppBindingRegistry_html"><div class="ttname"><a href="structAppBindingRegistry.html">AppBindingRegistry</a></div><div class="ttdoc">Central registry that holds application key bindings.</div><div class="ttdef"><b>Definition:</b> app_binding.h:48</div></div>
+<div class="ttc" id="astructAppInput_html"><div class="ttname"><a href="structAppInput.html">AppInput</a></div><div class="ttdoc">Camera, gamepad, key-bindings, and input smoothing grouped together.</div><div class="ttdef"><b>Definition:</b> app_input_state.h:22</div></div>
+<div class="ttc" id="astructAppInput_html_a07903d36b50ec9e3ceb57aebb33af0f9"><div class="ttname"><a href="structAppInput.html#a07903d36b50ec9e3ceb57aebb33af0f9">AppInput::fps_sampler</a></div><div class="ttdeci">AdaptiveSampler fps_sampler</div><div class="ttdef"><b>Definition:</b> app_input_state.h:27</div></div>
+<div class="ttc" id="astructAppInput_html_a18cf140c485df4abf2c09ae08d2bfcac"><div class="ttname"><a href="structAppInput.html#a18cf140c485df4abf2c09ae08d2bfcac">AppInput::binding_registry</a></div><div class="ttdeci">AppBindingRegistry binding_registry</div><div class="ttdef"><b>Definition:</b> app_input_state.h:26</div></div>
+<div class="ttc" id="astructAppInput_html_a26e60fb79381924b2b979576f0c12dc0"><div class="ttname"><a href="structAppInput.html#a26e60fb79381924b2b979576f0c12dc0">AppInput::camera_enabled</a></div><div class="ttdeci">int camera_enabled</div><div class="ttdef"><b>Definition:</b> app_input_state.h:28</div></div>
+<div class="ttc" id="astructAppInput_html_a4ee0e280f1e14c3a79e07d0e61450543"><div class="ttname"><a href="structAppInput.html#a4ee0e280f1e14c3a79e07d0e61450543">AppInput::gamepad</a></div><div class="ttdeci">GamepadState gamepad</div><div class="ttdef"><b>Definition:</b> app_input_state.h:24</div></div>
+<div class="ttc" id="astructAppInput_html_a66f6fb1021767de4306408f1cdb989b2"><div class="ttname"><a href="structAppInput.html#a66f6fb1021767de4306408f1cdb989b2">AppInput::camera</a></div><div class="ttdeci">Camera camera</div><div class="ttdef"><b>Definition:</b> app_input_state.h:23</div></div>
+<div class="ttc" id="astructApp_html"><div class="ttname"><a href="structApp.html">App</a></div><div class="ttdoc">The central state container for the entire application.</div><div class="ttdef"><b>Definition:</b> app.h:24</div></div>
+<div class="ttc" id="astructCamera_html"><div class="ttname"><a href="structCamera.html">Camera</a></div><div class="ttdoc">Represents a 3D camera with orientation, movement, and physical properties.</div><div class="ttdef"><b>Definition:</b> camera.h:40</div></div>
+<div class="ttc" id="astructGamepadState_html"><div class="ttname"><a href="structGamepadState.html">GamepadState</a></div><div class="ttdef"><b>Definition:</b> gamepad_input.h:44</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="app__input__state_8h.html">app_input_state.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
