@@ -4,7 +4,7 @@
 
 #include "app.h"
 #include "app_settings.h"
-#include <stdlib.h>
+#include "platform/platform_utils.h"
 
 void app_profiling_init(AppProfiling* prof, int width, int height)
 {
@@ -29,10 +29,12 @@ void app_profiling_cleanup(AppProfiling* prof)
 
 int app_profiling_subsys_init(App* app)
 {
-	app->profiling = calloc(1, sizeof(*app->profiling));
+	app->profiling =
+	    platform_aligned_alloc(sizeof(*app->profiling), SIMD_ALIGNMENT);
 	if (!app->profiling) {
 		return 0;
 	}
+	*app->profiling = (AppProfiling){0};
 	return 1;
 }
 
@@ -40,7 +42,7 @@ void app_profiling_subsys_cleanup(App* app)
 {
 	if (app->profiling) {
 		app_profiling_cleanup(app->profiling);
-		free(app->profiling);
+		platform_aligned_free(app->profiling);
 		app->profiling = NULL;
 	}
 }
