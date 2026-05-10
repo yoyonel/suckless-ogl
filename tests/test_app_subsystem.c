@@ -96,12 +96,40 @@ static int succeed_unless_position(struct App* app)
  * Unity boilerplate
  * =================================================================== */
 
+static GLFWwindow* g_test_window;
+
 void setUp(void)
 {
 }
 
 void tearDown(void)
 {
+}
+
+/** Shared GL context helper for tests that call GL-dependent descriptors. */
+static GLFWwindow* ensure_gl_context(void)
+{
+	if (g_test_window) {
+		return g_test_window;
+	}
+	TEST_ASSERT_TRUE_MESSAGE(glfwInit(), "GLFW init failed");
+	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+	g_test_window = glfwCreateWindow(64, 64, "test", NULL, NULL);
+	TEST_ASSERT_NOT_NULL_MESSAGE(g_test_window, "Window creation failed");
+	glfwMakeContextCurrent(g_test_window);
+	TEST_ASSERT_TRUE_MESSAGE(
+	    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress),
+	    "GLAD load failed");
+	return g_test_window;
+}
+
+static void destroy_gl_context(void)
+{
+	if (g_test_window) {
+		glfwDestroyWindow(g_test_window);
+		g_test_window = NULL;
+	}
+	glfwTerminate();
 }
 
 /* ===================================================================
@@ -261,59 +289,55 @@ void test_input_subsys_roundtrip(void)
  *  Needs a GL context because gpu_profiler_init() calls glGenQueries(). */
 void test_profiling_subsys_roundtrip(void)
 {
-	TEST_ASSERT_TRUE_MESSAGE(glfwInit(), "GLFW init failed");
-	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	GLFWwindow* win = glfwCreateWindow(64, 64, "test", NULL, NULL);
-	TEST_ASSERT_NOT_NULL_MESSAGE(win, "GLFW window creation failed");
-	glfwMakeContextCurrent(win);
-	TEST_ASSERT_TRUE_MESSAGE(
-	    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress),
-	    "GLAD load failed");
+	ensure_gl_context();
 
 	App app;
 	memset(&app, 0, sizeof(app));
 	app.width = 800;
 	app.height = 600;
 
-	app.profiling = calloc(1, sizeof(*app.profiling));
+	TEST_ASSERT_EQUAL(1, app_profiling_subsys_init(&app));
 	TEST_ASSERT_NOT_NULL(app.profiling);
-
-	app_profiling_init(app.profiling, app.width, app.height);
-	/* Verify some post-init state */
 	TEST_ASSERT_EQUAL(0, app.profiling->perf_mode_active);
 	TEST_ASSERT_EQUAL(0, app.profiling->log_gpu_metrics);
 
-	app_profiling_cleanup(app.profiling);
-	free(app.profiling);
-	app.profiling = NULL;
+	app_profiling_subsys_cleanup(&app);
 	TEST_ASSERT_NULL(app.profiling);
-
-	glfwDestroyWindow(win);
-	glfwTerminate();
 }
 
 /* ===================================================================
- * Phase C — Step 2 descriptor roundtrips (alloc-only, no GL)
+ * Phase C — Step 2 descriptor roundtrips (with GL context)
  * =================================================================== */
 
-/** postprocess_subsys roundtrip: alloc + free. */
+/** postprocess_subsys roundtrip: alloc + GL init + cleanup. */
 void test_postprocess_subsys_roundtrip(void)
 {
+	ensure_gl_context();
+
 	App app;
 	memset(&app, 0, sizeof(app));
+	app.width = 800;
+	app.height = 600;
 
+	/* postprocess_subsys_init needs profiling->gpu_profiler */
+	TEST_ASSERT_EQUAL(1, app_profiling_subsys_init(&app));
 	TEST_ASSERT_EQUAL(1, postprocess_subsys_init(&app));
 	TEST_ASSERT_NOT_NULL(app.postprocess);
 
 	postprocess_subsys_cleanup(&app);
 	TEST_ASSERT_NULL(app.postprocess);
+	app_profiling_subsys_cleanup(&app);
 }
 
-/** scene_subsys roundtrip: alloc + defaults + free. */
+/** scene_subsys roundtrip: alloc + GL init + defaults + cleanup. */
 void test_scene_subsys_init_sets_defaults(void)
 {
+	ensure_gl_context();
+
 	App app;
 	memset(&app, 0, sizeof(app));
+	app.width = 800;
+	app.height = 600;
 
 	TEST_ASSERT_EQUAL(1, scene_subsys_init(&app));
 	TEST_ASSERT_NOT_NULL(app.scene);
@@ -324,7 +348,7 @@ void test_scene_subsys_init_sets_defaults(void)
 	TEST_ASSERT_NULL(app.scene);
 }
 
-/** env_mgr_subsys roundtrip: alloc + is_first_load default + free. */
+/** env_mgr_subsys roundtrip: alloc + transition defaults + cleanup. */
 void test_env_mgr_subsys_init_sets_defaults(void)
 {
 	App app;
@@ -333,14 +357,18 @@ void test_env_mgr_subsys_init_sets_defaults(void)
 	TEST_ASSERT_EQUAL(1, env_mgr_subsys_init(&app));
 	TEST_ASSERT_NOT_NULL(app.env_mgr);
 	TEST_ASSERT_EQUAL(1, app.env_mgr->is_first_load);
+	TEST_ASSERT_EQUAL(TRANSITION_WAIT_IBL, app.env_mgr->transition_state);
+	TEST_ASSERT_FLOAT_WITHIN(0.001F, 1.0F, app.env_mgr->transition_alpha);
 
 	env_mgr_subsys_cleanup(&app);
 	TEST_ASSERT_NULL(app.env_mgr);
 }
 
-/** async_coord_subsys roundtrip: alloc + free. */
+/** async_coord_subsys roundtrip: alloc + GL init + cleanup. */
 void test_async_coord_subsys_roundtrip(void)
 {
+	ensure_gl_context();
+
 	App app;
 	memset(&app, 0, sizeof(app));
 
@@ -351,16 +379,18 @@ void test_async_coord_subsys_roundtrip(void)
 	TEST_ASSERT_NULL(app.async_coord);
 }
 
-/** Integration: full Phase 1 table (6 entries) init + cleanup. */
-void test_phase1_table_full_init_cleanup(void)
+/** Integration: full descriptor table init + cleanup (needs GL context). */
+void test_full_table_init_cleanup(void)
 {
-	static const SubsystemDescriptor phase1_table[] = {
+	ensure_gl_context();
+
+	static const SubsystemDescriptor table[] = {
 	    APP_INPUT_DESCRIPTOR,
 	    APP_PROFILING_DESCRIPTOR,
-	    APP_POSTPROCESS_DESCRIPTOR,
+	    APP_ASYNC_COORD_DESCRIPTOR,
 	    APP_SCENE_DESCRIPTOR,
 	    APP_ENV_MGR_DESCRIPTOR,
-	    APP_ASYNC_COORD_DESCRIPTOR,
+	    APP_POSTPROCESS_DESCRIPTOR,
 	    {0},
 	};
 
@@ -369,7 +399,7 @@ void test_phase1_table_full_init_cleanup(void)
 	app.width = 800;
 	app.height = 600;
 
-	TEST_ASSERT_EQUAL(1, app_subsystems_init(&app, phase1_table));
+	TEST_ASSERT_EQUAL(1, app_subsystems_init(&app, table));
 	TEST_ASSERT_NOT_NULL(app.input);
 	TEST_ASSERT_NOT_NULL(app.profiling);
 	TEST_ASSERT_NOT_NULL(app.postprocess);
@@ -377,7 +407,7 @@ void test_phase1_table_full_init_cleanup(void)
 	TEST_ASSERT_NOT_NULL(app.env_mgr);
 	TEST_ASSERT_NOT_NULL(app.async_coord);
 
-	app_subsystems_cleanup(&app, phase1_table);
+	app_subsystems_cleanup(&app, table);
 	TEST_ASSERT_NULL(app.input);
 	TEST_ASSERT_NULL(app.profiling);
 	TEST_ASSERT_NULL(app.postprocess);
@@ -388,15 +418,17 @@ void test_phase1_table_full_init_cleanup(void)
 
 /** Sweep: replace each real descriptor's init with fail_always,
  *  verify preceding entries are cleaned up. */
-void test_phase1_failure_sweep(void)
+void test_failure_sweep(void)
 {
+	ensure_gl_context();
+
 	static const SubsystemDescriptor real_table[] = {
 	    APP_INPUT_DESCRIPTOR,
 	    APP_PROFILING_DESCRIPTOR,
-	    APP_POSTPROCESS_DESCRIPTOR,
+	    APP_ASYNC_COORD_DESCRIPTOR,
 	    APP_SCENE_DESCRIPTOR,
 	    APP_ENV_MGR_DESCRIPTOR,
-	    APP_ASYNC_COORD_DESCRIPTOR,
+	    APP_POSTPROCESS_DESCRIPTOR,
 	    {0},
 	};
 
@@ -437,17 +469,19 @@ int main(void)
 	RUN_TEST(test_cleanup_reverse_order);
 	RUN_TEST(test_full_cleanup);
 
-	/* Phase B — real subsystem roundtrips (step 1) */
+	/* Phase B — real subsystem roundtrips (needs GL context) */
 	RUN_TEST(test_input_subsys_roundtrip);
 	RUN_TEST(test_profiling_subsys_roundtrip);
 
-	/* Phase C — step 2 descriptor roundtrips (alloc-only) */
+	/* Phase C — descriptor roundtrips (needs GL context) */
 	RUN_TEST(test_postprocess_subsys_roundtrip);
 	RUN_TEST(test_scene_subsys_init_sets_defaults);
 	RUN_TEST(test_env_mgr_subsys_init_sets_defaults);
 	RUN_TEST(test_async_coord_subsys_roundtrip);
-	RUN_TEST(test_phase1_table_full_init_cleanup);
-	RUN_TEST(test_phase1_failure_sweep);
+	RUN_TEST(test_full_table_init_cleanup);
+	RUN_TEST(test_failure_sweep);
 
-	return UNITY_END();
+	int result = UNITY_END();
+	destroy_gl_context();
+	return result;
 }
