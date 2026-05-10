@@ -119,7 +119,7 @@ The `App` struct is decomposed into domain-aligned sub-structs:
 
 - **`AppProfiling`** (`include/app_profiling.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling->gpu_profiler`, etc. Init/cleanup delegated to `app_profiling_init()` / `app_profiling_cleanup()` in `src/app_profiling.c`.
 - **`AppInput`** (`include/app_input_state.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input->camera`, etc. Init/cleanup delegated to `app_input_state_init()` / `app_input_state_cleanup()` in `src/app_input_state.c`.
-- **`AppWindow`** (`include/app_window.h`): Groups GLFW window handle and all window/resize state — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Access via `app->win.handle`, `app->win.is_fullscreen`, etc.
+- **`AppWindow`** (`include/app_window.h`): Groups GLFW window handle and all window/resize state — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Access via `app->win.handle`, `app->win.is_fullscreen`, etc. Init/cleanup delegated to `app_window_subsys_init()` / `app_window_subsys_cleanup()` in `src/app_window.c`. The window descriptor is **first** in the subsystem table — it creates the OpenGL context needed by all other subsystems, and is cleaned up **last** (reverse order) to ensure the GL context outlives all GPU resource teardowns.
 
 > **Naming note**: `app_input_state.h` hosts the `AppInput` sub-struct definition, while the existing `app_input.h` hosts the `AppInputContext` seam (focused pointer bundle for input handlers, issue #204).
 
@@ -127,7 +127,7 @@ This reduces `App`'s direct field count from 24 to ~17. Each sub-struct header o
 
 ### Subsystem Descriptor Pattern
 
-Initialization and cleanup of `App` sub-structs (currently `AppInput` and `AppProfiling`) are driven by a **sentinel-terminated descriptor table** instead of hand-written `calloc`/`init`/`cleanup` sequences in `app_init()` / `app_cleanup()`.
+Initialization and cleanup of `App` sub-structs are driven by a **sentinel-terminated descriptor table** instead of hand-written `calloc`/`init`/`cleanup` sequences in `app_init()` / `app_cleanup()`.
 
 **Core types** (`include/app_subsystem.h`):
 
@@ -143,21 +143,26 @@ typedef struct SubsystemDescriptor {
 
 ```c
 static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_WINDOW_DESCRIPTOR,      // Creates GL context — must be first
     APP_INPUT_DESCRIPTOR,
     APP_PROFILING_DESCRIPTOR,
+    APP_POSTPROCESS_DESCRIPTOR,
+    APP_SCENE_DESCRIPTOR,
+    APP_ENV_MGR_DESCRIPTOR,
+    APP_ASYNC_COORD_DESCRIPTOR,
     {0},  /* sentinel */
 };
 ```
 
-Each module owns its descriptor macro (e.g. `APP_INPUT_DESCRIPTOR` in `app_input_state.h`), keeping the definition co-located with the init/cleanup functions.
+Each module owns its descriptor macro (e.g. `APP_WINDOW_DESCRIPTOR` in `app_window.h`), keeping the definition co-located with the init/cleanup functions.
+
+**Ordering constraint**: `APP_WINDOW_DESCRIPTOR` must be the **first** entry because it creates the OpenGL context. Since cleanup runs in reverse, the window is destroyed **last**, ensuring the GL context remains valid during teardown of all GPU-dependent subsystems (profiler queries, FBOs, VAOs, shaders, etc.).
 
 **Semantics**:
 
 - `app_subsystems_init()` walks the table forward until the `{0}` sentinel. On the first failure at index *N*, it calls `cleanup()` in reverse for entries *[N-1 .. 0]* (automatic rollback).
 - `app_subsystems_cleanup()` counts entries, then walks the table in reverse — ensuring teardown is the mirror image of initialization.
 - No explicit count parameter: the sentinel removes one source of mismatch.
-
-This pattern is designed to scale as more subsystems migrate to descriptors (see issues #286–#290).
 
 ### PostProcess Header Decomposition
 

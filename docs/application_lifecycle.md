@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 
 ## Chapter 2 — Opening a Window (GLFW + X11 + OpenGL)
 
-The first real work happens in `window_create()` ([src/window.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/window.c)).
+Window creation is driven by the `APP_WINDOW_DESCRIPTOR` subsystem descriptor ([src/app_window.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/app_window.c)). It is the **first** entry in the descriptor table — the GL context it creates is required by all subsequent subsystems. The low-level GLFW/GLX work happens in `window_create()` ([src/window.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/window.c)).
 
 ### 2.1 — GLFW Initialization & Window Hints
 
@@ -148,16 +148,17 @@ This enables `GL_DEBUG_OUTPUT_SYNCHRONOUS` and registers a callback ([src/gl_deb
 
 ### 2.4 — Input Callbacks & VSync
 
+The following setup is performed by `app_window_subsys_init()` ([src/app_window.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/app_window.c)) as part of the window subsystem descriptor:
+
 ```c
 glfwSwapInterval(0);                    // VSync OFF — unlimited FPS
 glfwSetKeyCallback(app->win.handle, key_callback);
 glfwSetCursorPosCallback(app->win.handle, mouse_callback);
 glfwSetScrollCallback(app->win.handle, scroll_callback);
 glfwSetFramebufferSizeCallback(app->win.handle, framebuffer_size_callback);
-glfwSetInputMode(app->win.handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  // FPS-style
 ```
 
-The cursor is captured in **relative mode** — mouse movements produce delta offsets for orbit camera control, not absolute screen coordinates.
+The cursor capture mode (`GLFW_CURSOR_DISABLED` for FPS-style control) is set later in `app_init()`, after the input subsystem has been initialized and `camera_enabled` is known.
 
 ---
 
