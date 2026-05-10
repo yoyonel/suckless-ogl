@@ -662,6 +662,7 @@ add_executable(test_async_coordinator
     test_async_coordinator.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/src/async_coordinator.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 target_include_directories(test_async_coordinator PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
