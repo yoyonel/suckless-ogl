@@ -1,6 +1,10 @@
+#include <glad/glad.h>
+
 #include "app_profiling.h"
 
+#include "app.h"
 #include "app_settings.h"
+#include <stdlib.h>
 
 void app_profiling_init(AppProfiling* prof, int width, int height)
 {
@@ -21,4 +25,22 @@ void app_profiling_cleanup(AppProfiling* prof)
 	gpu_profiler_ui_cleanup(&prof->timeline_ui);
 	gpu_usage_cleanup(&prof->gpu_usage);
 	tracy_manager_cleanup(&prof->tracy_mgr);
+}
+
+int app_profiling_subsys_init(App* app)
+{
+	app->profiling = calloc(1, sizeof(*app->profiling));
+	if (!app->profiling) {
+		return 0;
+	}
+	return 1;
+}
+
+void app_profiling_subsys_cleanup(App* app)
+{
+	if (app->profiling) {
+		app_profiling_cleanup(app->profiling);
+		free(app->profiling);
+		app->profiling = NULL;
+	}
 }
