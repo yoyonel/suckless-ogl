@@ -3,7 +3,12 @@
 #include "app.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
+#include "app_settings.h"
 #include "app_subsystem.h"
+#include "async/async_coordinator.h"
+#include "env_manager.h"
+#include "postprocess.h"
+#include "scene.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
@@ -288,6 +293,135 @@ void test_profiling_subsys_roundtrip(void)
 }
 
 /* ===================================================================
+ * Phase C — Step 2 descriptor roundtrips (alloc-only, no GL)
+ * =================================================================== */
+
+/** postprocess_subsys roundtrip: alloc + free. */
+void test_postprocess_subsys_roundtrip(void)
+{
+	App app;
+	memset(&app, 0, sizeof(app));
+
+	TEST_ASSERT_EQUAL(1, postprocess_subsys_init(&app));
+	TEST_ASSERT_NOT_NULL(app.postprocess);
+
+	postprocess_subsys_cleanup(&app);
+	TEST_ASSERT_NULL(app.postprocess);
+}
+
+/** scene_subsys roundtrip: alloc + defaults + free. */
+void test_scene_subsys_init_sets_defaults(void)
+{
+	App app;
+	memset(&app, 0, sizeof(app));
+
+	TEST_ASSERT_EQUAL(1, scene_subsys_init(&app));
+	TEST_ASSERT_NOT_NULL(app.scene);
+	TEST_ASSERT_EQUAL(DEFAULT_SPECULAR_AA_ENABLED,
+	                  app.scene->config.specular_aa_enabled);
+
+	scene_subsys_cleanup(&app);
+	TEST_ASSERT_NULL(app.scene);
+}
+
+/** env_mgr_subsys roundtrip: alloc + is_first_load default + free. */
+void test_env_mgr_subsys_init_sets_defaults(void)
+{
+	App app;
+	memset(&app, 0, sizeof(app));
+
+	TEST_ASSERT_EQUAL(1, env_mgr_subsys_init(&app));
+	TEST_ASSERT_NOT_NULL(app.env_mgr);
+	TEST_ASSERT_EQUAL(1, app.env_mgr->is_first_load);
+
+	env_mgr_subsys_cleanup(&app);
+	TEST_ASSERT_NULL(app.env_mgr);
+}
+
+/** async_coord_subsys roundtrip: alloc + free. */
+void test_async_coord_subsys_roundtrip(void)
+{
+	App app;
+	memset(&app, 0, sizeof(app));
+
+	TEST_ASSERT_EQUAL(1, async_coord_subsys_init(&app));
+	TEST_ASSERT_NOT_NULL(app.async_coord);
+
+	async_coord_subsys_cleanup(&app);
+	TEST_ASSERT_NULL(app.async_coord);
+}
+
+/** Integration: full Phase 1 table (6 entries) init + cleanup. */
+void test_phase1_table_full_init_cleanup(void)
+{
+	static const SubsystemDescriptor phase1_table[] = {
+	    APP_INPUT_DESCRIPTOR,
+	    APP_PROFILING_DESCRIPTOR,
+	    APP_POSTPROCESS_DESCRIPTOR,
+	    APP_SCENE_DESCRIPTOR,
+	    APP_ENV_MGR_DESCRIPTOR,
+	    APP_ASYNC_COORD_DESCRIPTOR,
+	    {0},
+	};
+
+	App app;
+	memset(&app, 0, sizeof(app));
+	app.width = 800;
+	app.height = 600;
+
+	TEST_ASSERT_EQUAL(1, app_subsystems_init(&app, phase1_table));
+	TEST_ASSERT_NOT_NULL(app.input);
+	TEST_ASSERT_NOT_NULL(app.profiling);
+	TEST_ASSERT_NOT_NULL(app.postprocess);
+	TEST_ASSERT_NOT_NULL(app.scene);
+	TEST_ASSERT_NOT_NULL(app.env_mgr);
+	TEST_ASSERT_NOT_NULL(app.async_coord);
+
+	app_subsystems_cleanup(&app, phase1_table);
+	TEST_ASSERT_NULL(app.input);
+	TEST_ASSERT_NULL(app.profiling);
+	TEST_ASSERT_NULL(app.postprocess);
+	TEST_ASSERT_NULL(app.scene);
+	TEST_ASSERT_NULL(app.env_mgr);
+	TEST_ASSERT_NULL(app.async_coord);
+}
+
+/** Sweep: replace each real descriptor's init with fail_always,
+ *  verify preceding entries are cleaned up. */
+void test_phase1_failure_sweep(void)
+{
+	static const SubsystemDescriptor real_table[] = {
+	    APP_INPUT_DESCRIPTOR,
+	    APP_PROFILING_DESCRIPTOR,
+	    APP_POSTPROCESS_DESCRIPTOR,
+	    APP_SCENE_DESCRIPTOR,
+	    APP_ENV_MGR_DESCRIPTOR,
+	    APP_ASYNC_COORD_DESCRIPTOR,
+	    {0},
+	};
+
+	enum { TABLE_SIZE = 6 };
+
+	for (int fail_at = 0; fail_at < TABLE_SIZE; fail_at++) {
+		/* Build a table with fail_always injected at position fail_at
+		 */
+		SubsystemDescriptor table[TABLE_SIZE + 1];
+		for (int k = 0; k < TABLE_SIZE; k++) {
+			table[k] = real_table[k];
+		}
+		table[fail_at].init = fail_always;
+		table[TABLE_SIZE] = (SubsystemDescriptor){0};
+
+		App app;
+		memset(&app, 0, sizeof(app));
+		app.width = 800;
+		app.height = 600;
+
+		TEST_ASSERT_EQUAL(0, app_subsystems_init(&app, table));
+	}
+}
+
+/* ===================================================================
  * main
  * =================================================================== */
 
@@ -303,9 +437,17 @@ int main(void)
 	RUN_TEST(test_cleanup_reverse_order);
 	RUN_TEST(test_full_cleanup);
 
-	/* Phase B — real subsystem roundtrips */
+	/* Phase B — real subsystem roundtrips (step 1) */
 	RUN_TEST(test_input_subsys_roundtrip);
 	RUN_TEST(test_profiling_subsys_roundtrip);
+
+	/* Phase C — step 2 descriptor roundtrips (alloc-only) */
+	RUN_TEST(test_postprocess_subsys_roundtrip);
+	RUN_TEST(test_scene_subsys_init_sets_defaults);
+	RUN_TEST(test_env_mgr_subsys_init_sets_defaults);
+	RUN_TEST(test_async_coord_subsys_roundtrip);
+	RUN_TEST(test_phase1_table_full_init_cleanup);
+	RUN_TEST(test_phase1_failure_sweep);
 
 	return UNITY_END();
 }
