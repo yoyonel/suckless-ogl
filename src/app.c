@@ -14,7 +14,6 @@
 #include "scene_gpu_resources.h"
 #include "texture.h"
 #include "tracy_gpu.h"
-#include "window.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,13 +24,10 @@ static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
  * Order matters: init runs forward, cleanup runs in reverse.
  * Sentinel-terminated: last entry is {0}. */
 static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
-    APP_INPUT_DESCRIPTOR,
-    APP_PROFILING_DESCRIPTOR,
-    APP_POSTPROCESS_DESCRIPTOR,
-    APP_SCENE_DESCRIPTOR,
-    APP_ENV_MGR_DESCRIPTOR,
-    APP_ASYNC_COORD_DESCRIPTOR,
-    {0},
+    APP_WINDOW_DESCRIPTOR,      APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,   APP_POSTPROCESS_DESCRIPTOR,
+    APP_SCENE_DESCRIPTOR,       APP_ENV_MGR_DESCRIPTOR,
+    APP_ASYNC_COORD_DESCRIPTOR, {0},
 };
 
 static void app_load_initial_hdr(App* app)
@@ -56,29 +52,11 @@ int app_init(App* app, int width, int height, const char* title)
 {
 	app->width = width;
 	app->height = height;
+	app->title = title;
 
 	if (!app_subsystems_init(app, APP_SUBSYSTEM_TABLE)) {
 		return 0;
 	}
-
-	app->win.is_fullscreen = false;
-	app->win.resize_pending = 0;
-
-	/* Phase 2: Window & GL context (no GL resources exist yet,
-	 * descriptor cleanup is sufficient on failure). */
-	app->win.handle = window_create(width, height, title, DEFAULT_SAMPLES);
-	if (!app->win.handle) {
-		app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
-		return 0;
-	}
-
-	glfwSwapInterval(0);
-	glfwSetWindowUserPointer(app->win.handle, app);
-	glfwSetKeyCallback(app->win.handle, key_callback);
-	glfwSetCursorPosCallback(app->win.handle, mouse_callback);
-	glfwSetScrollCallback(app->win.handle, scroll_callback);
-	glfwSetFramebufferSizeCallback(app->win.handle,
-	                               framebuffer_size_callback);
 
 	if (app->input->camera_enabled) {
 		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
@@ -182,9 +160,6 @@ void app_cleanup(App* app)
 
 	/* Reverse-order cleanup of descriptor-managed subsystems */
 	app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
-
-	window_destroy(app->win.handle);
-	app->win.handle = NULL;
 }
 
 static void app_render_ui_trampoline(void* user_data)
