@@ -101,4 +101,13 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
  */
 void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene);
 
+/* --- Subsystem descriptor (alloc-only Phase 1) --- */
+#include "app_subsystem.h"
+
+int env_mgr_subsys_init(struct App* app);
+void env_mgr_subsys_cleanup(struct App* app);
+
+#define APP_ENV_MGR_DESCRIPTOR \
+	{"env_mgr", env_mgr_subsys_init, env_mgr_subsys_cleanup}
+
 #endif /* ENV_MANAGER_H */

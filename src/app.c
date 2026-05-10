@@ -27,6 +27,10 @@ static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
     APP_INPUT_DESCRIPTOR,
     APP_PROFILING_DESCRIPTOR,
+    APP_POSTPROCESS_DESCRIPTOR,
+    APP_SCENE_DESCRIPTOR,
+    APP_ENV_MGR_DESCRIPTOR,
+    APP_ASYNC_COORD_DESCRIPTOR,
     {0},
 };
 
@@ -57,34 +61,15 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
-	/* Remaining allocations (not yet migrated to descriptors). */
-	app->postprocess = calloc(1, sizeof(*app->postprocess));
-	if (!app->postprocess) {
-		goto cleanup_alloc;
-	}
-	app->scene = calloc(1, sizeof(*app->scene));
-	if (!app->scene) {
-		goto cleanup_alloc;
-	}
-	app->env_mgr = calloc(1, sizeof(*app->env_mgr));
-	if (!app->env_mgr) {
-		goto cleanup_alloc;
-	}
-	app->async_coord = calloc(1, sizeof(*app->async_coord));
-	if (!app->async_coord) {
-		goto cleanup_alloc;
-	}
-
 	app->win.is_fullscreen = false;
 	app->win.resize_pending = 0;
-	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
-	app->env_mgr->is_first_load = true;
 
-	/* Phase 2: Window & GL context (goto cleanup_alloc on failure —
-	 * no GL resources exist yet). */
+	/* Phase 2: Window & GL context (no GL resources exist yet,
+	 * descriptor cleanup is sufficient on failure). */
 	app->win.handle = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->win.handle) {
-		goto cleanup_alloc;
+		app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
+		return 0;
 	}
 
 	glfwSwapInterval(0);
@@ -168,18 +153,6 @@ int app_init(App* app, int width, int height, const char* title)
 cleanup_full:
 	app_cleanup(app);
 	return 0;
-
-cleanup_alloc:
-	free(app->async_coord);
-	app->async_coord = NULL;
-	free(app->env_mgr);
-	app->env_mgr = NULL;
-	free(app->scene);
-	app->scene = NULL;
-	free(app->postprocess);
-	app->postprocess = NULL;
-	app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
-	return 0;
 }
 
 void app_cleanup(App* app)
@@ -191,8 +164,6 @@ void app_cleanup(App* app)
 	/* 1. High-level systems first (may depend on textures/shaders) */
 	app_ui_cleanup(&app->overlay);
 	postprocess_cleanup(app->postprocess);
-	free(app->postprocess);
-	app->postprocess = NULL;
 
 	/* Async Loader Shutdown before other resources */
 	async_loader_destroy(app->async_loader);
@@ -200,16 +171,9 @@ void app_cleanup(App* app)
 
 	/* 2. Scene / Rendering groups */
 	scene_cleanup(app->scene);
-	free(app->scene);
-	app->scene = NULL;
 
 	/* 3. Common low-level resources */
-	free(app->env_mgr);
-	app->env_mgr = NULL;
-
 	async_coordinator_cleanup(app->async_coord);
-	free(app->async_coord);
-	app->async_coord = NULL;
 
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
