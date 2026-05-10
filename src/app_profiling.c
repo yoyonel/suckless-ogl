@@ -35,6 +35,7 @@ int app_profiling_subsys_init(App* app)
 		return 0;
 	}
 	*app->profiling = (AppProfiling){0};
+	app_profiling_init(app->profiling, app->width, app->height);
 	return 1;
 }
 

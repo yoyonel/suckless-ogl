@@ -493,7 +493,7 @@ int scene_init(Scene* scene)
 	return 1;
 }
 
-/* --- Subsystem descriptor (Phase 1: alloc + defaults) --- */
+/* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
 
 int scene_subsys_init(App* app)
 {
@@ -504,12 +504,19 @@ int scene_subsys_init(App* app)
 	}
 	*app->scene = (Scene){0};
 	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
+	if (!scene_init(app->scene)) {
+		scene_cleanup(app->scene);
+		platform_aligned_free(app->scene);
+		app->scene = NULL;
+		return 0;
+	}
 	return 1;
 }
 
 void scene_subsys_cleanup(App* app)
 {
 	if (app->scene) {
+		scene_cleanup(app->scene);
 		platform_aligned_free(app->scene);
 		app->scene = NULL;
 	}

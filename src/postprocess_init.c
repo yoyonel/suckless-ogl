@@ -1,4 +1,5 @@
 #include "app.h"
+#include "app_profiling.h"
 #include "app_settings.h"
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
@@ -374,7 +375,7 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
 }
 
-/* --- Subsystem descriptor (Phase 1: alloc only) --- */
+/* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
 
 int postprocess_subsys_init(App* app)
 {
@@ -384,12 +385,20 @@ int postprocess_subsys_init(App* app)
 		return 0;
 	}
 	*app->postprocess = (PostProcess){0};
+	if (!postprocess_init(app->postprocess, &app->profiling->gpu_profiler,
+	                      app->width, app->height)) {
+		postprocess_cleanup(app->postprocess);
+		platform_aligned_free(app->postprocess);
+		app->postprocess = NULL;
+		return 0;
+	}
 	return 1;
 }
 
 void postprocess_subsys_cleanup(App* app)
 {
 	if (app->postprocess) {
+		postprocess_cleanup(app->postprocess);
 		platform_aligned_free(app->postprocess);
 		app->postprocess = NULL;
 	}

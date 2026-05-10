@@ -3,10 +3,13 @@
 #include "app_input.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
+#include "app_settings.h"
 #include "app_subsystem.h"
 #include "app_ui.h"
 #include "async/async_coordinator.h"
+#include "async_loader.h"
 #include "env_manager.h"
+#include "lum_histogram.h"
 #include "postprocess_internal.h"
 #include "profiler.h"
 #include "renderer.h"
@@ -15,19 +18,31 @@
 #include "texture.h"
 #include "tracy_gpu.h"
 #include <GLFW/glfw3.h>
-#include <stdlib.h>
 #include <string.h>
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 
 /* Subsystem descriptor table — each module owns its own descriptor.
  * Order matters: init runs forward, cleanup runs in reverse.
- * Sentinel-terminated: last entry is {0}. */
+ * Sentinel-terminated: last entry is {0}.
+ *
+ * Dependency ordering:
+ *   WINDOW    — creates GL context, must be first
+ *   INPUT     — no GL dependency
+ *   PROFILING — GPU profiler + Tracy (needs GL)
+ *   ASYNC_COORD — PBO allocation (needs GL)
+ *   LUM_HIST  — malloc only
+ *   ASYNC_LOADER — needs profiling->tracy_mgr
+ *   SCENE     — shaders, textures (needs GL)
+ *   ENV_MGR   — transition state only
+ *   POSTPROCESS — needs profiling->gpu_profiler + scene->gpu resources
+ */
 static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
-    APP_WINDOW_DESCRIPTOR,      APP_INPUT_DESCRIPTOR,
-    APP_PROFILING_DESCRIPTOR,   APP_POSTPROCESS_DESCRIPTOR,
-    APP_SCENE_DESCRIPTOR,       APP_ENV_MGR_DESCRIPTOR,
-    APP_ASYNC_COORD_DESCRIPTOR, {0},
+    APP_WINDOW_DESCRIPTOR,        APP_INPUT_DESCRIPTOR,
+    APP_PROFILING_DESCRIPTOR,     APP_ASYNC_COORD_DESCRIPTOR,
+    APP_LUM_HISTOGRAM_DESCRIPTOR, APP_ASYNC_LOADER_DESCRIPTOR,
+    APP_SCENE_DESCRIPTOR,         APP_ENV_MGR_DESCRIPTOR,
+    APP_POSTPROCESS_DESCRIPTOR,   {0},
 };
 
 static void app_load_initial_hdr(App* app)
@@ -58,40 +73,11 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
+	/* --- Post-descriptor orchestration (cross-cutting, inline structs) */
+
 	if (app->input->camera_enabled) {
 		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
-	}
-
-	/* Phase 3: Sub-system initialisation (GL context available).
-	 * Failures after this point use app_cleanup() which handles
-	 * partially-initialised state via NULL guards. */
-	app_profiling_init(app->profiling, width, height);
-
-	/* Transition Initialization (Starts Black, fades in when IBL is done)
-	 */
-	app->env_mgr->transition_state = TRANSITION_WAIT_IBL;
-	app->env_mgr->transition_alpha = 1.0F;
-	app->env_mgr->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
-	app->env_mgr->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
-	app->env_mgr->is_first_load = 1;
-
-	async_coordinator_init(app->async_coord);
-
-	app->lum_histogram_buffer =
-	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
-	           sizeof(float));
-	if (!app->lum_histogram_buffer) {
-		goto cleanup_full;
-	}
-
-	app->async_loader = async_loader_create(&app->profiling->tracy_mgr);
-	if (!app->async_loader) {
-		goto cleanup_full;
-	}
-
-	if (!scene_init(app->scene)) {
-		goto cleanup_full;
 	}
 
 	app_load_initial_hdr(app);
@@ -105,10 +91,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
 
-	if (!postprocess_init(app->postprocess, &app->profiling->gpu_profiler,
-	                      width, height)) {
-		goto cleanup_full;
-	}
 	postprocess_set_dummy_textures(app->postprocess,
 	                               app->scene->gpu->dummy_black_tex);
 	postprocess_set_exposure(app->postprocess,
@@ -126,11 +108,6 @@ int app_init(App* app, int width, int height, const char* title)
 	                      &app->profiling->gpu_profiler);
 
 	return 1;
-
-	/* --- Centralised error exits (see docs/goto_cleanup_pattern.md) --- */
-cleanup_full:
-	app_cleanup(app);
-	return 0;
 }
 
 void app_cleanup(App* app)
@@ -139,26 +116,10 @@ void app_cleanup(App* app)
 		return;
 	}
 
-	/* 1. High-level systems first (may depend on textures/shaders) */
+	/* Inline struct cleanup (not descriptor-managed) */
 	app_ui_cleanup(&app->overlay);
-	postprocess_cleanup(app->postprocess);
 
-	/* Async Loader Shutdown before other resources */
-	async_loader_destroy(app->async_loader);
-	app->async_loader = NULL;
-
-	/* 2. Scene / Rendering groups */
-	scene_cleanup(app->scene);
-
-	/* 3. Common low-level resources */
-	async_coordinator_cleanup(app->async_coord);
-
-	if (app->lum_histogram_buffer) {
-		free(app->lum_histogram_buffer);
-		app->lum_histogram_buffer = NULL;
-	}
-
-	/* Reverse-order cleanup of descriptor-managed subsystems */
+	/* Reverse-order cleanup of all descriptor-managed subsystems */
 	app_subsystems_cleanup(app, APP_SUBSYSTEM_TABLE);
 }
 

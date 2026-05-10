@@ -86,7 +86,7 @@ bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
 	return result;
 }
 
-/* --- Subsystem descriptor (Phase 1: alloc only) --- */
+/* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
 
 int async_coord_subsys_init(App* app)
 {
@@ -96,12 +96,14 @@ int async_coord_subsys_init(App* app)
 		return 0;
 	}
 	*app->async_coord = (AsyncCoordinator){0};
+	async_coordinator_init(app->async_coord);
 	return 1;
 }
 
 void async_coord_subsys_cleanup(App* app)
 {
 	if (app->async_coord) {
+		async_coordinator_cleanup(app->async_coord);
 		platform_aligned_free(app->async_coord);
 		app->async_coord = NULL;
 	}

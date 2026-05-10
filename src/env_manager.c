@@ -333,6 +333,10 @@ int env_mgr_subsys_init(App* app)
 	}
 	*app->env_mgr = (EnvManager){0};
 	app->env_mgr->is_first_load = 1;
+	app->env_mgr->transition_state = TRANSITION_WAIT_IBL;
+	app->env_mgr->transition_alpha = 1.0F;
+	app->env_mgr->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
+	app->env_mgr->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
 	return 1;
 }
 
