@@ -261,9 +261,13 @@ $(document).ready(function(){initNavTree('app_8c.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="app__input_8h_source.html">app_input.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__input__state_8h_source.html">app_input_state.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__profiling_8h_source.html">app_profiling.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__subsystem_8h_source.html">app_subsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__ui_8h_source.html">app_ui.h</a>&quot;</code><br />
 <code>#include &quot;async/async_coordinator.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="env__manager_8h_source.html">env_manager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="lum__histogram_8h_source.html">lum_histogram.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__internal_8h_source.html">postprocess_internal.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="renderer_8h_source.html">renderer.h</a>&quot;</code><br />
@@ -271,9 +275,7 @@ $(document).ready(function(){initNavTree('app_8c.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="scene__gpu__resources_8h_source.html">scene_gpu_resources.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="tracy__gpu_8h_source.html">tracy_gpu.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="window_8h_source.html">window.h</a>&quot;</code><br />
 <code>#include &lt;GLFW/glfw3.h&gt;</code><br />
-<code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app.c:</div>
@@ -308,6 +310,8 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:a7af13582d997f5de7801418339b66eea"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a7af13582d997f5de7801418339b66eea">DEFAULT_ENV_FILENAME</a> = &quot;env.hdr&quot;</td></tr>
 <tr class="separator:a7af13582d997f5de7801418339b66eea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fb26f2c8f3e06d95c9dbaf1ad1473c2"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structSubsystemDescriptor.html">SubsystemDescriptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a6fb26f2c8f3e06d95c9dbaf1ad1473c2">APP_SUBSYSTEM_TABLE</a> []</td></tr>
+<tr class="separator:a6fb26f2c8f3e06d95c9dbaf1ad1473c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a201c8d0c1a848c34571be7266d0f691d"></a>
@@ -330,7 +334,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app_8c_a201c8d0c1a848c34571be7266d0f691d_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app_8c_a201c8d0c1a848c34571be7266d0f691d_cgraph.svg" width="662" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -522,6 +526,43 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a6fb26f2c8f3e06d95c9dbaf1ad1473c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fb26f2c8f3e06d95c9dbaf1ad1473c2">&#9670;&nbsp;</a></span>APP_SUBSYSTEM_TABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structSubsystemDescriptor.html">SubsystemDescriptor</a> APP_SUBSYSTEM_TABLE[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <a class="code" href="app__window_8h.html#a6151210b4434fba5b69189b207890a6c">APP_WINDOW_DESCRIPTOR</a>,        <a class="code" href="app__input__state_8h.html#a2b62faef4c1ec9fe33bf1ca2b2b56222">APP_INPUT_DESCRIPTOR</a>,</div>
+<div class="line">    <a class="code" href="app__profiling_8h.html#a5fee8336e1933c1b39fd2840a6f244d3">APP_PROFILING_DESCRIPTOR</a>,     APP_ASYNC_COORD_DESCRIPTOR,</div>
+<div class="line">    <a class="code" href="lum__histogram_8h.html#a3d9c1fccaf95b9beae927cd49a6f011f">APP_LUM_HISTOGRAM_DESCRIPTOR</a>, <a class="code" href="async__loader_8h.html#a1acfe8a071c91afc6fa14a5e9297cbf2">APP_ASYNC_LOADER_DESCRIPTOR</a>,</div>
+<div class="line">    <a class="code" href="scene_8h.html#a9c4b25e96e70d9112b5ee4b88dc182a9">APP_SCENE_DESCRIPTOR</a>,         <a class="code" href="env__manager_8h.html#a198ea67400c8073a04b09e5e1e29944a">APP_ENV_MGR_DESCRIPTOR</a>,</div>
+<div class="line">    <a class="code" href="postprocess_8h.html#ac5c4d3602d447ab45ac9523357a60c54">APP_POSTPROCESS_DESCRIPTOR</a>,   {0},</div>
+<div class="line">}</div>
+<div class="ttc" id="aapp__input__state_8h_html_a2b62faef4c1ec9fe33bf1ca2b2b56222"><div class="ttname"><a href="app__input__state_8h.html#a2b62faef4c1ec9fe33bf1ca2b2b56222">APP_INPUT_DESCRIPTOR</a></div><div class="ttdeci">#define APP_INPUT_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> app_input_state.h:46</div></div>
+<div class="ttc" id="aapp__profiling_8h_html_a5fee8336e1933c1b39fd2840a6f244d3"><div class="ttname"><a href="app__profiling_8h.html#a5fee8336e1933c1b39fd2840a6f244d3">APP_PROFILING_DESCRIPTOR</a></div><div class="ttdeci">#define APP_PROFILING_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> app_profiling.h:52</div></div>
+<div class="ttc" id="aapp__window_8h_html_a6151210b4434fba5b69189b207890a6c"><div class="ttname"><a href="app__window_8h.html#a6151210b4434fba5b69189b207890a6c">APP_WINDOW_DESCRIPTOR</a></div><div class="ttdeci">#define APP_WINDOW_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> app_window.h:27</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a1acfe8a071c91afc6fa14a5e9297cbf2"><div class="ttname"><a href="async__loader_8h.html#a1acfe8a071c91afc6fa14a5e9297cbf2">APP_ASYNC_LOADER_DESCRIPTOR</a></div><div class="ttdeci">#define APP_ASYNC_LOADER_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> async_loader.h:117</div></div>
+<div class="ttc" id="aenv__manager_8h_html_a198ea67400c8073a04b09e5e1e29944a"><div class="ttname"><a href="env__manager_8h.html#a198ea67400c8073a04b09e5e1e29944a">APP_ENV_MGR_DESCRIPTOR</a></div><div class="ttdeci">#define APP_ENV_MGR_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> env_manager.h:110</div></div>
+<div class="ttc" id="alum__histogram_8h_html_a3d9c1fccaf95b9beae927cd49a6f011f"><div class="ttname"><a href="lum__histogram_8h.html#a3d9c1fccaf95b9beae927cd49a6f011f">APP_LUM_HISTOGRAM_DESCRIPTOR</a></div><div class="ttdeci">#define APP_LUM_HISTOGRAM_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> lum_histogram.h:11</div></div>
+<div class="ttc" id="apostprocess_8h_html_ac5c4d3602d447ab45ac9523357a60c54"><div class="ttname"><a href="postprocess_8h.html#ac5c4d3602d447ab45ac9523357a60c54">APP_POSTPROCESS_DESCRIPTOR</a></div><div class="ttdeci">#define APP_POSTPROCESS_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> postprocess.h:52</div></div>
+<div class="ttc" id="ascene_8h_html_a9c4b25e96e70d9112b5ee4b88dc182a9"><div class="ttname"><a href="scene_8h.html#a9c4b25e96e70d9112b5ee4b88dc182a9">APP_SCENE_DESCRIPTOR</a></div><div class="ttdeci">#define APP_SCENE_DESCRIPTOR</div><div class="ttdef"><b>Definition:</b> scene.h:122</div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="a7af13582d997f5de7801418339b66eea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7af13582d997f5de7801418339b66eea">&#9670;&nbsp;</a></span>DEFAULT_ENV_FILENAME</h2>
 

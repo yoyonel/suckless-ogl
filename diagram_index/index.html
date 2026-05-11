@@ -581,6 +581,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#asan-reports-error-then-gdb-catches-the-abort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASAN reports error, then GDB catches the abort
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#global-illumination-1-bounce" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3097,6 +3108,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gdb_debugging_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GDB Debugging Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../docs_staging_guide/" class="md-nav__link">
         
   
@@ -4114,6 +4153,34 @@ UI --&gt; SWAP["glfwSwapBuffers()"]</code></pre>
 
 <h2 id="architecture-documentation-refactoring-core"><a href="../architecture/">Architecture Documentation - Refactoring Core</a><a class="headerlink" href="#architecture-documentation-refactoring-core" title="Permanent link">¶</a></h2>
 <div class="diagram-item">
+  <a href="../architecture/#subsystem-descriptor-pattern" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Subsystem Descriptor Pattern</a> : <span style="opacity: 0.6; font-size: 0.85em;">The descriptor table order satisfies these init-time dependencies:</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+classDef first fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+classDef gl fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+classDef nogl fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+WIN[WINDOW]:::first
+INP[INPUT]:::nogl
+PROF[PROFILING]:::gl
+AC[ASYNC_COORD]:::gl
+LH[LUM_HISTOGRAM]:::nogl
+AL[ASYNC_LOADER]:::gl
+SC[SCENE]:::gl
+ENV[ENV_MGR]:::nogl
+PP[POSTPROCESS]:::gl
+WIN --&gt;|"GL context"| PROF
+WIN --&gt;|"GL context"| AC
+WIN --&gt;|"GL context"| SC
+WIN --&gt;|"GL context"| PP
+PROF --&gt;|"tracy_mgr"| AL
+PROF --&gt;|"gpu_profiler"| PP
+SC --&gt;|"gpu resources"| PP</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
   <a href="../architecture/#postprocess-translation-unit-split" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">PostProcess Translation-Unit Split</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `postprocesscleanup.c` | 97 | Resource teardown (FBOs, quad, readback buffers, shader cache) |</span>
   <div class="mermaid-preview">
 
@@ -4566,6 +4633,38 @@ AXES --&gt; WRITE[gamepad_write_input]
 WRITE --&gt;|overlay| MI
 MI --&gt; PHYS[camera_fixed_update]
 end</code></pre>
+
+  </div>
+</div>
+
+<h2 id="asan-reports-error-then-gdb-catches-the-abort"><a href="../gdb_debugging_tutorial/">ASAN reports error, then GDB catches the abort</a><a class="headerlink" href="#asan-reports-error-then-gdb-catches-the-abort" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../gdb_debugging_tutorial/#8-debugging-workflow-summary" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">8. Debugging Workflow Summary</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>flowchart TD
+A[Application crashes] --&gt; B{Debug symbols available?}
+B --&gt;|Yes| C["gdb -batch -ex run -ex 'bt full' ./app"]
+B --&gt;|No| D[Build RelWithDebInfo]
+D --&gt; E{Crash reproduces?}
+E --&gt;|Yes| C
+E --&gt;|No| F[Use objdump -d on Release binary]
+C --&gt; G{Backtrace clear?}
+G --&gt;|Yes| H[Inspect source code at crash line]
+G --&gt;|No| I[Disassemble around $pc]
+F --&gt; I
+I --&gt; J[Identify faulting instruction]
+J --&gt; K[Inspect registers: info registers]
+K --&gt; L[Compute effective address]
+L --&gt; M{Alignment issue?}
+M --&gt;|Yes| N[Write offset helper program]
+N --&gt; O[Map offset to struct field]
+O --&gt; P[Fix: use aligned allocation]
+M --&gt;|No| Q[Check pointer validity, bounds, etc.]
+H --&gt; R[Fix bug]
+P --&gt; R
+Q --&gt; R
+R --&gt; S["Validate: build Release + run + test-all"]</code></pre>
 
   </div>
 </div>

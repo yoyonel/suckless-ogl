@@ -2960,6 +2960,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gdb_debugging_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GDB Debugging Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../docs_staging_guide/" class="md-nav__link">
         
   
@@ -3512,7 +3540,7 @@
 <h3 id="pourquoi-freenull-rend-cela-sur">Pourquoi <code>free(NULL)</code> rend cela sûr<a class="headerlink" href="#pourquoi-freenull-rend-cela-sur" title="Permanent link">¶</a></h3>
 <p>Le standard C garantit que <code>free(NULL)</code> est un no-op. Quand <code>calloc</code> initialise la struct à zéro, tout pointeur non assigné reste <code>NULL</code> et peut être libéré en toute sécurité. Cela élimine le besoin de gardes <code>if (ptr) free(ptr)</code>.</p>
 <h2 id="application-app_init-dans-suckless-ogl">Application : <code>app_init()</code> dans suckless-ogl<a class="headerlink" href="#application-app_init-dans-suckless-ogl" title="Permanent link">¶</a></h2>
-<p>La fonction <code>app_init()</code> utilise une <strong>variante à deux labels</strong> :</p>
+<p>La fonction <code>app_init()</code> utilise un pattern <strong>à label unique</strong> <code>goto cleanup_full</code> :</p>
 <table>
 <thead>
 <tr>
@@ -3523,18 +3551,13 @@
 </thead>
 <tbody>
 <tr>
-<td><code>cleanup_alloc</code></td>
-<td>Échecs d'allocation avant le contexte GL</td>
-<td><code>free()</code> direct des 6 pointeurs calloc'd</td>
-</tr>
-<tr>
 <td><code>cleanup_full</code></td>
-<td>Échecs après l'init des sous-systèmes (GL actif)</td>
+<td>Échecs après l'init des descripteurs de sous-systèmes (GL actif)</td>
 <td>Appelle <code>app_cleanup()</code> qui gère le teardown partiel</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Pourquoi deux labels ?</strong> <code>app_cleanup()</code> appelle <code>app_input_state_cleanup()</code> et <code>app_profiling_cleanup()</code> qui n'ont <strong>pas</strong> de gardes NULL — les appeler sur des pointeurs non initialisés provoquerait un crash. Le label <code>cleanup_alloc</code> gère la phase pré-init de manière sûre avec des appels directs <code>free(NULL)</code>.</p>
+<p>L'ancien label <code>cleanup_alloc</code> (pour les échecs d'allocation avant le GL) a été supprimé lorsque les descripteurs de sous-systèmes ont pris le relais. La fonction <code>app_subsystems_init()</code> de la table des descripteurs gère désormais le rollback automatiquement : sur le premier échec à l'index <em>N</em>, elle appelle <code>cleanup()</code> en ordre inverse pour les entrées <em>[N-1 .. 0]</em>, libérant toutes les sous-structs allouées par <code>calloc</code>. Seuls les échecs de Phase 3 post-descripteurs (scène, chargeur async, post-traitement) utilisent encore <code>goto cleanup_full</code>.</p>
 <h2 id="comparaison">Comparaison<a class="headerlink" href="#comparaison" title="Permanent link">¶</a></h2>
 <table>
 <thead>
@@ -3596,7 +3619,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="9 mai 2026 13:52:48 UTC">9 mai 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="10 mai 2026 15:40:57 UTC">10 mai 2026</span>
   </span>
 
     

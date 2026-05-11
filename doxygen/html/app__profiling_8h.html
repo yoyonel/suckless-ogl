@@ -252,6 +252,7 @@ $(document).ready(function(){initNavTree('app__profiling_8h.html',''); initResiz
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">app_profiling.h File Reference</div>  </div>
@@ -266,6 +267,7 @@ $(document).ready(function(){initNavTree('app__profiling_8h.html',''); initResiz
 <code>#include &quot;<a class="el" href="gpu__usage_8h_source.html">gpu_usage.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="tracy__manager_8h_source.html">tracy_manager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__subsystem_8h_source.html">app_subsystem.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app_profiling.h:</div>
 <div class="dyncontent">
@@ -275,7 +277,7 @@ Include dependency graph for app_profiling.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__profiling_8h__dep__incl.svg" width="379" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__profiling_8h__dep__incl.svg" width="100%" height="384"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div>
@@ -287,6 +289,11 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Profiling, metrics, and performance monitoring grouped together.  <a href="structAppProfiling.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a5fee8336e1933c1b39fd2840a6f244d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__profiling_8h.html#a5fee8336e1933c1b39fd2840a6f244d3">APP_PROFILING_DESCRIPTOR</a>&#160;&#160;&#160;	{&quot;profiling&quot;, app_profiling_subsys_init, <a class="el" href="app__profiling_8c.html#abdd70c517ba307b7187f9a88f3c0e57d">app_profiling_subsys_cleanup</a>}</td></tr>
+<tr class="separator:a5fee8336e1933c1b39fd2840a6f244d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4851e9367c098b7cc2620a9ff7f1d82d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__profiling_8h.html#a4851e9367c098b7cc2620a9ff7f1d82d">app_profiling_init</a> (<a class="el" href="structAppProfiling.html">AppProfiling</a> *prof, int width, int height)</td></tr>
@@ -295,11 +302,30 @@ Functions</h2></td></tr>
 <tr class="memitem:ab99b055de1667636c3fea6389f95da0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__profiling_8h.html#ab99b055de1667636c3fea6389f95da0a">app_profiling_cleanup</a> (<a class="el" href="structAppProfiling.html">AppProfiling</a> *prof)</td></tr>
 <tr class="memdesc:ab99b055de1667636c3fea6389f95da0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release all profiling resources in reverse init order.  <a href="app__profiling_8h.html#ab99b055de1667636c3fea6389f95da0a">More...</a><br /></td></tr>
 <tr class="separator:ab99b055de1667636c3fea6389f95da0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6301c7e015f19a55d28c9ee49c2659d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__profiling_8h.html#ad6301c7e015f19a55d28c9ee49c2659d">app_profiling_subsys_init</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ad6301c7e015f19a55d28c9ee49c2659d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7994f799baf3da7503fa6d4e52811747"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__profiling_8h.html#a7994f799baf3da7503fa6d4e52811747">app_profiling_subsys_cleanup</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a7994f799baf3da7503fa6d4e52811747"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Profiling, metrics, and performance monitoring sub-struct. </p>
 <p>Extracted from <a class="el" href="app_8h.html">app.h</a> to reduce include fan-out. All profiling-related types are grouped here so that <a class="el" href="app_8h.html">app.h</a> only needs a single <code>#include "app_profiling.h"</code>. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a5fee8336e1933c1b39fd2840a6f244d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fee8336e1933c1b39fd2840a6f244d3">&#9670;&nbsp;</a></span>APP_PROFILING_DESCRIPTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define APP_PROFILING_DESCRIPTOR&#160;&#160;&#160;	{&quot;profiling&quot;, app_profiling_subsys_init, <a class="el" href="app__profiling_8c.html#abdd70c517ba307b7187f9a88f3c0e57d">app_profiling_subsys_cleanup</a>}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="ab99b055de1667636c3fea6389f95da0a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab99b055de1667636c3fea6389f95da0a">&#9670;&nbsp;</a></span>app_profiling_cleanup()</h2>
 
@@ -377,6 +403,54 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__profiling_8h_a4851e9367c098b7cc2620a9ff7f1d82d_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a7994f799baf3da7503fa6d4e52811747"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7994f799baf3da7503fa6d4e52811747">&#9670;&nbsp;</a></span>app_profiling_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_profiling_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__profiling_8h_a7994f799baf3da7503fa6d4e52811747_cgraph.svg" width="100%" height="464"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ad6301c7e015f19a55d28c9ee49c2659d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6301c7e015f19a55d28c9ee49c2659d">&#9670;&nbsp;</a></span>app_profiling_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int app_profiling_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__profiling_8h_ad6301c7e015f19a55d28c9ee49c2659d_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

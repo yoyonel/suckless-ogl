@@ -257,8 +257,10 @@ $(document).ready(function(){initNavTree('async__coordinator_8c.html',''); initR
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;async/async_coordinator.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;platform/platform_utils.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
@@ -277,8 +279,60 @@ Functions</h2></td></tr>
 <tr class="separator:a4add1f2b06ca0a26f4150fb29dbbd0a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbeba111b55c3c11972710fe0a4b4a1b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__coordinator_8c.html#afbeba111b55c3c11972710fe0a4b4a1b">async_coordinator_update</a> (<a class="el" href="app_8h.html#a847545ce6902f2938641bd0326c9ef8d">AsyncCoordinator</a> *coord, <a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, <a class="el" href="structAsyncRequest.html">AsyncRequest</a> *out_req)</td></tr>
 <tr class="separator:afbeba111b55c3c11972710fe0a4b4a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18c98057535e9acc9f78c1fc5fe00e56"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__coordinator_8c.html#a18c98057535e9acc9f78c1fc5fe00e56">async_coord_subsys_init</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a18c98057535e9acc9f78c1fc5fe00e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7079550b6db57f45d1bbd4d53d169839"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__coordinator_8c.html#a7079550b6db57f45d1bbd4d53d169839">async_coord_subsys_cleanup</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a7079550b6db57f45d1bbd4d53d169839"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a7079550b6db57f45d1bbd4d53d169839"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7079550b6db57f45d1bbd4d53d169839">&#9670;&nbsp;</a></span>async_coord_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_coord_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="async__coordinator_8c_a7079550b6db57f45d1bbd4d53d169839_cgraph.svg" width="412" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a18c98057535e9acc9f78c1fc5fe00e56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18c98057535e9acc9f78c1fc5fe00e56">&#9670;&nbsp;</a></span>async_coord_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int async_coord_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="async__coordinator_8c_a18c98057535e9acc9f78c1fc5fe00e56_cgraph.svg" width="411" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a4add1f2b06ca0a26f4150fb29dbbd0a2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4add1f2b06ca0a26f4150fb29dbbd0a2">&#9670;&nbsp;</a></span>async_coordinator_cleanup()</h2>
 

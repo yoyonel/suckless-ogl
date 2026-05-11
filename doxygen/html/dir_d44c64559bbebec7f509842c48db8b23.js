@@ -9,11 +9,10 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "app_metrics.h", "app__metrics_8h.html", "app__metrics_8h" ],
     [ "app_profiling.h", "app__profiling_8h.html", "app__profiling_8h" ],
     [ "app_settings.h", "app__settings_8h.html", "app__settings_8h" ],
+    [ "app_subsystem.h", "app__subsystem_8h.html", "app__subsystem_8h" ],
     [ "app_ui.h", "app__ui_8h.html", "app__ui_8h" ],
     [ "app_ui_layout.h", "app__ui__layout_8h.html", "app__ui__layout_8h" ],
-    [ "app_window.h", "app__window_8h.html", [
-      [ "AppWindow", "structAppWindow.html", "structAppWindow" ]
-    ] ],
+    [ "app_window.h", "app__window_8h.html", "app__window_8h" ],
     [ "async_loader.h", "async__loader_8h.html", "async__loader_8h" ],
     [ "billboard_rendering.h", "billboard__rendering_8h.html", "billboard__rendering_8h" ],
     [ "billboard_sorting.h", "billboard__sorting_8h.html", "billboard__sorting_8h" ],
@@ -40,6 +39,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "io.h", "io_8h.html", "io_8h" ],
     [ "light_probes.h", "light__probes_8h.html", "light__probes_8h" ],
     [ "log.h", "log_8h.html", "log_8h" ],
+    [ "lum_histogram.h", "lum__histogram_8h.html", "lum__histogram_8h" ],
     [ "main.h", "main_8h.html", null ],
     [ "material.h", "material_8h.html", "material_8h" ],
     [ "mem.h", "mem_8h.html", null ],

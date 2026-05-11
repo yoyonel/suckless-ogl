@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['nbodyimpact_2406',['NBodyImpact',['../structNBodyImpact.html',1,'']]],
-  ['nbodyparticle_2407',['NBodyParticle',['../structNBodyParticle.html',1,'']]],
-  ['nbodysim_2408',['NBodySim',['../structNBodySim.html',1,'']]]
+  ['nbodyimpact_2445',['NBodyImpact',['../structNBodyImpact.html',1,'']]],
+  ['nbodyparticle_2446',['NBodyParticle',['../structNBodyParticle.html',1,'']]],
+  ['nbodysim_2447',['NBodySim',['../structNBodySim.html',1,'']]]
 ];

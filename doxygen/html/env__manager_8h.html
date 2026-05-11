@@ -252,6 +252,7 @@ $(document).ready(function(){initNavTree('env__manager_8h.html',''); initResizab
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">env_manager.h File Reference</div>  </div>
@@ -264,10 +265,11 @@ $(document).ready(function(){initNavTree('env__manager_8h.html',''); initResizab
 <code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__subsystem_8h_source.html">app_subsystem.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for env_manager.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8h__incl.svg" width="607" height="336"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8h__incl.svg" width="100%" height="552"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -284,6 +286,11 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEnvManager.html">EnvManager</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsulates state for environment loading, transitions, and IBL.  <a href="structEnvManager.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a198ea67400c8073a04b09e5e1e29944a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8h.html#a198ea67400c8073a04b09e5e1e29944a">APP_ENV_MGR_DESCRIPTOR</a>&#160;&#160;&#160;	{&quot;env_mgr&quot;, env_mgr_subsys_init, <a class="el" href="env__manager_8c.html#aff1d6e8d0d27f3dd34f631c6d55bb4f7">env_mgr_subsys_cleanup</a>}</td></tr>
+<tr class="separator:a198ea67400c8073a04b09e5e1e29944a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -305,11 +312,30 @@ Functions</h2></td></tr>
 <tr class="memitem:ae12a5f2406e71f9cd410cc4e6518ca61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61">env_manager_render_overlay</a> (const <a class="el" href="structEnvManager.html">EnvManager</a> *mgr, const <a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="memdesc:ae12a5f2406e71f9cd410cc4e6518ca61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the transition overlay (fade/crossfade).  <a href="env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61">More...</a><br /></td></tr>
 <tr class="separator:ae12a5f2406e71f9cd410cc4e6518ca61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc81a14e79027bf4f1a9d705f8fee2d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8h.html#adc81a14e79027bf4f1a9d705f8fee2d4">env_mgr_subsys_init</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:adc81a14e79027bf4f1a9d705f8fee2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af524e6c13344ae84c99c2f5fc8a8925a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8h.html#af524e6c13344ae84c99c2f5fc8a8925a">env_mgr_subsys_cleanup</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:af524e6c13344ae84c99c2f5fc8a8925a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Environment and IBL management module. </p>
 <p>This module handles HDR texture file scanning, environment map loading, and manages the state machine for progressive Image-Based Lighting (IBL) updates. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a198ea67400c8073a04b09e5e1e29944a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a198ea67400c8073a04b09e5e1e29944a">&#9670;&nbsp;</a></span>APP_ENV_MGR_DESCRIPTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define APP_ENV_MGR_DESCRIPTOR&#160;&#160;&#160;	{&quot;env_mgr&quot;, env_mgr_subsys_init, <a class="el" href="env__manager_8c.html#aff1d6e8d0d27f3dd34f631c6d55bb4f7">env_mgr_subsys_cleanup</a>}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="ad4d555f76a7025a1376e21ab6fb077ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad4d555f76a7025a1376e21ab6fb077ce">&#9670;&nbsp;</a></span>env_manager_load()</h2>
 
@@ -638,6 +664,42 @@ Here is the call graph for this function:</div>
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8h_aafd47aadf2c5e1696d618a510326ce78_cgraph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
+
+</div>
+</div>
+<a id="af524e6c13344ae84c99c2f5fc8a8925a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af524e6c13344ae84c99c2f5fc8a8925a">&#9670;&nbsp;</a></span>env_mgr_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void env_mgr_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adc81a14e79027bf4f1a9d705f8fee2d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc81a14e79027bf4f1a9d705f8fee2d4">&#9670;&nbsp;</a></span>env_mgr_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int env_mgr_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

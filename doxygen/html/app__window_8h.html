@@ -251,22 +251,25 @@ $(document).ready(function(){initNavTree('app__window_8h.html',''); initResizabl
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a>  </div>
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">app_window.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__subsystem_8h_source.html">app_subsystem.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app_window.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__window_8h__incl.svg" width="435" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__window_8h__incl.svg" width="460" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__window_8h__dep__incl.svg" width="506" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__window_8h__dep__incl.svg" width="100%" height="440"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div>
@@ -277,7 +280,83 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppWindow.html">AppWindow</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Groups GLFW window handle and all window/resize state.  <a href="structAppWindow.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a6151210b4434fba5b69189b207890a6c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__window_8h.html#a6151210b4434fba5b69189b207890a6c">APP_WINDOW_DESCRIPTOR</a>&#160;&#160;&#160;	{&quot;window&quot;, app_window_subsys_init, <a class="el" href="app__window_8c.html#a4afffa95ea97e8fa79351333ba37d79a">app_window_subsys_cleanup</a>}</td></tr>
+<tr class="separator:a6151210b4434fba5b69189b207890a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a1ab01b11db61b18d8250d68f3e36bc15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__window_8h.html#a1ab01b11db61b18d8250d68f3e36bc15">app_window_subsys_init</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a1ab01b11db61b18d8250d68f3e36bc15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e65ed785be5f432e9f86cee5d73d7a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__window_8h.html#a0e65ed785be5f432e9f86cee5d73d7a8">app_window_subsys_cleanup</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a0e65ed785be5f432e9f86cee5d73d7a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a6151210b4434fba5b69189b207890a6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6151210b4434fba5b69189b207890a6c">&#9670;&nbsp;</a></span>APP_WINDOW_DESCRIPTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define APP_WINDOW_DESCRIPTOR&#160;&#160;&#160;	{&quot;window&quot;, app_window_subsys_init, <a class="el" href="app__window_8c.html#a4afffa95ea97e8fa79351333ba37d79a">app_window_subsys_cleanup</a>}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a0e65ed785be5f432e9f86cee5d73d7a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e65ed785be5f432e9f86cee5d73d7a8">&#9670;&nbsp;</a></span>app_window_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_window_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__window_8h_a0e65ed785be5f432e9f86cee5d73d7a8_cgraph.svg" width="400" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a1ab01b11db61b18d8250d68f3e36bc15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ab01b11db61b18d8250d68f3e36bc15">&#9670;&nbsp;</a></span>app_window_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int app_window_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__window_8h_a1ab01b11db61b18d8250d68f3e36bc15_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -16,6 +16,7 @@ var structApp =
     [ "postprocess", "structApp.html#a5dd6825955dbaacbf6978b9c3b764290", null ],
     [ "profiling", "structApp.html#a6c4ecc29f155f2fe61362f464ae742dd", null ],
     [ "scene", "structApp.html#a6b11b5559efe024a597073478c6c79fe", null ],
+    [ "title", "structApp.html#ac04a88de3d4221699de21d4587a187e5", null ],
     [ "u_ao", "structApp.html#a6ca474ac6ab816680d6faa9c3446d229", null ],
     [ "u_exposure", "structApp.html#acd0c299e250ea192d73ba4aede950f09", null ],
     [ "u_metallic", "structApp.html#a5f8d7250b5676f0babc40055e8184580", null ],

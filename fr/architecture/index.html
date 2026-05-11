@@ -655,6 +655,56 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pattern-subsystemdescriptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern SubsystemDescriptor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pattern SubsystemDescriptor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dag-de-dependances-des-sous-systemes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAG de dépendances des sous-systèmes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comment-ajouter-un-nouveau-sous-systeme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comment ajouter un nouveau sous-système
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#couverture-de-test-systeme-de-descripteurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Couverture de test (système de descripteurs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#decomposition-du-header-postprocess" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -815,10 +865,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#couverture-de-test-llvm-cov-avril-2026" class="md-nav__link">
+  <a href="#couverture-de-test-llvm-cov-juin-2025" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Couverture de test (LLVM-Cov, avril 2026)
+        Couverture de test (LLVM-Cov, juin 2025)
       
     </span>
   </a>
@@ -3181,6 +3231,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gdb_debugging_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GDB Debugging Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../docs_staging_guide/" class="md-nav__link">
         
   
@@ -3738,12 +3816,174 @@
 <ul>
 <li><strong><code>AppProfiling</code></strong> (<code>include/app_profiling.h</code>) : regroupe le profiling et les métriques — <code>GPUProfiler</code>, <code>GPUProfilerUI</code>, <code>FpsCounter</code>, <code>TracyManager</code>, <code>GPUUsageMonitor</code>, <code>PerfModeContext</code>, <code>perf_mode_active</code>, <code>log_gpu_metrics</code>. Accès via <code>app-&gt;profiling-&gt;gpu_profiler</code>, etc. Init/cleanup délégués à <code>app_profiling_init()</code> / <code>app_profiling_cleanup()</code> dans <code>src/app_profiling.c</code>.</li>
 <li><strong><code>AppInput</code></strong> (<code>include/app_input_state.h</code>) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — <code>Camera</code>, <code>GamepadState</code>, <code>AppBindingRegistry</code>, <code>AdaptiveSampler</code>, <code>camera_enabled</code>. Accès via <code>app-&gt;input-&gt;camera</code>, etc. Init/cleanup délégués à <code>app_input_state_init()</code> / <code>app_input_state_cleanup()</code> dans <code>src/app_input_state.c</code>.</li>
-<li><strong><code>AppWindow</code></strong> (<code>include/app_window.h</code>) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — <code>GLFWwindow* handle</code>, <code>is_fullscreen</code>, <code>saved_x/y</code>, <code>saved_width/height</code>, <code>resize_pending</code>, <code>pending_width/height</code>. Accès via <code>app-&gt;win.handle</code>, <code>app-&gt;win.is_fullscreen</code>, etc.</li>
+<li><strong><code>AppWindow</code></strong> (<code>include/app_window.h</code>) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — <code>GLFWwindow* handle</code>, <code>is_fullscreen</code>, <code>saved_x/y</code>, <code>saved_width/height</code>, <code>resize_pending</code>, <code>pending_width/height</code>. Accès via <code>app-&gt;win.handle</code>, <code>app-&gt;win.is_fullscreen</code>, etc. Init/cleanup délégués à <code>app_window_subsys_init()</code> / <code>app_window_subsys_cleanup()</code> dans <code>src/app_window.c</code>. Le descripteur fenêtre est <strong>premier</strong> dans la table des sous-systèmes — il crée le contexte OpenGL nécessaire à tous les autres sous-systèmes, et est nettoyé en <strong>dernier</strong> (ordre inverse) pour garantir que le contexte GL survit à toutes les libérations de ressources GPU.</li>
 </ul>
 <blockquote>
 <p><strong>Note de nommage</strong> : <code>app_input_state.h</code> héberge la définition de la sous-struct <code>AppInput</code>, tandis que le fichier existant <code>app_input.h</code> héberge le seam <code>AppInputContext</code> (bundle de pointeurs ciblés pour les handlers d'entrée, issue #204).</p>
 </blockquote>
 <p>Cela réduit le nombre de champs directs de <code>App</code> de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant <code>app.c</code> focalisé sur l'orchestration.</p>
+<h3 id="pattern-subsystemdescriptor">Pattern SubsystemDescriptor<a class="headerlink" href="#pattern-subsystemdescriptor" title="Permanent link">¶</a></h3>
+<p>L'initialisation et le nettoyage des sous-structs de <code>App</code> sont pilotés par une <strong>table de descripteurs terminée par sentinelle</strong> au lieu de séquences <code>calloc</code>/<code>init</code>/<code>cleanup</code> écrites à la main dans <code>app_init()</code> / <code>app_cleanup()</code>.</p>
+<p><strong>Types fondamentaux</strong> (<code>include/app_subsystem.h</code>) :</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">SubsystemDescriptor</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">init</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">cleanup</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span><span class="w"> </span><span class="n">SubsystemDescriptor</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Déclaration de la table</strong> (<code>src/app.c</code>) :</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">SubsystemDescriptor</span><span class="w"> </span><span class="n">APP_SUBSYSTEM_TABLE</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">APP_WINDOW_DESCRIPTOR</span><span class="p">,</span><span class="w">        </span><span class="c1">// Crée le contexte GL — doit être premier</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="n">APP_INPUT_DESCRIPTOR</span><span class="p">,</span><span class="w">         </span><span class="c1">// Pas de dépendance GL</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">APP_PROFILING_DESCRIPTOR</span><span class="p">,</span><span class="w">     </span><span class="c1">// GPU profiler + Tracy (nécessite GL)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">APP_ASYNC_COORD_DESCRIPTOR</span><span class="p">,</span><span class="w">   </span><span class="c1">// Allocation PBO (nécessite GL)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">APP_LUM_HISTOGRAM_DESCRIPTOR</span><span class="p">,</span><span class="w"> </span><span class="c1">// malloc uniquement</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="n">APP_ASYNC_LOADER_DESCRIPTOR</span><span class="p">,</span><span class="w">  </span><span class="c1">// Nécessite profiling-&gt;tracy_mgr</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">APP_SCENE_DESCRIPTOR</span><span class="p">,</span><span class="w">         </span><span class="c1">// Shaders, textures (nécessite GL)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="n">APP_ENV_MGR_DESCRIPTOR</span><span class="p">,</span><span class="w">       </span><span class="c1">// État de transition uniquement</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="n">APP_POSTPROCESS_DESCRIPTOR</span><span class="p">,</span><span class="w">   </span><span class="c1">// Nécessite profiling + ressources GPU scène</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">},</span><span class="w">  </span><span class="cm">/* sentinelle */</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>Chaque module possède sa macro descripteur (ex. <code>APP_WINDOW_DESCRIPTOR</code> dans <code>app_window.h</code>), gardant la définition co-localisée avec les fonctions init/cleanup.</p>
+<p><strong>Contrainte d'ordre</strong> : <code>APP_WINDOW_DESCRIPTOR</code> doit être la <strong>première</strong> entrée car il crée le contexte OpenGL. Le cleanup s'exécutant en ordre inverse, la fenêtre est détruite en <strong>dernier</strong>, garantissant que le contexte GL reste valide pendant la libération de tous les sous-systèmes dépendants du GPU (requêtes profiler, FBOs, VAOs, shaders, etc.).</p>
+<p><strong>Sémantique</strong> :</p>
+<ul>
+<li><code>app_subsystems_init()</code> parcourt la table en avant jusqu'à la sentinelle <code>{0}</code>. Sur le premier échec à l'index <em>N</em>, il appelle <code>cleanup()</code> en ordre inverse pour les entrées <em>[N-1 .. 0]</em> (rollback automatique).</li>
+<li><code>app_subsystems_cleanup()</code> compte les entrées, puis parcourt la table en ordre inverse — garantissant que le démontage est le miroir de l'initialisation.</li>
+<li>Pas de paramètre count explicite : la sentinelle élimine une source de désynchronisation.</li>
+</ul>
+<h4 id="dag-de-dependances-des-sous-systemes">DAG de dépendances des sous-systèmes<a class="headerlink" href="#dag-de-dependances-des-sous-systemes" title="Permanent link">¶</a></h4>
+<p>L'ordre de la table des descripteurs satisfait ces dépendances d'initialisation :</p>
+<pre class="mermaid"><code>graph LR
+    classDef first fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+    classDef gl fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+    classDef nogl fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+
+    WIN[WINDOW]:::first
+    INP[INPUT]:::nogl
+    PROF[PROFILING]:::gl
+    AC[ASYNC_COORD]:::gl
+    LH[LUM_HISTOGRAM]:::nogl
+    AL[ASYNC_LOADER]:::gl
+    SC[SCENE]:::gl
+    ENV[ENV_MGR]:::nogl
+    PP[POSTPROCESS]:::gl
+
+    WIN --&gt;|"contexte GL"| PROF
+    WIN --&gt;|"contexte GL"| AC
+    WIN --&gt;|"contexte GL"| SC
+    WIN --&gt;|"contexte GL"| PP
+    PROF --&gt;|"tracy_mgr"| AL
+    PROF --&gt;|"gpu_profiler"| PP
+    SC --&gt;|"ressources GPU"| PP</code></pre>
+<p><strong>Légende</strong> : 🟡 doit être premier (crée le contexte GL), 🔵 nécessite GL, 🟢 pas de dépendance GL.</p>
+<h4 id="comment-ajouter-un-nouveau-sous-systeme">Comment ajouter un nouveau sous-système<a class="headerlink" href="#comment-ajouter-un-nouveau-sous-systeme" title="Permanent link">¶</a></h4>
+<ol>
+<li>
+<p><strong>Créer la paire init/cleanup</strong> dans le fichier <code>.c</code> du module :</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">));</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="c1">// ... initialisation complémentaire ...</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">}</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">my_module_subsys_cleanup</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="c1">// ... libérer les ressources GL, free les buffers ...</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">);</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Déclarer la macro descripteur</strong> dans le fichier <code>.h</code> du module :</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">my_module_subsys_cleanup</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#define APP_MY_MODULE_DESCRIPTOR \</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">    {"MY_MODULE", my_module_subsys_init, my_module_subsys_cleanup}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Ajouter l'entrée</strong> dans <code>APP_SUBSYSTEM_TABLE</code> dans <code>src/app.c</code> à la bonne position (en respectant l'ordre des dépendances).</p>
+</li>
+<li>
+<p><strong>Ajouter un test roundtrip</strong> dans <code>tests/test_app_subsystem.c</code> (section Phase C).</p>
+</li>
+</ol>
+<h4 id="couverture-de-test-systeme-de-descripteurs">Couverture de test (système de descripteurs)<a class="headerlink" href="#couverture-de-test-systeme-de-descripteurs" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Fichier</th>
+<th style="text-align: right;">Lignes</th>
+<th style="text-align: right;">Fonctions</th>
+<th style="text-align: right;">Branches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app_subsystem.c</code></td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">100 %</td>
+</tr>
+<tr>
+<td><code>lum_histogram.c</code></td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">100 %</td>
+</tr>
+<tr>
+<td><code>app_profiling.c</code></td>
+<td style="text-align: right;">90 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">50 %</td>
+</tr>
+<tr>
+<td><code>app_window.c</code></td>
+<td style="text-align: right;">89 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">50 %</td>
+</tr>
+<tr>
+<td><code>async_coordinator.c</code></td>
+<td style="text-align: right;">88 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">66 %</td>
+</tr>
+<tr>
+<td><code>env_manager.c</code></td>
+<td style="text-align: right;">77 %</td>
+<td style="text-align: right;">92 %</td>
+<td style="text-align: right;">56 %</td>
+</tr>
+<tr>
+<td><code>scene_init.c</code></td>
+<td style="text-align: right;">82 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">56 %</td>
+</tr>
+<tr>
+<td><code>postprocess_init.c</code></td>
+<td style="text-align: right;">88 %</td>
+<td style="text-align: right;">100 %</td>
+<td style="text-align: right;">52 %</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lacunes documentées</strong> :</p>
+<ul>
+<li>Chemin d'échec de <code>app_init()</code> (ligne 73) : nécessite un échec de <code>APP_SUBSYSTEM_TABLE</code> impossible à injecter en tests unitaires — exercé uniquement en intégration avec <code>test_failure_sweep</code> utilisant des tables factices.</li>
+<li>Garde <code>app_cleanup(NULL)</code> (ligne 116) : vérification défensive triviale.</li>
+<li>Branches des sous-systèmes dépendants GL : nécessitent un display virtuel (<code>llvmpipe</code>) ; couvertes en CI mais pas en exécution headless locale.</li>
+</ul>
+<p><strong>Tests</strong> (<code>tests/test_app_subsystem.c</code>, 17 tests) :</p>
+<ul>
+<li><strong>Phase A</strong> (framework) : chemin de succès, rollback sur échec, sweep, ordre inverse, gestion des pointeurs de fonction NULL (6 + 3 tests).</li>
+<li><strong>Phase B</strong> (sous-systèmes réels) : roundtrips input + profiling (2 tests).</li>
+<li><strong>Phase C</strong> (descripteurs GL) : roundtrips postprocess, scene, env_mgr, async_coord, init+cleanup table complète, sweep d'échec (6 tests).</li>
+</ul>
 <h3 id="decomposition-du-header-postprocess">Décomposition du header PostProcess<a class="headerlink" href="#decomposition-du-header-postprocess" title="Permanent link">¶</a></h3>
 <p>Les définitions de types de <code>PostProcess</code> sont décomposées en cinq sous-headers, suivant le même pattern que la décomposition de Scene. <code>postprocess.h</code> (648 → 330 lignes) ne contient plus que la struct agrégat <code>PostProcess</code>, l'enum <code>PostProcessEffect</code>, <code>PostProcessPreset</code> et les signatures de fonctions.</p>
 <ul>
@@ -3925,18 +4165,18 @@
 <p><strong>Principe</strong> : un en-tête qui n'utilise un type qu'à travers un pointeur ou une référence doit faire une déclaration anticipée de ce type, pas inclure sa définition complète. Cela réduit la propagation des includes et accélère les builds incrémentaux.</p>
 <h2 id="configuration-cmake">Configuration CMake<a class="headerlink" href="#configuration-cmake" title="Permanent link">¶</a></h2>
 <p>Les modules sont compilés séparément et liés à l'exécutable principal :</p>
-<div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="s">src/app.c</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s">src/app_ui.c</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">src/app_input.c</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">src/app_env.c</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="s">src/app_scene.c</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="s">src/app.c</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="s">src/app_ui.c</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="s">src/app_input.c</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="s">src/app_env.c</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="s">src/app_scene.c</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Chaque module expose son interface via un en-tête dans <code>include/</code> avec le préfixe correspondant (<code>app_ui.h</code>, <code>app_input.h</code>, etc.).</p>
 <h2 id="metriques-sante">Métriques &amp; Santé<a class="headerlink" href="#metriques-sante" title="Permanent link">¶</a></h2>
 <blockquote>
-<p>Dernière mise à jour : avril 2026 (Phase 10 — Architecture Deepening V)</p>
+<p>Dernière mise à jour : mai 2026 (SubsystemDescriptor MVP — Issue #285)</p>
 </blockquote>
 <h3 id="taille-du-codebase">Taille du codebase<a class="headerlink" href="#taille-du-codebase" title="Permanent link">¶</a></h3>
 <table>
@@ -3950,17 +4190,17 @@
 <tbody>
 <tr>
 <td>Sources (<code>src/*.c</code>)</td>
-<td style="text-align: right;">66</td>
+<td style="text-align: right;">67</td>
 <td style="text-align: right;">20 556</td>
 </tr>
 <tr>
 <td>En-têtes (<code>include/*.h</code>)</td>
-<td style="text-align: right;">87</td>
+<td style="text-align: right;">88</td>
 <td style="text-align: right;">7 839</td>
 </tr>
 <tr>
 <td>Tests (<code>tests/test_*.c</code>)</td>
-<td style="text-align: right;">69</td>
+<td style="text-align: right;">70</td>
 <td style="text-align: right;">12 666</td>
 </tr>
 <tr>
@@ -4121,7 +4361,7 @@
 </tbody>
 </table>
 <p><strong>Principe</strong> : les en-têtes agrégats (<code>app.h</code>, <code>scene.h</code>, <code>postprocess.h</code>) ont naturellement un fan-out élevé. Les en-têtes de modules feuilles doivent rester ≤ 5. <strong>24 en-têtes</strong> utilisent désormais des déclarations anticipées.</p>
-<h3 id="couverture-de-test-llvm-cov-avril-2026">Couverture de test (LLVM-Cov, avril 2026)<a class="headerlink" href="#couverture-de-test-llvm-cov-avril-2026" title="Permanent link">¶</a></h3>
+<h3 id="couverture-de-test-llvm-cov-juin-2025">Couverture de test (LLVM-Cov, juin 2025)<a class="headerlink" href="#couverture-de-test-llvm-cov-juin-2025" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -4133,22 +4373,22 @@
 <tbody>
 <tr>
 <td>Lignes</td>
-<td style="text-align: right;">66,6 %</td>
+<td style="text-align: right;">71,4 %</td>
 <td style="text-align: right;">≥ 78 %</td>
 </tr>
 <tr>
 <td>Fonctions</td>
-<td style="text-align: right;">83,1 %</td>
+<td style="text-align: right;">83,6 %</td>
 <td style="text-align: right;">≥ 85 %</td>
 </tr>
 <tr>
 <td>Branches</td>
-<td style="text-align: right;">53,6 %</td>
+<td style="text-align: right;">53,7 %</td>
 <td style="text-align: right;">≥ 50 % ✅</td>
 </tr>
 </tbody>
 </table>
-<p>68 tests passent (unitaires + intégration, CTest).</p>
+<p>71 tests passent (unitaires + intégration, CTest).</p>
 <h2 id="graphe-de-dependances-include">Graphe de dépendances include<a class="headerlink" href="#graphe-de-dependances-include" title="Permanent link">¶</a></h2>
 <p>Dépendances des modules principaux (en-têtes projet uniquement, hors système et vendeur) :</p>
 <pre class="mermaid"><code>graph TD
@@ -4251,7 +4491,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 20:44:28 UTC">29 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="11 mai 2026 07:16:58 UTC">11 mai 2026</span>
   </span>
 
     

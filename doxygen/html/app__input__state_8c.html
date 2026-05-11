@@ -256,12 +256,15 @@ $(document).ready(function(){initNavTree('app__input__state_8c.html',''); initRe
 <div class="title">app_input_state.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="app__input__state_8h_source.html">app_input_state.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;glad/glad.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="app__input__state_8h_source.html">app_input_state.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
+<code>#include &quot;platform/platform_utils.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app_input_state.c:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8c__incl.svg" width="100%" height="496"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -273,6 +276,10 @@ Functions</h2></td></tr>
 <tr class="memitem:af571ae27438a1080557417aa42c62947"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8c.html#af571ae27438a1080557417aa42c62947">app_input_state_cleanup</a> (<a class="el" href="structAppInput.html">AppInput</a> *input)</td></tr>
 <tr class="memdesc:af571ae27438a1080557417aa42c62947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release all input resources.  <a href="app__input__state_8c.html#af571ae27438a1080557417aa42c62947">More...</a><br /></td></tr>
 <tr class="separator:af571ae27438a1080557417aa42c62947"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd45ab291a4a444ab96f5bd0d5716432"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8c.html#acd45ab291a4a444ab96f5bd0d5716432">app_input_subsys_init</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:acd45ab291a4a444ab96f5bd0d5716432"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a528f3695c937832f0c573ab199daccbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8c.html#a528f3695c937832f0c573ab199daccbf">app_input_subsys_cleanup</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a528f3695c937832f0c573ab199daccbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="af571ae27438a1080557417aa42c62947"></a>
@@ -334,6 +341,54 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="app__input__state_8c_aa0ce3ce1420b102dc22930f9cee0649e_cgraph.svg" width="627" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a528f3695c937832f0c573ab199daccbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a528f3695c937832f0c573ab199daccbf">&#9670;&nbsp;</a></span>app_input_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_input_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8c_a528f3695c937832f0c573ab199daccbf_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="acd45ab291a4a444ab96f5bd0d5716432"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd45ab291a4a444ab96f5bd0d5716432">&#9670;&nbsp;</a></span>app_input_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int app_input_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8c_acd45ab291a4a444ab96f5bd0d5716432_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

@@ -12,6 +12,8 @@ var scene__init_8c =
     [ "scene_init_instancing", "scene__init_8c.html#ac9a72b39f3105f15156e44d5838cbc4a", null ],
     [ "scene_init_state", "scene__init_8c.html#aff46f1206e35ed81c94cfd0a4b45afdb", null ],
     [ "scene_scan_hdr_files", "scene__init_8c.html#a8c6e924f776610ef26f3d2923fb5d972", null ],
+    [ "scene_subsys_cleanup", "scene__init_8c.html#aea0dead7289ef370e973d931e6a1e5ca", null ],
+    [ "scene_subsys_init", "scene__init_8c.html#a3d628da8ad56218e91d9df6442d46050", null ],
     [ "HDR_EXTENSION", "scene__init_8c.html#addf3c4a8a43f871218486c07bbb28461", null ],
     [ "HDR_TEXTURE_PATH", "scene__init_8c.html#a73c65b37118d1d96e00ce15fb7e4b6d3", null ]
 ];

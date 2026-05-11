@@ -2960,6 +2960,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gdb_debugging_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GDB Debugging Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../docs_staging_guide/" class="md-nav__link">
         
   
@@ -3512,7 +3540,7 @@
 <h3 id="why-freenull-makes-this-safe">Why <code>free(NULL)</code> Makes This Safe<a class="headerlink" href="#why-freenull-makes-this-safe" title="Permanent link">¶</a></h3>
 <p>The C standard guarantees that <code>free(NULL)</code> is a no-op. When <code>calloc</code> zero-initializes the struct, any pointer that was never assigned remains <code>NULL</code> and can be safely freed. This eliminates the need for <code>if (ptr) free(ptr)</code> guards.</p>
 <h2 id="applied-app_init-in-suckless-ogl">Applied: <code>app_init()</code> in suckless-ogl<a class="headerlink" href="#applied-app_init-in-suckless-ogl" title="Permanent link">¶</a></h2>
-<p>The <code>app_init()</code> function uses a <strong>two-label variant</strong>:</p>
+<p>The <code>app_init()</code> function uses a <strong>single-label</strong> <code>goto cleanup_full</code> pattern:</p>
 <table>
 <thead>
 <tr>
@@ -3523,18 +3551,13 @@
 </thead>
 <tbody>
 <tr>
-<td><code>cleanup_alloc</code></td>
-<td>Allocation failures before GL context</td>
-<td>Direct <code>free()</code> of 6 calloc'd pointers</td>
-</tr>
-<tr>
 <td><code>cleanup_full</code></td>
-<td>Failures after subsystem init (GL active)</td>
+<td>Failures after subsystem descriptor init (GL active)</td>
 <td>Calls <code>app_cleanup()</code> which handles partial teardown</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Why two labels?</strong> <code>app_cleanup()</code> calls <code>app_input_state_cleanup()</code> and <code>app_profiling_cleanup()</code> which do <strong>not</strong> have NULL guards — calling them on uninitialized pointers would crash. The <code>cleanup_alloc</code> label handles the pre-init phase safely with direct <code>free(NULL)</code> calls.</p>
+<p>The previous <code>cleanup_alloc</code> label (for pre-GL allocation failures) was removed when subsystem descriptors took over. The descriptor table's <code>app_subsystems_init()</code> now handles rollback automatically: on the first failure at index <em>N</em>, it calls <code>cleanup()</code> in reverse for entries <em>[N-1 .. 0]</em>, freeing any <code>calloc</code>'d sub-structs. Only post-descriptor Phase 3 failures (scene, async loader, post-processing) still use <code>goto cleanup_full</code>.</p>
 <h2 id="comparison">Comparison<a class="headerlink" href="#comparison" title="Permanent link">¶</a></h2>
 <table>
 <thead>
@@ -3596,7 +3619,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 9, 2026 13:52:48 UTC">May 9, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 10, 2026 15:40:57 UTC">May 10, 2026</span>
   </span>
 
     

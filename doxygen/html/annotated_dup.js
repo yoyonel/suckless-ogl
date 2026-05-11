@@ -106,6 +106,7 @@ var annotated_dup =
     [ "SphereInstance", "structSphereInstance.html", "structSphereInstance" ],
     [ "SphereInstanceSSBO", "structSphereInstanceSSBO.html", "structSphereInstanceSSBO" ],
     [ "SSBOGroup", "structSSBOGroup.html", "structSSBOGroup" ],
+    [ "SubsystemDescriptor", "structSubsystemDescriptor.html", "structSubsystemDescriptor" ],
     [ "TonemapParams", "structTonemapParams.html", "structTonemapParams" ],
     [ "TracyManager", "structTracyManager.html", null ],
     [ "TrailNeonParams", "structTrailNeonParams.html", "structTrailNeonParams" ],

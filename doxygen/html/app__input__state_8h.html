@@ -252,6 +252,7 @@ $(document).ready(function(){initNavTree('app__input__state_8h.html',''); initRe
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">app_input_state.h File Reference</div>  </div>
@@ -264,10 +265,11 @@ $(document).ready(function(){initNavTree('app__input__state_8h.html',''); initRe
 <code>#include &quot;<a class="el" href="app__binding_8h_source.html">app_binding.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gamepad__input_8h_source.html">gamepad_input.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__subsystem_8h_source.html">app_subsystem.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app_input_state.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__input__state_8h__incl.svg" width="634" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8h__incl.svg" width="100%" height="440"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -285,6 +287,11 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a>, gamepad, key-bindings, and input smoothing grouped together.  <a href="structAppInput.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a2b62faef4c1ec9fe33bf1ca2b2b56222"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8h.html#a2b62faef4c1ec9fe33bf1ca2b2b56222">APP_INPUT_DESCRIPTOR</a>&#160;&#160;&#160;	{&quot;input&quot;, app_input_subsys_init, <a class="el" href="app__input__state_8c.html#a528f3695c937832f0c573ab199daccbf">app_input_subsys_cleanup</a>}</td></tr>
+<tr class="separator:a2b62faef4c1ec9fe33bf1ca2b2b56222"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aa0ce3ce1420b102dc22930f9cee0649e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8h.html#aa0ce3ce1420b102dc22930f9cee0649e">app_input_state_init</a> (<a class="el" href="structAppInput.html">AppInput</a> *input)</td></tr>
@@ -293,11 +300,30 @@ Functions</h2></td></tr>
 <tr class="memitem:af571ae27438a1080557417aa42c62947"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8h.html#af571ae27438a1080557417aa42c62947">app_input_state_cleanup</a> (<a class="el" href="structAppInput.html">AppInput</a> *input)</td></tr>
 <tr class="memdesc:af571ae27438a1080557417aa42c62947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release all input resources.  <a href="app__input__state_8h.html#af571ae27438a1080557417aa42c62947">More...</a><br /></td></tr>
 <tr class="separator:af571ae27438a1080557417aa42c62947"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2212103b11e242e91a344996a99548d0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8h.html#a2212103b11e242e91a344996a99548d0">app_input_subsys_init</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a2212103b11e242e91a344996a99548d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a439a748d92a4a02c787b3954d3be42d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8h.html#a439a748d92a4a02c787b3954d3be42d7">app_input_subsys_cleanup</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a439a748d92a4a02c787b3954d3be42d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a>, gamepad, key-bindings, and input smoothing sub-struct. </p>
 <p>Extracted from <a class="el" href="app_8h.html">app.h</a> to reduce include fan-out. Named "app_input_state" to avoid collision with the existing <a class="el" href="app__input_8h.html" title="User input orchestration and application state toggles.">app_input.h</a> (<a class="el" href="structAppInputContext.html" title="Focused context for application-level input handling.">AppInputContext</a> seam, issue #204). </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a2b62faef4c1ec9fe33bf1ca2b2b56222"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b62faef4c1ec9fe33bf1ca2b2b56222">&#9670;&nbsp;</a></span>APP_INPUT_DESCRIPTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define APP_INPUT_DESCRIPTOR&#160;&#160;&#160;	{&quot;input&quot;, app_input_subsys_init, <a class="el" href="app__input__state_8c.html#a528f3695c937832f0c573ab199daccbf">app_input_subsys_cleanup</a>}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="af571ae27438a1080557417aa42c62947"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af571ae27438a1080557417aa42c62947">&#9670;&nbsp;</a></span>app_input_state_cleanup()</h2>
 
@@ -357,6 +383,54 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="app__input__state_8h_aa0ce3ce1420b102dc22930f9cee0649e_cgraph.svg" width="627" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a439a748d92a4a02c787b3954d3be42d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a439a748d92a4a02c787b3954d3be42d7">&#9670;&nbsp;</a></span>app_input_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_input_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8h_a439a748d92a4a02c787b3954d3be42d7_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a2212103b11e242e91a344996a99548d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2212103b11e242e91a344996a99548d0">&#9670;&nbsp;</a></span>app_input_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int app_input_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input__state_8h_a2212103b11e242e91a344996a99548d0_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
