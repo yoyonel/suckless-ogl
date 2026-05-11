@@ -260,6 +260,64 @@ void test_full_cleanup(void)
 	TEST_ASSERT_EQUAL(0, cleanup_order[2]);
 }
 
+/** Test 7: NULL init function pointer — descriptor is skipped (success). */
+void test_null_init_skipped(void)
+{
+	SubsystemDescriptor table[] = {
+	    {"a", succeed_always, counting_cleanup},
+	    {"b", NULL, counting_cleanup},
+	    {"c", succeed_always, counting_cleanup},
+	    {0},
+	};
+	App app;
+	memset(&app, 0, sizeof(app));
+	cleanup_call_count = 0;
+
+	TEST_ASSERT_EQUAL(1, app_subsystems_init(&app, table));
+	TEST_ASSERT_EQUAL(0, cleanup_call_count);
+}
+
+/** Test 8: NULL cleanup during rollback — should not crash. */
+void test_null_cleanup_during_rollback(void)
+{
+	SubsystemDescriptor table[] = {
+	    {"ok", succeed_always, NULL},
+	    {"ok2", succeed_always, counting_cleanup},
+	    {"fail", fail_always, counting_cleanup},
+	    {0},
+	};
+	App app;
+	memset(&app, 0, sizeof(app));
+	cleanup_call_count = 0;
+
+	TEST_ASSERT_EQUAL(0, app_subsystems_init(&app, table));
+	/* Only ok2 cleanup called; ok has NULL cleanup → skipped */
+	TEST_ASSERT_EQUAL(1, cleanup_call_count);
+}
+
+/** Test 9: NULL cleanup during normal shutdown — should not crash. */
+void test_null_cleanup_during_shutdown(void)
+{
+	SubsystemDescriptor table[] = {
+	    {"a", succeed_always, cleanup_track_0},
+	    {"b", succeed_always, NULL},
+	    {"c", succeed_always, cleanup_track_2},
+	    {0},
+	};
+	App app;
+	memset(&app, 0, sizeof(app));
+
+	TEST_ASSERT_EQUAL(1, app_subsystems_init(&app, table));
+
+	cleanup_order_idx = 0;
+	app_subsystems_cleanup(&app, table);
+
+	/* b (NULL cleanup) is skipped; only c and a are called */
+	TEST_ASSERT_EQUAL(2, cleanup_order_idx);
+	TEST_ASSERT_EQUAL(2, cleanup_order[0]); /* c first (reverse) */
+	TEST_ASSERT_EQUAL(0, cleanup_order[1]); /* a last */
+}
+
 /* ===================================================================
  * Phase B — Real subsystem roundtrip tests (input + profiling)
  * =================================================================== */
@@ -468,6 +526,9 @@ int main(void)
 	RUN_TEST(test_first_subsystem_fails_no_cleanup);
 	RUN_TEST(test_cleanup_reverse_order);
 	RUN_TEST(test_full_cleanup);
+	RUN_TEST(test_null_init_skipped);
+	RUN_TEST(test_null_cleanup_during_rollback);
+	RUN_TEST(test_null_cleanup_during_shutdown);
 
 	/* Phase B — real subsystem roundtrips (needs GL context) */
 	RUN_TEST(test_input_subsys_roundtrip);
