@@ -103,13 +103,15 @@ typedef struct SubsystemDescriptor {
 
 ```c
 static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
-    APP_WINDOW_DESCRIPTOR,      // Crée le contexte GL — doit être premier
-    APP_INPUT_DESCRIPTOR,
-    APP_PROFILING_DESCRIPTOR,
-    APP_POSTPROCESS_DESCRIPTOR,
-    APP_SCENE_DESCRIPTOR,
-    APP_ENV_MGR_DESCRIPTOR,
-    APP_ASYNC_COORD_DESCRIPTOR,
+    APP_WINDOW_DESCRIPTOR,        // Crée le contexte GL — doit être premier
+    APP_INPUT_DESCRIPTOR,         // Pas de dépendance GL
+    APP_PROFILING_DESCRIPTOR,     // GPU profiler + Tracy (nécessite GL)
+    APP_ASYNC_COORD_DESCRIPTOR,   // Allocation PBO (nécessite GL)
+    APP_LUM_HISTOGRAM_DESCRIPTOR, // malloc uniquement
+    APP_ASYNC_LOADER_DESCRIPTOR,  // Nécessite profiling->tracy_mgr
+    APP_SCENE_DESCRIPTOR,         // Shaders, textures (nécessite GL)
+    APP_ENV_MGR_DESCRIPTOR,       // État de transition uniquement
+    APP_POSTPROCESS_DESCRIPTOR,   // Nécessite profiling + ressources GPU scène
     {0},  /* sentinelle */
 };
 ```
@@ -123,6 +125,94 @@ Chaque module possède sa macro descripteur (ex. `APP_WINDOW_DESCRIPTOR` dans `a
 - `app_subsystems_init()` parcourt la table en avant jusqu'à la sentinelle `{0}`. Sur le premier échec à l'index *N*, il appelle `cleanup()` en ordre inverse pour les entrées *[N-1 .. 0]* (rollback automatique).
 - `app_subsystems_cleanup()` compte les entrées, puis parcourt la table en ordre inverse — garantissant que le démontage est le miroir de l'initialisation.
 - Pas de paramètre count explicite : la sentinelle élimine une source de désynchronisation.
+
+#### DAG de dépendances des sous-systèmes
+
+L'ordre de la table des descripteurs satisfait ces dépendances d'initialisation :
+
+```mermaid
+graph LR
+    classDef first fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+    classDef gl fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+    classDef nogl fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+
+    WIN[WINDOW]:::first
+    INP[INPUT]:::nogl
+    PROF[PROFILING]:::gl
+    AC[ASYNC_COORD]:::gl
+    LH[LUM_HISTOGRAM]:::nogl
+    AL[ASYNC_LOADER]:::gl
+    SC[SCENE]:::gl
+    ENV[ENV_MGR]:::nogl
+    PP[POSTPROCESS]:::gl
+
+    WIN -->|"contexte GL"| PROF
+    WIN -->|"contexte GL"| AC
+    WIN -->|"contexte GL"| SC
+    WIN -->|"contexte GL"| PP
+    PROF -->|"tracy_mgr"| AL
+    PROF -->|"gpu_profiler"| PP
+    SC -->|"ressources GPU"| PP
+```
+
+**Légende** : 🟡 doit être premier (crée le contexte GL), 🔵 nécessite GL, 🟢 pas de dépendance GL.
+
+#### Comment ajouter un nouveau sous-système
+
+1. **Créer la paire init/cleanup** dans le fichier `.c` du module :
+
+    ```c
+    int my_module_subsys_init(struct App* app) {
+        app->my_module = calloc(1, sizeof(*app->my_module));
+        if (!app->my_module) return 0;
+        // ... initialisation complémentaire ...
+        return 1;
+    }
+
+    void my_module_subsys_cleanup(struct App* app) {
+        // ... libérer les ressources GL, free les buffers ...
+        free(app->my_module);
+        app->my_module = NULL;
+    }
+    ```
+
+2. **Déclarer la macro descripteur** dans le fichier `.h` du module :
+
+    ```c
+    int my_module_subsys_init(struct App* app);
+    void my_module_subsys_cleanup(struct App* app);
+    #define APP_MY_MODULE_DESCRIPTOR \
+        {"MY_MODULE", my_module_subsys_init, my_module_subsys_cleanup}
+    ```
+
+3. **Ajouter l'entrée** dans `APP_SUBSYSTEM_TABLE` dans `src/app.c` à la bonne position (en respectant l'ordre des dépendances).
+
+4. **Ajouter un test roundtrip** dans `tests/test_app_subsystem.c` (section Phase C).
+
+#### Couverture de test (système de descripteurs)
+
+| Fichier | Lignes | Fonctions | Branches |
+|---------|-------:|----------:|---------:|
+| `app_subsystem.c` | 100 % | 100 % | 100 % |
+| `lum_histogram.c` | 100 % | 100 % | 100 % |
+| `app_profiling.c` | 90 % | 100 % | 50 % |
+| `app_window.c` | 89 % | 100 % | 50 % |
+| `async_coordinator.c` | 88 % | 100 % | 66 % |
+| `env_manager.c` | 77 % | 92 % | 56 % |
+| `scene_init.c` | 82 % | 100 % | 56 % |
+| `postprocess_init.c` | 88 % | 100 % | 52 % |
+
+**Lacunes documentées** :
+
+- Chemin d'échec de `app_init()` (ligne 73) : nécessite un échec de `APP_SUBSYSTEM_TABLE` impossible à injecter en tests unitaires — exercé uniquement en intégration avec `test_failure_sweep` utilisant des tables factices.
+- Garde `app_cleanup(NULL)` (ligne 116) : vérification défensive triviale.
+- Branches des sous-systèmes dépendants GL : nécessitent un display virtuel (`llvmpipe`) ; couvertes en CI mais pas en exécution headless locale.
+
+**Tests** (`tests/test_app_subsystem.c`, 17 tests) :
+
+- **Phase A** (framework) : chemin de succès, rollback sur échec, sweep, ordre inverse, gestion des pointeurs de fonction NULL (6 + 3 tests).
+- **Phase B** (sous-systèmes réels) : roundtrips input + profiling (2 tests).
+- **Phase C** (descripteurs GL) : roundtrips postprocess, scene, env_mgr, async_coord, init+cleanup table complète, sweep d'échec (6 tests).
 
 ### Décomposition du header PostProcess
 
@@ -297,15 +387,15 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 
 **Principe** : les en-têtes agrégats (`app.h`, `scene.h`, `postprocess.h`) ont naturellement un fan-out élevé. Les en-têtes de modules feuilles doivent rester ≤ 5. **24 en-têtes** utilisent désormais des déclarations anticipées.
 
-### Couverture de test (LLVM-Cov, avril 2026)
+### Couverture de test (LLVM-Cov, juin 2025)
 
 | Métrique | Valeur | Cible |
 |----------|-------:|------:|
-| Lignes | 66,6 % | ≥ 78 % |
-| Fonctions | 83,1 % | ≥ 85 % |
-| Branches | 53,6 % | ≥ 50 % ✅ |
+| Lignes | 71,4 % | ≥ 78 % |
+| Fonctions | 83,6 % | ≥ 85 % |
+| Branches | 53,7 % | ≥ 50 % ✅ |
 
-69 tests passent (unitaires + intégration, CTest).
+71 tests passent (unitaires + intégration, CTest).
 
 ## Graphe de dépendances include
 
