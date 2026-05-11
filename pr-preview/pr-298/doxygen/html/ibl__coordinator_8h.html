@@ -1,0 +1,654 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/ibl_coordinator.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('ibl__coordinator_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle">
+<div class="title">ibl_coordinator.h File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Coordinator for progressive Image-Based Lighting (IBL) generation.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pbr_8h_source.html">pbr.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for ibl_coordinator.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h__incl.svg" width="435" height="262"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h__dep__incl.svg" width="100%" height="552"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div>
+<p><a href="ibl__coordinator_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manages the progressive IBL generation process.  <a href="structIBLCoordinator.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a57e898a48bf9e63709f7774eb98bb0ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> { <br />
+&#160;&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">IBL_STATE_IDLE</a> = 0
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">IBL_STATE_LUMINANCE</a>
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79">IBL_STATE_LUMINANCE_WAIT</a>
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">IBL_STATE_SPECULAR_INIT</a>
+, <br />
+&#160;&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">IBL_STATE_SPECULAR_MIPS</a>
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">IBL_STATE_IRRADIANCE</a>
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">IBL_STATE_DONE</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:a57e898a48bf9e63709f7774eb98bb0ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the IBL generation state machine.  <a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">More...</a><br /></td></tr>
+<tr class="separator:a57e898a48bf9e63709f7774eb98bb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a076ded1b24635b548a16e161d45735c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">ibl_coordinator_init</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord, GLuint spmap_program, GLuint irmap_program, GLuint lum_pass1_program, GLuint lum_pass2_program)</td></tr>
+<tr class="memdesc:a076ded1b24635b548a16e161d45735c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the IBL coordinator with necessary shader resources.  <a href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">More...</a><br /></td></tr>
+<tr class="separator:a076ded1b24635b548a16e161d45735c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af04c7b19cdf6fd658af855351f19ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">ibl_coordinator_cleanup</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord)</td></tr>
+<tr class="memdesc:a7af04c7b19cdf6fd658af855351f19ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleanups any pending resources held by the coordinator.  <a href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">More...</a><br /></td></tr>
+<tr class="separator:a7af04c7b19cdf6fd658af855351f19ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d1af54d0b28b93dd3f10c5cf2a9efe3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3">ibl_coordinator_start</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord, GLuint hdr_tex, int width, int height)</td></tr>
+<tr class="memdesc:a5d1af54d0b28b93dd3f10c5cf2a9efe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the IBL generation process for a new HDR texture.  <a href="ibl__coordinator_8h.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3">More...</a><br /></td></tr>
+<tr class="separator:a5d1af54d0b28b93dd3f10c5cf2a9efe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4e66403e82cf9193c1eeb0a534b90d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8">ibl_coordinator_update</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord, uint64_t frame_count)</td></tr>
+<tr class="memdesc:ac4e66403e82cf9193c1eeb0a534b90d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advances the state machine by one step (slice or pass).  <a href="ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8">More...</a><br /></td></tr>
+<tr class="separator:ac4e66403e82cf9193c1eeb0a534b90d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a897ce59e5e3e582ff1385f4c9e2c7f82"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82">ibl_coordinator_get_results</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord, GLuint *out_hdr_tex, GLuint *out_spec_tex, GLuint *out_irr_tex, float *out_threshold)</td></tr>
+<tr class="memdesc:a897ce59e5e3e582ff1385f4c9e2c7f82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the results of the IBL generation.  <a href="ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82">More...</a><br /></td></tr>
+<tr class="separator:a897ce59e5e3e582ff1385f4c9e2c7f82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bff11f3337e1e69179225a25757bcc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a0bff11f3337e1e69179225a25757bcc0">ibl_coordinator_reset</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord)</td></tr>
+<tr class="memdesc:a0bff11f3337e1e69179225a25757bcc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the coordinator to IDLE state.  <a href="ibl__coordinator_8h.html#a0bff11f3337e1e69179225a25757bcc0">More...</a><br /></td></tr>
+<tr class="separator:a0bff11f3337e1e69179225a25757bcc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Coordinator for progressive Image-Based Lighting (IBL) generation. </p>
+<p>This module manages the state machine that generates Irradiance and Prefiltered Specular maps from an HDR environment map over multiple frames to avoid stalling the main thread. </p>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a57e898a48bf9e63709f7774eb98bb0ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57e898a48bf9e63709f7774eb98bb0ea">&#9670;&nbsp;</a></span>IBLState</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>States for the IBL generation state machine. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3"></a>IBL_STATE_IDLE&#160;</td><td class="fielddoc"><p>Application is waiting for a request. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61"></a>IBL_STATE_LUMINANCE&#160;</td><td class="fielddoc"><p>GPU-side analysis of HDR mean luminance. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79"></a>IBL_STATE_LUMINANCE_WAIT&#160;</td><td class="fielddoc"><p>Waiting for luminance GPU result. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e"></a>IBL_STATE_SPECULAR_INIT&#160;</td><td class="fielddoc"><p>Preparation of specular map textures. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa"></a>IBL_STATE_SPECULAR_MIPS&#160;</td><td class="fielddoc"><p>Sliced pre-filtering of specular levels. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d"></a>IBL_STATE_IRRADIANCE&#160;</td><td class="fielddoc"><p>Sliced convolution of irradiance map. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24"></a>IBL_STATE_DONE&#160;</td><td class="fielddoc"><p>Resource cleanup and texture activation. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a7af04c7b19cdf6fd658af855351f19ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7af04c7b19cdf6fd658af855351f19ad">&#9670;&nbsp;</a></span>ibl_coordinator_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ibl_coordinator_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>coord</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cleanups any pending resources held by the coordinator. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h_a7af04c7b19cdf6fd658af855351f19ad_cgraph.svg" width="395" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a897ce59e5e3e582ff1385f4c9e2c7f82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a897ce59e5e3e582ff1385f4c9e2c7f82">&#9670;&nbsp;</a></span>ibl_coordinator_get_results()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ibl_coordinator_get_results </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>coord</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>out_hdr_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>out_spec_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>out_irr_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>out_threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves the results of the IBL generation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
+    <tr><td class="paramname">out_hdr_tex</td><td>Pointer to receive the HDR texture handle. </td></tr>
+    <tr><td class="paramname">out_spec_tex</td><td>Pointer to receive the specular texture handle. </td></tr>
+    <tr><td class="paramname">out_irr_tex</td><td>Pointer to receive the irradiance texture handle. </td></tr>
+    <tr><td class="paramname">out_threshold</td><td>Pointer to receive the computed luminance threshold. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if results were retrieved (state was DONE), 0 otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a076ded1b24635b548a16e161d45735c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a076ded1b24635b548a16e161d45735c3">&#9670;&nbsp;</a></span>ibl_coordinator_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ibl_coordinator_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>coord</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>spmap_program</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>irmap_program</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>lum_pass1_program</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>lum_pass2_program</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the IBL coordinator with necessary shader resources. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
+    <tr><td class="paramname">spmap_program</td><td>Handle to the specular pre-filter shader. </td></tr>
+    <tr><td class="paramname">irmap_program</td><td>Handle to the irradiance convolution shader. </td></tr>
+    <tr><td class="paramname">lum_pass1_program</td><td>Handle to luminance pass 1 shader. </td></tr>
+    <tr><td class="paramname">lum_pass2_program</td><td>Handle to luminance pass 2 shader. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h_a076ded1b24635b548a16e161d45735c3_cgraph.svg" width="379" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a0bff11f3337e1e69179225a25757bcc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bff11f3337e1e69179225a25757bcc0">&#9670;&nbsp;</a></span>ibl_coordinator_reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ibl_coordinator_reset </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>coord</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Resets the coordinator to IDLE state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5d1af54d0b28b93dd3f10c5cf2a9efe3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d1af54d0b28b93dd3f10c5cf2a9efe3">&#9670;&nbsp;</a></span>ibl_coordinator_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ibl_coordinator_start </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>coord</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>hdr_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Starts the IBL generation process for a new HDR texture. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
+    <tr><td class="paramname">hdr_tex</td><td>Handle to the source HDR texture (must be valid). </td></tr>
+    <tr><td class="paramname">width</td><td>Width of the HDR texture. </td></tr>
+    <tr><td class="paramname">height</td><td>Height of the HDR texture. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h_a5d1af54d0b28b93dd3f10c5cf2a9efe3_cgraph.svg" width="374" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ac4e66403e82cf9193c1eeb0a534b90d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4e66403e82cf9193c1eeb0a534b90d8">&#9670;&nbsp;</a></span>ibl_coordinator_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> ibl_coordinator_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>coord</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Advances the state machine by one step (slice or pass). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
+    <tr><td class="paramname">frame_count</td><td>Current frame number (for logging purposes). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>IBLState The new state after the update. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h_ac4e66403e82cf9193c1eeb0a534b90d8_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="ibl__coordinator_8h.html">ibl_coordinator.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
