@@ -111,4 +111,10 @@ void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
  */
 void async_loader_cancel(AsyncLoader* loader);
 
+#include "app_subsystem.h"
+int async_loader_subsys_init(struct App* app);
+void async_loader_subsys_cleanup(struct App* app);
+#define APP_ASYNC_LOADER_DESCRIPTOR \
+	{"async_loader", async_loader_subsys_init, async_loader_subsys_cleanup}
+
 #endif /* ASYNC_LOADER_H */

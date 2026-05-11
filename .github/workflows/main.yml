@@ -13,10 +13,8 @@ on:
     branches: ["master", "main"]
     tags: ["v*"]
   pull_request:
-    # Pour tout le reste, on passe par les PRs (master/main comme cibles)
-    # Cela garantit un seul run par commit dans une PR
+    # Run CI on ALL PRs regardless of target branch (supports stacked PRs)
     # 'closed' is needed for PR preview cleanup on GitHub Pages
-    branches: ["master", "main"]
     types: [opened, reopened, synchronize, closed]
   schedule:
     # Build nightly tous les jours à 01h00 UTC

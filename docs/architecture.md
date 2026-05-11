@@ -119,11 +119,140 @@ The `App` struct is decomposed into domain-aligned sub-structs:
 
 - **`AppProfiling`** (`include/app_profiling.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling->gpu_profiler`, etc. Init/cleanup delegated to `app_profiling_init()` / `app_profiling_cleanup()` in `src/app_profiling.c`.
 - **`AppInput`** (`include/app_input_state.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input->camera`, etc. Init/cleanup delegated to `app_input_state_init()` / `app_input_state_cleanup()` in `src/app_input_state.c`.
-- **`AppWindow`** (`include/app_window.h`): Groups GLFW window handle and all window/resize state — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Access via `app->win.handle`, `app->win.is_fullscreen`, etc.
+- **`AppWindow`** (`include/app_window.h`): Groups GLFW window handle and all window/resize state — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Access via `app->win.handle`, `app->win.is_fullscreen`, etc. Init/cleanup delegated to `app_window_subsys_init()` / `app_window_subsys_cleanup()` in `src/app_window.c`. The window descriptor is **first** in the subsystem table — it creates the OpenGL context needed by all other subsystems, and is cleaned up **last** (reverse order) to ensure the GL context outlives all GPU resource teardowns.
 
 > **Naming note**: `app_input_state.h` hosts the `AppInput` sub-struct definition, while the existing `app_input.h` hosts the `AppInputContext` seam (focused pointer bundle for input handlers, issue #204).
 
 This reduces `App`'s direct field count from 24 to ~17. Each sub-struct header owns its type dependencies and its delegation functions, keeping `app.c` focused on orchestration.
+
+### Subsystem Descriptor Pattern
+
+Initialization and cleanup of `App` sub-structs are driven by a **sentinel-terminated descriptor table** instead of hand-written `calloc`/`init`/`cleanup` sequences in `app_init()` / `app_cleanup()`.
+
+**Core types** (`include/app_subsystem.h`):
+
+```c
+typedef struct SubsystemDescriptor {
+    const char* name;
+    int (*init)(struct App* app);
+    void (*cleanup)(struct App* app);
+} SubsystemDescriptor;
+```
+
+**Table declaration** (`src/app.c`):
+
+```c
+static const SubsystemDescriptor APP_SUBSYSTEM_TABLE[] = {
+    APP_WINDOW_DESCRIPTOR,        // Creates GL context — must be first
+    APP_INPUT_DESCRIPTOR,         // No GL dependency
+    APP_PROFILING_DESCRIPTOR,     // GPU profiler + Tracy (needs GL)
+    APP_ASYNC_COORD_DESCRIPTOR,   // PBO allocation (needs GL)
+    APP_LUM_HISTOGRAM_DESCRIPTOR, // malloc only
+    APP_ASYNC_LOADER_DESCRIPTOR,  // Needs profiling->tracy_mgr
+    APP_SCENE_DESCRIPTOR,         // Shaders, textures (needs GL)
+    APP_ENV_MGR_DESCRIPTOR,       // Transition state only
+    APP_POSTPROCESS_DESCRIPTOR,   // Needs profiling + scene GPU resources
+    {0},  /* sentinel */
+};
+```
+
+Each module owns its descriptor macro (e.g. `APP_WINDOW_DESCRIPTOR` in `app_window.h`), keeping the definition co-located with the init/cleanup functions.
+
+**Ordering constraint**: `APP_WINDOW_DESCRIPTOR` must be the **first** entry because it creates the OpenGL context. Since cleanup runs in reverse, the window is destroyed **last**, ensuring the GL context remains valid during teardown of all GPU-dependent subsystems (profiler queries, FBOs, VAOs, shaders, etc.).
+
+**Semantics**:
+
+- `app_subsystems_init()` walks the table forward until the `{0}` sentinel. On the first failure at index *N*, it calls `cleanup()` in reverse for entries *[N-1 .. 0]* (automatic rollback).
+- `app_subsystems_cleanup()` counts entries, then walks the table in reverse — ensuring teardown is the mirror image of initialization.
+- No explicit count parameter: the sentinel removes one source of mismatch.
+
+#### Subsystem Dependency DAG
+
+The descriptor table order satisfies these init-time dependencies:
+
+```mermaid
+graph LR
+    classDef first fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+    classDef gl fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+    classDef nogl fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+
+    WIN[WINDOW]:::first
+    INP[INPUT]:::nogl
+    PROF[PROFILING]:::gl
+    AC[ASYNC_COORD]:::gl
+    LH[LUM_HISTOGRAM]:::nogl
+    AL[ASYNC_LOADER]:::gl
+    SC[SCENE]:::gl
+    ENV[ENV_MGR]:::nogl
+    PP[POSTPROCESS]:::gl
+
+    WIN -->|"GL context"| PROF
+    WIN -->|"GL context"| AC
+    WIN -->|"GL context"| SC
+    WIN -->|"GL context"| PP
+    PROF -->|"tracy_mgr"| AL
+    PROF -->|"gpu_profiler"| PP
+    SC -->|"gpu resources"| PP
+```
+
+**Legend**: 🟡 must be first (creates GL context), 🔵 needs GL, 🟢 no GL dependency.
+
+#### How to Add a New Subsystem
+
+1. **Create the init/cleanup pair** in your module's `.c` file:
+
+    ```c
+    int my_module_subsys_init(struct App* app) {
+        app->my_module = calloc(1, sizeof(*app->my_module));
+        if (!app->my_module) return 0;
+        // ... further initialization ...
+        return 1;
+    }
+
+    void my_module_subsys_cleanup(struct App* app) {
+        // ... teardown GL resources, free buffers ...
+        free(app->my_module);
+        app->my_module = NULL;
+    }
+    ```
+
+2. **Declare the descriptor macro** in the module's `.h` file:
+
+    ```c
+    int my_module_subsys_init(struct App* app);
+    void my_module_subsys_cleanup(struct App* app);
+    #define APP_MY_MODULE_DESCRIPTOR \
+        {"MY_MODULE", my_module_subsys_init, my_module_subsys_cleanup}
+    ```
+
+3. **Add the entry** to `APP_SUBSYSTEM_TABLE` in `src/app.c` at the correct position (respecting dependency ordering).
+
+4. **Add a roundtrip test** in `tests/test_app_subsystem.c` (Phase C section).
+
+#### Test Coverage (Descriptor System)
+
+| File | Lines | Functions | Branches |
+|------|------:|----------:|---------:|
+| `app_subsystem.c` | 100% | 100% | 100% |
+| `lum_histogram.c` | 100% | 100% | 100% |
+| `app_profiling.c` | 90% | 100% | 50% |
+| `app_window.c` | 89% | 100% | 50% |
+| `async_coordinator.c` | 88% | 100% | 66% |
+| `env_manager.c` | 77% | 92% | 56% |
+| `scene_init.c` | 82% | 100% | 56% |
+| `postprocess_init.c` | 88% | 100% | 52% |
+
+**Coverage gaps documented**:
+
+- `app_init()` failure path (line 73): requires `APP_SUBSYSTEM_TABLE` failure which cannot be injected in unit tests — exercised only in integration with `test_failure_sweep` using fake tables.
+- `app_cleanup(NULL)` guard (line 116): trivial defensive check.
+- GL-dependent subsystem branches: require virtual display (`llvmpipe`); covered in CI but not in local headless runs.
+
+**Tests** (`tests/test_app_subsystem.c`, 17 tests):
+
+- **Phase A** (framework): success path, failure rollback, sweep, reverse-order, NULL function pointer handling (6 + 3 tests).
+- **Phase B** (real subsystems): input + profiling roundtrips (2 tests).
+- **Phase C** (GL descriptors): postprocess, scene, env_mgr, async_coord roundtrips, full table init+cleanup, failure sweep (6 tests).
 
 ### PostProcess Header Decomposition
 
@@ -241,15 +370,15 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 
 ## Metrics & Health
 
-> Last updated: April 2026 (Phase 10 — Architecture Deepening V)
+> Last updated: May 2026 (SubsystemDescriptor MVP — Issue #285)
 
 ### Codebase Size
 
 | Category | Files | Total LOC |
 |----------|------:|----------:|
-| Sources (`src/*.c`) | 66 | 20 556 |
-| Headers (`include/*.h`) | 87 | 7 839 |
-| Tests (`tests/test_*.c`) | 69 | 12 666 |
+| Sources (`src/*.c`) | 67 | 20 556 |
+| Headers (`include/*.h`) | 88 | 7 839 |
+| Tests (`tests/test_*.c`) | 70 | 12 666 |
 | Shaders (`shaders/`) | 60 | — |
 
 ### LOC per Module (top 15)
@@ -291,15 +420,15 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 
 **Principle**: aggregate headers (`app.h`, `scene.h`, `postprocess.h`) naturally have high fan-out. Leaf module headers should stay ≤ 5. **24 headers** now use forward declarations.
 
-### Test Coverage (LLVM-Cov, April 2026)
+### Test Coverage (LLVM-Cov, June 2025)
 
 | Metric | Value | Target |
 |--------|------:|-------:|
-| Lines | 66.6% | ≥ 78% |
-| Functions | 83.1% | ≥ 85% |
-| Branches | 53.6% | ≥ 50% ✅ |
+| Lines | 71.4% | ≥ 78% |
+| Functions | 83.6% | ≥ 85% |
+| Branches | 53.7% | ≥ 50% ✅ |
 
-68 tests pass (unit + integration, CTest).
+71 tests pass (unit + integration, CTest).
 
 ## Include-Dependency Graph
 

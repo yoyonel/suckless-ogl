@@ -1,6 +1,9 @@
 #include "camera_input.h"
 
 #include "camera.h"
+#ifndef GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
+#endif
 #include <GLFW/glfw3.h>
 
 void camera_input_handle_key(Camera* cam, int key, int action)

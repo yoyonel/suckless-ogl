@@ -1,10 +1,12 @@
 #include "env_manager.h"
 
+#include "app.h"
 #include "app_settings.h"
 #include "async_loader.h"
 #include "gl_common.h"
 #include "ibl_coordinator.h"
 #include "log.h"
+#include "platform/platform_utils.h"
 #include "postprocess_readback.h"
 #include "scene.h"
 #include "scene_gpu_resources.h"
@@ -12,7 +14,6 @@
 #include "shader.h"
 #include "texture.h"
 #include "utils.h"
-#include <stdlib.h>
 
 static const int MAX_PATH_LENGTH = 256;
 
@@ -318,5 +319,31 @@ void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene)
 
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
+	}
+}
+
+/* --- Subsystem descriptor (Phase 1: alloc + defaults) --- */
+
+int env_mgr_subsys_init(App* app)
+{
+	app->env_mgr =
+	    platform_aligned_alloc(sizeof(*app->env_mgr), SIMD_ALIGNMENT);
+	if (!app->env_mgr) {
+		return 0;
+	}
+	*app->env_mgr = (EnvManager){0};
+	app->env_mgr->is_first_load = 1;
+	app->env_mgr->transition_state = TRANSITION_WAIT_IBL;
+	app->env_mgr->transition_alpha = 1.0F;
+	app->env_mgr->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
+	app->env_mgr->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
+	return 1;
+}
+
+void env_mgr_subsys_cleanup(App* app)
+{
+	if (app->env_mgr) {
+		platform_aligned_free(app->env_mgr);
+		app->env_mgr = NULL;
 	}
 }

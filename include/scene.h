@@ -113,4 +113,12 @@ void scene_toggle_nbody(Scene* scene);
  */
 void scene_nbody_update(Scene* scene, float delta_time);
 
+/* --- Subsystem descriptor (alloc-only Phase 1) --- */
+#include "app_subsystem.h"
+
+int scene_subsys_init(struct App* app);
+void scene_subsys_cleanup(struct App* app);
+
+#define APP_SCENE_DESCRIPTOR {"scene", scene_subsys_init, scene_subsys_cleanup}
+
 #endif /* SCENE_H */

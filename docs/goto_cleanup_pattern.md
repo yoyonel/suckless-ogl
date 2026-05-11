@@ -63,14 +63,13 @@ The C standard guarantees that `free(NULL)` is a no-op. When `calloc` zero-initi
 
 ## Applied: `app_init()` in suckless-ogl
 
-The `app_init()` function uses a **two-label variant**:
+The `app_init()` function uses a **single-label** `goto cleanup_full` pattern:
 
 | Label | When Used | Cleanup Action |
 |-------|-----------|---------------|
-| `cleanup_alloc` | Allocation failures before GL context | Direct `free()` of 6 calloc'd pointers |
-| `cleanup_full` | Failures after subsystem init (GL active) | Calls `app_cleanup()` which handles partial teardown |
+| `cleanup_full` | Failures after subsystem descriptor init (GL active) | Calls `app_cleanup()` which handles partial teardown |
 
-**Why two labels?** `app_cleanup()` calls `app_input_state_cleanup()` and `app_profiling_cleanup()` which do **not** have NULL guards — calling them on uninitialized pointers would crash. The `cleanup_alloc` label handles the pre-init phase safely with direct `free(NULL)` calls.
+The previous `cleanup_alloc` label (for pre-GL allocation failures) was removed when subsystem descriptors took over. The descriptor table's `app_subsystems_init()` now handles rollback automatically: on the first failure at index *N*, it calls `cleanup()` in reverse for entries *[N-1 .. 0]*, freeing any `calloc`'d sub-structs. Only post-descriptor Phase 3 failures (scene, async loader, post-processing) still use `goto cleanup_full`.
 
 ## Comparison
 

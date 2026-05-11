@@ -97,7 +97,9 @@ set(SOURCES
     src/app_input_state.c
     src/app_metrics.c
     src/app_profiling.c
+    src/app_subsystem.c
     src/app_ui.c
+    src/app_window.c
     src/async_loader.c
     src/async_coordinator.c
     src/billboard_rendering.c
@@ -106,6 +108,7 @@ set(SOURCES
     src/cli.c
     src/effect_benchmark.c
     src/fps.c
+    src/lum_histogram.c
     src/gamepad_input.c
     src/gl_debug.c
     src/gpu_profiler.c

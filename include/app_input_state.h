@@ -40,4 +40,10 @@ void app_input_state_init(AppInput* input);
  */
 void app_input_state_cleanup(AppInput* input);
 
+#include "app_subsystem.h"
+int app_input_subsys_init(struct App* app);
+void app_input_subsys_cleanup(struct App* app);
+#define APP_INPUT_DESCRIPTOR \
+	{"input", app_input_subsys_init, app_input_subsys_cleanup}
+
 #endif /* APP_INPUT_STATE_H */

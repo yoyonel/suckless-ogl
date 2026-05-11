@@ -21,4 +21,10 @@ typedef struct {
 	int pending_height;            /**< Deferred resize target height. */
 } AppWindow;
 
+#include "app_subsystem.h"
+int app_window_subsys_init(struct App* app);
+void app_window_subsys_cleanup(struct App* app);
+#define APP_WINDOW_DESCRIPTOR \
+	{"window", app_window_subsys_init, app_window_subsys_cleanup}
+
 #endif /* APP_WINDOW_H */

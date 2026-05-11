@@ -63,14 +63,13 @@ Le standard C garantit que `free(NULL)` est un no-op. Quand `calloc` initialise 
 
 ## Application : `app_init()` dans suckless-ogl
 
-La fonction `app_init()` utilise une **variante à deux labels** :
+La fonction `app_init()` utilise un pattern **à label unique** `goto cleanup_full` :
 
 | Label | Quand utilisé | Action de nettoyage |
 |-------|--------------|-------------------|
-| `cleanup_alloc` | Échecs d'allocation avant le contexte GL | `free()` direct des 6 pointeurs calloc'd |
-| `cleanup_full` | Échecs après l'init des sous-systèmes (GL actif) | Appelle `app_cleanup()` qui gère le teardown partiel |
+| `cleanup_full` | Échecs après l'init des descripteurs de sous-systèmes (GL actif) | Appelle `app_cleanup()` qui gère le teardown partiel |
 
-**Pourquoi deux labels ?** `app_cleanup()` appelle `app_input_state_cleanup()` et `app_profiling_cleanup()` qui n'ont **pas** de gardes NULL — les appeler sur des pointeurs non initialisés provoquerait un crash. Le label `cleanup_alloc` gère la phase pré-init de manière sûre avec des appels directs `free(NULL)`.
+L'ancien label `cleanup_alloc` (pour les échecs d'allocation avant le GL) a été supprimé lorsque les descripteurs de sous-systèmes ont pris le relais. La fonction `app_subsystems_init()` de la table des descripteurs gère désormais le rollback automatiquement : sur le premier échec à l'index *N*, elle appelle `cleanup()` en ordre inverse pour les entrées *[N-1 .. 0]*, libérant toutes les sous-structs allouées par `calloc`. Seuls les échecs de Phase 3 post-descripteurs (scène, chargeur async, post-traitement) utilisent encore `goto cleanup_full`.
 
 ## Comparaison
 

@@ -420,3 +420,23 @@ void async_loader_cancel(AsyncLoader* loader)
 	pthread_mutex_unlock(&loader->request_mutex);
 	PROFILE_ZONE_END(ctx);
 }
+
+/* --- Subsystem descriptor (excluded from standalone tests) --- */
+#ifndef GL_COMMON_NO_GLFW
+
+#include "app.h"
+#include "app_profiling.h"
+
+int async_loader_subsys_init(App* app)
+{
+	app->async_loader = async_loader_create(&app->profiling->tracy_mgr);
+	return app->async_loader != NULL;
+}
+
+void async_loader_subsys_cleanup(App* app)
+{
+	async_loader_destroy(app->async_loader);
+	app->async_loader = NULL;
+}
+
+#endif /* GL_COMMON_NO_GLFW */
