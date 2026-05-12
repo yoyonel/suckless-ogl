@@ -436,6 +436,7 @@ add_executable(test_gamepad_input
     test_gamepad_input.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/src/camera.c
+    ${CMAKE_SOURCE_DIR}/src/camera_input.c
     ${CMAKE_SOURCE_DIR}/src/gamepad_input.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )

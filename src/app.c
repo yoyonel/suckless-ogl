@@ -8,6 +8,7 @@
 #include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "async_loader.h"
+#include "camera_input.h"
 #include "env_manager.h"
 #include "lum_histogram.h"
 #include "postprocess_internal.h"
@@ -236,24 +237,8 @@ void app_run(App* app)
 			       app->input->camera.fixed_timestep) {
 				camera_build_keyboard_input(
 				    &app->input->camera);
-				Camera* cam = &app->input->camera;
-				GamepadContext gctx = {
-				    .move_input = {cam->move_input[0],
-				                   cam->move_input[1],
-				                   cam->move_input[2]},
-				    .yaw_target = cam->yaw_target,
-				    .pitch_target = cam->pitch_target,
-				    .fixed_timestep = cam->fixed_timestep,
-				    .max_pitch = DEFAULT_MAX_PITCH,
-				    .min_pitch = DEFAULT_MIN_PITCH,
-				};
-				gamepad_write_input(&app->input->gamepad,
-				                    &gctx);
-				cam->move_input[0] = gctx.move_input[0];
-				cam->move_input[1] = gctx.move_input[1];
-				cam->move_input[2] = gctx.move_input[2];
-				cam->yaw_target = gctx.yaw_target;
-				cam->pitch_target = gctx.pitch_target;
+				camera_apply_gamepad(&app->input->camera,
+				                     &app->input->gamepad);
 				camera_fixed_update(&app->input->camera);
 				app->input->camera.physics_accumulator -=
 				    app->input->camera.fixed_timestep;

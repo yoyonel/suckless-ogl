@@ -1,6 +1,7 @@
 #include "camera_input.h"
 
 #include "camera.h"
+#include "gamepad_input.h"
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
 #endif
@@ -51,4 +52,20 @@ void camera_input_handle_mouse(Camera* cam, double xpos, double ypos)
 void camera_input_handle_scroll(Camera* cam, double yoffset)
 {
 	camera_process_scroll(cam, (float)yoffset);
+}
+
+void camera_apply_gamepad(Camera* cam, const GamepadState* state)
+{
+	GamepadContext gctx = {
+	    .yaw_target = cam->yaw_target,
+	    .pitch_target = cam->pitch_target,
+	    .fixed_timestep = cam->fixed_timestep,
+	    .max_pitch = DEFAULT_MAX_PITCH,
+	    .min_pitch = DEFAULT_MIN_PITCH,
+	};
+	glm_vec3_copy(cam->move_input, gctx.move_input);
+	gamepad_write_input(state, &gctx);
+	glm_vec3_copy(gctx.move_input, cam->move_input);
+	cam->yaw_target = gctx.yaw_target;
+	cam->pitch_target = gctx.pitch_target;
 }

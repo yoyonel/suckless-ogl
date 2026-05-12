@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "camera_input.h"
 #include "gamepad_input.h"
 #include "log.h"
 #include "unity.h"
@@ -11,22 +12,20 @@
 
 static GamepadContext gamepad_ctx_from_camera(const Camera* cam)
 {
-	return (GamepadContext){
-	    .move_input = {cam->move_input[0], cam->move_input[1],
-	                   cam->move_input[2]},
+	GamepadContext gctx = {
 	    .yaw_target = cam->yaw_target,
 	    .pitch_target = cam->pitch_target,
 	    .fixed_timestep = cam->fixed_timestep,
 	    .max_pitch = DEFAULT_MAX_PITCH,
 	    .min_pitch = DEFAULT_MIN_PITCH,
 	};
+	glm_vec3_copy((float*)cam->move_input, gctx.move_input);
+	return gctx;
 }
 
 static void gamepad_ctx_to_camera(const GamepadContext* ctx, Camera* cam)
 {
-	cam->move_input[0] = ctx->move_input[0];
-	cam->move_input[1] = ctx->move_input[1];
-	cam->move_input[2] = ctx->move_input[2];
+	glm_vec3_copy((float*)ctx->move_input, cam->move_input);
 	cam->yaw_target = ctx->yaw_target;
 	cam->pitch_target = ctx->pitch_target;
 }
@@ -344,6 +343,61 @@ void test_poll_sticks_in_deadzone_no_effect(void)
 	TEST_ASSERT_FLOAT_WITHIN(0.0001F, yaw_before, cam.yaw_target);
 }
 
+/* ---- camera_apply_gamepad encapsulation test ---- */
+
+void test_camera_apply_gamepad_transfers_axes(void)
+{
+	GamepadState state;
+	gamepad_input_init(&state);
+
+	Camera cam;
+	camera_init(&cam, 10.0F, 90.0F, 0.0F);
+	glm_vec3_zero(cam.velocity_current);
+
+	g_mock_gamepad_connected = 1;
+	/* Left stick pushed full forward (Y axis negative = forward). */
+	g_mock_gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_X] = 0.0F;
+	g_mock_gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] = -1.0F;
+	/* Right stick pushed right (yaw). */
+	g_mock_gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X] = 0.8F;
+	g_mock_gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y] = 0.0F;
+	g_mock_gamepad_state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] = -1.0F;
+	g_mock_gamepad_state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] = -1.0F;
+
+	gamepad_input_poll(&state, NULL);
+	camera_build_keyboard_input(&cam);
+
+	float yaw_before = cam.yaw_target;
+	camera_apply_gamepad(&cam, &state);
+
+	/* Forward movement should be set (move_input[2] > 0). */
+	TEST_ASSERT_TRUE(cam.move_input[2] > 0.5F);
+	/* Yaw should have changed from the right stick. */
+	TEST_ASSERT_TRUE(cam.yaw_target != yaw_before);
+}
+
+void test_camera_apply_gamepad_no_gamepad_no_change(void)
+{
+	GamepadState state;
+	gamepad_input_init(&state);
+
+	Camera cam;
+	camera_init(&cam, 10.0F, 90.0F, 0.0F);
+	glm_vec3_zero(cam.velocity_current);
+	cam.move_input[0] = 0.5F;
+	cam.move_input[2] = 0.7F;
+	float yaw_before = cam.yaw_target;
+
+	g_mock_gamepad_connected = 0;
+	gamepad_input_poll(&state, NULL);
+	camera_apply_gamepad(&cam, &state);
+
+	/* With no gamepad, values should remain unchanged. */
+	TEST_ASSERT_FLOAT_WITHIN(0.0001F, 0.5F, cam.move_input[0]);
+	TEST_ASSERT_FLOAT_WITHIN(0.0001F, 0.7F, cam.move_input[2]);
+	TEST_ASSERT_FLOAT_WITHIN(0.0001F, yaw_before, cam.yaw_target);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -359,5 +413,7 @@ int main(void)
 	RUN_TEST(test_poll_left_trigger_moves_down);
 	RUN_TEST(test_share_button_triggers_camera_reset);
 	RUN_TEST(test_poll_sticks_in_deadzone_no_effect);
+	RUN_TEST(test_camera_apply_gamepad_transfers_axes);
+	RUN_TEST(test_camera_apply_gamepad_no_gamepad_no_change);
 	return UNITY_END();
 }

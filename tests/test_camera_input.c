@@ -1,8 +1,16 @@
 #include "camera.h"
 #include "camera_input.h"
+#include "gamepad_input.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
+
+/* Stub — test_camera_input only validates keyboard/mouse, not gamepad. */
+void gamepad_write_input(const GamepadState* state, GamepadContext* ctx)
+{
+	(void)state;
+	(void)ctx;
+}
 
 void setUp(void)
 {

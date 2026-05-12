@@ -44,4 +44,19 @@ void camera_input_handle_mouse(Camera* cam, double xpos, double ypos);
  */
 void camera_input_handle_scroll(Camera* cam, double yoffset);
 
+/* Forward declaration */
+typedef struct GamepadState GamepadState;
+
+/**
+ * @brief Applies gamepad input to camera within a fixed physics step.
+ *
+ * Encapsulates the Camera↔GamepadContext copy-in/copy-out pattern:
+ * builds the GamepadContext from Camera fields, calls gamepad_write_input(),
+ * then copies modified values back into the Camera.
+ *
+ * @param cam   Pointer to the Camera instance (move_input, yaw/pitch_target).
+ * @param state Pointer to the gamepad state (with cached axes from poll).
+ */
+void camera_apply_gamepad(Camera* cam, const GamepadState* state);
+
 #endif /* CAMERA_INPUT_H */
