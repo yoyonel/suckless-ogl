@@ -259,11 +259,12 @@ $(document).ready(function(){initNavTree('camera__input_8c.html',''); initResiza
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="camera__input_8h_source.html">camera_input.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gamepad__input_8h_source.html">gamepad_input.h</a>&quot;</code><br />
 <code>#include &lt;GLFW/glfw3.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for camera_input.c:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="camera__input_8c__incl.svg" width="376" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="camera__input_8c__incl.svg" width="535" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -283,6 +284,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a98c2a3b748c3256a2b65e97973e42888"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera__input_8c.html#a98c2a3b748c3256a2b65e97973e42888">camera_input_handle_scroll</a> (<a class="el" href="structCamera.html">Camera</a> *cam, double yoffset)</td></tr>
 <tr class="memdesc:a98c2a3b748c3256a2b65e97973e42888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes a scroll event to adjust camera speed or zoom.  <a href="camera__input_8c.html#a98c2a3b748c3256a2b65e97973e42888">More...</a><br /></td></tr>
 <tr class="separator:a98c2a3b748c3256a2b65e97973e42888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad986783f42ce93127542bdfcff31ec4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera__input_8c.html#aad986783f42ce93127542bdfcff31ec4">camera_apply_gamepad</a> (<a class="el" href="structCamera.html">Camera</a> *cam, const <a class="el" href="structGamepadState.html">GamepadState</a> *state)</td></tr>
+<tr class="memdesc:aad986783f42ce93127542bdfcff31ec4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies gamepad input to camera within a fixed physics step.  <a href="camera__input_8c.html#aad986783f42ce93127542bdfcff31ec4">More...</a><br /></td></tr>
+<tr class="separator:aad986783f42ce93127542bdfcff31ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a088324ad8995e3eb76024e3e79083d48"></a>
@@ -300,6 +304,50 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aad986783f42ce93127542bdfcff31ec4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad986783f42ce93127542bdfcff31ec4">&#9670;&nbsp;</a></span>camera_apply_gamepad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_apply_gamepad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structGamepadState.html">GamepadState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Applies gamepad input to camera within a fixed physics step. </p>
+<p>Encapsulates the Camera↔GamepadContext copy-in/copy-out pattern: builds the <a class="el" href="structGamepadContext.html" title="Minimal camera state slice for gamepad input application.">GamepadContext</a> from <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> fields, calls <a class="el" href="gamepad__input_8h.html#afa50c87039ef832f969bafb592445eff" title="Writes gamepad axes into a GamepadContext.">gamepad_write_input()</a>, then copies modified values back into the <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> instance (move_input, yaw/pitch_target). </td></tr>
+    <tr><td class="paramname">state</td><td>Pointer to the gamepad state (with cached axes from poll). </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="camera__input_8c_aad986783f42ce93127542bdfcff31ec4_cgraph.svg" width="404" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a44b94467ff02a7c22c5d8d1f6a706732"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a44b94467ff02a7c22c5d8d1f6a706732">&#9670;&nbsp;</a></span>camera_input_handle_key()</h2>
 

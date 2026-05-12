@@ -1,5 +1,7 @@
 var NAVTREEINDEX11 =
 {
+"structPerfModeContext.html#a846f44009190f3ca9bae1c684857dd2f":[5,0,80,0],
+"structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686":[5,0,80,2],
 "structPerfModeContext.html#aec9d63a4a531c188dcd633a978c3f1f3":[5,0,80,1],
 "structPerfTimer.html":[5,0,81],
 "structPerfTimer.html#a4a24d10e20b4d1752ae7fe51274b1c4c":[5,0,81,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX11 =
 "structShockwaveRenderer.html#ab4b9968e4e33ecd47bd96f9440c288df":[5,0,101,2],
 "structShockwaveRenderer.html#af1db0761d83004b4f6c997bf1b6bee30":[5,0,101,6],
 "structSkybox.html":[5,0,102],
-"structSkybox.html#a029b89fe6524f5edf0f814d5fe6a6af4":[5,0,102,2],
-"structSkybox.html#a27902314af1b0fc98c1b57792d684fd6":[5,0,102,4],
-"structSkybox.html#aa3ea3ff6d3611ac9541f43af0c1a6127":[5,0,102,3]
+"structSkybox.html#a029b89fe6524f5edf0f814d5fe6a6af4":[5,0,102,2]
 };

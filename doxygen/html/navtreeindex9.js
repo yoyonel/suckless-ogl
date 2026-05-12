@@ -1,5 +1,7 @@
 var NAVTREEINDEX9 =
 {
+"structBillboardSortEntry.html":[5,0,16],
+"structBillboardSortEntry.html#a765eb7e00c090619b67638a7783d9c1d":[5,0,16,0],
 "structBillboardSortEntry.html#adb408c3b2fc98a5000340adcd18dec2f":[5,0,16,1],
 "structBillboardSorter.html":[5,0,17],
 "structBillboardSorter.html#a0e96b1deb48957de5bec4dd10db704df":[5,0,17,6],
@@ -247,7 +249,5 @@ var NAVTREEINDEX9 =
 "structGamepadContext.html#a9997bf23049fadf3dc6441decda2256b":[5,0,40,0],
 "structGamepadContext.html#ac061c61d1844149659961f9ab614cdb4":[5,0,40,3],
 "structGamepadContext.html#ad06b4043e34a1d3b63934e38a8acb4d1":[5,0,40,1],
-"structGamepadControlPos.html":[5,0,41],
-"structGamepadControlPos.html#a00db31c79e3a3964365054fdab5dd9a3":[5,0,41,0],
-"structGamepadControlPos.html#a0fc10094e127ec67c08fe2765a113f8f":[5,0,41,2]
+"structGamepadControlPos.html":[5,0,41]
 };

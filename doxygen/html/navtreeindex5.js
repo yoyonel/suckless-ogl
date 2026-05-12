@@ -1,5 +1,7 @@
 var NAVTREEINDEX5 =
 {
+"md_docs_billboard_optimization.html#autotoc_md18":[2,5],
+"md_docs_billboard_optimization.html#autotoc_md19":[2,5,0],
 "md_docs_billboard_optimization.html#autotoc_md2":[2,1],
 "md_docs_billboard_optimization.html#autotoc_md3":[2,1,0],
 "md_docs_billboard_optimization.html#autotoc_md4":[2,1,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "postprocess__apply_8c.html#a8fdad312e138cf7080b4596e127584e5":[6,0,4,40,0],
 "postprocess__apply_8c.html#aa84256eef04459c5acf3b67987da736b":[6,0,4,40,1],
 "postprocess__cleanup_8c.html":[6,0,4,41],
-"postprocess__cleanup_8c.html#a21415636eae1a5f68907613bb54e467b":[6,0,4,41,4],
-"postprocess__cleanup_8c.html#a740fcd0d08d450e6ee0256d6f5763b0d":[6,0,4,41,1],
-"postprocess__cleanup_8c.html#a87bedfc4aa29245ba136d153697a09df":[6,0,4,41,3]
+"postprocess__cleanup_8c.html#a21415636eae1a5f68907613bb54e467b":[6,0,4,41,4]
 };

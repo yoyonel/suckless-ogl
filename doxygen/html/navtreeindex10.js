@@ -1,5 +1,7 @@
 var NAVTREEINDEX10 =
 {
+"structGamepadControlPos.html#a00db31c79e3a3964365054fdab5dd9a3":[5,0,41,0],
+"structGamepadControlPos.html#a0fc10094e127ec67c08fe2765a113f8f":[5,0,41,2],
 "structGamepadControlPos.html#a18bc251bef92d74ab3fcff6b55088ad9":[5,0,41,6],
 "structGamepadControlPos.html#a1c36c1660e58c2181067c75588d0aada":[5,0,41,3],
 "structGamepadControlPos.html#a1ea2d57c0012f2f715446f03834f3cc5":[5,0,41,9],
@@ -247,7 +249,5 @@ var NAVTREEINDEX10 =
 "structPerfModeContext.html":[5,0,80],
 "structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924":[5,0,80,3],
 "structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39":[5,0,80,4],
-"structPerfModeContext.html#a2cd10780d3c30c53e8053dd7c26e72df":[5,0,80,5],
-"structPerfModeContext.html#a846f44009190f3ca9bae1c684857dd2f":[5,0,80,0],
-"structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686":[5,0,80,2]
+"structPerfModeContext.html#a2cd10780d3c30c53e8053dd7c26e72df":[5,0,80,5]
 };
