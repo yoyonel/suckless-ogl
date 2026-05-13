@@ -12,13 +12,13 @@ var structLightProbeGrid =
     [ "grid_dim", "structLightProbeGrid.html#a7b7ac239b2e21629e23af65a286418d9", null ],
     [ "mutex", "structLightProbeGrid.html#a1fdee833b89fa7c79b474373d195fa65", null ],
     [ "probes", "structLightProbeGrid.html#aafff25c4b7bab33a76246749cadc6e8f", null ],
-    [ "results_ready", "structLightProbeGrid.html#ad7c5b35422e7eda10921658526f854f9", null ],
-    [ "running", "structLightProbeGrid.html#af6e6ba7991b4456336c97cfd84c9315b", null ],
+    [ "results_ready", "structLightProbeGrid.html#acc46c89dafbf665705cd0e44d201e342", null ],
+    [ "running", "structLightProbeGrid.html#a81144032e4ced5caecad7f122c6095ee", null ],
     [ "scene_copy", "structLightProbeGrid.html#a0008bdfe0dd6ebad75dec5f54b9c54b2", null ],
     [ "scene_count", "structLightProbeGrid.html#a211bb382e4ab8b38bec9dbfd710a5c11", null ],
     [ "sh_textures", "structLightProbeGrid.html#a323b83773260781cdea517f6b7cc91c2", null ],
     [ "ssbo", "structLightProbeGrid.html#a5813f10e8ecf944f51b56208ea234954", null ],
     [ "total_probes", "structLightProbeGrid.html#a3353b97cbdca9b484d70919ef348f619", null ],
-    [ "update_pending", "structLightProbeGrid.html#aafba53eac0b80c3b59ff1e837c815262", null ],
+    [ "update_pending", "structLightProbeGrid.html#a3a13b85e86af015d04be174519025fd5", null ],
     [ "worker_thread", "structLightProbeGrid.html#a0156e32f129150cce4b021c39020cc2d", null ]
 ];

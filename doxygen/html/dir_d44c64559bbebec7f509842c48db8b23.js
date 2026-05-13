@@ -16,6 +16,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "async_loader.h", "async__loader_8h.html", "async__loader_8h" ],
     [ "billboard_rendering.h", "billboard__rendering_8h.html", "billboard__rendering_8h" ],
     [ "billboard_sorting.h", "billboard__sorting_8h.html", "billboard__sorting_8h" ],
+    [ "bool_utils.h", "bool__utils_8h.html", "bool__utils_8h" ],
     [ "camera.h", "camera_8h.html", "camera_8h" ],
     [ "camera_input.h", "camera__input_8h.html", "camera__input_8h" ],
     [ "cli.h", "cli_8h.html", "cli_8h" ],

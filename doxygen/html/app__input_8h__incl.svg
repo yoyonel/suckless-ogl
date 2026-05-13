@@ -13,8 +13,8 @@
 <g id="node1" class="node">
 <title>Node1</title>
 <g id="a_node1"><a xlink:title="User input orchestration and application state toggles.">
-<polygon fill="#bfbfbf" stroke="black" points="118.5,-112.5 118.5,-131.5 230.5,-131.5 230.5,-112.5 118.5,-112.5"/>
-<text text-anchor="middle" x="174.5" y="-119.5" font-family="Helvetica,sans-Serif" font-size="10.00">include/app_input.h</text>
+<polygon fill="#bfbfbf" stroke="black" points="163.5,-112.5 163.5,-131.5 275.5,-131.5 275.5,-112.5 163.5,-112.5"/>
+<text text-anchor="middle" x="219.5" y="-119.5" font-family="Helvetica,sans-Serif" font-size="10.00">include/app_input.h</text>
 </a>
 </g>
 </g>
@@ -30,8 +30,23 @@
 <!-- Node1&#45;&gt;Node2 -->
 <g id="edge1" class="edge">
 <title>Node1&#45;&gt;Node2</title>
-<path fill="none" stroke="midnightblue" d="M174.5,-112.08C174.5,-105.01 174.5,-94.86 174.5,-85.99"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="178,-85.75 174.5,-75.75 171,-85.75 178,-85.75"/>
+<path fill="none" stroke="midnightblue" d="M212.07,-112.08C205.65,-104.38 196.19,-93.03 188.38,-83.65"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="190.88,-81.19 181.79,-75.75 185.51,-85.67 190.88,-81.19"/>
+</g>
+<!-- Node7 -->
+<g id="node7" class="node">
+<title>Node7</title>
+<g id="a_node7"><a xlink:title=" ">
+<polygon fill="white" stroke="#bfbfbf" points="234.5,-56.5 234.5,-75.5 296.5,-75.5 296.5,-56.5 234.5,-56.5"/>
+<text text-anchor="middle" x="265.5" y="-63.5" font-family="Helvetica,sans-Serif" font-size="10.00">stdbool.h</text>
+</a>
+</g>
+</g>
+<!-- Node1&#45;&gt;Node7 -->
+<g id="edge6" class="edge">
+<title>Node1&#45;&gt;Node7</title>
+<path fill="none" stroke="midnightblue" d="M227.1,-112.08C233.73,-104.3 243.52,-92.8 251.56,-83.37"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="254.23,-85.63 258.05,-75.75 248.9,-81.09 254.23,-85.63"/>
 </g>
 <!-- Node3 -->
 <g id="node3" class="node">

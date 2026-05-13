@@ -1,6 +1,6 @@
 var structUIContext =
 [
-    [ "batch_active", "structUIContext.html#a4b6688815354ec56144a864e7f4dfd0d", null ],
+    [ "batch_active", "structUIContext.html#a02af24d0bbcf0d67daeb5927fd67fe51", null ],
     [ "batch_count", "structUIContext.html#ad1bd151216d7ef55bd7bf781b4a47c47", null ],
     [ "batch_vertices", "structUIContext.html#ade1389ff1a918ac87c3409be4b0163c2", null ],
     [ "cdata", "structUIContext.html#a062dcd89e0d44d274b207da86b1b2d04", null ],
