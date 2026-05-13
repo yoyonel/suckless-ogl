@@ -8,7 +8,7 @@ var structPPExposureReadback =
     [ "histogram_pbo", "structPPExposureReadback.html#ab0f01de733bc2bd8904fb2e50934d758", null ],
     [ "histogram_sync", "structPPExposureReadback.html#a7bda81eb2c8567e430a4061627f9f32e", null ],
     [ "last_buckets", "structPPExposureReadback.html#a45d7d07e80c1ddde925c20c81191ef87", null ],
-    [ "last_histogram_updated", "structPPExposureReadback.html#a8bbf4d79f35c239b1e4abb37d134b3a2", null ],
+    [ "last_histogram_updated", "structPPExposureReadback.html#a302d30d06a1e2d327ccc3d8cf2b1587f", null ],
     [ "last_max_lum", "structPPExposureReadback.html#a71c8c331311e9fafcc0334bd37cc8ae6", null ],
     [ "last_min_lum", "structPPExposureReadback.html#a86e4736bdc99f7d4577358bf430f03d3", null ]
 ];

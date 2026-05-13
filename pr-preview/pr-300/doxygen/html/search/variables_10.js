@@ -24,7 +24,7 @@ var searchData=
   ['pending_5fwidth_3950',['pending_width',['../structAppInputContext.html#a2d11531ca1f969158eaee06971d71457',1,'AppInputContext::pending_width()'],['../structAppWindow.html#a4cd232b7a7b40dd26f22ddc763df0b16',1,'AppWindow::pending_width()']]],
   ['perceptual_5fgamma_3951',['perceptual_gamma',['../structBandingParams.html#a707399c42e148f4cc80e4fae913a3545',1,'BandingParams']]],
   ['perf_5fcontext_3952',['perf_context',['../structAppInputContext.html#a852c51494ef768624efd6a20ae9fcff8',1,'AppInputContext::perf_context()'],['../structAppProfiling.html#a9cbe8c9f9bd96a7db25fb7369528c0af',1,'AppProfiling::perf_context()']]],
-  ['perf_5fmode_5factive_3953',['perf_mode_active',['../structAppProfiling.html#af444f1177ea9b686f687e4f0ea02b7fb',1,'AppProfiling::perf_mode_active()'],['../structAppInputContext.html#adb37ddae7632e27f04cad2e179926c14',1,'AppInputContext::perf_mode_active()']]],
+  ['perf_5fmode_5factive_3953',['perf_mode_active',['../structAppProfiling.html#abc724b9a2614c41b9f5ffe02c60996e4',1,'AppProfiling::perf_mode_active()'],['../structAppInputContext.html#a0ee4f6fbd0ebaa40a9550d5023ca1a21',1,'AppInputContext::perf_mode_active()']]],
   ['phase_3954',['phase',['../structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943',1,'EffectBenchmark']]],
   ['physics_5faccumulator_3955',['physics_accumulator',['../structCamera.html#adf50dca74d27c3fa2dc3ee44d9edc03c',1,'Camera']]],
   ['pi_3956',['PI',['../pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673',1,'pbr_functions.glsl']]],

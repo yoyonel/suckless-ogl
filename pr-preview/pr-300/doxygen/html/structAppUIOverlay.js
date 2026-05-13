@@ -1,6 +1,6 @@
 var structAppUIOverlay =
 [
-    [ "help_captured_camera", "structAppUIOverlay.html#a6406774f0dd41f8c65895219afc2306b", null ],
+    [ "help_captured_camera", "structAppUIOverlay.html#a7a47003cdd8ca03670e19f33cebaea60", null ],
     [ "help_global_dim", "structAppUIOverlay.html#aa29b364789368d4d72c735eb731e99a7", null ],
     [ "help_gp_decay", "structAppUIOverlay.html#ad3c6cf2dc61beded1f25c8e0b64a8b0b", null ],
     [ "help_hover_decay", "structAppUIOverlay.html#ab59781ea2e0a6275b3d701a716f88c09", null ],

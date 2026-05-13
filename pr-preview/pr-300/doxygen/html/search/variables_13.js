@@ -67,7 +67,7 @@ var searchData=
   ['sorting_5fmode_4104',['sorting_mode',['../structSceneConfig.html#a60ccdd5dfeeec9409260efbdad345418',1,'SceneConfig']]],
   ['spec_5fprefiltered_5ftex_4105',['spec_prefiltered_tex',['../structSceneGPUResources.html#add6d4463089e7fa543af54ccdaeeea08',1,'SceneGPUResources']]],
   ['spec_5funiforms_4106',['spec_uniforms',['../structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d',1,'IBLCoordinator']]],
-  ['specular_5faa_5fenabled_4107',['specular_aa_enabled',['../structSceneConfig.html#a94de9f0fa6fcb8d63baa2be48fe89f07',1,'SceneConfig::specular_aa_enabled()'],['../structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb',1,'BillboardUBO::specular_aa_enabled()']]],
+  ['specular_5faa_5fenabled_4107',['specular_aa_enabled',['../structSceneConfig.html#a773411455956cb09d1b5bdbc7b71a0ab',1,'SceneConfig::specular_aa_enabled()'],['../structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb',1,'BillboardUBO::specular_aa_enabled()']]],
   ['spinner_5fshader_4108',['spinner_shader',['../structUIContext.html#a6c948d739612b8dfeebc4865f3230347',1,'UIContext']]],
   ['spmap_5fprogram_4109',['spmap_program',['../structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1',1,'IBLCoordinator::spmap_program()'],['../structSceneGPUResources.html#a6feedd48ab2f3938c0253802da31c13d',1,'SceneGPUResources::spmap_program()']]],
   ['ssbo_4110',['ssbo',['../structLightProbeGrid.html#a5813f10e8ecf944f51b56208ea234954',1,'LightProbeGrid::ssbo()'],['../structSSBOGroup.html#acf2098bd4aace6a658d3d287f1ff6dbc',1,'SSBOGroup::ssbo()']]],

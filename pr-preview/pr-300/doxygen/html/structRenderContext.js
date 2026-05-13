@@ -6,7 +6,7 @@ var structRenderContext =
     [ "env_mgr", "structRenderContext.html#ab15bcf90fc368d12c9bb33c85c1aef08", null ],
     [ "frame_count", "structRenderContext.html#a25314f300de1de39db17c0a1e6533ab0", null ],
     [ "height", "structRenderContext.html#a194a36ce3d85ae9ef5b40396e1e2d950", null ],
-    [ "log_gpu_metrics", "structRenderContext.html#a3dc178776cecb1fda586e0a257a87e4f", null ],
+    [ "log_gpu_metrics", "structRenderContext.html#a2a179a3d31b0fefb9aff3118f674f779", null ],
     [ "notifier", "structRenderContext.html#ae0711db1536a75a484f1045f259446d5", null ],
     [ "postprocess", "structRenderContext.html#ab82d75edbd8c10b7c8a89c3d4f5be994", null ],
     [ "profiler", "structRenderContext.html#a18c5684ad7a664ba0f0d7c34378c53c9", null ],

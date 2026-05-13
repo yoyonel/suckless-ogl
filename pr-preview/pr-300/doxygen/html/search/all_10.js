@@ -66,7 +66,7 @@ var searchData=
   ['perf_5fmeasure_5fms_1497',['PERF_MEASURE_MS',['../perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f',1,'perf_timer.h']]],
   ['perf_5fmode_2ec_1498',['perf_mode.c',['../perf__mode_8c.html',1,'']]],
   ['perf_5fmode_2eh_1499',['perf_mode.h',['../perf__mode_8h.html',1,'']]],
-  ['perf_5fmode_5factive_1500',['perf_mode_active',['../structAppInputContext.html#adb37ddae7632e27f04cad2e179926c14',1,'AppInputContext::perf_mode_active()'],['../structAppProfiling.html#af444f1177ea9b686f687e4f0ea02b7fb',1,'AppProfiling::perf_mode_active()']]],
+  ['perf_5fmode_5factive_1500',['perf_mode_active',['../structAppInputContext.html#a0ee4f6fbd0ebaa40a9550d5023ca1a21',1,'AppInputContext::perf_mode_active()'],['../structAppProfiling.html#abc724b9a2614c41b9f5ffe02c60996e4',1,'AppProfiling::perf_mode_active()']]],
   ['perf_5fmode_5fcleanup_1501',['perf_mode_cleanup',['../perf__mode_8c.html#a93ee859004a75de69605d3984f7ea2f2',1,'perf_mode_cleanup(PerfModeContext *ctx):&#160;perf_mode.c'],['../perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2',1,'perf_mode_cleanup(PerfModeContext *ctx):&#160;perf_mode.c']]],
   ['perf_5fmode_5ferror_1502',['PERF_MODE_ERROR',['../perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a5f6fddc2bb2d88ee2127d38f0c2a3d87',1,'perf_mode.h']]],
   ['perf_5fmode_5fgamemode_1503',['PERF_MODE_GAMEMODE',['../perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a8e0e1bebf4fb203100ccea067f82a766',1,'perf_mode.h']]],

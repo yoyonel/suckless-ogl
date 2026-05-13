@@ -50,7 +50,7 @@ var searchData=
   ['height_5ffalloff_1001',['height_falloff',['../structFogParams.html#a2b6201229d58c2ce154aad513e4e6d82',1,'FogParams']]],
   ['help_5fbg_5falpha_1002',['HELP_BG_ALPHA',['../app__ui__layout_8h.html#a3b7f61b1499e5659be43d74c1b6944b6',1,'app_ui_layout.h']]],
   ['help_5fbg_5fcolor_1003',['HELP_BG_COLOR',['../app__ui__layout_8h.html#a4280404bf249d2ed90f33771ae157684',1,'app_ui_layout.h']]],
-  ['help_5fcaptured_5fcamera_1004',['help_captured_camera',['../structAppUIOverlay.html#a6406774f0dd41f8c65895219afc2306b',1,'AppUIOverlay']]],
+  ['help_5fcaptured_5fcamera_1004',['help_captured_camera',['../structAppUIOverlay.html#a7a47003cdd8ca03670e19f33cebaea60',1,'AppUIOverlay']]],
   ['help_5fexit_5fhint_5fx_5foff_1005',['HELP_EXIT_HINT_X_OFF',['../app__ui__layout_8h.html#a83a337cef49af1300c3338d2a4a455ca',1,'app_ui_layout.h']]],
   ['help_5fexit_5fhint_5fy_5foff_1006',['HELP_EXIT_HINT_Y_OFF',['../app__ui__layout_8h.html#a2a4dcdadc74b7a07b11c6759a1cb9f2b',1,'app_ui_layout.h']]],
   ['help_5fglobal_5fdim_1007',['help_global_dim',['../structAppUIOverlay.html#aa29b364789368d4d72c735eb731e99a7',1,'AppUIOverlay']]],

@@ -10,7 +10,7 @@ var searchData=
   ['nbody_5ffixed_5fdt_3898',['NBODY_FIXED_DT',['../nbody_8h.html#a6ed40716bb15fc1dda0a941920a448c4',1,'nbody.h']]],
   ['nbody_5finfo_5fcolor_3899',['NBODY_INFO_COLOR',['../app__ui__layout_8h.html#a003f5804a266ac5f391e765f05249fa8',1,'app_ui_layout.h']]],
   ['nbody_5fmax_5faccumulator_3900',['NBODY_MAX_ACCUMULATOR',['../nbody_8h.html#a63380969f164f080d6ab4ba45dbc1a7d',1,'nbody.h']]],
-  ['nbody_5fmode_3901',['nbody_mode',['../structSceneSimulation.html#a2430eee7ff36a9c981dc98dcb632fe64',1,'SceneSimulation']]],
+  ['nbody_5fmode_3901',['nbody_mode',['../structSceneSimulation.html#a7dd666d56d8aee1fb19f5b430830c2b2',1,'SceneSimulation']]],
   ['nbody_5fsim_3902',['nbody_sim',['../structSceneSimulation.html#a02df20059a9bc4b5496f2436ad6df74a',1,'SceneSimulation']]],
   ['nbody_5fsoftening_5ffactor_3903',['NBODY_SOFTENING_FACTOR',['../nbody_8h.html#a8f6ffb88d46f1bd72ef995526bec33b7',1,'nbody.h']]],
   ['nbody_5fsoftening_5fsq_3904',['NBODY_SOFTENING_SQ',['../nbody_8h.html#ad7bc6f91a172aff337338f864f38d5d0',1,'nbody.h']]],

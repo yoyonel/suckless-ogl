@@ -198,7 +198,7 @@ var searchData=
   ['sortingmode_1997',['SortingMode',['../scene__config_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1',1,'scene_config.h']]],
   ['spec_5fprefiltered_5ftex_1998',['spec_prefiltered_tex',['../structSceneGPUResources.html#add6d4463089e7fa543af54ccdaeeea08',1,'SceneGPUResources']]],
   ['spec_5funiforms_1999',['spec_uniforms',['../structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d',1,'IBLCoordinator']]],
-  ['specular_5faa_5fenabled_2000',['specular_aa_enabled',['../structSceneConfig.html#a94de9f0fa6fcb8d63baa2be48fe89f07',1,'SceneConfig::specular_aa_enabled()'],['../structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb',1,'BillboardUBO::specular_aa_enabled()']]],
+  ['specular_5faa_5fenabled_2000',['specular_aa_enabled',['../structSceneConfig.html#a773411455956cb09d1b5bdbc7b71a0ab',1,'SceneConfig::specular_aa_enabled()'],['../structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb',1,'BillboardUBO::specular_aa_enabled()']]],
   ['sphere_5fsort_2eglsl_2001',['sphere_sort.glsl',['../sphere__sort_8glsl.html',1,'']]],
   ['sphere_5ftypes_2eh_2002',['sphere_types.h',['../sphere__types_8h.html',1,'']]],
   ['sphereinstance_2003',['SphereInstance',['../structSphereInstance.html',1,'']]],

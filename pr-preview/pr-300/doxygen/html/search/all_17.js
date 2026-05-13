@@ -23,7 +23,7 @@ var searchData=
   ['wire_5fcube_5fvbo_2344',['wire_cube_vbo',['../structSceneGPUResources.html#a3cca1b2684a5a4baac7e7dacf7698997',1,'SceneGPUResources']]],
   ['wire_5fcube_5fvertex_5fcount_2345',['WIRE_CUBE_VERTEX_COUNT',['../billboard__rendering_8c.html#a1981a837d663f92043ee566e92f32848',1,'billboard_rendering.c']]],
   ['wire_5fquad_5fvbo_2346',['wire_quad_vbo',['../structSceneGPUResources.html#a9301d244f480f9c2cbe3599cf4354a76',1,'SceneGPUResources']]],
-  ['wireframe_2347',['wireframe',['../structSceneConfig.html#a436220f8b1417018a95afb47159c9b7e',1,'SceneConfig']]],
+  ['wireframe_2347',['wireframe',['../structSceneConfig.html#aaab6274f8b7ebe797e85dc47117e57bf',1,'SceneConfig']]],
   ['worker_5fthread_2348',['worker_thread',['../structAsyncLoader.html#a06385b41f9a1c1f8a2f3152f76d57740',1,'AsyncLoader::worker_thread()'],['../structLightProbeGrid.html#a0156e32f129150cce4b021c39020cc2d',1,'LightProbeGrid::worker_thread()']]],
   ['workgroup_5fsize_2349',['WORKGROUP_SIZE',['../billboard__sorting_8c.html#a16685eea158879e41b101ca3634de462a977681261e84b7671049e4d74c29552e',1,'billboard_sorting.c']]],
   ['world_5fup_2350',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
