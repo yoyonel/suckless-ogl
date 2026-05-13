@@ -1,6 +1,7 @@
 #include "app_settings.h"
 #include "billboard_rendering.h"
 #include "billboard_sorting.h"
+#include "bool_utils.h"
 #include "instanced_rendering.h"
 #include "nbody.h"
 #include "platform/platform_utils.h"
@@ -15,7 +16,7 @@
 
 void scene_toggle_nbody(Scene* scene)
 {
-	scene->simulation->nbody_mode = ((!scene->simulation->nbody_mode) != 0);
+	BOOL_TOGGLE(scene->simulation->nbody_mode);
 
 	if (scene->simulation->nbody_mode) {
 		/* Initialize simulation and trails */

@@ -1,6 +1,7 @@
 #include "app_input.h"
 
 #include "app_ui.h"
+#include "bool_utils.h"
 #include "camera.h"
 #include "camera_input.h"
 #include "env_manager.h"
@@ -214,7 +215,7 @@ static void handle_subdiv_input(AppInputContext* ctx, int key)
 
 static void handle_camera_toggle(AppInputContext* ctx)
 {
-	*ctx->camera_enabled = ((!*ctx->camera_enabled) != 0);
+	BOOL_TOGGLE(*ctx->camera_enabled);
 	if (*ctx->camera_enabled) {
 		glfwSetInputMode(ctx->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
@@ -223,10 +224,10 @@ static void handle_camera_toggle(AppInputContext* ctx)
 		glfwSetInputMode(ctx->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	LOG_INFO("suckless-ogl.app", "Camera control: %s",
-	         (int)*ctx->camera_enabled ? "ENABLED" : "DISABLED");
+	         BOOL_TO_INT(*ctx->camera_enabled) ? "ENABLED" : "DISABLED");
 	action_notifier_push(
 	    ctx->notifier,
-	    (int)*ctx->camera_enabled ? "Camera: ON" : "Camera: OFF",
+	    BOOL_TO_INT(*ctx->camera_enabled) ? "Camera: ON" : "Camera: OFF",
 	    NOTIF_DUR_NORMAL);
 }
 
@@ -342,11 +343,12 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 			handle_f3_input(ctx, mods);
 			return true;
 		case GLFW_KEY_F4:
-			*ctx->log_gpu_metrics = ((!*ctx->log_gpu_metrics) != 0);
-			LOG_INFO("suckless-ogl.app", "Log GPU Metrics: %s",
-			         (int)*ctx->log_gpu_metrics ? "ON" : "OFF");
+			BOOL_TOGGLE(*ctx->log_gpu_metrics);
+			LOG_INFO(
+			    "suckless-ogl.app", "Log GPU Metrics: %s",
+			    BOOL_TO_INT(*ctx->log_gpu_metrics) ? "ON" : "OFF");
 			action_notifier_push(ctx->notifier,
-			                     (int)*ctx->log_gpu_metrics
+			                     BOOL_TO_INT(*ctx->log_gpu_metrics)
 			                         ? "Log Metrics: ON"
 			                         : "Log Metrics: OFF",
 			                     NOTIF_DUR_NORMAL);
@@ -386,15 +388,15 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 static void handle_y_key_input(AppInputContext* ctx, int mods)
 {
 	if ((unsigned int)mods & (unsigned int)GLFW_MOD_SHIFT) {
-		ctx->scene->config.show_probe_grid =
-		    ((!ctx->scene->config.show_probe_grid) != 0);
+		BOOL_TOGGLE(ctx->scene->config.show_probe_grid);
 		LOG_INFO("suckless-ogl.app", "Probe Grid Debug: %s",
 		         ctx->scene->config.show_probe_grid ? "ON" : "OFF");
-		action_notifier_push(ctx->notifier,
-		                     (int)ctx->scene->config.show_probe_grid
-		                         ? "Probes: ON"
-		                         : "Probes: OFF",
-		                     NOTIF_DUR_NORMAL);
+		action_notifier_push(
+		    ctx->notifier,
+		    BOOL_TO_INT(ctx->scene->config.show_probe_grid)
+		        ? "Probes: ON"
+		        : "Probes: OFF",
+		    NOTIF_DUR_NORMAL);
 	} else {
 		ctx->scene->config.gi_mode =
 		    (ctx->scene->config.gi_mode + 1) % GI_MODE_COUNT;
@@ -418,13 +420,13 @@ static void handle_system_key_input(AppInputContext* ctx, int key, int mods)
 			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_Z:
-			ctx->scene->config.wireframe =
-			    ((!ctx->scene->config.wireframe) != 0);
-			action_notifier_push(ctx->notifier,
-			                     (int)ctx->scene->config.wireframe
-			                         ? "Wireframe: ON"
-			                         : "Wireframe: OFF",
-			                     NOTIF_DUR_NORMAL);
+			BOOL_TOGGLE(ctx->scene->config.wireframe);
+			action_notifier_push(
+			    ctx->notifier,
+			    BOOL_TO_INT(ctx->scene->config.wireframe)
+			        ? "Wireframe: ON"
+			        : "Wireframe: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_UP:
 		case GLFW_KEY_DOWN:
@@ -476,10 +478,11 @@ static bool handle_g_key_input(AppInputContext* ctx, int mods)
 		return false;
 	}
 	scene_toggle_nbody(ctx->scene);
-	LOG_INFO("suckless-ogl.app", "N-Body mode: %s",
-	         (int)ctx->scene->simulation->nbody_mode ? "ON" : "OFF");
+	LOG_INFO(
+	    "suckless-ogl.app", "N-Body mode: %s",
+	    BOOL_TO_INT(ctx->scene->simulation->nbody_mode) ? "ON" : "OFF");
 	action_notifier_push(ctx->notifier,
-	                     (int)ctx->scene->simulation->nbody_mode
+	                     BOOL_TO_INT(ctx->scene->simulation->nbody_mode)
 	                         ? "N-Body Gravity: ON"
 	                         : "N-Body Gravity: OFF",
 	                     NOTIF_DUR_LONG);
@@ -669,8 +672,7 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			handle_y_key_input(ctx, mods);
 			break;
 		case GLFW_KEY_L:
-			ctx->scene->config.billboard_mode =
-			    ((!ctx->scene->config.billboard_mode) != 0);
+			BOOL_TOGGLE(ctx->scene->config.billboard_mode);
 			// app_update_instancing_mode(app) was empty and
 			// removed.
 			LOG_INFO(
@@ -678,7 +680,7 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			    ctx->scene->config.billboard_mode ? "ON" : "OFF");
 			action_notifier_push(
 			    ctx->notifier,
-			    (int)ctx->scene->config.billboard_mode
+			    BOOL_TO_INT(ctx->scene->config.billboard_mode)
 			        ? "Billboards: ON"
 			        : "Billboards: OFF",
 			    NOTIF_DUR_NORMAL);
@@ -710,27 +712,27 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				handle_aa_mode_input(ctx);
 			} else {
-				ctx->scene->config.specular_aa_enabled =
-				    ((!ctx->scene->config
-				           .specular_aa_enabled) != 0);
+				BOOL_TOGGLE(
+				    ctx->scene->config.specular_aa_enabled);
 				action_notifier_push(
 				    ctx->notifier,
-				    (int)ctx->scene->config.specular_aa_enabled
+				    BOOL_TO_INT(
+				        ctx->scene->config.specular_aa_enabled)
 				        ? "Specular AA: ON"
 				        : "Specular AA: OFF",
 				    NOTIF_DUR_SHORT);
 			}
 			break;
 		case GLFW_KEY_K:
-			ctx->scene->config.show_envmap =
-			    ((!ctx->scene->config.show_envmap) != 0);
+			BOOL_TOGGLE(ctx->scene->config.show_envmap);
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
 			         ctx->scene->config.show_envmap ? "ON" : "OFF");
-			action_notifier_push(ctx->notifier,
-			                     (int)ctx->scene->config.show_envmap
-			                         ? "Skybox: ON"
-			                         : "Skybox: OFF",
-			                     NOTIF_DUR_NORMAL);
+			action_notifier_push(
+			    ctx->notifier,
+			    BOOL_TO_INT(ctx->scene->config.show_envmap)
+			        ? "Skybox: ON"
+			        : "Skybox: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_G:
 			if (handle_g_key_input(ctx, mods)) {

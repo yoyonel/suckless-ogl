@@ -1,5 +1,6 @@
 #include "camera.h"
 
+#include "bool_utils.h"
 #include <cglm/cam.h>
 #include <cglm/types.h>
 #include <cglm/util.h>
@@ -72,12 +73,14 @@ void camera_update_vectors(Camera* cam)
 
 void camera_build_keyboard_input(Camera* cam)
 {
-	cam->move_input[0] = (float)((int)cam->move_right -
-	                             (int)cam->move_left); /* right/left */
-	cam->move_input[1] =
-	    (float)((int)cam->move_up - (int)cam->move_down); /* up/down */
-	cam->move_input[2] = (float)((int)cam->move_forward -
-	                             (int)cam->move_backward); /* fwd/back */
+	cam->move_input[0] =
+	    (float)(BOOL_TO_INT(cam->move_right) -
+	            BOOL_TO_INT(cam->move_left)); /* right/left */
+	cam->move_input[1] = (float)(BOOL_TO_INT(cam->move_up) -
+	                             BOOL_TO_INT(cam->move_down)); /* up/down */
+	cam->move_input[2] =
+	    (float)(BOOL_TO_INT(cam->move_forward) -
+	            BOOL_TO_INT(cam->move_backward)); /* fwd/back */
 }
 
 void camera_fixed_update(Camera* cam)

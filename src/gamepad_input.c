@@ -1,5 +1,6 @@
 #include "gamepad_input.h"
 
+#include "bool_utils.h"
 #include "log.h"
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
@@ -78,7 +79,8 @@ void gamepad_input_poll(GamepadState* state, GamepadActions* actions)
 {
 	/* Detect connection. */
 	bool was_connected = state->connected;
-	state->connected = (glfwJoystickIsGamepad(state->joystick_id) != 0);
+	state->connected =
+	    INT_TO_BOOL(glfwJoystickIsGamepad(state->joystick_id));
 
 	if (actions) {
 		actions->env_next = false;
