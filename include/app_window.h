@@ -2,6 +2,7 @@
 #define APP_WINDOW_H
 
 #include "gl_common.h"
+#include <stdbool.h>
 
 /**
  * @struct AppWindow
@@ -13,10 +14,10 @@
  */
 typedef struct {
 	GLFWwindow* handle;            /**< The GLFW window context. */
-	int is_fullscreen;             /**< Fullscreen toggle state. */
+	bool is_fullscreen;            /**< Fullscreen toggle state. */
 	int saved_x, saved_y;          /**< Cached pos for window restore. */
 	int saved_width, saved_height; /**< Cached size for window restore. */
-	int resize_pending;            /**< Deferred resize flag. */
+	bool resize_pending;           /**< Deferred resize flag. */
 	int pending_width;             /**< Deferred resize target width. */
 	int pending_height;            /**< Deferred resize target height. */
 } AppWindow;

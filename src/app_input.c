@@ -52,7 +52,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	 * mid-mode-switch. */
 	*ctx->pending_width = width;
 	*ctx->pending_height = height;
-	*ctx->resize_pending = 1;
+	*ctx->resize_pending = true;
 }
 
 static void handle_pbr_debug_mode(AppInputContext* ctx)
@@ -218,7 +218,7 @@ static void handle_camera_toggle(AppInputContext* ctx)
 	if (*ctx->camera_enabled) {
 		glfwSetInputMode(ctx->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
-		ctx->camera->first_mouse = 1;
+		ctx->camera->first_mouse = true;
 	} else {
 		glfwSetInputMode(ctx->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
@@ -831,21 +831,21 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window)
 	 * pending fences/swaps, the NVIDIA driver can deadlock. */
 	glFinish();
 
-	if (*ctx->is_fullscreen == 0) {
+	if (!*ctx->is_fullscreen) {
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		glfwGetWindowPos(window, ctx->saved_x, ctx->saved_y);
 		glfwGetWindowSize(window, ctx->saved_width, ctx->saved_height);
 		glfwSetWindowMonitor(window, monitor, 0, 0, mode->width,
 		                     mode->height, mode->refreshRate);
-		*ctx->is_fullscreen = 1;
+		*ctx->is_fullscreen = true;
 		LOG_INFO("suckless-ogl.app", "Switched to fullscreen (%dx%d)",
 		         mode->width, mode->height);
 	} else {
 		glfwSetWindowMonitor(window, NULL, *ctx->saved_x, *ctx->saved_y,
 		                     *ctx->saved_width, *ctx->saved_height,
 		                     REFRESH_RATE_WINDOWED);
-		*ctx->is_fullscreen = 0;
+		*ctx->is_fullscreen = false;
 		LOG_INFO("suckless-ogl.app", "Switched to windowed");
 	}
 	glfwFocusWindow(window);
@@ -861,7 +861,7 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window)
 		                 (double)(height / 2));
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		ctx->camera->first_mouse = 1;
+		ctx->camera->first_mouse = true;
 	}
 }
 

@@ -148,7 +148,7 @@ void app_run(App* app)
 			postprocess_resize(app->postprocess,
 			                   app->win.pending_width,
 			                   app->win.pending_height);
-			app->win.resize_pending = 0;
+			app->win.resize_pending = false;
 			PROFILE_ZONE_END(resize_ctx);
 		}
 

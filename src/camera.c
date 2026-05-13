@@ -50,7 +50,7 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	// Input State
 	cam->last_mouse_x = 0.0;
 	cam->last_mouse_y = 0.0;
-	cam->first_mouse = 1;
+	cam->first_mouse = true;
 
 	camera_update_vectors(cam);
 }

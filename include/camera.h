@@ -7,6 +7,7 @@
 #define CAMERA_H
 
 #include <cglm/cglm.h>
+#include <stdbool.h>
 
 /* --- Camera Defaults --- */
 
@@ -97,7 +98,7 @@ typedef struct Camera {
 	/* Input State */
 	double last_mouse_x; /**< Previous mouse X position. */
 	double last_mouse_y; /**< Previous mouse Y position. */
-	int first_mouse;     /**< Flag to handle initial mouse jump. */
+	bool first_mouse;    /**< Flag to handle initial mouse jump. */
 } Camera;
 
 /**

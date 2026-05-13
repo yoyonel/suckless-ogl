@@ -414,7 +414,7 @@ void test_env_mgr_subsys_init_sets_defaults(void)
 
 	TEST_ASSERT_EQUAL(1, env_mgr_subsys_init(&app));
 	TEST_ASSERT_NOT_NULL(app.env_mgr);
-	TEST_ASSERT_EQUAL(1, app.env_mgr->is_first_load);
+	TEST_ASSERT_TRUE(app.env_mgr->is_first_load);
 	TEST_ASSERT_EQUAL(TRANSITION_WAIT_IBL, app.env_mgr->transition_state);
 	TEST_ASSERT_FLOAT_WITHIN(0.001F, 1.0F, app.env_mgr->transition_alpha);
 

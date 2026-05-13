@@ -14,6 +14,7 @@
 #include "async_loader.h"
 #include "gl_common.h"
 #include "ibl_coordinator.h"
+#include <stdbool.h>
 
 // Forward declarations
 typedef struct Scene Scene;
@@ -31,7 +32,7 @@ typedef struct EnvManager {
 	TransitionState transition_state;
 	float transition_alpha;
 	float transition_duration;
-	int is_first_load;
+	bool is_first_load;
 	int env_transition_mode; /**< EnvTransitionMode. */
 	GLuint pending_env_tex;  /**< Texture being assembled before IBL. */
 } EnvManager;
