@@ -478,11 +478,10 @@ static bool handle_g_key_input(AppInputContext* ctx, int mods)
 		return false;
 	}
 	scene_toggle_nbody(ctx->scene);
-	LOG_INFO(
-	    "suckless-ogl.app", "N-Body mode: %s",
-	    BOOL_TO_INT(ctx->scene->simulation->nbody_mode) ? "ON" : "OFF");
+	LOG_INFO("suckless-ogl.app", "N-Body mode: %s",
+	         ctx->scene->simulation->nbody_mode ? "ON" : "OFF");
 	action_notifier_push(ctx->notifier,
-	                     BOOL_TO_INT(ctx->scene->simulation->nbody_mode)
+	                     ctx->scene->simulation->nbody_mode
 	                         ? "N-Body Gravity: ON"
 	                         : "N-Body Gravity: OFF",
 	                     NOTIF_DUR_LONG);
