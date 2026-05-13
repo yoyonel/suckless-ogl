@@ -45,8 +45,8 @@ typedef enum {
  * @brief Render configuration flags and toggles.
  */
 typedef struct SceneConfig {
-	int wireframe;            /**< OpenGL wireframe mode toggle. */
-	int billboard_mode;       /**< Toggle for billboard rendering path. */
+	bool wireframe;           /**< OpenGL wireframe mode toggle. */
+	bool billboard_mode;      /**< Toggle for billboard rendering path. */
 	SortingMode sorting_mode; /**< Selected sorting algorithm. */
 	int pbr_debug_mode;       /**< Swap to wireframe/normal/roughness */
 	bool show_envmap;         /**< Draw skybox toggle. */
@@ -54,7 +54,7 @@ typedef struct SceneConfig {
 	int subdivisions;         /**< LOD of the shared icosphere. */
 	GIMode gi_mode;           /**< Selected GI sampling method. */
 	bool show_probe_grid;     /**< Debug visualization of probes. */
-	int specular_aa_enabled;  /**< Screen-Space Specular Anti-Aliasing. */
+	bool specular_aa_enabled; /**< Screen-Space Specular Anti-Aliasing. */
 	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
 } SceneConfig;
 

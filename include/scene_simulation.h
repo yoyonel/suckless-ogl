@@ -7,6 +7,7 @@
  */
 
 #include "nbody.h"
+#include <stdbool.h>
 
 /**
  * @struct SceneSimulation
@@ -14,7 +15,7 @@
  */
 typedef struct SceneSimulation {
 	NBodySim nbody_sim; /**< N-body gravitational simulation. */
-	int nbody_mode;     /**< Toggle: 0=grid, 1=N-body. */
+	bool nbody_mode;    /**< Toggle: false=grid, true=N-body. */
 } SceneSimulation;
 
 #endif /* SCENE_SIMULATION_H */

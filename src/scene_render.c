@@ -126,7 +126,8 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		ubo.gi_mode = (int32_t)scene->config.gi_mode;
 		glm_vec3_copy(scene->lighting.probe_grid.aabb_max,
 		              ubo.probe_grid_max);
-		ubo.specular_aa_enabled = scene->config.specular_aa_enabled;
+		ubo.specular_aa_enabled =
+		    (int32_t)scene->config.specular_aa_enabled;
 		ubo.probe_grid_dim[0] = scene->lighting.probe_grid.grid_dim[0];
 		ubo.probe_grid_dim[1] = scene->lighting.probe_grid.grid_dim[1];
 		ubo.probe_grid_dim[2] = scene->lighting.probe_grid.grid_dim[2];
@@ -249,7 +250,7 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 	if (scene->shaders->instanced_uniforms.u_specular_aa_enabled != -1) {
 		glUniform1i(
 		    scene->shaders->instanced_uniforms.u_specular_aa_enabled,
-		    scene->config.specular_aa_enabled);
+		    (GLint)scene->config.specular_aa_enabled);
 	}
 	if (scene->shaders->instanced_uniforms.u_aa_mode != -1) {
 		glUniform1i(scene->shaders->instanced_uniforms.u_aa_mode,
@@ -416,9 +417,9 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			GPU_STAGE_PROFILER(profiler, "Instanced Render",
 			                   GPU_PROFILER_SCENE_COLOR);
 			gl_debug_push_group("Instanced_Geometry_Render");
-			glPolygonMode(GL_FRONT_AND_BACK, scene->config.wireframe
-			                                     ? GL_LINE
-			                                     : GL_FILL);
+			glPolygonMode(
+			    GL_FRONT_AND_BACK,
+			    (int)scene->config.wireframe ? GL_LINE : GL_FILL);
 
 			scene_render_instanced(scene, view, proj, camera_pos,
 			                       previous_view_proj);
@@ -461,9 +462,9 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			GPU_STAGE_PROFILER(profiler, "Instanced Render",
 			                   GPU_PROFILER_SCENE_COLOR);
 			gl_debug_push_group("Instanced_Geometry_Render");
-			glPolygonMode(GL_FRONT_AND_BACK, scene->config.wireframe
-			                                     ? GL_LINE
-			                                     : GL_FILL);
+			glPolygonMode(
+			    GL_FRONT_AND_BACK,
+			    (int)scene->config.wireframe ? GL_LINE : GL_FILL);
 			scene_render_instanced(scene, view, proj, camera_pos,
 			                       previous_view_proj);
 

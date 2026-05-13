@@ -399,8 +399,7 @@ void test_scene_subsys_init_sets_defaults(void)
 
 	TEST_ASSERT_EQUAL(1, scene_subsys_init(&app));
 	TEST_ASSERT_NOT_NULL(app.scene);
-	TEST_ASSERT_EQUAL(DEFAULT_SPECULAR_AA_ENABLED,
-	                  app.scene->config.specular_aa_enabled);
+	TEST_ASSERT_TRUE(app.scene->config.specular_aa_enabled);
 
 	scene_subsys_cleanup(&app);
 	TEST_ASSERT_NULL(app.scene);

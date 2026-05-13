@@ -15,7 +15,7 @@
 
 void scene_toggle_nbody(Scene* scene)
 {
-	scene->simulation->nbody_mode = !scene->simulation->nbody_mode;
+	scene->simulation->nbody_mode = ((!scene->simulation->nbody_mode) != 0);
 
 	if (scene->simulation->nbody_mode) {
 		/* Initialize simulation and trails */
@@ -24,14 +24,14 @@ void scene_toggle_nbody(Scene* scene)
 		int count = nbody_get_count(&scene->simulation->nbody_sim);
 		if (!trail_renderer_init(&scene->visuals->trail_renderer,
 		                         count)) {
-			scene->simulation->nbody_mode = 0;
+			scene->simulation->nbody_mode = false;
 			return;
 		}
 
 		if (!shockwave_renderer_init(
 		        &scene->visuals->shockwave_renderer)) {
 			trail_renderer_cleanup(&scene->visuals->trail_renderer);
-			scene->simulation->nbody_mode = 0;
+			scene->simulation->nbody_mode = false;
 			return;
 		}
 

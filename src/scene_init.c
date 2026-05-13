@@ -225,11 +225,11 @@ static void scene_init_ssbo(Scene* scene)
 static void scene_init_state(Scene* scene)
 {
 	scene->config.subdivisions = INITIAL_SUBDIVISIONS;
-	scene->config.wireframe = 0;
+	scene->config.wireframe = false;
 	scene->config.env_lod = DEFAULT_ENV_LOD;
 	scene->config.pbr_debug_mode = 0;
 	scene->config.show_envmap = true;
-	scene->config.billboard_mode = 1;
+	scene->config.billboard_mode = true;
 	scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	scene->config.aa_mode = AA_MODE_CURVATURE;
 	scene->config.sorting_mode = SORTING_MODE_GPU_BITONIC;
