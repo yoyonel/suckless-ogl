@@ -7,6 +7,7 @@
  */
 
 #include "gl_common.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 #define POSTPROCESS_HISTOGRAM_BUCKETS 256
@@ -29,7 +30,7 @@ typedef struct {
 	int last_buckets[POSTPROCESS_HISTOGRAM_BUCKETS];
 	float last_min_lum;
 	float last_max_lum;
-	int last_histogram_updated;
+	bool last_histogram_updated;
 	uint64_t frame_count; /**< Internal frame counter for readback sync. */
 } PPExposureReadback;
 

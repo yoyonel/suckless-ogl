@@ -25,7 +25,7 @@ typedef struct PostProcess PostProcess;
  * @brief Encapsulates state for environment loading, transitions, and IBL.
  */
 typedef struct EnvManager {
-	int env_map_loading;      /**< Async lock for HDR loading. */
+	bool env_map_loading;     /**< Async lock for HDR loading. */
 	int env_map_loading_step; /**< Multi-frame loading step counter. */
 	AsyncRequest
 	    current_env_req; /**< Currently processing async request. */

@@ -12,6 +12,7 @@
 #define GAMEPAD_INPUT_H
 
 #include "gamepad_context.h"
+#include <stdbool.h>
 
 /** Maximum number of gamepad buttons tracked for edge detection. */
 #define GAMEPAD_BUTTON_COUNT 15
@@ -33,16 +34,16 @@
  * @brief Edge-detected button events produced by a single poll.
  */
 typedef struct GamepadActions {
-	int env_next; /**< R1 pressed → cycle to next environment map. */
-	int env_prev; /**< L1 pressed → cycle to previous environment map. */
-	int camera_reset; /**< Share pressed → reset camera to initial pose. */
+	bool env_next; /**< R1 pressed → cycle to next environment map. */
+	bool env_prev; /**< L1 pressed → cycle to previous environment map. */
+	bool camera_reset; /**< Share pressed → reset camera to initial pose. */
 } GamepadActions;
 
 /** Number of gamepad axes cached for per-step application. */
 #define GAMEPAD_AXIS_COUNT 6
 
 typedef struct GamepadState {
-	int connected;          /**< Non-zero if a gamepad is present. */
+	bool connected;         /**< Non-zero if a gamepad is present. */
 	int joystick_id;        /**< GLFW joystick slot (GLFW_JOYSTICK_1…16). */
 	float deadzone;         /**< Analog stick dead-zone threshold. */
 	float look_sensitivity; /**< Right-stick sensitivity multiplier. */

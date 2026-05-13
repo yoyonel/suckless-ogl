@@ -248,7 +248,7 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	ui_context->vbo = 0;
 	ui_context->font_size = font_size;
 	ui_context->batch_count = 0;
-	ui_context->batch_active = 0;
+	ui_context->batch_active = false;
 	ui_context->current_texture = 0;
 	for (int i = 0; i < FONT_CHAR_COUNT; i++) {
 		ui_context->cdata[i] = (GlyphInfo){0};
@@ -318,7 +318,7 @@ void ui_begin(UIContext* ui_context, int screen_width, int screen_height)
 	ui_context->current_screen_width = screen_width;
 	ui_context->current_screen_height = screen_height;
 	ui_context->batch_count = 0;
-	ui_context->batch_active = 1;
+	ui_context->batch_active = true;
 	ui_context->current_texture =
 	    ui_context->texture; /* Default to font atlas */
 }
@@ -365,7 +365,7 @@ void ui_end(UIContext* ui_context)
 
 	ui_flush(ui_context);
 	render_utils_restore_state(&g_ui_saved_state);
-	ui_context->batch_active = 0;
+	ui_context->batch_active = false;
 }
 
 void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,

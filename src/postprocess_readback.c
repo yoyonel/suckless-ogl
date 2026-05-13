@@ -178,7 +178,7 @@ int postprocess_compute_luminance_histogram(PostProcess* post_processing,
 				post_processing->readback.last_max_lum =
 				    *max_lum;
 				post_processing->readback
-				    .last_histogram_updated = 1;
+				    .last_histogram_updated = true;
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			}
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);

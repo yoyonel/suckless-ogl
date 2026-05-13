@@ -12,7 +12,7 @@
 
 void gamepad_input_init(GamepadState* state)
 {
-	state->connected = 0;
+	state->connected = false;
 	state->joystick_id = GLFW_JOYSTICK_1;
 	state->deadzone = GAMEPAD_DEFAULT_DEADZONE;
 	state->look_sensitivity = GAMEPAD_DEFAULT_LOOK_SENSITIVITY;
@@ -54,10 +54,10 @@ static void gamepad_poll_buttons(GamepadState* state,
 		    state->prev_buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER];
 
 		if (r1_now && !r1_prev) {
-			actions->env_next = 1;
+			actions->env_next = true;
 		}
 		if (l1_now && !l1_prev) {
-			actions->env_prev = 1;
+			actions->env_prev = true;
 		}
 
 		unsigned char share_now =
@@ -65,7 +65,7 @@ static void gamepad_poll_buttons(GamepadState* state,
 		unsigned char share_prev =
 		    state->prev_buttons[GLFW_GAMEPAD_BUTTON_BACK];
 		if (share_now && !share_prev) {
-			actions->camera_reset = 1;
+			actions->camera_reset = true;
 		}
 	}
 	/* Save button state for next-frame edge detection. */
@@ -77,13 +77,13 @@ static void gamepad_poll_buttons(GamepadState* state,
 void gamepad_input_poll(GamepadState* state, GamepadActions* actions)
 {
 	/* Detect connection. */
-	int was_connected = state->connected;
-	state->connected = glfwJoystickIsGamepad(state->joystick_id);
+	bool was_connected = state->connected;
+	state->connected = (glfwJoystickIsGamepad(state->joystick_id) != 0);
 
 	if (actions) {
-		actions->env_next = 0;
-		actions->env_prev = 0;
-		actions->camera_reset = 0;
+		actions->env_next = false;
+		actions->env_prev = false;
+		actions->camera_reset = false;
 	}
 
 	if (state->connected && !was_connected) {
@@ -103,7 +103,7 @@ void gamepad_input_poll(GamepadState* state, GamepadActions* actions)
 
 	GLFWgamepadstate pad;
 	if (!glfwGetGamepadState(state->joystick_id, &pad)) {
-		state->connected = 0;
+		state->connected = false;
 		for (int idx = 0; idx < GAMEPAD_AXIS_COUNT; idx++) {
 			state->axes[idx] = 0.0F;
 		}
