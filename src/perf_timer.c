@@ -104,7 +104,7 @@ void gpu_timer_start(GPUTimer* timer)
 	// Forcer l'envoi de la commande de début pour éviter le batching
 	glFlush();
 
-	timer->active = 1;
+	timer->active = true;
 }
 
 double gpu_timer_elapsed_ms(GPUTimer* timer, int wait_for_result)
@@ -120,7 +120,7 @@ double gpu_timer_elapsed_ms(GPUTimer* timer, int wait_for_result)
 
 	// Enregistrer le timestamp final sur le GPU
 	glQueryCounter(timer->query_end, GL_TIMESTAMP);
-	timer->active = 0;
+	timer->active = false;
 
 	GLuint64 start_time = 0;
 	GLuint64 end_time = 0;
@@ -175,7 +175,7 @@ void gpu_timer_cleanup(GPUTimer* timer)
 		glDeleteQueries(1, &timer->query_end);
 		timer->query_end = 0;
 	}
-	timer->active = 0;
+	timer->active = false;
 }
 
 // ============================================================================

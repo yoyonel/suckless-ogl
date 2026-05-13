@@ -7,6 +7,7 @@
 #define ACTION_NOTIFIER_H
 
 #include "ui.h"
+#include <stdbool.h>
 
 /** @brief Maximum number of concurrent notifications. */
 #define MAX_ACTION_NOTIFICATIONS 5
@@ -31,7 +32,7 @@ typedef struct ActionNotification {
 	char text[MAX_ACTION_TEXT_LENGTH];
 	float lifetime;     /**< Current time active (seconds). */
 	float max_lifetime; /**< Total time to display (seconds). */
-	int active;         /**< Whether this slot is occupied. */
+	bool active;        /**< Whether this slot is occupied. */
 } ActionNotification;
 
 /**

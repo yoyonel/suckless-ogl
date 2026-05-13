@@ -126,7 +126,7 @@ int perf_mode_init(PerfModeContext* ctx)
 		         "No performance optimization backend available");
 	}
 
-	ctx->initialized = 1;
+	ctx->initialized = true;
 	LOG_INFO("suckless-ogl.perf",
 	         "Performance mode initialized (backend: %s)",
 	         ctx->backend == PERF_BACKEND_GAMEMODE ? "GameMode"
@@ -358,7 +358,7 @@ void perf_mode_cleanup(PerfModeContext* ctx)
 		perf_mode_request_end(ctx);
 	}
 
-	ctx->initialized = 0;
+	ctx->initialized = false;
 	LOG_INFO("suckless-ogl.perf", "Performance mode cleaned up");
 }
 

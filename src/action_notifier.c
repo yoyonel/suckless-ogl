@@ -44,7 +44,7 @@ void action_notifier_push(ActionNotifier* notifier, const char* text,
 	             MAX_ACTION_TEXT_LENGTH - 1);
 	note->lifetime = 0.0F;
 	note->max_lifetime = duration;
-	note->active = 1;
+	note->active = true;
 
 	LOG_DEBUG("action_notifier", "Pushed: %s", text);
 }
@@ -60,7 +60,7 @@ void action_notifier_update(ActionNotifier* notifier, float delta_time)
 			notifier->notes[i].lifetime += delta_time;
 			if (notifier->notes[i].lifetime >=
 			    notifier->notes[i].max_lifetime) {
-				notifier->notes[i].active = 0;
+				notifier->notes[i].active = false;
 			}
 		}
 	}
