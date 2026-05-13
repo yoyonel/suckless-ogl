@@ -9,6 +9,10 @@ CheckOptions:
     value:           'postprocess_internal\.h'
   - key:             misc-include-cleaner.MissingIncludes
     value:           'false'
+  - key:             readability-implicit-bool-conversion.AllowIntegerConditions
+    value:           'true'
+  - key:             readability-implicit-bool-conversion.AllowPointerConditions
+    value:           'true'
   - key:             readability‑braces‑around‑statements.ShortStatementLines
     value:           '0'
   - key:             readability‑function‑size.LineThreshold
