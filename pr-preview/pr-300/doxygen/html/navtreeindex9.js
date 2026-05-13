@@ -1,5 +1,10 @@
 var NAVTREEINDEX9 =
 {
+"structBillboardGroup.html#a3b991938c07080e0bf4ad67480aef9ec":[5,0,15,3],
+"structBillboardGroup.html#a423b20ae2e3c109e7b93b04338697e77":[5,0,15,2],
+"structBillboardGroup.html#a8f89d6fd42c03ce1bf1f7b4c1b2e9aab":[5,0,15,1],
+"structBillboardGroup.html#a9a5065cb19c4d496b0fbf88da82ee25d":[5,0,15,4],
+"structBillboardGroup.html#aa249756fbb8d7f4a12aa499595a3c5a5":[5,0,15,0],
 "structBillboardSortEntry.html":[5,0,16],
 "structBillboardSortEntry.html#a765eb7e00c090619b67638a7783d9c1d":[5,0,16,0],
 "structBillboardSortEntry.html#adb408c3b2fc98a5000340adcd18dec2f":[5,0,16,1],
@@ -244,10 +249,5 @@ var NAVTREEINDEX9 =
 "structGamepadActions.html#aee1c6bc379cd2ab86587ac84931d20f4":[5,0,39,0],
 "structGamepadContext.html":[5,0,40],
 "structGamepadContext.html#a176041914ae6b2f0783e4a7cfd03bdfc":[5,0,40,5],
-"structGamepadContext.html#a206556058128ba9ae29802fdbcc4a48a":[5,0,40,2],
-"structGamepadContext.html#a6808e51cae1494f5fc480610a7df4231":[5,0,40,4],
-"structGamepadContext.html#a9997bf23049fadf3dc6441decda2256b":[5,0,40,0],
-"structGamepadContext.html#ac061c61d1844149659961f9ab614cdb4":[5,0,40,3],
-"structGamepadContext.html#ad06b4043e34a1d3b63934e38a8acb4d1":[5,0,40,1],
-"structGamepadControlPos.html":[5,0,41]
+"structGamepadContext.html#a206556058128ba9ae29802fdbcc4a48a":[5,0,40,2]
 };

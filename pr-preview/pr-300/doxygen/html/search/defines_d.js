@@ -1,15 +1,16 @@
 var searchData=
 [
-  ['trace_5fgpu_5fscope_4725',['TRACE_GPU_SCOPE',['../profiler_8h.html#a1d9bb2a3f5e7d0570b4f89b84e7d9275',1,'profiler.h']]],
-  ['trace_5fgpu_5fstage_4726',['TRACE_GPU_STAGE',['../profiler_8h.html#a3fd39fa9260950863afb945feda3a396',1,'profiler.h']]],
-  ['tracy_5fgpu_5fcollect_4727',['tracy_gpu_collect',['../tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30',1,'tracy_gpu.h']]],
-  ['tracy_5fgpu_5finit_4728',['tracy_gpu_init',['../tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9',1,'tracy_gpu.h']]],
-  ['tracy_5fgpu_5fzone_5fbegin_4729',['tracy_gpu_zone_begin',['../tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03',1,'tracy_gpu.h']]],
-  ['tracy_5fgpu_5fzone_5fend_4730',['tracy_gpu_zone_end',['../tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c',1,'tracy_gpu.h']]],
-  ['tracy_5fhybrid_5fstop_5fpostamble_4731',['TRACY_HYBRID_STOP_POSTAMBLE',['../perf__timer_8c.html#a187843770789c4fe72da7849689f2cb7',1,'perf_timer.c']]],
-  ['tracy_5fhybrid_5fstop_5fpreamble_4732',['TRACY_HYBRID_STOP_PREAMBLE',['../perf__timer_8c.html#a47fc3098dc9e5d7cbad12e51ba771e55',1,'perf_timer.c']]],
-  ['tracy_5fhybrid_5fstop_5fsync_5fend_4733',['TRACY_HYBRID_STOP_SYNC_END',['../perf__timer_8c.html#a950ecc16f74749f056f30db27cb1d724',1,'perf_timer.c']]],
-  ['transfer_5fownership_4734',['TRANSFER_OWNERSHIP',['../utils_8h.html#a832eee68ae25daaa8503b7ba52acddec',1,'utils.h']]],
-  ['transition_5ftracy_5fstate_4735',['transition_tracy_state',['../async__loader_8c.html#a6374e46a70774e488a1ef33cb66a5414',1,'async_loader.c']]],
-  ['trigger_5fnorm_5ffactor_4736',['TRIGGER_NORM_FACTOR',['../gamepad__input_8c.html#a2be1680e58e523af5551fbca1fe40e7f',1,'gamepad_input.c']]]
+  ['sh_5fcoeff_5fcount_4720',['SH_COEFF_COUNT',['../light__probes_8c.html#aa5a6429b639acc6c76b9a7f59ed59572',1,'light_probes.c']]],
+  ['shader_5fsafe_5fdestroy_4721',['SHADER_SAFE_DESTROY',['../shader_8h.html#a2bd907645fc175f8defb74557aadff73',1,'shader.h']]],
+  ['stb_5fimage_5fimplementation_4722',['STB_IMAGE_IMPLEMENTATION',['../stb__image__impl_8c.html#a18372412ad2fc3ce1e3240b3cf0efe78',1,'stb_image_impl.c']]],
+  ['stb_5fimage_5fwrite_5fimplementation_4723',['STB_IMAGE_WRITE_IMPLEMENTATION',['../stb__image__impl_8c.html#aefe397a94e8feddc652f92ef40ce9597',1,'stb_image_impl.c']]],
+  ['stb_5ftruetype_5fimplementation_4724',['STB_TRUETYPE_IMPLEMENTATION',['../stb__image__impl_8c.html#afaa2f2d0d9d6726cfae6da070e736347',1,'stb_image_impl.c']]],
+  ['stbi_5ffree_4725',['STBI_FREE',['../stb__image__impl_8c.html#a07af50300e5cc077c6b31a4d2e8af32a',1,'stb_image_impl.c']]],
+  ['stbi_5fmalloc_4726',['STBI_MALLOC',['../stb__image__impl_8c.html#a5d9e5717bb92709110f1a5d43392d42e',1,'stb_image_impl.c']]],
+  ['stbi_5frealloc_4727',['STBI_REALLOC',['../stb__image__impl_8c.html#a04faac13c8df95cac0a8583cc2e4eef9',1,'stb_image_impl.c']]],
+  ['stbiw_5ffree_4728',['STBIW_FREE',['../stb__image__impl_8c.html#a05a9b1bc74a9e2aeac2e844c24939215',1,'stb_image_impl.c']]],
+  ['stbiw_5fmalloc_4729',['STBIW_MALLOC',['../stb__image__impl_8c.html#ac6aa20c0cef4fef36e5c75338249392a',1,'stb_image_impl.c']]],
+  ['stbiw_5frealloc_4730',['STBIW_REALLOC',['../stb__image__impl_8c.html#aa0b5aafee9edcab237a0fa9ec0690706',1,'stb_image_impl.c']]],
+  ['stbtt_5ffree_4731',['STBTT_free',['../stb__image__impl_8c.html#a357d3564409e68f1b694e06f7beeca7e',1,'stb_image_impl.c']]],
+  ['stbtt_5fmalloc_4732',['STBTT_malloc',['../stb__image__impl_8c.html#a8f6734fe0cb6d6aa09e494602afa96be',1,'stb_image_impl.c']]]
 ];

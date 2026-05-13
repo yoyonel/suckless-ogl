@@ -1,12 +1,10 @@
 var searchData=
 [
-  ['m_5fpi_4684',['M_PI',['../light__probes_8c.html#ae71449b1cc6e6250b91f539153a7a0d3',1,'M_PI():&#160;light_probes.c'],['../sh__math_8c.html#ae71449b1cc6e6250b91f539153a7a0d3',1,'M_PI():&#160;sh_math.c']]],
-  ['mat_5fdefault_5falbedo_4685',['MAT_DEFAULT_ALBEDO',['../material_8c.html#ab718c0f3f47b49dc37c40edb75621e49',1,'material.c']]],
-  ['mat_5fdefault_5fmetallic_4686',['MAT_DEFAULT_METALLIC',['../material_8c.html#a3428033f6d41718d8be7d89959893ec8',1,'material.c']]],
-  ['mat_5fdefault_5froughness_4687',['MAT_DEFAULT_ROUGHNESS',['../material_8c.html#a42ca186adca245bf3a05a495dfbc8a37',1,'material.c']]],
-  ['max_5faction_5fnotifications_4688',['MAX_ACTION_NOTIFICATIONS',['../action__notifier_8h.html#a4c0116f42158803a0387e8d864d72889',1,'action_notifier.h']]],
-  ['max_5faction_5ftext_5flength_4689',['MAX_ACTION_TEXT_LENGTH',['../action__notifier_8h.html#a895cb5fef25c1dbd6612396f11d3e560',1,'action_notifier.h']]],
-  ['max_5fmaterial_5fname_5flength_4690',['MAX_MATERIAL_NAME_LENGTH',['../material_8h.html#a728306606bf7f90fe837ffec267ef497',1,'material.h']]],
-  ['min_4691',['MIN',['../scene__init_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f',1,'scene_init.c']]],
-  ['ms_5fper_5fsec_4692',['MS_PER_SEC',['../effect__benchmark_8c.html#a98c842b52ffe344288b6e38b12417baa',1,'effect_benchmark.c']]]
+  ['log_5fcritical_4685',['LOG_CRITICAL',['../log_8h.html#a82cf4fca40fe4a352203d39a075ae721',1,'log.h']]],
+  ['log_5fdebug_4686',['LOG_DEBUG',['../log_8h.html#a86952bc1b765abd64f032f9f6fce9fe3',1,'log.h']]],
+  ['log_5ferror_4687',['LOG_ERROR',['../log_8h.html#a53c554c9625bc6ee2727f52091346c17',1,'log.h']]],
+  ['log_5finfo_4688',['LOG_INFO',['../log_8h.html#a4ec0b91afc0eca2e85c60b528628b8cc',1,'log.h']]],
+  ['log_5ftag_4689',['LOG_TAG',['../gl__debug_8c.html#a7ce0df38eb467e59f209470c8f5ac4e6',1,'gl_debug.c']]],
+  ['log_5fwarn_4690',['LOG_WARN',['../log_8h.html#a63330e5e329bed8646b5421a8ef25f75',1,'log.h']]],
+  ['log_5fwarning_4691',['LOG_WARNING',['../log_8h.html#ac46831f8b7dcbb3ea18630a8b2af834d',1,'log.h']]]
 ];
