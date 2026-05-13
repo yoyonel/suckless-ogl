@@ -387,11 +387,11 @@ static void handle_y_key_input(AppInputContext* ctx, int mods)
 {
 	if ((unsigned int)mods & (unsigned int)GLFW_MOD_SHIFT) {
 		ctx->scene->config.show_probe_grid =
-		    !ctx->scene->config.show_probe_grid;
+		    ((!ctx->scene->config.show_probe_grid) != 0);
 		LOG_INFO("suckless-ogl.app", "Probe Grid Debug: %s",
 		         ctx->scene->config.show_probe_grid ? "ON" : "OFF");
 		action_notifier_push(ctx->notifier,
-		                     ctx->scene->config.show_probe_grid
+		                     (int)ctx->scene->config.show_probe_grid
 		                         ? "Probes: ON"
 		                         : "Probes: OFF",
 		                     NOTIF_DUR_NORMAL);
@@ -721,11 +721,11 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			break;
 		case GLFW_KEY_K:
 			ctx->scene->config.show_envmap =
-			    !ctx->scene->config.show_envmap;
+			    ((!ctx->scene->config.show_envmap) != 0);
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
 			         ctx->scene->config.show_envmap ? "ON" : "OFF");
 			action_notifier_push(ctx->notifier,
-			                     ctx->scene->config.show_envmap
+			                     (int)ctx->scene->config.show_envmap
 			                         ? "Skybox: ON"
 			                         : "Skybox: OFF",
 			                     NOTIF_DUR_NORMAL);

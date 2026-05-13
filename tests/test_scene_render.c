@@ -433,10 +433,10 @@ void test_render_instanced_no_envmap_no_nbody(void)
 
 	/* Instanced path (billboard_mode=0), no envmap, no nbody */
 	s.config.billboard_mode = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.wireframe = 0;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -464,9 +464,9 @@ void test_render_instanced_wireframe(void)
 
 	s.config.billboard_mode = 0;
 	s.config.wireframe = 1;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -488,9 +488,9 @@ void test_render_billboard_mode(void)
 
 	s.config.billboard_mode = 1;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -513,9 +513,9 @@ void test_render_nbody_draws_trails_and_shockwave(void)
 
 	s.config.billboard_mode = 0;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 1;
 
 	reset_counters();
@@ -538,9 +538,9 @@ void test_render_nbody_wireframe_shockwave(void)
 
 	s.config.billboard_mode = 0;
 	s.config.wireframe = 1;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 1;
 
 	reset_counters();
@@ -563,9 +563,9 @@ void test_render_gi_mode_triggers_probe_sync(void)
 
 	s.config.billboard_mode = 0;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_3D_TEX;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -591,9 +591,9 @@ void test_render_show_probe_grid_triggers_sync_and_debug(void)
 
 	s.config.billboard_mode = 0;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 1;
+	s.config.show_probe_grid = true;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -617,9 +617,9 @@ void test_render_envmap_draws_skybox(void)
 
 	s.config.billboard_mode = 0;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 1;
+	s.config.show_envmap = true;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -642,9 +642,9 @@ void test_render_billboard_wireframe_draws_debug(void)
 	s.config.billboard_mode = 1;
 	s.config.wireframe = 1;
 	s.config.pbr_debug_mode = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -670,9 +670,9 @@ void test_render_billboard_sort_cpu(void)
 	s.config.billboard_mode = 1;
 	s.config.sorting_mode = SORTING_MODE_CPU_QSORT;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -695,9 +695,9 @@ void test_render_billboard_sort_radix(void)
 	s.config.billboard_mode = 1;
 	s.config.sorting_mode = SORTING_MODE_CPU_RADIX;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();
@@ -720,9 +720,9 @@ void test_render_billboard_sort_gpu(void)
 	s.config.billboard_mode = 1;
 	s.config.sorting_mode = SORTING_MODE_GPU_BITONIC;
 	s.config.wireframe = 0;
-	s.config.show_envmap = 0;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
-	s.config.show_probe_grid = 0;
+	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = 0;
 
 	reset_counters();

@@ -1,6 +1,8 @@
 #ifndef SCENE_CONFIG_H
 #define SCENE_CONFIG_H
 
+#include <stdbool.h>
+
 /**
  * @file scene_config.h
  * @brief Render configuration flags extracted from Scene.
@@ -47,11 +49,11 @@ typedef struct SceneConfig {
 	int billboard_mode;       /**< Toggle for billboard rendering path. */
 	SortingMode sorting_mode; /**< Selected sorting algorithm. */
 	int pbr_debug_mode;       /**< Swap to wireframe/normal/roughness */
-	int show_envmap;          /**< Draw skybox toggle. */
+	bool show_envmap;         /**< Draw skybox toggle. */
 	float env_lod;            /**< Skybox blurriness. */
 	int subdivisions;         /**< LOD of the shared icosphere. */
 	GIMode gi_mode;           /**< Selected GI sampling method. */
-	int show_probe_grid;      /**< Debug visualization of probes. */
+	bool show_probe_grid;     /**< Debug visualization of probes. */
 	int specular_aa_enabled;  /**< Screen-Space Specular Anti-Aliasing. */
 	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
 } SceneConfig;

@@ -228,13 +228,13 @@ static void scene_init_state(Scene* scene)
 	scene->config.wireframe = 0;
 	scene->config.env_lod = DEFAULT_ENV_LOD;
 	scene->config.pbr_debug_mode = 0;
-	scene->config.show_envmap = 1;
+	scene->config.show_envmap = true;
 	scene->config.billboard_mode = 1;
 	scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	scene->config.aa_mode = AA_MODE_CURVATURE;
 	scene->config.sorting_mode = SORTING_MODE_GPU_BITONIC;
 	scene->config.gi_mode = GI_MODE_OFF;
-	scene->config.show_probe_grid = 0;
+	scene->config.show_probe_grid = false;
 	scene->gpu->billboard_ubo_ptr = NULL;
 
 	scene->billboard_sorter = (BillboardSorter){0};

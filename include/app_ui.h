@@ -10,6 +10,7 @@
 #define APP_UI_H
 #include "glad/glad.h"
 #include "ui.h"
+#include <stdbool.h>
 
 /* Histogram bucket count (used by tests and postprocess) */
 enum { HISTO_BUCKETS = 256 };
@@ -42,9 +43,9 @@ typedef struct AppUIOverlay {
 	KeyboardLayoutConfig kbd_config;
 
 	HelpMode show_help;
-	int show_info_overlay;
+	bool show_info_overlay;
 	int text_overlay_mode;
-	int show_exposure_debug;
+	bool show_exposure_debug;
 
 	int help_hovered_key;
 	int help_pressed_key;
