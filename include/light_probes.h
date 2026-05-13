@@ -4,6 +4,7 @@
 #include "sh_math.h"
 #include <cglm/cglm.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 typedef struct Shader Shader;
 typedef struct SphereInstance SphereInstance;
@@ -42,9 +43,9 @@ typedef struct {
 	pthread_t worker_thread;
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
-	volatile int running;
-	volatile int update_pending;
-	volatile int results_ready;
+	volatile bool running;
+	volatile bool update_pending;
+	volatile bool results_ready;
 
 	/* Debug Resources */
 	Shader* debug_shader;

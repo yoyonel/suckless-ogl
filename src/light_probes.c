@@ -155,9 +155,9 @@ void light_probe_grid_init_cpu(LightProbeGrid* grid, int dim_x, int dim_y,
 
 	pthread_mutex_init(&grid->mutex, NULL);
 	pthread_cond_init(&grid->cond, NULL);
-	grid->running = 0;
-	grid->update_pending = 0;
-	grid->results_ready = 0;
+	grid->running = false;
+	grid->update_pending = false;
+	grid->results_ready = false;
 }
 
 void light_probe_grid_free_cpu(LightProbeGrid* grid)
@@ -352,7 +352,7 @@ static void* light_probe_worker(void* arg)
 			break;
 		}
 
-		grid->update_pending = 0;
+		grid->update_pending = false;
 
 		/* Snapshot scene data under lock to avoid race with
 		 * set_scene() */
@@ -415,7 +415,7 @@ static void* light_probe_worker(void* arg)
 		PROFILE_ZONE_END(gi_compute_ctx);
 
 		pthread_mutex_lock(&grid->mutex);
-		grid->results_ready = 1;
+		grid->results_ready = true;
 		pthread_mutex_unlock(&grid->mutex);
 	}
 	return NULL;
@@ -466,7 +466,7 @@ void light_probe_grid_init(LightProbeGrid* grid, int dim_x, int dim_y,
 	}
 	glBindTexture(GL_TEXTURE_3D, 0);
 
-	grid->running = 1;
+	grid->running = true;
 	pthread_create(&grid->worker_thread, NULL, light_probe_worker, grid);
 }
 
@@ -528,7 +528,7 @@ void light_probe_grid_update_async(LightProbeGrid* grid)
 	}
 	pthread_mutex_lock(&grid->mutex);
 	if (!grid->update_pending) {
-		grid->update_pending = 1;
+		grid->update_pending = true;
 		pthread_cond_signal(&grid->cond);
 	}
 	pthread_mutex_unlock(&grid->mutex);
@@ -613,7 +613,7 @@ void light_probe_grid_sync(LightProbeGrid* grid)
 	LOG_DEBUG("perf.gi", "GI Sync: %d probes updated (SSBO + 7x 3D Tex)",
 	          grid->total_probes);
 
-	grid->results_ready = 0;
+	grid->results_ready = false;
 	pthread_mutex_unlock(&grid->mutex);
 }
 
@@ -624,7 +624,7 @@ void light_probe_grid_cleanup(LightProbeGrid* grid)
 	}
 
 	pthread_mutex_lock(&grid->mutex);
-	grid->running = 0;
+	grid->running = false;
 	pthread_cond_signal(&grid->cond);
 	pthread_mutex_unlock(&grid->mutex);
 
