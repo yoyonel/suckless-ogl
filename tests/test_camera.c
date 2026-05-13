@@ -98,7 +98,7 @@ void test_camera_fixed_update_no_input(void)
 void test_camera_fixed_update_with_forward_input(void)
 {
 	// Active le mouvement avant
-	cam.move_forward = 1;
+	cam.move_forward = true;
 	vec3 initial_pos;
 	glm_vec3_copy(cam.position, initial_pos);
 
