@@ -1,0 +1,651 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/app_ui_layout.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('app__ui__layout_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">app_ui_layout.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="app__ui__layout_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef APP_UI_LAYOUT_H</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define APP_UI_LAYOUT_H</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="app__settings_8h.html">app_settings.h</a>&quot;</span> <span class="comment">/* DEFAULT_FONT_SIZE */</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;GLFW/glfw3.h&gt;</span>   <span class="comment">/* GLFW_KEY_*, GLFW_GAMEPAD_* */</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;cglm/types.h&gt;</span>   <span class="comment">/* vec3 */</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * UI Scaling and Layout Defaults</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aca887df5c46dbb6604d90294c93fcebf">   21</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#aca887df5c46dbb6604d90294c93fcebf">DEFAULT_BASE_RESOLUTION_HEIGHT</a> = 1080.0F;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#adde8ed9e673f1fa854c78195518a525e">   22</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#adde8ed9e673f1fa854c78195518a525e">DEFAULT_KBD_KEY_SIZE</a> = 60.0F;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ac5df6d20366b3a0bb4d7f26c391f8dbd">   23</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#ac5df6d20366b3a0bb4d7f26c391f8dbd">DEFAULT_KBD_KEY_PADDING</a> = 10.0F;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0509f78c29476302f36693f736264bef">   24</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a0509f78c29476302f36693f736264bef">DEFAULT_KBD_KEY_RADIUS</a> = 10.0F;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a9f8184463c89711f06c8873ad4bcdffc">   25</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a9f8184463c89711f06c8873ad4bcdffc">DEFAULT_KBD_LABEL_SCALE</a> = 0.75F;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aa1464a6461d033abd30eee12121bbc29">   26</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#aa1464a6461d033abd30eee12121bbc29">DEFAULT_KBD_TITLE_Y_OFFSET</a> = 140.0F;</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a23542a0451132870d185f991f8c3154f">   27</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a23542a0451132870d185f991f8c3154f">DEFAULT_KBD_DETAIL_Y_OFFSET</a> = 100.0F;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">/* Layout and Framing */</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a2f98977b6b578bddebc5e2d078b7baca">   30</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a2f98977b6b578bddebc5e2d078b7baca">LUMINANCE_EPSILON</a> = 0.0001F;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aa89f5598bad4c30e87b9a26b73c80f6b">   31</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#aa89f5598bad4c30e87b9a26b73c80f6b">UI_CENTER_FACTOR</a> = 0.5F;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a5a809367fa495c92746f4f0eb3e07880">   32</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a5a809367fa495c92746f4f0eb3e07880">GRAPH_TEXT_PADDING</a> = 20.0F;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e">   33</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e">DEBUG_TEXT_Y_OFFSET</a> = <a class="code" href="group__UI.html#ga413f094a9d593906551689b49a4ec064">DEFAULT_FONT_SIZE</a> * 4.0F;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">/* Legend Layout Factors */</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a22b04358badd54ebe5ee64b4c850f96a">   36</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a22b04358badd54ebe5ee64b4c850f96a">LEGEND_Y_FACTOR</a> = 0.6F;</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#af6455b39d8b0d631e0e76dde6635ae67">   37</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#af6455b39d8b0d631e0e76dde6635ae67">LEGEND_X_START_FACTOR</a> = 0.25F;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aefd83a4a0808f33de0408d2e2ff1d298">   38</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#aefd83a4a0808f33de0408d2e2ff1d298">LEGEND_STEP_FACTOR</a> = 0.18F;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a81a06b3b7bcbd4cb3551285f9b979801">   39</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a81a06b3b7bcbd4cb3551285f9b979801">LEGEND_COMBO_STEP_MULT</a> = 1.9F;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">/* Histogram and Graph Limits */</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a403a51757a9c45c7096d44c4d68736c5">   42</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a403a51757a9c45c7096d44c4d68736c5">GRAPH_POS_X</a> = 20.0F;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aeecd20cda3f7c87d60454435776fc666">   43</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#aeecd20cda3f7c87d60454435776fc666">GRAPH_POS_Y_OFF</a> = 200.0F;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a6c7a06dc2eb7bcdb23ad7ca03ecbe75b">   44</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a6c7a06dc2eb7bcdb23ad7ca03ecbe75b">GRAPH_DIM_W</a> = 300.0F;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ab50bb5b41054d547f93c5cbbc217ff18">   45</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#ab50bb5b41054d547f93c5cbbc217ff18">GRAPH_DIM_H</a> = 100.0F;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"> * Cyberpunk overlay visual tweaks</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a6abaf5817034b08c37fff0255aad93a2">   50</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a6abaf5817034b08c37fff0255aad93a2">DEFAULT_KBD_BLOOM_SCALE</a> = 1.3F;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a91fc3c3f2ffb614323a729328d8ff7aa">   51</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a91fc3c3f2ffb614323a729328d8ff7aa">DEFAULT_KBD_UNBOUND_ALPHA</a> = 0.22F;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ae97efd99556e79d62aa2299b0b87b607">   52</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#ae97efd99556e79d62aa2299b0b87b607">DEFAULT_KBD_BOUND_ALPHA</a> = 0.88F;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aebecb4aca5518dc86b7ba096ed227049">   53</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#aebecb4aca5518dc86b7ba096ed227049">PANEL_FRAME_ALPHA</a> = 0.72F;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a7de44b7ef11c9265f2b5353d6eb28796">   54</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a7de44b7ef11c9265f2b5353d6eb28796">BLOOM_MAX_INTENSITY</a> = 0.5F;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a74ff0575436fcd1a9b154650bc840442">   55</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a74ff0575436fcd1a9b154650bc840442">GLOW_HOVER_ALPHA</a> = 0.6F;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a24046dddc6d65383f7b2e5b703e778a5">   56</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a24046dddc6d65383f7b2e5b703e778a5">BLOOM_PRESS_MAX_ALPHA</a> = 0.9F;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a3b7f61b1499e5659be43d74c1b6944b6">   57</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a3b7f61b1499e5659be43d74c1b6944b6">HELP_BG_ALPHA</a> = 0.88F;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a7c14cd7a2d27eb618bd10e2600e7e2f0">   58</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a7c14cd7a2d27eb618bd10e2600e7e2f0">KEY_PRESSED_ALPHA</a> = 0.95F;</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a62e9df82213180a8997d651a4854fd5f">   59</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a62e9df82213180a8997d651a4854fd5f">KEY_DEFAULT_ALPHA</a> = 0.4F;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a1af29146d5d55de8e798731e0314c1ec">   60</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a1af29146d5d55de8e798731e0314c1ec">KEY_PRESS_BRIGHTEN_MIN</a> = 0.6F;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a5d0843b87c978e7a1bf84b04bbc567f4">   61</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a5d0843b87c978e7a1bf84b04bbc567f4">HELP_TEXT_ALPHA</a> = 0.8F;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a83a337cef49af1300c3338d2a4a455ca">   62</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a83a337cef49af1300c3338d2a4a455ca">HELP_EXIT_HINT_X_OFF</a> = 300.0F;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a2a4dcdadc74b7a07b11c6759a1cb9f2b">   63</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a2a4dcdadc74b7a07b11c6759a1cb9f2b">HELP_EXIT_HINT_Y_OFF</a> = 50.0F;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment"> * UI Colors</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a3fe85f8f71b49fafc599d1ff8d0930c1">   68</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a3fe85f8f71b49fafc599d1ff8d0930c1">KEY_COLOR_DEFAULT</a> = {0.15F, 0.15F, 0.20F};</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a62058f8338f24fa78fda198ee27bf4ab">   69</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a62058f8338f24fa78fda198ee27bf4ab">KEY_COLOR_TOGGLE</a> = {0.0F, 0.82F, 0.92F};</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a13d62d70403b12ded77a1893914a3f3c">   70</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a13d62d70403b12ded77a1893914a3f3c">KEY_COLOR_CYCLE</a> = {0.12F, 0.90F, 0.12F};</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a5d4d4b69102696a2220672ecb117cd56">   71</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a5d4d4b69102696a2220672ecb117cd56">KEY_COLOR_COMBINATION</a> = {1.0F, 0.56F, 0.05F};</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a4280404bf249d2ed90f33771ae157684">   72</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a4280404bf249d2ed90f33771ae157684">HELP_BG_COLOR</a> = {0.05F, 0.05F, 0.07F};</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aed8604ac57827f2f1bf7dccb8b78bea4">   73</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#aed8604ac57827f2f1bf7dccb8b78bea4">CYBER_TITLE_COLOR</a> = {0.0F, 0.90F, 0.95F};</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#af0b98e622dd47736cd7e777d203a82e7">   74</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#af0b98e622dd47736cd7e777d203a82e7">ENV_TEXT_COLOR</a> = {0.7F, 0.7F, 0.7F};</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#aaf76e00a44e28d6b60824890cf02af45">   75</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#aaf76e00a44e28d6b60824890cf02af45">GRAPH_TEXT_COLOR</a> = {0.8F, 0.8F, 0.8F};</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ad1f3586315e20b83affb3ed2018dbaef">   76</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#ad1f3586315e20b83affb3ed2018dbaef">DEBUG_ORANGE_COLOR</a> = {1.0F, 0.5F, 0.0F};</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a003f5804a266ac5f391e765f05249fa8">   77</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a003f5804a266ac5f391e765f05249fa8">NBODY_INFO_COLOR</a> = {0.4F, 0.8F, 1.0F};</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a5bcf04ab4c3479503b362038a26e5b7a">   78</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a5bcf04ab4c3479503b362038a26e5b7a">NBODY_STABLE_COLOR</a> = {0.2F, 1.0F, 0.4F};</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a4e27a16413328c0e40c5800a17deed9b">   79</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a4e27a16413328c0e40c5800a17deed9b">NBODY_DAMPING_COLOR</a> = {1.0F, 0.8F, 0.2F};</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a7d399607cb9c4f50940960d5e2c7aca3">   80</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a7d399607cb9c4f50940960d5e2c7aca3">NBODY_DIVERGE_COLOR</a> = {1.0F, 0.3F, 0.2F};</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ab15eac0bcdadbc85968d2e2b50cd49f6">   81</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#ab15eac0bcdadbc85968d2e2b50cd49f6">NBODY_STABILITY_THRESHOLD</a> = 0.05F;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a5c6370f1e0e7703667c20c0215422723">   82</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a5c6370f1e0e7703667c20c0215422723">HISTO_BAR_COLOR_GREEN</a> = {0.0F, 0.7F, 0.0F};</div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a037be618a76f8bc4f34b1eca628ba857">   83</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a037be618a76f8bc4f34b1eca628ba857">HISTO_BAR_COLOR_BLUE</a> = {0.0F, 0.5F, 0.8F};</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a43f540df1811075ee555702865120041">   84</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#a43f540df1811075ee555702865120041">HISTO_BAR_COLOR_RED</a> = {0.8F, 0.5F, 0.0F};</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"> * Animation and Timing</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a3591dafcd6088d523404b946b512135e">   89</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a3591dafcd6088d523404b946b512135e">GLOBAL_DIM_MAX_FALLOFF</a> = 0.7F;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#af7d0b37e844c1e81ca1babc84608f47a">   90</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#af7d0b37e844c1e81ca1babc84608f47a">GLOBAL_DIM_SMOOTH_FACTOR</a> = 15.0F;</div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a328df10e7c82d5947bc88c209eaca584">   91</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="app__ui__layout_8h.html#a328df10e7c82d5947bc88c209eaca584">HOVER_DECAY_DURATION</a> = 0.15;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment"> * Loading Indicator and Spinner</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a9641a608a591e3d12b583671f938ea18">   96</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="app__ui__layout_8h.html#a9641a608a591e3d12b583671f938ea18">UI_SPINNER_SPEED</a> = 10.0;</div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17">   97</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17">UI_LOADING_TEXT_WIDTH_FACTOR</a> = 20.0F;</div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a7dcd28927e6a58716cdade6859b53449">   98</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a7dcd28927e6a58716cdade6859b53449">UI_SPINNER_SIZE</a> = 64.0F;</div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a1f0fde4e033eb34145d84e32d4a06178">   99</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code" href="app__ui__layout_8h.html#a1f0fde4e033eb34145d84e32d4a06178">UI_TEXT_OFFSET_FACTOR</a> = 0.8F;</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ac6cd248610705cb146a492bd8a7da771">  100</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> vec3 <a class="code" href="app__ui__layout_8h.html#ac6cd248610705cb146a492bd8a7da771">UI_SPINNER_COLOR</a> = {90.0F / 255.0F, 111.0F / 255.0F,</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                                      185.0F / 255.0F};</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a61dadd085c1777f559549e05962b2c9ea9dc342521385bfa497822b9f9b08b7c1">  103</a></span>&#160;<span class="keyword">enum</span> { <a class="code" href="app__ui__layout_8h.html#a61dadd085c1777f559549e05962b2c9ea9dc342521385bfa497822b9f9b08b7c1">UI_LOADING_TEXT_SIZE</a> = 64 };</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment"> * UI Buffers and Limits</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635ae3db8bdcc51e0d388cbd4e5f75acd4ba">  109</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635ae3db8bdcc51e0d388cbd4e5f75acd4ba">DEBUG_TEXT_BUFFER_SIZE</a> = 128,</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635af857797fa834c37834916f6bb3ee3dd4">  110</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635af857797fa834c37834916f6bb3ee3dd4">RANGE_TEXT_BUFFER_SIZE</a> = 64,</div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a654e69613c7186f04e4a268211ffa3be">  111</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a654e69613c7186f04e4a268211ffa3be">ENV_TEXT_BUFFER_SIZE</a> = 256,</div>
+<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6">  112</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6">EXPOSURE_TEXT_BUFFER_SIZE</a> = 64,</div>
+<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a684cb1287adbb9f9d9fea9a73cac2d6e">  113</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a684cb1287adbb9f9d9fea9a73cac2d6e">NBODY_TEXT_BUFFER_SIZE</a> = 128,</div>
+<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb">  114</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb">MODIFIER_BUFFER_SIZE</a> = 16,</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <a class="code" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a21e53849e20feb2341e3e291731815c2">KEYBOARD_BUFFER_SIZE</a> = 256</div>
+<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a21e53849e20feb2341e3e291731815c2">  116</a></span>&#160;};</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment"> * Keyboard layout data</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">  123</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a> = 0,</div>
+<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">  124</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a> = 1,</div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">  125</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a> = 2,</div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">  126</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a> = 3,</div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">  127</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a> = 4,</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">ROW_BOTTOM</a> = 5</div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">  129</a></span>&#160;};</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="structKeyPos.html">  131</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="structKeyPos.html#a1139a786d66817ab9377c3d27471b0fa">  132</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structKeyPos.html#a1139a786d66817ab9377c3d27471b0fa">key</a>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="structKeyPos.html#af2c2bd4e8c7f4610f95d9c4000e31d79">  133</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structKeyPos.html#af2c2bd4e8c7f4610f95d9c4000e31d79">row</a>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="structKeyPos.html#ae0c075b2bf0f08ae85f9e4e71bf21e4b">  134</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structKeyPos.html#ae0c075b2bf0f08ae85f9e4e71bf21e4b">x_off</a>; <span class="comment">/* In units of KEY_SIZE + KEY_PADDING */</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="structKeyPos.html#ad3a6ecd64fc13edcebe57297cb3b42bd">  135</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structKeyPos.html#ad3a6ecd64fc13edcebe57297cb3b42bd">width</a>; <span class="comment">/* In units of KEY_SIZE */</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="structKeyPos.html#a1bcc76cb80166a2c8a68817493400323">  136</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structKeyPos.html#a1bcc76cb80166a2c8a68817493400323">label</a>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;} <a class="code" href="structKeyPos.html">KeyPos</a>;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a5336ece17ffa3c77409020cba50c1127">  139</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structKeyPos.html">KeyPos</a> <a class="code" href="app__ui__layout_8h.html#a5336ece17ffa3c77409020cba50c1127">KEY_LAYOUT_QWERTY</a>[] = {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">/* Row 0: Esc + Func */</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    {GLFW_KEY_ESCAPE, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 0.0F, 1.0F, <span class="stringliteral">&quot;Esc&quot;</span>},</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    {GLFW_KEY_F1, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 2.0F, 1.0F, <span class="stringliteral">&quot;F1&quot;</span>},</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    {GLFW_KEY_F2, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 3.0F, 1.0F, <span class="stringliteral">&quot;F2&quot;</span>},</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    {GLFW_KEY_F3, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 4.0F, 1.0F, <span class="stringliteral">&quot;F3&quot;</span>},</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    {GLFW_KEY_F4, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 5.0F, 1.0F, <span class="stringliteral">&quot;F4&quot;</span>},</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    {GLFW_KEY_F5, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 6.5F, 1.0F, <span class="stringliteral">&quot;F5&quot;</span>},</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    {GLFW_KEY_F6, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 7.5F, 1.0F, <span class="stringliteral">&quot;F6&quot;</span>},</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    {GLFW_KEY_F7, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 8.5F, 1.0F, <span class="stringliteral">&quot;F7&quot;</span>},</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    {GLFW_KEY_F8, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 9.5F, 1.0F, <span class="stringliteral">&quot;F8&quot;</span>},</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    {GLFW_KEY_F9, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 11.5F, 1.0F, <span class="stringliteral">&quot;F9&quot;</span>},</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    {GLFW_KEY_F10, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 12.5F, 1.0F, <span class="stringliteral">&quot;F10&quot;</span>},</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    {GLFW_KEY_F11, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 13.5F, 1.0F, <span class="stringliteral">&quot;F11&quot;</span>},</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    {GLFW_KEY_F12, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a>, 14.5F, 1.2F, <span class="stringliteral">&quot;F12&quot;</span>},</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="comment">/* Row 1: Numbers/Symbols */</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    {GLFW_KEY_GRAVE_ACCENT, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 0.0F, 1.0F, <span class="stringliteral">&quot;~&quot;</span>},</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    {GLFW_KEY_1, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 1.0F, 1.0F, <span class="stringliteral">&quot;1&quot;</span>},</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    {GLFW_KEY_2, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 2.0F, 1.0F, <span class="stringliteral">&quot;2&quot;</span>},</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    {GLFW_KEY_3, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 3.0F, 1.0F, <span class="stringliteral">&quot;3&quot;</span>},</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    {GLFW_KEY_4, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 4.0F, 1.0F, <span class="stringliteral">&quot;4&quot;</span>},</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    {GLFW_KEY_5, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 5.0F, 1.0F, <span class="stringliteral">&quot;5&quot;</span>},</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    {GLFW_KEY_6, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 6.0F, 1.0F, <span class="stringliteral">&quot;6&quot;</span>},</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    {GLFW_KEY_7, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 7.0F, 1.0F, <span class="stringliteral">&quot;7&quot;</span>},</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    {GLFW_KEY_8, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 8.0F, 1.0F, <span class="stringliteral">&quot;8&quot;</span>},</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    {GLFW_KEY_9, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 9.0F, 1.0F, <span class="stringliteral">&quot;9&quot;</span>},</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    {GLFW_KEY_0, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a>, 10.0F, 1.0F, <span class="stringliteral">&quot;0&quot;</span>},</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="comment">/* Row 2: QWERTY */</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    {GLFW_KEY_TAB, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 0.0F, 1.5F, <span class="stringliteral">&quot;Tab&quot;</span>},</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    {GLFW_KEY_Q, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 1.5F, 1.0F, <span class="stringliteral">&quot;Q&quot;</span>},</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    {GLFW_KEY_W, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 2.5F, 1.0F, <span class="stringliteral">&quot;W&quot;</span>},</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    {GLFW_KEY_E, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 3.5F, 1.0F, <span class="stringliteral">&quot;E&quot;</span>},</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    {GLFW_KEY_R, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 4.5F, 1.0F, <span class="stringliteral">&quot;R&quot;</span>},</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    {GLFW_KEY_T, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 5.5F, 1.0F, <span class="stringliteral">&quot;T&quot;</span>},</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    {GLFW_KEY_Y, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 6.5F, 1.0F, <span class="stringliteral">&quot;Y&quot;</span>},</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    {GLFW_KEY_U, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 7.5F, 1.0F, <span class="stringliteral">&quot;U&quot;</span>},</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    {GLFW_KEY_I, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 8.5F, 1.0F, <span class="stringliteral">&quot;I&quot;</span>},</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    {GLFW_KEY_O, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 9.5F, 1.0F, <span class="stringliteral">&quot;O&quot;</span>},</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    {GLFW_KEY_P, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a>, 10.5F, 1.0F, <span class="stringliteral">&quot;P&quot;</span>},</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="comment">/* Row 3: ASDF */</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    {GLFW_KEY_CAPS_LOCK, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 0.0F, 1.8F, <span class="stringliteral">&quot;Caps&quot;</span>},</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    {GLFW_KEY_A, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 1.8F, 1.0F, <span class="stringliteral">&quot;A&quot;</span>},</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    {GLFW_KEY_S, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 2.8F, 1.0F, <span class="stringliteral">&quot;S&quot;</span>},</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    {GLFW_KEY_D, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 3.8F, 1.0F, <span class="stringliteral">&quot;D&quot;</span>},</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    {GLFW_KEY_F, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 4.8F, 1.0F, <span class="stringliteral">&quot;F&quot;</span>},</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    {GLFW_KEY_G, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 5.8F, 1.0F, <span class="stringliteral">&quot;G&quot;</span>},</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    {GLFW_KEY_H, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 6.8F, 1.0F, <span class="stringliteral">&quot;H&quot;</span>},</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    {GLFW_KEY_J, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 7.8F, 1.0F, <span class="stringliteral">&quot;J&quot;</span>},</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    {GLFW_KEY_K, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 8.8F, 1.0F, <span class="stringliteral">&quot;K&quot;</span>},</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    {GLFW_KEY_L, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a>, 9.8F, 1.0F, <span class="stringliteral">&quot;L&quot;</span>},</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="comment">/* Row 4: ZXCV */</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    {GLFW_KEY_LEFT_SHIFT, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 0.0F, 2.3F, <span class="stringliteral">&quot;Shift&quot;</span>},</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    {GLFW_KEY_Z, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 2.3F, 1.0F, <span class="stringliteral">&quot;Z&quot;</span>},</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    {GLFW_KEY_X, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 3.3F, 1.0F, <span class="stringliteral">&quot;X&quot;</span>},</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    {GLFW_KEY_C, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 4.3F, 1.0F, <span class="stringliteral">&quot;C&quot;</span>},</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    {GLFW_KEY_V, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 5.3F, 1.0F, <span class="stringliteral">&quot;V&quot;</span>},</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    {GLFW_KEY_B, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 6.3F, 1.0F, <span class="stringliteral">&quot;B&quot;</span>},</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    {GLFW_KEY_N, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 7.3F, 1.0F, <span class="stringliteral">&quot;N&quot;</span>},</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    {GLFW_KEY_M, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 8.3F, 1.0F, <span class="stringliteral">&quot;M&quot;</span>},</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    {GLFW_KEY_COMMA, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 9.3F, 1.0F, <span class="stringliteral">&quot;,&quot;</span>},</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    {GLFW_KEY_PERIOD, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 10.3F, 1.0F, <span class="stringliteral">&quot;.&quot;</span>},</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="comment">/* Row 5: Space/System */</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    {GLFW_KEY_LEFT_CONTROL, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">ROW_BOTTOM</a>, 0.0F, 1.5F, <span class="stringliteral">&quot;Ctrl&quot;</span>},</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    {GLFW_KEY_SPACE, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">ROW_BOTTOM</a>, 3.8F, 6.0F, <span class="stringliteral">&quot;Space&quot;</span>},</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    {GLFW_KEY_PAGE_UP, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 13.5F, 1.3F, <span class="stringliteral">&quot;PgUp&quot;</span>},</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    {GLFW_KEY_PAGE_DOWN, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">ROW_BOTTOM</a>, 13.5F, 1.3F, <span class="stringliteral">&quot;PgDn&quot;</span>},</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    {GLFW_KEY_UP, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a>, 15.0F, 1.0F, <span class="stringliteral">&quot;Up&quot;</span>},</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    {GLFW_KEY_DOWN, <a class="code" href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">ROW_BOTTOM</a>, 15.0F, 1.0F, <span class="stringliteral">&quot;Dn&quot;</span>}};</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment">/* ================================================================</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment"> * Gamepad overlay layout</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment"> * ================================================================ */</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
+<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html">  217</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a3200f2fb488eaed18b2bf28fcdcfb257">  218</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGamepadControlPos.html#a3200f2fb488eaed18b2bf28fcdcfb257">x_off</a>;</div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#ab86d4739b79108acebe41e472f4f7c48">  219</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGamepadControlPos.html#ab86d4739b79108acebe41e472f4f7c48">y_off</a>;</div>
+<div class="line"><a name="l00220"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a1ea2d57c0012f2f715446f03834f3cc5">  220</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGamepadControlPos.html#a1ea2d57c0012f2f715446f03834f3cc5">width</a>;</div>
+<div class="line"><a name="l00221"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a18bc251bef92d74ab3fcff6b55088ad9">  221</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGamepadControlPos.html#a18bc251bef92d74ab3fcff6b55088ad9">height</a>;</div>
+<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a30c0de3fb4dc7e87985dd122a20ad837">  222</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structGamepadControlPos.html#a30c0de3fb4dc7e87985dd122a20ad837">is_bound</a>;</div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a6909542a6401c225f5863c0756cc8fef">  223</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structGamepadControlPos.html#a6909542a6401c225f5863c0756cc8fef">bind_type</a>;</div>
+<div class="line"><a name="l00224"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a1fe26c4153362345d48edbda4c7e5312">  224</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structGamepadControlPos.html#a1fe26c4153362345d48edbda4c7e5312">gp_btn</a>;</div>
+<div class="line"><a name="l00225"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a1c36c1660e58c2181067c75588d0aada">  225</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structGamepadControlPos.html#a1c36c1660e58c2181067c75588d0aada">gp_axis</a>;</div>
+<div class="line"><a name="l00226"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a34584dc2b41f00b2433d016f1f1e2ff4">  226</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structGamepadControlPos.html#a34584dc2b41f00b2433d016f1f1e2ff4">gp_axis2</a>;</div>
+<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#ab87e1ef55e28cda145036b67343467c5">  227</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structGamepadControlPos.html#ab87e1ef55e28cda145036b67343467c5">label</a>;</div>
+<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a00db31c79e3a3964365054fdab5dd9a3">  228</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structGamepadControlPos.html#a00db31c79e3a3964365054fdab5dd9a3">action</a>;</div>
+<div class="line"><a name="l00229"></a><span class="lineno"><a class="line" href="structGamepadControlPos.html#a0fc10094e127ec67c08fe2765a113f8f">  229</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structGamepadControlPos.html#a0fc10094e127ec67c08fe2765a113f8f">desc</a>;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;} <a class="code" href="structGamepadControlPos.html">GamepadControlPos</a>;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6">  233</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6">GP_ROW_TRIGGERS</a> = 0,</div>
+<div class="line"><a name="l00234"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec">  234</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec">GP_ROW_BUMPERS</a> = 1,</div>
+<div class="line"><a name="l00235"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d">  235</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d">GP_ROW_FACE</a> = 2,</div>
+<div class="line"><a name="l00236"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b">  236</a></span>&#160;    <a class="code" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b">GP_ROW_STICKS</a> = 3,</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <a class="code" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b">GP_ROW_SYSTEM</a> = 4</div>
+<div class="line"><a name="l00238"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b">  238</a></span>&#160;};</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
+<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">  240</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structGamepadControlPos.html">GamepadControlPos</a> <a class="code" href="app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">GAMEPAD_LAYOUT</a>[] = {</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="comment">/* L2 / R2 (triggers — wide, top) */</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    {0.5F, 0.0F, 2.5F, 0.8F, 1, 0, -1, GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, -1, <span class="stringliteral">&quot;L2&quot;</span>,</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;     <span class="stringliteral">&quot;Move Down&quot;</span>, <span class="stringliteral">&quot;Left trigger: moves the camera downward (proportional).&quot;</span>},</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    {9.0F, 0.0F, 2.5F, 0.8F, 1, 0, -1, GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, -1,</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;     <span class="stringliteral">&quot;R2&quot;</span>, <span class="stringliteral">&quot;Move Up&quot;</span>, <span class="stringliteral">&quot;Right trigger: moves the camera upward (proportional).&quot;</span>},</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="comment">/* L1 / R1 (bumpers — narrower, below triggers) */</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    {0.5F, 1.1F, 2.5F, 0.6F, 1, 2, GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, -1, -1,</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;     <span class="stringliteral">&quot;L1&quot;</span>, <span class="stringliteral">&quot;Prev Env&quot;</span>, <span class="stringliteral">&quot;Left bumper: cycles to the previous environment map.&quot;</span>},</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    {9.0F, 1.1F, 2.5F, 0.6F, 1, 2, GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, -1, -1,</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;     <span class="stringliteral">&quot;R1&quot;</span>, <span class="stringliteral">&quot;Next Env&quot;</span>, <span class="stringliteral">&quot;Right bumper: cycles to the next environment map.&quot;</span>},</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="comment">/* D-pad (left side, unbound) */</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    {1.5F, 2.8F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_UP, -1, -1,</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;     <span class="stringliteral">&quot;\xE2\x96\xB2&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    {0.8F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, -1, -1,</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;     <span class="stringliteral">&quot;\xE2\x97\x80&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    {2.2F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, -1, -1,</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;     <span class="stringliteral">&quot;\xE2\x96\xB6&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    {1.5F, 4.2F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, -1, -1,</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;     <span class="stringliteral">&quot;\xE2\x96\xBC&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="comment">/* Face buttons (right side, unbound) */</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    {10.0F, 2.8F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_Y, -1, -1, <span class="stringliteral">&quot;Y&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    {9.3F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_X, -1, -1, <span class="stringliteral">&quot;X&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    {10.7F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_B, -1, -1, <span class="stringliteral">&quot;B&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    {10.0F, 4.2F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_A, -1, -1, <span class="stringliteral">&quot;A&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="comment">/* Left Stick (active — camera movement) */</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    {1.0F, 5.5F, 1.8F, 1.2F, 1, 0, -1, GLFW_GAMEPAD_AXIS_LEFT_X,</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;     GLFW_GAMEPAD_AXIS_LEFT_Y, <span class="stringliteral">&quot;L Stick&quot;</span>, <span class="stringliteral">&quot;Camera Move&quot;</span>,</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;     <span class="stringliteral">&quot;Left analog stick: proportional camera movement (forward/back/strafe).&quot;</span>},</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="comment">/* Right Stick (active — camera look) */</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    {9.2F, 5.5F, 1.8F, 1.2F, 1, 0, -1, GLFW_GAMEPAD_AXIS_RIGHT_X,</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;     GLFW_GAMEPAD_AXIS_RIGHT_Y, <span class="stringliteral">&quot;R Stick&quot;</span>, <span class="stringliteral">&quot;Camera Look&quot;</span>,</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;     <span class="stringliteral">&quot;Right analog stick: proportional camera look (yaw/pitch).&quot;</span>},</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="comment">/* Center buttons */</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    {4.5F, 3.5F, 1.2F, 0.6F, 1, 1, GLFW_GAMEPAD_BUTTON_BACK, -1, -1, <span class="stringliteral">&quot;Share&quot;</span>,</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;     <span class="stringliteral">&quot;Camera Reset&quot;</span>, <span class="stringliteral">&quot;Reset camera position, orientation and LOD to defaults.&quot;</span>},</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    {6.3F, 3.5F, 1.2F, 0.6F, 0, 0, GLFW_GAMEPAD_BUTTON_START, -1, -1, <span class="stringliteral">&quot;Options&quot;</span>,</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;     <span class="stringliteral">&quot;&quot;</span>, <span class="stringliteral">&quot;&quot;</span>},</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;};</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <a class="code" href="app__ui__layout_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe">GAMEPAD_LAYOUT_COUNT</a> =</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        <span class="keyword">sizeof</span>(<a class="code" href="app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">GAMEPAD_LAYOUT</a>) / <span class="keyword">sizeof</span>(<a class="code" href="app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">GAMEPAD_LAYOUT</a>[0])</div>
+<div class="line"><a name="l00289"></a><span class="lineno"><a class="line" href="app__ui__layout_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe">  289</a></span>&#160;};</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* APP_UI_LAYOUT_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aapp__settings_8h_html"><div class="ttname"><a href="app__settings_8h.html">app_settings.h</a></div><div class="ttdoc">Global application constants, configuration macros, and default values.</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a003f5804a266ac5f391e765f05249fa8"><div class="ttname"><a href="app__ui__layout_8h.html#a003f5804a266ac5f391e765f05249fa8">NBODY_INFO_COLOR</a></div><div class="ttdeci">static const vec3 NBODY_INFO_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:77</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a037be618a76f8bc4f34b1eca628ba857"><div class="ttname"><a href="app__ui__layout_8h.html#a037be618a76f8bc4f34b1eca628ba857">HISTO_BAR_COLOR_BLUE</a></div><div class="ttdeci">static const vec3 HISTO_BAR_COLOR_BLUE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:83</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011"><div class="ttname"><a href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a></div><div class="ttdeci">@ ROW_NUMBERS</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:124</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93"><div class="ttname"><a href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da2012a777e485d57f13b7210293c9ce93">ROW_QWERTY</a></div><div class="ttdeci">@ ROW_QWERTY</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:125</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d"><div class="ttname"><a href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da4e095065f8b19c6ae3c3f3ead27dae7d">ROW_ZXCV</a></div><div class="ttdeci">@ ROW_ZXCV</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:127</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f"><div class="ttname"><a href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da796d93a116cdad4a0405cf7fcd703e6f">ROW_ASDF</a></div><div class="ttdeci">@ ROW_ASDF</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:126</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1"><div class="ttname"><a href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a></div><div class="ttdeci">@ ROW_SYSTEM</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:123</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb"><div class="ttname"><a href="app__ui__layout_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2dab231ddc0c909c10ba7bb24f6addbeabb">ROW_BOTTOM</a></div><div class="ttdeci">@ ROW_BOTTOM</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:128</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a0509f78c29476302f36693f736264bef"><div class="ttname"><a href="app__ui__layout_8h.html#a0509f78c29476302f36693f736264bef">DEFAULT_KBD_KEY_RADIUS</a></div><div class="ttdeci">static const float DEFAULT_KBD_KEY_RADIUS</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:24</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a13d62d70403b12ded77a1893914a3f3c"><div class="ttname"><a href="app__ui__layout_8h.html#a13d62d70403b12ded77a1893914a3f3c">KEY_COLOR_CYCLE</a></div><div class="ttdeci">static const vec3 KEY_COLOR_CYCLE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:70</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a1af29146d5d55de8e798731e0314c1ec"><div class="ttname"><a href="app__ui__layout_8h.html#a1af29146d5d55de8e798731e0314c1ec">KEY_PRESS_BRIGHTEN_MIN</a></div><div class="ttdeci">static const float KEY_PRESS_BRIGHTEN_MIN</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:60</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a1f0fde4e033eb34145d84e32d4a06178"><div class="ttname"><a href="app__ui__layout_8h.html#a1f0fde4e033eb34145d84e32d4a06178">UI_TEXT_OFFSET_FACTOR</a></div><div class="ttdeci">static const float UI_TEXT_OFFSET_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:99</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a22b04358badd54ebe5ee64b4c850f96a"><div class="ttname"><a href="app__ui__layout_8h.html#a22b04358badd54ebe5ee64b4c850f96a">LEGEND_Y_FACTOR</a></div><div class="ttdeci">static const float LEGEND_Y_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:36</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a23542a0451132870d185f991f8c3154f"><div class="ttname"><a href="app__ui__layout_8h.html#a23542a0451132870d185f991f8c3154f">DEFAULT_KBD_DETAIL_Y_OFFSET</a></div><div class="ttdeci">static const float DEFAULT_KBD_DETAIL_Y_OFFSET</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:27</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a24046dddc6d65383f7b2e5b703e778a5"><div class="ttname"><a href="app__ui__layout_8h.html#a24046dddc6d65383f7b2e5b703e778a5">BLOOM_PRESS_MAX_ALPHA</a></div><div class="ttdeci">static const float BLOOM_PRESS_MAX_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:56</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a2a4dcdadc74b7a07b11c6759a1cb9f2b"><div class="ttname"><a href="app__ui__layout_8h.html#a2a4dcdadc74b7a07b11c6759a1cb9f2b">HELP_EXIT_HINT_Y_OFF</a></div><div class="ttdeci">static const float HELP_EXIT_HINT_Y_OFF</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:63</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a2b4046580b310d59959c6e0aebe6df17"><div class="ttname"><a href="app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17">UI_LOADING_TEXT_WIDTH_FACTOR</a></div><div class="ttdeci">static const float UI_LOADING_TEXT_WIDTH_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:97</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a2f98977b6b578bddebc5e2d078b7baca"><div class="ttname"><a href="app__ui__layout_8h.html#a2f98977b6b578bddebc5e2d078b7baca">LUMINANCE_EPSILON</a></div><div class="ttdeci">static const float LUMINANCE_EPSILON</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:30</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a328df10e7c82d5947bc88c209eaca584"><div class="ttname"><a href="app__ui__layout_8h.html#a328df10e7c82d5947bc88c209eaca584">HOVER_DECAY_DURATION</a></div><div class="ttdeci">static const double HOVER_DECAY_DURATION</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:91</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a3591dafcd6088d523404b946b512135e"><div class="ttname"><a href="app__ui__layout_8h.html#a3591dafcd6088d523404b946b512135e">GLOBAL_DIM_MAX_FALLOFF</a></div><div class="ttdeci">static const float GLOBAL_DIM_MAX_FALLOFF</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:89</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a3b7f61b1499e5659be43d74c1b6944b6"><div class="ttname"><a href="app__ui__layout_8h.html#a3b7f61b1499e5659be43d74c1b6944b6">HELP_BG_ALPHA</a></div><div class="ttdeci">static const float HELP_BG_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:57</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a3fe85f8f71b49fafc599d1ff8d0930c1"><div class="ttname"><a href="app__ui__layout_8h.html#a3fe85f8f71b49fafc599d1ff8d0930c1">KEY_COLOR_DEFAULT</a></div><div class="ttdeci">static const vec3 KEY_COLOR_DEFAULT</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:68</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a403a51757a9c45c7096d44c4d68736c5"><div class="ttname"><a href="app__ui__layout_8h.html#a403a51757a9c45c7096d44c4d68736c5">GRAPH_POS_X</a></div><div class="ttdeci">static const float GRAPH_POS_X</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:42</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a4280404bf249d2ed90f33771ae157684"><div class="ttname"><a href="app__ui__layout_8h.html#a4280404bf249d2ed90f33771ae157684">HELP_BG_COLOR</a></div><div class="ttdeci">static const vec3 HELP_BG_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:72</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a43f540df1811075ee555702865120041"><div class="ttname"><a href="app__ui__layout_8h.html#a43f540df1811075ee555702865120041">HISTO_BAR_COLOR_RED</a></div><div class="ttdeci">static const vec3 HISTO_BAR_COLOR_RED</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:84</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a4e27a16413328c0e40c5800a17deed9b"><div class="ttname"><a href="app__ui__layout_8h.html#a4e27a16413328c0e40c5800a17deed9b">NBODY_DAMPING_COLOR</a></div><div class="ttdeci">static const vec3 NBODY_DAMPING_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:79</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a5336ece17ffa3c77409020cba50c1127"><div class="ttname"><a href="app__ui__layout_8h.html#a5336ece17ffa3c77409020cba50c1127">KEY_LAYOUT_QWERTY</a></div><div class="ttdeci">static const KeyPos KEY_LAYOUT_QWERTY[]</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:139</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a5a809367fa495c92746f4f0eb3e07880"><div class="ttname"><a href="app__ui__layout_8h.html#a5a809367fa495c92746f4f0eb3e07880">GRAPH_TEXT_PADDING</a></div><div class="ttdeci">static const float GRAPH_TEXT_PADDING</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:32</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a5bcf04ab4c3479503b362038a26e5b7a"><div class="ttname"><a href="app__ui__layout_8h.html#a5bcf04ab4c3479503b362038a26e5b7a">NBODY_STABLE_COLOR</a></div><div class="ttdeci">static const vec3 NBODY_STABLE_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:78</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a5c6370f1e0e7703667c20c0215422723"><div class="ttname"><a href="app__ui__layout_8h.html#a5c6370f1e0e7703667c20c0215422723">HISTO_BAR_COLOR_GREEN</a></div><div class="ttdeci">static const vec3 HISTO_BAR_COLOR_GREEN</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:82</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a5d0843b87c978e7a1bf84b04bbc567f4"><div class="ttname"><a href="app__ui__layout_8h.html#a5d0843b87c978e7a1bf84b04bbc567f4">HELP_TEXT_ALPHA</a></div><div class="ttdeci">static const float HELP_TEXT_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:61</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a5d4d4b69102696a2220672ecb117cd56"><div class="ttname"><a href="app__ui__layout_8h.html#a5d4d4b69102696a2220672ecb117cd56">KEY_COLOR_COMBINATION</a></div><div class="ttdeci">static const vec3 KEY_COLOR_COMBINATION</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:71</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a61dadd085c1777f559549e05962b2c9ea9dc342521385bfa497822b9f9b08b7c1"><div class="ttname"><a href="app__ui__layout_8h.html#a61dadd085c1777f559549e05962b2c9ea9dc342521385bfa497822b9f9b08b7c1">UI_LOADING_TEXT_SIZE</a></div><div class="ttdeci">@ UI_LOADING_TEXT_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:103</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a62058f8338f24fa78fda198ee27bf4ab"><div class="ttname"><a href="app__ui__layout_8h.html#a62058f8338f24fa78fda198ee27bf4ab">KEY_COLOR_TOGGLE</a></div><div class="ttdeci">static const vec3 KEY_COLOR_TOGGLE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:69</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a62e9df82213180a8997d651a4854fd5f"><div class="ttname"><a href="app__ui__layout_8h.html#a62e9df82213180a8997d651a4854fd5f">KEY_DEFAULT_ALPHA</a></div><div class="ttdeci">static const float KEY_DEFAULT_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:59</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a6abaf5817034b08c37fff0255aad93a2"><div class="ttname"><a href="app__ui__layout_8h.html#a6abaf5817034b08c37fff0255aad93a2">DEFAULT_KBD_BLOOM_SCALE</a></div><div class="ttdeci">static const float DEFAULT_KBD_BLOOM_SCALE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:50</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a6c7a06dc2eb7bcdb23ad7ca03ecbe75b"><div class="ttname"><a href="app__ui__layout_8h.html#a6c7a06dc2eb7bcdb23ad7ca03ecbe75b">GRAPH_DIM_W</a></div><div class="ttdeci">static const float GRAPH_DIM_W</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:44</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb">MODIFIER_BUFFER_SIZE</a></div><div class="ttdeci">@ MODIFIER_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:114</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635a21e53849e20feb2341e3e291731815c2"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a21e53849e20feb2341e3e291731815c2">KEYBOARD_BUFFER_SIZE</a></div><div class="ttdeci">@ KEYBOARD_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:115</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6">EXPOSURE_TEXT_BUFFER_SIZE</a></div><div class="ttdeci">@ EXPOSURE_TEXT_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:112</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635a654e69613c7186f04e4a268211ffa3be"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a654e69613c7186f04e4a268211ffa3be">ENV_TEXT_BUFFER_SIZE</a></div><div class="ttdeci">@ ENV_TEXT_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:111</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635a684cb1287adbb9f9d9fea9a73cac2d6e"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635a684cb1287adbb9f9d9fea9a73cac2d6e">NBODY_TEXT_BUFFER_SIZE</a></div><div class="ttdeci">@ NBODY_TEXT_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:113</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635ae3db8bdcc51e0d388cbd4e5f75acd4ba"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635ae3db8bdcc51e0d388cbd4e5f75acd4ba">DEBUG_TEXT_BUFFER_SIZE</a></div><div class="ttdeci">@ DEBUG_TEXT_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:109</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a726ca809ffd3d67ab4b8476646f26635af857797fa834c37834916f6bb3ee3dd4"><div class="ttname"><a href="app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635af857797fa834c37834916f6bb3ee3dd4">RANGE_TEXT_BUFFER_SIZE</a></div><div class="ttdeci">@ RANGE_TEXT_BUFFER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:110</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a74ff0575436fcd1a9b154650bc840442"><div class="ttname"><a href="app__ui__layout_8h.html#a74ff0575436fcd1a9b154650bc840442">GLOW_HOVER_ALPHA</a></div><div class="ttdeci">static const float GLOW_HOVER_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:55</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a76692a7d7e5a8fe07cc5641197f46b60"><div class="ttname"><a href="app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">GAMEPAD_LAYOUT</a></div><div class="ttdeci">static const GamepadControlPos GAMEPAD_LAYOUT[]</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:240</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a7c14cd7a2d27eb618bd10e2600e7e2f0"><div class="ttname"><a href="app__ui__layout_8h.html#a7c14cd7a2d27eb618bd10e2600e7e2f0">KEY_PRESSED_ALPHA</a></div><div class="ttdeci">static const float KEY_PRESSED_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:58</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a7d399607cb9c4f50940960d5e2c7aca3"><div class="ttname"><a href="app__ui__layout_8h.html#a7d399607cb9c4f50940960d5e2c7aca3">NBODY_DIVERGE_COLOR</a></div><div class="ttdeci">static const vec3 NBODY_DIVERGE_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:80</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a7dcd28927e6a58716cdade6859b53449"><div class="ttname"><a href="app__ui__layout_8h.html#a7dcd28927e6a58716cdade6859b53449">UI_SPINNER_SIZE</a></div><div class="ttdeci">static const float UI_SPINNER_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:98</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a7de44b7ef11c9265f2b5353d6eb28796"><div class="ttname"><a href="app__ui__layout_8h.html#a7de44b7ef11c9265f2b5353d6eb28796">BLOOM_MAX_INTENSITY</a></div><div class="ttdeci">static const float BLOOM_MAX_INTENSITY</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:54</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a81a06b3b7bcbd4cb3551285f9b979801"><div class="ttname"><a href="app__ui__layout_8h.html#a81a06b3b7bcbd4cb3551285f9b979801">LEGEND_COMBO_STEP_MULT</a></div><div class="ttdeci">static const float LEGEND_COMBO_STEP_MULT</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:39</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a83a337cef49af1300c3338d2a4a455ca"><div class="ttname"><a href="app__ui__layout_8h.html#a83a337cef49af1300c3338d2a4a455ca">HELP_EXIT_HINT_X_OFF</a></div><div class="ttdeci">static const float HELP_EXIT_HINT_X_OFF</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:62</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a91fc3c3f2ffb614323a729328d8ff7aa"><div class="ttname"><a href="app__ui__layout_8h.html#a91fc3c3f2ffb614323a729328d8ff7aa">DEFAULT_KBD_UNBOUND_ALPHA</a></div><div class="ttdeci">static const float DEFAULT_KBD_UNBOUND_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:51</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a9641a608a591e3d12b583671f938ea18"><div class="ttname"><a href="app__ui__layout_8h.html#a9641a608a591e3d12b583671f938ea18">UI_SPINNER_SPEED</a></div><div class="ttdeci">static const double UI_SPINNER_SPEED</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:96</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_a9f8184463c89711f06c8873ad4bcdffc"><div class="ttname"><a href="app__ui__layout_8h.html#a9f8184463c89711f06c8873ad4bcdffc">DEFAULT_KBD_LABEL_SCALE</a></div><div class="ttdeci">static const float DEFAULT_KBD_LABEL_SCALE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:25</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aa1464a6461d033abd30eee12121bbc29"><div class="ttname"><a href="app__ui__layout_8h.html#aa1464a6461d033abd30eee12121bbc29">DEFAULT_KBD_TITLE_Y_OFFSET</a></div><div class="ttdeci">static const float DEFAULT_KBD_TITLE_Y_OFFSET</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:26</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aa89f5598bad4c30e87b9a26b73c80f6b"><div class="ttname"><a href="app__ui__layout_8h.html#aa89f5598bad4c30e87b9a26b73c80f6b">UI_CENTER_FACTOR</a></div><div class="ttdeci">static const float UI_CENTER_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:31</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aaf76e00a44e28d6b60824890cf02af45"><div class="ttname"><a href="app__ui__layout_8h.html#aaf76e00a44e28d6b60824890cf02af45">GRAPH_TEXT_COLOR</a></div><div class="ttdeci">static const vec3 GRAPH_TEXT_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:75</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe"><div class="ttname"><a href="app__ui__layout_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe">GAMEPAD_LAYOUT_COUNT</a></div><div class="ttdeci">@ GAMEPAD_LAYOUT_COUNT</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:287</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ab15eac0bcdadbc85968d2e2b50cd49f6"><div class="ttname"><a href="app__ui__layout_8h.html#ab15eac0bcdadbc85968d2e2b50cd49f6">NBODY_STABILITY_THRESHOLD</a></div><div class="ttdeci">static const float NBODY_STABILITY_THRESHOLD</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:81</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ab50bb5b41054d547f93c5cbbc217ff18"><div class="ttname"><a href="app__ui__layout_8h.html#ab50bb5b41054d547f93c5cbbc217ff18">GRAPH_DIM_H</a></div><div class="ttdeci">static const float GRAPH_DIM_H</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:45</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d"><div class="ttname"><a href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d">GP_ROW_FACE</a></div><div class="ttdeci">@ GP_ROW_FACE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:235</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b"><div class="ttname"><a href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b">GP_ROW_STICKS</a></div><div class="ttdeci">@ GP_ROW_STICKS</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:236</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec"><div class="ttname"><a href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec">GP_ROW_BUMPERS</a></div><div class="ttdeci">@ GP_ROW_BUMPERS</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:234</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6"><div class="ttname"><a href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6">GP_ROW_TRIGGERS</a></div><div class="ttdeci">@ GP_ROW_TRIGGERS</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:233</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b"><div class="ttname"><a href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b">GP_ROW_SYSTEM</a></div><div class="ttdeci">@ GP_ROW_SYSTEM</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:237</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ac5df6d20366b3a0bb4d7f26c391f8dbd"><div class="ttname"><a href="app__ui__layout_8h.html#ac5df6d20366b3a0bb4d7f26c391f8dbd">DEFAULT_KBD_KEY_PADDING</a></div><div class="ttdeci">static const float DEFAULT_KBD_KEY_PADDING</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:23</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ac6cd248610705cb146a492bd8a7da771"><div class="ttname"><a href="app__ui__layout_8h.html#ac6cd248610705cb146a492bd8a7da771">UI_SPINNER_COLOR</a></div><div class="ttdeci">static const vec3 UI_SPINNER_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:100</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aca887df5c46dbb6604d90294c93fcebf"><div class="ttname"><a href="app__ui__layout_8h.html#aca887df5c46dbb6604d90294c93fcebf">DEFAULT_BASE_RESOLUTION_HEIGHT</a></div><div class="ttdeci">static const float DEFAULT_BASE_RESOLUTION_HEIGHT</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:21</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ad1f3586315e20b83affb3ed2018dbaef"><div class="ttname"><a href="app__ui__layout_8h.html#ad1f3586315e20b83affb3ed2018dbaef">DEBUG_ORANGE_COLOR</a></div><div class="ttdeci">static const vec3 DEBUG_ORANGE_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:76</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_adde8ed9e673f1fa854c78195518a525e"><div class="ttname"><a href="app__ui__layout_8h.html#adde8ed9e673f1fa854c78195518a525e">DEFAULT_KBD_KEY_SIZE</a></div><div class="ttdeci">static const float DEFAULT_KBD_KEY_SIZE</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:22</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ae527e2f8b8f74a9ae74728cf7e1eef0e"><div class="ttname"><a href="app__ui__layout_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e">DEBUG_TEXT_Y_OFFSET</a></div><div class="ttdeci">static const float DEBUG_TEXT_Y_OFFSET</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:33</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_ae97efd99556e79d62aa2299b0b87b607"><div class="ttname"><a href="app__ui__layout_8h.html#ae97efd99556e79d62aa2299b0b87b607">DEFAULT_KBD_BOUND_ALPHA</a></div><div class="ttdeci">static const float DEFAULT_KBD_BOUND_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:52</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aebecb4aca5518dc86b7ba096ed227049"><div class="ttname"><a href="app__ui__layout_8h.html#aebecb4aca5518dc86b7ba096ed227049">PANEL_FRAME_ALPHA</a></div><div class="ttdeci">static const float PANEL_FRAME_ALPHA</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:53</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aed8604ac57827f2f1bf7dccb8b78bea4"><div class="ttname"><a href="app__ui__layout_8h.html#aed8604ac57827f2f1bf7dccb8b78bea4">CYBER_TITLE_COLOR</a></div><div class="ttdeci">static const vec3 CYBER_TITLE_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:73</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aeecd20cda3f7c87d60454435776fc666"><div class="ttname"><a href="app__ui__layout_8h.html#aeecd20cda3f7c87d60454435776fc666">GRAPH_POS_Y_OFF</a></div><div class="ttdeci">static const float GRAPH_POS_Y_OFF</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:43</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_aefd83a4a0808f33de0408d2e2ff1d298"><div class="ttname"><a href="app__ui__layout_8h.html#aefd83a4a0808f33de0408d2e2ff1d298">LEGEND_STEP_FACTOR</a></div><div class="ttdeci">static const float LEGEND_STEP_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:38</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_af0b98e622dd47736cd7e777d203a82e7"><div class="ttname"><a href="app__ui__layout_8h.html#af0b98e622dd47736cd7e777d203a82e7">ENV_TEXT_COLOR</a></div><div class="ttdeci">static const vec3 ENV_TEXT_COLOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:74</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_af6455b39d8b0d631e0e76dde6635ae67"><div class="ttname"><a href="app__ui__layout_8h.html#af6455b39d8b0d631e0e76dde6635ae67">LEGEND_X_START_FACTOR</a></div><div class="ttdeci">static const float LEGEND_X_START_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:37</div></div>
+<div class="ttc" id="aapp__ui__layout_8h_html_af7d0b37e844c1e81ca1babc84608f47a"><div class="ttname"><a href="app__ui__layout_8h.html#af7d0b37e844c1e81ca1babc84608f47a">GLOBAL_DIM_SMOOTH_FACTOR</a></div><div class="ttdeci">static const float GLOBAL_DIM_SMOOTH_FACTOR</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:90</div></div>
+<div class="ttc" id="agroup__UI_html_ga413f094a9d593906551689b49a4ec064"><div class="ttname"><a href="group__UI.html#ga413f094a9d593906551689b49a4ec064">DEFAULT_FONT_SIZE</a></div><div class="ttdeci">static const float DEFAULT_FONT_SIZE</div><div class="ttdef"><b>Definition:</b> app_settings.h:215</div></div>
+<div class="ttc" id="astructGamepadControlPos_html"><div class="ttname"><a href="structGamepadControlPos.html">GamepadControlPos</a></div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:217</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a00db31c79e3a3964365054fdab5dd9a3"><div class="ttname"><a href="structGamepadControlPos.html#a00db31c79e3a3964365054fdab5dd9a3">GamepadControlPos::action</a></div><div class="ttdeci">const char * action</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:228</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a0fc10094e127ec67c08fe2765a113f8f"><div class="ttname"><a href="structGamepadControlPos.html#a0fc10094e127ec67c08fe2765a113f8f">GamepadControlPos::desc</a></div><div class="ttdeci">const char * desc</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:229</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a18bc251bef92d74ab3fcff6b55088ad9"><div class="ttname"><a href="structGamepadControlPos.html#a18bc251bef92d74ab3fcff6b55088ad9">GamepadControlPos::height</a></div><div class="ttdeci">float height</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:221</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a1c36c1660e58c2181067c75588d0aada"><div class="ttname"><a href="structGamepadControlPos.html#a1c36c1660e58c2181067c75588d0aada">GamepadControlPos::gp_axis</a></div><div class="ttdeci">int gp_axis</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:225</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a1ea2d57c0012f2f715446f03834f3cc5"><div class="ttname"><a href="structGamepadControlPos.html#a1ea2d57c0012f2f715446f03834f3cc5">GamepadControlPos::width</a></div><div class="ttdeci">float width</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:220</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a1fe26c4153362345d48edbda4c7e5312"><div class="ttname"><a href="structGamepadControlPos.html#a1fe26c4153362345d48edbda4c7e5312">GamepadControlPos::gp_btn</a></div><div class="ttdeci">int gp_btn</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:224</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a30c0de3fb4dc7e87985dd122a20ad837"><div class="ttname"><a href="structGamepadControlPos.html#a30c0de3fb4dc7e87985dd122a20ad837">GamepadControlPos::is_bound</a></div><div class="ttdeci">bool is_bound</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:222</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a3200f2fb488eaed18b2bf28fcdcfb257"><div class="ttname"><a href="structGamepadControlPos.html#a3200f2fb488eaed18b2bf28fcdcfb257">GamepadControlPos::x_off</a></div><div class="ttdeci">float x_off</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:218</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a34584dc2b41f00b2433d016f1f1e2ff4"><div class="ttname"><a href="structGamepadControlPos.html#a34584dc2b41f00b2433d016f1f1e2ff4">GamepadControlPos::gp_axis2</a></div><div class="ttdeci">int gp_axis2</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:226</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_a6909542a6401c225f5863c0756cc8fef"><div class="ttname"><a href="structGamepadControlPos.html#a6909542a6401c225f5863c0756cc8fef">GamepadControlPos::bind_type</a></div><div class="ttdeci">int bind_type</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:223</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_ab86d4739b79108acebe41e472f4f7c48"><div class="ttname"><a href="structGamepadControlPos.html#ab86d4739b79108acebe41e472f4f7c48">GamepadControlPos::y_off</a></div><div class="ttdeci">float y_off</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:219</div></div>
+<div class="ttc" id="astructGamepadControlPos_html_ab87e1ef55e28cda145036b67343467c5"><div class="ttname"><a href="structGamepadControlPos.html#ab87e1ef55e28cda145036b67343467c5">GamepadControlPos::label</a></div><div class="ttdeci">const char * label</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:227</div></div>
+<div class="ttc" id="astructKeyPos_html"><div class="ttname"><a href="structKeyPos.html">KeyPos</a></div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:131</div></div>
+<div class="ttc" id="astructKeyPos_html_a1139a786d66817ab9377c3d27471b0fa"><div class="ttname"><a href="structKeyPos.html#a1139a786d66817ab9377c3d27471b0fa">KeyPos::key</a></div><div class="ttdeci">int key</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:132</div></div>
+<div class="ttc" id="astructKeyPos_html_a1bcc76cb80166a2c8a68817493400323"><div class="ttname"><a href="structKeyPos.html#a1bcc76cb80166a2c8a68817493400323">KeyPos::label</a></div><div class="ttdeci">const char * label</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:136</div></div>
+<div class="ttc" id="astructKeyPos_html_ad3a6ecd64fc13edcebe57297cb3b42bd"><div class="ttname"><a href="structKeyPos.html#ad3a6ecd64fc13edcebe57297cb3b42bd">KeyPos::width</a></div><div class="ttdeci">float width</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:135</div></div>
+<div class="ttc" id="astructKeyPos_html_ae0c075b2bf0f08ae85f9e4e71bf21e4b"><div class="ttname"><a href="structKeyPos.html#ae0c075b2bf0f08ae85f9e4e71bf21e4b">KeyPos::x_off</a></div><div class="ttdeci">float x_off</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:134</div></div>
+<div class="ttc" id="astructKeyPos_html_af2c2bd4e8c7f4610f95d9c4000e31d79"><div class="ttname"><a href="structKeyPos.html#af2c2bd4e8c7f4610f95d9c4000e31d79">KeyPos::row</a></div><div class="ttdeci">int row</div><div class="ttdef"><b>Definition:</b> app_ui_layout.h:133</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="app__ui__layout_8h.html">app_ui_layout.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

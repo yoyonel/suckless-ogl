@@ -1,0 +1,476 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="globals.html"><span>All</span></a></li>
+      <li class="current"><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="globals_func.html#index__5F"><span>_</span></a></li>
+      <li><a href="globals_func_a.html#index_a"><span>a</span></a></li>
+      <li><a href="globals_func_b.html#index_b"><span>b</span></a></li>
+      <li><a href="globals_func_c.html#index_c"><span>c</span></a></li>
+      <li><a href="globals_func_d.html#index_d"><span>d</span></a></li>
+      <li><a href="globals_func_e.html#index_e"><span>e</span></a></li>
+      <li><a href="globals_func_f.html#index_f"><span>f</span></a></li>
+      <li class="current"><a href="globals_func_g.html#index_g"><span>g</span></a></li>
+      <li><a href="globals_func_h.html#index_h"><span>h</span></a></li>
+      <li><a href="globals_func_i.html#index_i"><span>i</span></a></li>
+      <li><a href="globals_func_k.html#index_k"><span>k</span></a></li>
+      <li><a href="globals_func_l.html#index_l"><span>l</span></a></li>
+      <li><a href="globals_func_m.html#index_m"><span>m</span></a></li>
+      <li><a href="globals_func_n.html#index_n"><span>n</span></a></li>
+      <li><a href="globals_func_p.html#index_p"><span>p</span></a></li>
+      <li><a href="globals_func_r.html#index_r"><span>r</span></a></li>
+      <li><a href="globals_func_s.html#index_s"><span>s</span></a></li>
+      <li><a href="globals_func_t.html#index_t"><span>t</span></a></li>
+      <li><a href="globals_func_u.html#index_u"><span>u</span></a></li>
+      <li><a href="globals_func_v.html#index_v"><span>v</span></a></li>
+      <li><a href="globals_func_w.html#index_w"><span>w</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('globals_func_g.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="contents">
+&#160;
+
+<h3><a id="index_g"></a>- g -</h3><ul>
+<li>gamepad_apply_deadzone()
+: <a class="el" href="gamepad__input_8c.html#a8918722fe2ae5795c45d1b192cfc7c0c">gamepad_input.c</a>
+, <a class="el" href="gamepad__input_8h.html#a8918722fe2ae5795c45d1b192cfc7c0c">gamepad_input.h</a>
+</li>
+<li>gamepad_input_init()
+: <a class="el" href="gamepad__input_8c.html#a7675da2a057eba16844b2250a15a8f56">gamepad_input.c</a>
+, <a class="el" href="gamepad__input_8h.html#a7675da2a057eba16844b2250a15a8f56">gamepad_input.h</a>
+</li>
+<li>gamepad_input_poll()
+: <a class="el" href="gamepad__input_8c.html#ae5e7070f32bd2ddff5493d970654dd30">gamepad_input.c</a>
+, <a class="el" href="gamepad__input_8h.html#ae5e7070f32bd2ddff5493d970654dd30">gamepad_input.h</a>
+</li>
+<li>gamepad_poll_buttons()
+: <a class="el" href="gamepad__input_8c.html#aae85773763d5efa9eea04e6ea67b1362">gamepad_input.c</a>
+</li>
+<li>gamepad_write_input()
+: <a class="el" href="gamepad__input_8h.html#afa50c87039ef832f969bafb592445eff">gamepad_input.h</a>
+, <a class="el" href="gamepad__input_8c.html#afa50c87039ef832f969bafb592445eff">gamepad_input.c</a>
+</li>
+<li>get_active_binding()
+: <a class="el" href="app__ui_8c.html#ac728a2c6b8100d42540b7471262c7284">app_ui.c</a>
+</li>
+<li>get_dir_from_path()
+: <a class="el" href="shader_8c.html#af175eada3763b4ece51e0344ee4a0da0">shader.c</a>
+</li>
+<li>get_key_base_color()
+: <a class="el" href="app__ui_8c.html#a7db775acc267773a5d45a5afc6844eeb">app_ui.c</a>
+</li>
+<li>get_midpoint()
+: <a class="el" href="icosphere_8c.html#a91438511f35ef99ee0e734ea745ea9ea">icosphere.c</a>
+</li>
+<li>get_probe_irradiance()
+: <a class="el" href="sh__probe_8glsl.html#a90dd6fc14cc170aa54402a9aa987760a">sh_probe.glsl</a>
+</li>
+<li>get_severity_str()
+: <a class="el" href="gl__debug_8c.html#a81ad3d96734c7dc4df846e262595e500">gl_debug.c</a>
+</li>
+<li>get_source_str()
+: <a class="el" href="gl__debug_8c.html#a242724fed27f8d3d72721a84ac77e7f3">gl_debug.c</a>
+</li>
+<li>get_sphere_pos()
+: <a class="el" href="light__probes_8c.html#a338c4d4188abbbfc6646566d6e4465cf">light_probes.c</a>
+</li>
+<li>get_sphere_radius()
+: <a class="el" href="light__probes_8c.html#ac2d94e4994527bae8373ac34109506d8">light_probes.c</a>
+</li>
+<li>get_type_str()
+: <a class="el" href="gl__debug_8c.html#a7f7bc48123afa9ff6b7b2ad53ae727b5">gl_debug.c</a>
+</li>
+<li>getProjectedBounds()
+: <a class="el" href="projection__utils_8glsl.html#af1871360be1ffa5d2f5d821155d93c88">projection_utils.glsl</a>
+</li>
+<li>gl_debug_callback()
+: <a class="el" href="gl__debug_8c.html#a92c2ec42b6384cbe584117219166124a">gl_debug.c</a>
+</li>
+<li>gl_debug_pop_group()
+: <a class="el" href="gl__debug_8c.html#a25be2ee4e0a9571435ad48c51f93da8a">gl_debug.c</a>
+, <a class="el" href="gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a">gl_debug.h</a>
+</li>
+<li>gl_debug_push_group()
+: <a class="el" href="gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4">gl_debug.h</a>
+, <a class="el" href="gl__debug_8c.html#aab0f03e3f09521ffa3e714fd12c61cf4">gl_debug.c</a>
+</li>
+<li>gp_axis_active()
+: <a class="el" href="app__ui_8c.html#a4fa733535e4b950624955b987ab1fbe7">app_ui.c</a>
+</li>
+<li>gp_overlay_find_hovered()
+: <a class="el" href="app__ui_8c.html#a5bd46e2ed0be3adf716e027f818841ff">app_ui.c</a>
+</li>
+<li>gp_overlay_poll_active()
+: <a class="el" href="app__ui_8c.html#a8e089cd73f85596832c1db598a3662aa">app_ui.c</a>
+</li>
+<li>gpu_profiler_begin_frame()
+: <a class="el" href="gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_cleanup()
+: <a class="el" href="gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_end_stage()
+: <a class="el" href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_init()
+: <a class="el" href="gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_reset_samplers()
+: <a class="el" href="gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#abb8eabbef66554b6e1646f398037face">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_set_enabled()
+: <a class="el" href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_start_stage()
+: <a class="el" href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler.h</a>
+, <a class="el" href="gpu__profiler_8c.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler.c</a>
+</li>
+<li>gpu_profiler_ui_cleanup()
+: <a class="el" href="gpu__profiler__ui_8h.html#aa5843b14190f472881eb53b6aa0cb4f0">gpu_profiler_ui.h</a>
+, <a class="el" href="gpu__profiler__ui_8c.html#aa5843b14190f472881eb53b6aa0cb4f0">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_compact_stages()
+: <a class="el" href="gpu__profiler__ui_8c.html#a791c884d99ce17538fa4fd8d17a877c8">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_draw()
+: <a class="el" href="gpu__profiler__ui_8h.html#aa22e51dc6232ffd2f5740fc7ed56180a">gpu_profiler_ui.h</a>
+, <a class="el" href="gpu__profiler__ui_8c.html#aa22e51dc6232ffd2f5740fc7ed56180a">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_init()
+: <a class="el" href="gpu__profiler__ui_8h.html#aed68b1cca30d6c8812275e6756233fa8">gpu_profiler_ui.h</a>
+, <a class="el" href="gpu__profiler__ui_8c.html#aed68b1cca30d6c8812275e6756233fa8">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_sync_stage()
+: <a class="el" href="gpu__profiler__ui_8c.html#a15363df2f9d5c696e83a0077332cf845">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_toggle_position()
+: <a class="el" href="gpu__profiler__ui_8h.html#a5fc61f55cf3d2919113ecdcbc53ea5a3">gpu_profiler_ui.h</a>
+, <a class="el" href="gpu__profiler__ui_8c.html#a5fc61f55cf3d2919113ecdcbc53ea5a3">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_toggle_visibility()
+: <a class="el" href="gpu__profiler__ui_8h.html#a887925b2aff08e85f6c5028edc30ef98">gpu_profiler_ui.h</a>
+, <a class="el" href="gpu__profiler__ui_8c.html#a887925b2aff08e85f6c5028edc30ef98">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_update()
+: <a class="el" href="gpu__profiler__ui_8h.html#ac53c270cd512488caca074831008a6db">gpu_profiler_ui.h</a>
+, <a class="el" href="gpu__profiler__ui_8c.html#ac53c270cd512488caca074831008a6db">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_profiler_ui_update_visibility()
+: <a class="el" href="gpu__profiler__ui_8c.html#a354e56ee6aaa3ae6e00da508876cb513">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_stage_cleanup_raii()
+: <a class="el" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_profiler.h</a>
+</li>
+<li>gpu_stage_move()
+: <a class="el" href="gpu__profiler__ui_8c.html#ab390637c15904dd866b0c2916eb948b0">gpu_profiler_ui.c</a>
+</li>
+<li>gpu_timer_cleanup()
+: <a class="el" href="perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c">perf_timer.h</a>
+, <a class="el" href="perf__timer_8c.html#ab77f03ea3adbd1c7e38aad5e9c51a48c">perf_timer.c</a>
+</li>
+<li>gpu_timer_elapsed_ms()
+: <a class="el" href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">perf_timer.h</a>
+, <a class="el" href="perf__timer_8c.html#a248eca7078cf6b01ea1d0a65f3863774">perf_timer.c</a>
+</li>
+<li>gpu_timer_start()
+: <a class="el" href="perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab">perf_timer.h</a>
+, <a class="el" href="perf__timer_8c.html#ab590b4c19b3d254d82d940eca2bfdcab">perf_timer.c</a>
+</li>
+<li>gpu_timer_stop()
+: <a class="el" href="perf__timer_8h.html#a93662ba9f40c64c41997e746d07f135e">perf_timer.h</a>
+</li>
+<li>gpu_usage_cleanup()
+: <a class="el" href="gpu__usage_8c.html#ad721ee9657a2311067270a1eb2650322">gpu_usage.c</a>
+, <a class="el" href="gpu__usage_8h.html#ad721ee9657a2311067270a1eb2650322">gpu_usage.h</a>
+</li>
+<li>gpu_usage_get_load()
+: <a class="el" href="gpu__usage_8h.html#a24593696790917b4e4587190634ed65d">gpu_usage.h</a>
+, <a class="el" href="gpu__usage_8c.html#a24593696790917b4e4587190634ed65d">gpu_usage.c</a>
+</li>
+<li>gpu_usage_init()
+: <a class="el" href="gpu__usage_8h.html#a2d0af5de4f732d0ebe37b0252b70fcd3">gpu_usage.h</a>
+, <a class="el" href="gpu__usage_8c.html#a2d0af5de4f732d0ebe37b0252b70fcd3">gpu_usage.c</a>
+</li>
+<li>gpu_usage_is_available()
+: <a class="el" href="gpu__usage_8h.html#ac8f6cb11fff7656acd2a2739a8286a36">gpu_usage.h</a>
+, <a class="el" href="gpu__usage_8c.html#ac8f6cb11fff7656acd2a2739a8286a36">gpu_usage.c</a>
+</li>
+<li>gpu_usage_update()
+: <a class="el" href="gpu__usage_8h.html#a1c9dedfc65533d5d96593b2f47a81d91">gpu_usage.h</a>
+, <a class="el" href="gpu__usage_8c.html#a1c9dedfc65533d5d96593b2f47a81d91">gpu_usage.c</a>
+</li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
