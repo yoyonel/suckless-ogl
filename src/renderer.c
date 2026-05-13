@@ -1,6 +1,7 @@
 #include "renderer.h"
 
 #include "action_notifier.h"
+#include "bool_utils.h"
 #include "camera.h"
 #include "effect_benchmark.h"
 #include "env_manager.h"
@@ -17,8 +18,8 @@
 void renderer_draw_frame(const RenderContext* ctx)
 {
 	bool profiling_enabled =
-	    (ctx->profiler_ui->visible || ctx->log_gpu_metrics != 0 ||
-	     effect_benchmark_is_running(ctx->effect_bench)) != 0;
+	    INT_TO_BOOL(ctx->profiler_ui->visible || ctx->log_gpu_metrics ||
+	                effect_benchmark_is_running(ctx->effect_bench));
 	postprocess_update_readbacks(ctx->postprocess, ctx->frame_count);
 
 	PROFILE_FRAME_MARK;
@@ -95,5 +96,5 @@ void renderer_draw_frame(const RenderContext* ctx)
 	// 4. Logique d'affichage et animations
 	double current_time = glfwGetTime();
 	gpu_profiler_ui_update(ctx->profiler_ui, ctx->profiler, ctx->delta_time,
-	                       current_time, (bool)ctx->log_gpu_metrics);
+	                       current_time, ctx->log_gpu_metrics);
 }

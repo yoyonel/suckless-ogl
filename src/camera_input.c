@@ -9,7 +9,7 @@
 
 void camera_input_handle_key(Camera* cam, int key, int action)
 {
-	int pressed = (action != GLFW_RELEASE);
+	bool pressed = (action != GLFW_RELEASE);
 
 	if (key == GLFW_KEY_W) {
 		cam->move_forward = pressed;
@@ -36,7 +36,7 @@ void camera_input_handle_mouse(Camera* cam, double xpos, double ypos)
 	if (cam->first_mouse) {
 		cam->last_mouse_x = xpos;
 		cam->last_mouse_y = ypos;
-		cam->first_mouse = 0;
+		cam->first_mouse = false;
 		return;
 	}
 

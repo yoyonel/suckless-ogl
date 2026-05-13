@@ -3,9 +3,9 @@
 # Related: https://github.com/yoyonel/suckless-ogl/issues/266
 set -euo pipefail
 
-EDGE_LIMIT=${1:-560}
+EDGE_LIMIT=${1:-567}
 HEADER_FAN_LIMIT=${2:-18}
-SOURCE_FAN_LIMIT=${3:-21}
+SOURCE_FAN_LIMIT=${3:-22}
 
 # Count total include edges (only local includes)
 total=0

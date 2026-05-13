@@ -13,6 +13,7 @@
 #include "app_settings.h" /* DEFAULT_FONT_SIZE */
 #include <GLFW/glfw3.h>   /* GLFW_KEY_*, GLFW_GAMEPAD_* */
 #include <cglm/types.h>   /* vec3 */
+#include <stdbool.h>
 
 /* ================================================================
  * UI Scaling and Layout Defaults
@@ -218,7 +219,7 @@ typedef struct {
 	float y_off;
 	float width;
 	float height;
-	int is_bound;
+	bool is_bound;
 	int bind_type;
 	int gp_btn;
 	int gp_axis;

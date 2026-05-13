@@ -1,5 +1,6 @@
 #include "camera.h"
 
+#include "bool_utils.h"
 #include <cglm/cam.h>
 #include <cglm/types.h>
 #include <cglm/util.h>
@@ -17,9 +18,9 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	cam->sensitivity = DEFAULT_CAMERA_SENSITIVITY;
 	cam->zoom = DEFAULT_CAMERA_ZOOM;
 
-	cam->move_forward = cam->move_backward = 0;
-	cam->move_left = cam->move_right = 0;
-	cam->move_up = cam->move_down = 0;
+	cam->move_forward = cam->move_backward = false;
+	cam->move_left = cam->move_right = false;
+	cam->move_up = cam->move_down = false;
 	glm_vec3_zero(cam->move_input);
 
 	// Physique
@@ -38,7 +39,7 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	cam->bobbing_time = 0.0F;
 	cam->bobbing_frequency = DEFAULT_BOBBING_FREQUENCY;
 	cam->bobbing_amplitude = DEFAULT_BOBBING_AMPLITUDE;
-	cam->bobbing_enabled = 1;
+	cam->bobbing_enabled = true;
 
 	// Fixed timestep
 	cam->physics_accumulator = 0.0F;
@@ -50,7 +51,7 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	// Input State
 	cam->last_mouse_x = 0.0;
 	cam->last_mouse_y = 0.0;
-	cam->first_mouse = 1;
+	cam->first_mouse = true;
 
 	camera_update_vectors(cam);
 }
@@ -73,11 +74,13 @@ void camera_update_vectors(Camera* cam)
 void camera_build_keyboard_input(Camera* cam)
 {
 	cam->move_input[0] =
-	    (float)(cam->move_right - cam->move_left); /* right/left */
-	cam->move_input[1] =
-	    (float)(cam->move_up - cam->move_down); /* up/down */
+	    (float)(BOOL_TO_INT(cam->move_right) -
+	            BOOL_TO_INT(cam->move_left)); /* right/left */
+	cam->move_input[1] = (float)(BOOL_TO_INT(cam->move_up) -
+	                             BOOL_TO_INT(cam->move_down)); /* up/down */
 	cam->move_input[2] =
-	    (float)(cam->move_forward - cam->move_backward); /* fwd/back */
+	    (float)(BOOL_TO_INT(cam->move_forward) -
+	            BOOL_TO_INT(cam->move_backward)); /* fwd/back */
 }
 
 void camera_fixed_update(Camera* cam)

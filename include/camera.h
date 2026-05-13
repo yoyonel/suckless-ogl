@@ -7,6 +7,7 @@
 #define CAMERA_H
 
 #include <cglm/cglm.h>
+#include <stdbool.h>
 
 /* --- Camera Defaults --- */
 
@@ -52,12 +53,12 @@ typedef struct Camera {
 	float zoom;        /**< Current Field of View (FOV) in degrees. */
 
 	/* Movement states (booleans — set by keyboard callbacks) */
-	int move_forward;
-	int move_backward;
-	int move_left;
-	int move_right;
-	int move_up;
-	int move_down;
+	bool move_forward;
+	bool move_backward;
+	bool move_left;
+	bool move_right;
+	bool move_up;
+	bool move_down;
 
 	/* Unified movement input [-1,1] per camera-local axis.
 	 * [0] = right (+) / left (-),
@@ -85,7 +86,7 @@ typedef struct Camera {
 	float bobbing_frequency; /**< Speed of the bobbing motion. */
 	float
 	    bobbing_amplitude; /**< Vertical distance of the bobbing motion. */
-	int bobbing_enabled;   /**< Boolean toggle for head bobbing effect. */
+	bool bobbing_enabled;  /**< Boolean toggle for head bobbing effect. */
 
 	/* Timing */
 	float physics_accumulator; /**< Residual time for fixed-step physics. */
@@ -97,7 +98,7 @@ typedef struct Camera {
 	/* Input State */
 	double last_mouse_x; /**< Previous mouse X position. */
 	double last_mouse_y; /**< Previous mouse Y position. */
-	int first_mouse;     /**< Flag to handle initial mouse jump. */
+	bool first_mouse;    /**< Flag to handle initial mouse jump. */
 } Camera;
 
 /**

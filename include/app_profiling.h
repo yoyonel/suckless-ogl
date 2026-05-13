@@ -16,6 +16,7 @@
 #include "gpu_usage.h"
 #include "perf_mode.h"
 #include "tracy_manager.h"
+#include <stdbool.h>
 
 /**
  * @struct AppProfiling
@@ -28,8 +29,8 @@ typedef struct AppProfiling {
 	TracyManager tracy_mgr;       /**< Tracy instrumentation manager. */
 	GPUUsageMonitor gpu_usage;    /**< GPU utilization % via DRM fdinfo. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
-	int perf_mode_active; /**< Performance/GameMode optimization active. */
-	int log_gpu_metrics;  /**< Toggle console logging of GPU stats. */
+	bool perf_mode_active; /**< Performance/GameMode optimization active. */
+	bool log_gpu_metrics;  /**< Toggle console logging of GPU stats. */
 } AppProfiling;
 
 /**

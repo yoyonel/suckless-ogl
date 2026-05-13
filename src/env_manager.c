@@ -36,7 +36,7 @@ int env_manager_load(EnvManager* mgr, AsyncLoader* loader, const char* filename)
 
 	LOG_INFO("suckless-ogl.env", "Queuing async load for: %s", path);
 	if (async_loader_request(loader, path)) {
-		mgr->env_map_loading = 1;
+		mgr->env_map_loading = true;
 		return 1;
 	}
 	LOG_WARNING("suckless-ogl.env",
@@ -58,7 +58,7 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 		if (!req->half_data && !req->pbo_mapped_ptr) {
 			LOG_ERROR("suckless-ogl.env",
 			          "Async request data is NULL!");
-			mgr->env_map_loading = 0;
+			mgr->env_map_loading = false;
 			mgr->env_map_loading_step = 0;
 			return;
 		}
@@ -96,7 +96,7 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 		} else {
 			LOG_ERROR("suckless-ogl.env",
 			          "Failed to create texture from HDR data!");
-			mgr->env_map_loading = 0;
+			mgr->env_map_loading = false;
 			mgr->env_map_loading_step = 0;
 		}
 
@@ -110,7 +110,7 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 			                      req->width, req->height);
 			mgr->pending_env_tex = 0;
 		}
-		mgr->env_map_loading = 0;
+		mgr->env_map_loading = false;
 		mgr->env_map_loading_step = 0;
 	}
 }
@@ -331,8 +331,8 @@ int env_mgr_subsys_init(App* app)
 	if (!app->env_mgr) {
 		return 0;
 	}
-	*app->env_mgr = (EnvManager){0};
-	app->env_mgr->is_first_load = 1;
+	*app->env_mgr = (EnvManager){.env_map_loading = false};
+	app->env_mgr->is_first_load = true;
 	app->env_mgr->transition_state = TRANSITION_WAIT_IBL;
 	app->env_mgr->transition_alpha = 1.0F;
 	app->env_mgr->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;

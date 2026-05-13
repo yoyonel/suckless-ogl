@@ -22,6 +22,7 @@
 #define PERF_MODE_H
 
 #include <sched.h>
+#include <stdbool.h>
 
 /**
  * @enum PerfModeState
@@ -55,7 +56,7 @@ typedef struct PerfModeContext {
 	int original_policy;               /**< Saved scheduler policy. */
 	struct sched_param original_param; /**< Saved scheduler params. */
 	int original_nice;                 /**< Saved process nice value. */
-	int initialized;                   /**< Initialization flag. */
+	bool initialized;                  /**< Initialization flag. */
 } PerfModeContext;
 
 /**

@@ -286,7 +286,7 @@ void test_camera_movement_keys(void)
 void test_mouse_and_scroll_exhaustive(void)
 {
 	test_app->input->camera_enabled = true;
-	test_app->input->camera.first_mouse = 1;
+	test_app->input->camera.first_mouse = true;
 	mouse_callback(test_app->win.handle, 100.0, 100.0);
 	mouse_callback(test_app->win.handle, 110.0, 120.0);
 	TEST_ASSERT_EQUAL_FLOAT(110.0F,

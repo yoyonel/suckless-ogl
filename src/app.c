@@ -8,6 +8,7 @@
 #include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "async_loader.h"
+#include "bool_utils.h"
 #include "camera_input.h"
 #include "env_manager.h"
 #include "lum_histogram.h"
@@ -148,14 +149,14 @@ void app_run(App* app)
 			postprocess_resize(app->postprocess,
 			                   app->win.pending_width,
 			                   app->win.pending_height);
-			app->win.resize_pending = 0;
+			app->win.resize_pending = false;
 			PROFILE_ZONE_END(resize_ctx);
 		}
 
-		bool profiling_enabled =
-		    (app->profiling->timeline_ui.visible ||
-		     app->profiling->log_gpu_metrics != 0 ||
-		     effect_benchmark_is_running(&app->effect_bench)) != 0;
+		bool profiling_enabled = INT_TO_BOOL(
+		    app->profiling->timeline_ui.visible ||
+		    app->profiling->log_gpu_metrics ||
+		    effect_benchmark_is_running(&app->effect_bench));
 		gpu_profiler_set_enabled(&app->profiling->gpu_profiler,
 		                         profiling_enabled);
 		gpu_profiler_begin_frame(&app->profiling->gpu_profiler,
@@ -197,7 +198,7 @@ void app_run(App* app)
 
 		{
 			PROFILE_ZONE(camera_ctx, "Camera Physics");
-			GamepadActions gp_actions = {0, 0, 0};
+			GamepadActions gp_actions = {false, false, false};
 			if (app->input->camera_enabled) {
 				gamepad_input_poll(&app->input->gamepad,
 				                   &gp_actions);

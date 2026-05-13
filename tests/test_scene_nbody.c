@@ -192,7 +192,7 @@ void tearDown(void)
 void test_toggle_nbody_enables_mode(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 
 	scene_toggle_nbody(&scene);
 
@@ -207,7 +207,7 @@ void test_toggle_nbody_disables_mode(void)
 {
 	Scene scene = make_test_scene();
 	/* Enable first */
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 	scene_toggle_nbody(&scene);
 	reset_mocks();
 
@@ -225,7 +225,7 @@ void test_toggle_nbody_disables_mode(void)
 void test_toggle_nbody_trail_init_failure_aborts(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 	mock_trail_init_fail = true;
 
 	scene_toggle_nbody(&scene);
@@ -239,7 +239,7 @@ void test_toggle_nbody_trail_init_failure_aborts(void)
 void test_toggle_nbody_shockwave_init_failure_cleans_trails(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 	mock_shockwave_init_fail = true;
 
 	scene_toggle_nbody(&scene);
@@ -276,7 +276,7 @@ void test_toggle_nbody_roundtrip(void)
 void test_nbody_update_noop_when_disabled(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 
 	scene_nbody_update(&scene, 1.0F / 60.0F);
 
@@ -289,7 +289,7 @@ void test_nbody_update_noop_when_disabled(void)
 void test_nbody_update_calls_subsystems(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 	scene_toggle_nbody(&scene);
 	reset_mocks();
 
@@ -303,7 +303,7 @@ void test_nbody_update_calls_subsystems(void)
 void test_nbody_update_multiple_steps(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation->nbody_mode = 0;
+	scene.simulation->nbody_mode = false;
 	scene_toggle_nbody(&scene);
 	reset_mocks();
 

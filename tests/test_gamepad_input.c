@@ -90,7 +90,7 @@ void test_gamepad_init_sets_defaults(void)
 	GamepadState state;
 	gamepad_input_init(&state);
 
-	TEST_ASSERT_EQUAL(0, state.connected);
+	TEST_ASSERT_FALSE(state.connected);
 	TEST_ASSERT_EQUAL(0, state.joystick_id);
 	TEST_ASSERT_FLOAT_WITHIN(0.001F, GAMEPAD_DEFAULT_DEADZONE,
 	                         state.deadzone);
@@ -170,7 +170,7 @@ void test_poll_without_gamepad_does_nothing(void)
 	gamepad_write_input(&state, &gctx);
 	gamepad_ctx_to_camera(&gctx, &cam);
 
-	TEST_ASSERT_EQUAL(0, state.connected);
+	TEST_ASSERT_FALSE(state.connected);
 	/* move_input should stay zero. */
 	TEST_ASSERT_FLOAT_WITHIN(0.0001F, 0.0F, cam.move_input[0]);
 	TEST_ASSERT_FLOAT_WITHIN(0.0001F, 0.0F, cam.move_input[1]);
@@ -199,7 +199,7 @@ void test_poll_left_stick_forward_adds_velocity(void)
 	gamepad_write_input(&state, &gctx);
 	gamepad_ctx_to_camera(&gctx, &cam);
 
-	TEST_ASSERT_EQUAL(1, state.connected);
+	TEST_ASSERT_TRUE(state.connected);
 	/* move_input[2] should be positive (forward). */
 	TEST_ASSERT_TRUE(cam.move_input[2] > 0.0F);
 
@@ -287,31 +287,31 @@ void test_share_button_triggers_camera_reset(void)
 	g_mock_gamepad_connected = 1;
 
 	/* First poll: Share not pressed → no action. */
-	GamepadActions act1 = {0, 0, 0};
+	GamepadActions act1 = {false, false, false};
 	gamepad_input_poll(&state, &act1);
-	TEST_ASSERT_EQUAL(0, act1.camera_reset);
+	TEST_ASSERT_FALSE(act1.camera_reset);
 
 	/* Second poll: Share pressed (edge) → action fires. */
 	g_mock_gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_BACK] = GLFW_PRESS;
-	GamepadActions act2 = {0, 0, 0};
+	GamepadActions act2 = {false, false, false};
 	gamepad_input_poll(&state, &act2);
-	TEST_ASSERT_EQUAL(1, act2.camera_reset);
+	TEST_ASSERT_TRUE(act2.camera_reset);
 
 	/* Third poll: Share held → no repeat. */
-	GamepadActions act3 = {0, 0, 0};
+	GamepadActions act3 = {false, false, false};
 	gamepad_input_poll(&state, &act3);
-	TEST_ASSERT_EQUAL(0, act3.camera_reset);
+	TEST_ASSERT_FALSE(act3.camera_reset);
 
 	/* Fourth poll: Share released then pressed → fires again. */
 	g_mock_gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_BACK] = GLFW_RELEASE;
-	GamepadActions act4 = {0, 0, 0};
+	GamepadActions act4 = {false, false, false};
 	gamepad_input_poll(&state, &act4);
-	TEST_ASSERT_EQUAL(0, act4.camera_reset);
+	TEST_ASSERT_FALSE(act4.camera_reset);
 
 	g_mock_gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_BACK] = GLFW_PRESS;
-	GamepadActions act5 = {0, 0, 0};
+	GamepadActions act5 = {false, false, false};
 	gamepad_input_poll(&state, &act5);
-	TEST_ASSERT_EQUAL(1, act5.camera_reset);
+	TEST_ASSERT_TRUE(act5.camera_reset);
 }
 
 void test_poll_sticks_in_deadzone_no_effect(void)

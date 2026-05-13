@@ -11,6 +11,7 @@
 #define PERF_TIMER_H
 
 #include "gl_common.h"
+#include <stdbool.h>
 #include <time.h>
 
 /**
@@ -34,7 +35,7 @@ typedef struct {
 typedef struct {
 	GLuint query_start; /**< Handle for the start timestamp query. */
 	GLuint query_end;   /**< Handle for the end timestamp query. */
-	int active; /**< Flag indicating if a measurement is in progress. */
+	bool active; /**< Flag indicating if a measurement is in progress. */
 } GPUTimer;
 
 #ifdef TRACY_ENABLE

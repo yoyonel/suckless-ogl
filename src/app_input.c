@@ -1,6 +1,7 @@
 #include "app_input.h"
 
 #include "app_ui.h"
+#include "bool_utils.h"
 #include "camera.h"
 #include "camera_input.h"
 #include "env_manager.h"
@@ -52,7 +53,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	 * mid-mode-switch. */
 	*ctx->pending_width = width;
 	*ctx->pending_height = height;
-	*ctx->resize_pending = 1;
+	*ctx->resize_pending = true;
 }
 
 static void handle_pbr_debug_mode(AppInputContext* ctx)
@@ -214,18 +215,19 @@ static void handle_subdiv_input(AppInputContext* ctx, int key)
 
 static void handle_camera_toggle(AppInputContext* ctx)
 {
-	*ctx->camera_enabled = !*ctx->camera_enabled;
+	BOOL_TOGGLE(*ctx->camera_enabled);
 	if (*ctx->camera_enabled) {
 		glfwSetInputMode(ctx->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
-		ctx->camera->first_mouse = 1;
+		ctx->camera->first_mouse = true;
 	} else {
 		glfwSetInputMode(ctx->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	LOG_INFO("suckless-ogl.app", "Camera control: %s",
-	         *ctx->camera_enabled ? "ENABLED" : "DISABLED");
+	         BOOL_TO_INT(*ctx->camera_enabled) ? "ENABLED" : "DISABLED");
 	action_notifier_push(
-	    ctx->notifier, *ctx->camera_enabled ? "Camera: ON" : "Camera: OFF",
+	    ctx->notifier,
+	    BOOL_TO_INT(*ctx->camera_enabled) ? "Camera: ON" : "Camera: OFF",
 	    NOTIF_DUR_NORMAL);
 }
 
@@ -258,14 +260,14 @@ static void handle_f3_input(AppInputContext* ctx, int mods)
 static void handle_f9_input(AppInputContext* ctx)
 {
 	PROFILE_ZONE(f9_zone, "Input: F9 (Performance Mode)");
-	if (*ctx->perf_mode_active != 0) {
+	if (*ctx->perf_mode_active) {
 		perf_mode_request_end(ctx->perf_context);
-		*ctx->perf_mode_active = 0;
+		*ctx->perf_mode_active = false;
 		action_notifier_push(ctx->notifier, "Perf Mode: OFF",
 		                     NOTIF_DUR_LONG);
 	} else {
 		*ctx->perf_mode_active =
-		    (perf_mode_request_start(ctx->perf_context) == 0) ? 1 : 0;
+		    (perf_mode_request_start(ctx->perf_context) == 0);
 		char buf[NOTIF_BUF_SIZE];
 		(void)safe_snprintf(
 		    buf, sizeof(buf), "Perf Mode: ON (%s)",
@@ -273,7 +275,7 @@ static void handle_f9_input(AppInputContext* ctx)
 		action_notifier_push(ctx->notifier, buf, NOTIF_DUR_LONG);
 	}
 	LOG_INFO("suckless-ogl.app", "Performance Mode: %s (%s)",
-	         (*ctx->perf_mode_active != 0) ? "ON" : "OFF",
+	         *ctx->perf_mode_active ? "ON" : "OFF",
 	         perf_mode_get_state_string(ctx->perf_context));
 	PROFILE_ZONE_END(f9_zone);
 }
@@ -299,15 +301,15 @@ static void app_toggle_help(AppInputContext* ctx)
 		/* Opening overlay: if camera is active, disable it. */
 		if (*ctx->camera_enabled) {
 			handle_camera_toggle(ctx);
-			ctx->overlay->help_captured_camera = 1;
+			ctx->overlay->help_captured_camera = true;
 		} else {
-			ctx->overlay->help_captured_camera = 0;
+			ctx->overlay->help_captured_camera = false;
 		}
 	} else if (next == HELP_MODE_OFF && prev != HELP_MODE_OFF) {
 		/* Closing overlay: re-enable camera if we disabled it. */
 		if (ctx->overlay->help_captured_camera) {
 			handle_camera_toggle(ctx);
-			ctx->overlay->help_captured_camera = 0;
+			ctx->overlay->help_captured_camera = false;
 		}
 	}
 	action_notifier_push(ctx->notifier, HELP_MODE_NAMES[(int)next],
@@ -322,7 +324,7 @@ static void app_close_help(AppInputContext* ctx)
 	ctx->overlay->show_help = HELP_MODE_OFF;
 	if (ctx->overlay->help_captured_camera) {
 		handle_camera_toggle(ctx);
-		ctx->overlay->help_captured_camera = 0;
+		ctx->overlay->help_captured_camera = false;
 	}
 	action_notifier_push(ctx->notifier, HELP_MODE_NAMES[0],
 	                     NOTIF_DUR_NORMAL);
@@ -341,12 +343,12 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 			handle_f3_input(ctx, mods);
 			return true;
 		case GLFW_KEY_F4:
-			*ctx->log_gpu_metrics =
-			    (*ctx->log_gpu_metrics != 0) ? 0 : 1;
-			LOG_INFO("suckless-ogl.app", "Log GPU Metrics: %s",
-			         (*ctx->log_gpu_metrics != 0) ? "ON" : "OFF");
+			BOOL_TOGGLE(*ctx->log_gpu_metrics);
+			LOG_INFO(
+			    "suckless-ogl.app", "Log GPU Metrics: %s",
+			    BOOL_TO_INT(*ctx->log_gpu_metrics) ? "ON" : "OFF");
 			action_notifier_push(ctx->notifier,
-			                     (*ctx->log_gpu_metrics != 0)
+			                     BOOL_TO_INT(*ctx->log_gpu_metrics)
 			                         ? "Log Metrics: ON"
 			                         : "Log Metrics: OFF",
 			                     NOTIF_DUR_NORMAL);
@@ -386,15 +388,15 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 static void handle_y_key_input(AppInputContext* ctx, int mods)
 {
 	if ((unsigned int)mods & (unsigned int)GLFW_MOD_SHIFT) {
-		ctx->scene->config.show_probe_grid =
-		    !ctx->scene->config.show_probe_grid;
+		BOOL_TOGGLE(ctx->scene->config.show_probe_grid);
 		LOG_INFO("suckless-ogl.app", "Probe Grid Debug: %s",
 		         ctx->scene->config.show_probe_grid ? "ON" : "OFF");
-		action_notifier_push(ctx->notifier,
-		                     ctx->scene->config.show_probe_grid
-		                         ? "Probes: ON"
-		                         : "Probes: OFF",
-		                     NOTIF_DUR_NORMAL);
+		action_notifier_push(
+		    ctx->notifier,
+		    BOOL_TO_INT(ctx->scene->config.show_probe_grid)
+		        ? "Probes: ON"
+		        : "Probes: OFF",
+		    NOTIF_DUR_NORMAL);
 	} else {
 		ctx->scene->config.gi_mode =
 		    (ctx->scene->config.gi_mode + 1) % GI_MODE_COUNT;
@@ -418,13 +420,13 @@ static void handle_system_key_input(AppInputContext* ctx, int key, int mods)
 			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_Z:
-			ctx->scene->config.wireframe =
-			    !ctx->scene->config.wireframe;
-			action_notifier_push(ctx->notifier,
-			                     ctx->scene->config.wireframe
-			                         ? "Wireframe: ON"
-			                         : "Wireframe: OFF",
-			                     NOTIF_DUR_NORMAL);
+			BOOL_TOGGLE(ctx->scene->config.wireframe);
+			action_notifier_push(
+			    ctx->notifier,
+			    BOOL_TO_INT(ctx->scene->config.wireframe)
+			        ? "Wireframe: ON"
+			        : "Wireframe: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_UP:
 		case GLFW_KEY_DOWN:
@@ -669,18 +671,18 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			handle_y_key_input(ctx, mods);
 			break;
 		case GLFW_KEY_L:
-			ctx->scene->config.billboard_mode =
-			    !ctx->scene->config.billboard_mode;
+			BOOL_TOGGLE(ctx->scene->config.billboard_mode);
 			// app_update_instancing_mode(app) was empty and
 			// removed.
 			LOG_INFO(
 			    "suckless-ogl.app", "Billboard Mode: %s",
 			    ctx->scene->config.billboard_mode ? "ON" : "OFF");
-			action_notifier_push(ctx->notifier,
-			                     ctx->scene->config.billboard_mode
-			                         ? "Billboards: ON"
-			                         : "Billboards: OFF",
-			                     NOTIF_DUR_NORMAL);
+			action_notifier_push(
+			    ctx->notifier,
+			    BOOL_TO_INT(ctx->scene->config.billboard_mode)
+			        ? "Billboards: ON"
+			        : "Billboards: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_O:
 			handle_o_key_input(ctx);
@@ -709,26 +711,27 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				handle_aa_mode_input(ctx);
 			} else {
-				ctx->scene->config.specular_aa_enabled =
-				    !ctx->scene->config.specular_aa_enabled;
+				BOOL_TOGGLE(
+				    ctx->scene->config.specular_aa_enabled);
 				action_notifier_push(
 				    ctx->notifier,
-				    ctx->scene->config.specular_aa_enabled
+				    BOOL_TO_INT(
+				        ctx->scene->config.specular_aa_enabled)
 				        ? "Specular AA: ON"
 				        : "Specular AA: OFF",
 				    NOTIF_DUR_SHORT);
 			}
 			break;
 		case GLFW_KEY_K:
-			ctx->scene->config.show_envmap =
-			    !ctx->scene->config.show_envmap;
+			BOOL_TOGGLE(ctx->scene->config.show_envmap);
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
 			         ctx->scene->config.show_envmap ? "ON" : "OFF");
-			action_notifier_push(ctx->notifier,
-			                     ctx->scene->config.show_envmap
-			                         ? "Skybox: ON"
-			                         : "Skybox: OFF",
-			                     NOTIF_DUR_NORMAL);
+			action_notifier_push(
+			    ctx->notifier,
+			    BOOL_TO_INT(ctx->scene->config.show_envmap)
+			        ? "Skybox: ON"
+			        : "Skybox: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_G:
 			if (handle_g_key_input(ctx, mods)) {
@@ -831,21 +834,21 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window)
 	 * pending fences/swaps, the NVIDIA driver can deadlock. */
 	glFinish();
 
-	if (*ctx->is_fullscreen == 0) {
+	if (!*ctx->is_fullscreen) {
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		glfwGetWindowPos(window, ctx->saved_x, ctx->saved_y);
 		glfwGetWindowSize(window, ctx->saved_width, ctx->saved_height);
 		glfwSetWindowMonitor(window, monitor, 0, 0, mode->width,
 		                     mode->height, mode->refreshRate);
-		*ctx->is_fullscreen = 1;
+		*ctx->is_fullscreen = true;
 		LOG_INFO("suckless-ogl.app", "Switched to fullscreen (%dx%d)",
 		         mode->width, mode->height);
 	} else {
 		glfwSetWindowMonitor(window, NULL, *ctx->saved_x, *ctx->saved_y,
 		                     *ctx->saved_width, *ctx->saved_height,
 		                     REFRESH_RATE_WINDOWED);
-		*ctx->is_fullscreen = 0;
+		*ctx->is_fullscreen = false;
 		LOG_INFO("suckless-ogl.app", "Switched to windowed");
 	}
 	glfwFocusWindow(window);
@@ -861,7 +864,7 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window)
 		                 (double)(height / 2));
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		ctx->camera->first_mouse = 1;
+		ctx->camera->first_mouse = true;
 	}
 }
 

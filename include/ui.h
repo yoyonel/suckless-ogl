@@ -14,6 +14,7 @@
 
 #include "gl_common.h"
 #include <cglm/cglm.h>
+#include <stdbool.h>
 
 typedef struct Shader Shader;
 
@@ -60,7 +61,7 @@ typedef struct {
 	int batch_count;           /**< Current vertex count in batch */
 	int current_screen_width;  /**< Screen width for current batch */
 	int current_screen_height; /**< Screen height for current batch */
-	int batch_active;          /**< Is a batch currently active? */
+	bool batch_active;         /**< Is a batch currently active? */
 	GLuint current_texture;    /**< Currently bound texture in the batch */
 } UIContext;
 

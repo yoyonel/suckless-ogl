@@ -15,6 +15,7 @@
 #define APP_INPUT_H
 
 #include "gl_common.h"
+#include <stdbool.h>
 
 /* Forward declarations — avoids pulling heavy headers into app_input.h */
 typedef struct App App;
@@ -55,17 +56,17 @@ typedef struct {
 	/* Mutable scalar state (pointers so mutations propagate to App) */
 	int* width;
 	int* height;
-	int* camera_enabled;
-	int* is_fullscreen;
+	bool* camera_enabled;
+	bool* is_fullscreen;
 	int* saved_x;
 	int* saved_y;
 	int* saved_width;
 	int* saved_height;
-	int* resize_pending;
+	bool* resize_pending;
 	int* pending_width;
 	int* pending_height;
-	int* perf_mode_active;
-	int* log_gpu_metrics;
+	bool* perf_mode_active;
+	bool* log_gpu_metrics;
 } AppInputContext;
 
 /**

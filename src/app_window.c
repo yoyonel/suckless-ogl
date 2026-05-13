@@ -6,7 +6,7 @@
 int app_window_subsys_init(App* app)
 {
 	app->win.is_fullscreen = false;
-	app->win.resize_pending = 0;
+	app->win.resize_pending = false;
 
 	app->win.handle =
 	    window_create(app->width, app->height, app->title, DEFAULT_SAMPLES);

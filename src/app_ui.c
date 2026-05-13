@@ -4,6 +4,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "app_ui_layout.h" /* Private: layout constants, keyboard/gamepad data */
+#include "bool_utils.h"
 #include "env_manager.h"
 #include "glad/glad.h"
 #include "nbody.h"
@@ -82,7 +83,7 @@ void app_ui_init(AppUIOverlay* overlay)
 	    texture_load_rgba_png("assets/textures/ui/kbd_panel_frame.png");
 	overlay->kbd_tex_key_base =
 	    texture_load_rgba_png("assets/textures/ui/kbd_key_base.png");
-	overlay->help_captured_camera = 0;
+	overlay->help_captured_camera = false;
 }
 
 void app_ui_cleanup(AppUIOverlay* overlay)
@@ -1242,7 +1243,7 @@ static void draw_loading_indicator(const App* app)
 	}
 
 	char loading_text[UI_LOADING_TEXT_SIZE];
-	const char* status = (app->env_mgr->env_map_loading != 0)
+	const char* status = BOOL_TO_INT(app->env_mgr->env_map_loading)
 	                         ? "Loading HDR"
 	                         : "Generating IBL";
 	(void)safe_snprintf(loading_text, sizeof(loading_text), "%s", status);

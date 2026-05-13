@@ -43,7 +43,7 @@ void test_camera_input_handle_mouse_should_handle_first_mouse(void)
 	camera_init(&cam, 10.0F, 90.0F, 0.0F);
 
 	/* Ensure initialized state */
-	TEST_ASSERT_EQUAL(1, cam.first_mouse);
+	TEST_ASSERT_TRUE(cam.first_mouse);
 	TEST_ASSERT_EQUAL_FLOAT(0.0F, cam.last_mouse_x);
 	TEST_ASSERT_EQUAL_FLOAT(0.0F, cam.last_mouse_y);
 
@@ -52,7 +52,7 @@ void test_camera_input_handle_mouse_should_handle_first_mouse(void)
 
 	/* Verify state updated but no movement applied (as deltas are 0
 	 * effectively) */
-	TEST_ASSERT_EQUAL(0, cam.first_mouse);
+	TEST_ASSERT_FALSE(cam.first_mouse);
 	TEST_ASSERT_EQUAL_FLOAT(100.0F, cam.last_mouse_x);
 	TEST_ASSERT_EQUAL_FLOAT(200.0F, cam.last_mouse_y);
 
@@ -68,7 +68,7 @@ void test_camera_input_handle_mouse_should_update_orientation(void)
 {
 	Camera cam;
 	camera_init(&cam, 10.0F, 90.0F, 0.0F);
-	cam.first_mouse = 0;
+	cam.first_mouse = false;
 	cam.last_mouse_x = 100.0;
 	cam.last_mouse_y = 100.0;
 
