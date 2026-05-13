@@ -14,8 +14,8 @@ void app_profiling_init(AppProfiling* prof, int width, int height)
 	gpu_profiler_init(&prof->gpu_profiler);
 	gpu_profiler_ui_init(&prof->timeline_ui);
 	gpu_usage_init(&prof->gpu_usage);
-	prof->perf_mode_active = 0;
-	prof->log_gpu_metrics = 0;
+	prof->perf_mode_active = false;
+	prof->log_gpu_metrics = false;
 }
 
 void app_profiling_cleanup(AppProfiling* prof)

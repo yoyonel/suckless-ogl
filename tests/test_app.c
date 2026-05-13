@@ -509,7 +509,7 @@ static void apply_subtle_auto_exposure(const ViewPoint* vpoint, void* data)
 	postprocess_enable(g_test_app.postprocess, POSTFX_AUTO_EXPOSURE);
 	postprocess_disable(g_test_app.postprocess, POSTFX_VIGNETTE);
 	postprocess_disable(g_test_app.postprocess, POSTFX_GRAIN);
-	g_test_app.profiling->log_gpu_metrics = 1;
+	g_test_app.profiling->log_gpu_metrics = true;
 
 	// Note: warmup frames are handled inside the app_update cycles in the
 	// main loop. We might need a special case for this if 16 frames is not

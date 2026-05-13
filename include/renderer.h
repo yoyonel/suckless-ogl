@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /* Forward declarations — RenderContext holds only pointers. */
@@ -36,7 +37,7 @@ typedef struct RenderContext {
 	int height;
 	double delta_time;
 	uint64_t frame_count;
-	int log_gpu_metrics;
+	bool log_gpu_metrics;
 	RenderUIFn render_ui;
 	void* render_ui_data;
 } RenderContext;

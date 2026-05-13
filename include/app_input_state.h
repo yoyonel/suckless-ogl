@@ -14,6 +14,7 @@
 #include "app_binding.h"
 #include "camera.h"
 #include "gamepad_input.h"
+#include <stdbool.h>
 
 /**
  * @struct AppInput
@@ -25,7 +26,7 @@ typedef struct AppInput {
 	AppBindingRegistry
 	    binding_registry;        /**< Key-binding overlay registry. */
 	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
-	int camera_enabled;          /**< Pause camera movement. */
+	bool camera_enabled;         /**< Pause camera movement. */
 } AppInput;
 
 /**

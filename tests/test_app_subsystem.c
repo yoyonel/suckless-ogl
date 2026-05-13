@@ -335,7 +335,7 @@ void test_input_subsys_roundtrip(void)
 	TEST_ASSERT_NOT_NULL(app.input);
 
 	app_input_state_init(app.input);
-	TEST_ASSERT_EQUAL(1, app.input->camera_enabled);
+	TEST_ASSERT_TRUE(app.input->camera_enabled);
 
 	app_input_state_cleanup(app.input);
 	free(app.input);

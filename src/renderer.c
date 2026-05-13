@@ -17,7 +17,7 @@
 void renderer_draw_frame(const RenderContext* ctx)
 {
 	bool profiling_enabled =
-	    (ctx->profiler_ui->visible || ctx->log_gpu_metrics != 0 ||
+	    (ctx->profiler_ui->visible || ctx->log_gpu_metrics ||
 	     effect_benchmark_is_running(ctx->effect_bench)) != 0;
 	postprocess_update_readbacks(ctx->postprocess, ctx->frame_count);
 
@@ -95,5 +95,5 @@ void renderer_draw_frame(const RenderContext* ctx)
 	// 4. Logique d'affichage et animations
 	double current_time = glfwGetTime();
 	gpu_profiler_ui_update(ctx->profiler_ui, ctx->profiler, ctx->delta_time,
-	                       current_time, (bool)ctx->log_gpu_metrics);
+	                       current_time, ctx->log_gpu_metrics);
 }

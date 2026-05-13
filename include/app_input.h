@@ -56,7 +56,7 @@ typedef struct {
 	/* Mutable scalar state (pointers so mutations propagate to App) */
 	int* width;
 	int* height;
-	int* camera_enabled;
+	bool* camera_enabled;
 	bool* is_fullscreen;
 	int* saved_x;
 	int* saved_y;
@@ -65,8 +65,8 @@ typedef struct {
 	bool* resize_pending;
 	int* pending_width;
 	int* pending_height;
-	int* perf_mode_active;
-	int* log_gpu_metrics;
+	bool* perf_mode_active;
+	bool* log_gpu_metrics;
 } AppInputContext;
 
 /**
