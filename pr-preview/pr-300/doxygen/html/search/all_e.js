@@ -18,7 +18,7 @@ var searchData=
   ['nbody_5fkinetic_5fenergy_1389',['nbody_kinetic_energy',['../nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c',1,'nbody_kinetic_energy(const NBodySim *sim):&#160;nbody.c'],['../nbody_8c.html#ad6106b8761eae4cb34102c0d18fc705c',1,'nbody_kinetic_energy(const NBodySim *sim):&#160;nbody.c']]],
   ['nbody_5fmax_5faccumulator_1390',['NBODY_MAX_ACCUMULATOR',['../nbody_8h.html#a63380969f164f080d6ab4ba45dbc1a7d',1,'nbody.h']]],
   ['nbody_5fmax_5fbodies_1391',['NBODY_MAX_BODIES',['../nbody_8h.html#a94798fdadfbf49a7c658ace669a1d310a4a415bff49a2b0923c1fe9f82e90e6a7',1,'nbody.h']]],
-  ['nbody_5fmode_1392',['nbody_mode',['../structSceneSimulation.html#a7dd666d56d8aee1fb19f5b430830c2b2',1,'SceneSimulation']]],
+  ['nbody_5fmode_1392',['nbody_mode',['../structSceneSimulation.html#a2430eee7ff36a9c981dc98dcb632fe64',1,'SceneSimulation']]],
   ['nbody_5fsim_1393',['nbody_sim',['../structSceneSimulation.html#a02df20059a9bc4b5496f2436ad6df74a',1,'SceneSimulation']]],
   ['nbody_5fsoftening_5ffactor_1394',['NBODY_SOFTENING_FACTOR',['../nbody_8h.html#a8f6ffb88d46f1bd72ef995526bec33b7',1,'nbody.h']]],
   ['nbody_5fsoftening_5fsq_1395',['NBODY_SOFTENING_SQ',['../nbody_8h.html#ad7bc6f91a172aff337338f864f38d5d0',1,'nbody.h']]],
