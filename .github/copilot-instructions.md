@@ -56,6 +56,7 @@ The following instruction files contain the authoritative, detailed rules. **Do 
 
 - **commit-workflow.instructions.md** — SoC commit discipline, Conventional Commits format, pre-commit workflow, branching strategy, git safety rules.
 - **testing-quality.instructions.md** — CI validation, test coverage, code quality standards, no-suppression policy, Justfile discipline, documentation gates, RenderDoc observability.
+- **c-coding-style.instructions.md** — C type conventions, boolean usage (`bool`/`true`/`false`), clang-tidy `readability-implicit-bool-conversion` patterns, GPU UBO exceptions.
 - **github-project.instructions.md** — PR workflow, labels, milestones, project board management, issue lifecycle.
 
 ---
