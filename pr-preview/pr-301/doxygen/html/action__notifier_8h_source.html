@@ -1,0 +1,321 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/action_notifier.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('action__notifier_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">action_notifier.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="action__notifier_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef ACTION_NOTIFIER_H</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define ACTION_NOTIFIER_H</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ui_8h.html">ui.h</a>&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="action__notifier_8h.html#a4c0116f42158803a0387e8d864d72889">   13</a></span>&#160;<span class="preprocessor">#define MAX_ACTION_NOTIFICATIONS 5</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="action__notifier_8h.html#a895cb5fef25c1dbd6612396f11d3e560">   16</a></span>&#160;<span class="preprocessor">#define MAX_ACTION_TEXT_LENGTH 128</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="action__notifier_8h.html#ae69a8ebf842b2eda8841d6b341583253">   19</a></span>&#160;<span class="preprocessor">#define NOTIF_DUR_SHORT 1.0F</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="action__notifier_8h.html#a6b53ef71bab360389505ecb4ea5b8fa5">   22</a></span>&#160;<span class="preprocessor">#define NOTIF_DUR_NORMAL 1.5F</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="action__notifier_8h.html#a2df5e972f20728e414eb034ef37568c7">   25</a></span>&#160;<span class="preprocessor">#define NOTIF_DUR_LONG 2.0F</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structActionNotification.html">   31</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structActionNotification.html">ActionNotification</a> {</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structActionNotification.html#aad94b322eb9ad45b29235de70fa0415f">   32</a></span>&#160;    <span class="keywordtype">char</span> <a class="code" href="structActionNotification.html#aad94b322eb9ad45b29235de70fa0415f">text</a>[<a class="code" href="action__notifier_8h.html#a895cb5fef25c1dbd6612396f11d3e560">MAX_ACTION_TEXT_LENGTH</a>];</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structActionNotification.html#a81ae26ad59c9628b29e363594b84fc24">   33</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structActionNotification.html#a81ae26ad59c9628b29e363594b84fc24">lifetime</a>;     </div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structActionNotification.html#a5e58db6c629676dfd931706f39204f56">   34</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structActionNotification.html#a5e58db6c629676dfd931706f39204f56">max_lifetime</a>; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structActionNotification.html#a10b1fe51b67c571125ff4714837fe8b3">   35</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structActionNotification.html#a10b1fe51b67c571125ff4714837fe8b3">active</a>;        </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;} <a class="code" href="structActionNotification.html">ActionNotification</a>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structActionNotifier.html">   42</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structActionNotifier.html">ActionNotifier</a> {</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825">   43</a></span>&#160;    <a class="code" href="structActionNotification.html">ActionNotification</a> <a class="code" href="structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825">notes</a>[<a class="code" href="action__notifier_8h.html#a4c0116f42158803a0387e8d864d72889">MAX_ACTION_NOTIFICATIONS</a>];</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;} <a class="code" href="structActionNotifier.html">ActionNotifier</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">void</span> <a class="code" href="action__notifier_8h.html#a2f4e4f6564af9cf640cc72c6e8a002f0">action_notifier_init</a>(<a class="code" href="structActionNotifier.html">ActionNotifier</a>* notifier);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keywordtype">void</span> <a class="code" href="action__notifier_8h.html#a8facec5ee2a33b00e3a12b03fb75c378">action_notifier_push</a>(<a class="code" href="structActionNotifier.html">ActionNotifier</a>* notifier, <span class="keyword">const</span> <span class="keywordtype">char</span>* text,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                          <span class="keywordtype">float</span> duration);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">void</span> <a class="code" href="action__notifier_8h.html#a68e7a028ca326da5893c84e2a8115cd3">action_notifier_update</a>(<a class="code" href="structActionNotifier.html">ActionNotifier</a>* notifier, <span class="keywordtype">float</span> delta_time);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keywordtype">void</span> <a class="code" href="action__notifier_8h.html#a31d380c260cce25902eace6917fbeebb">action_notifier_draw</a>(<a class="code" href="structActionNotifier.html">ActionNotifier</a>* notifier, <a class="code" href="structUIContext.html">UIContext</a>* ui_ctx,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                          <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ACTION_NOTIFIER_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aaction__notifier_8h_html_a2f4e4f6564af9cf640cc72c6e8a002f0"><div class="ttname"><a href="action__notifier_8h.html#a2f4e4f6564af9cf640cc72c6e8a002f0">action_notifier_init</a></div><div class="ttdeci">void action_notifier_init(ActionNotifier *notifier)</div><div class="ttdoc">Initializes the notifier.</div><div class="ttdef"><b>Definition:</b> action_notifier.c:8</div></div>
+<div class="ttc" id="aaction__notifier_8h_html_a31d380c260cce25902eace6917fbeebb"><div class="ttname"><a href="action__notifier_8h.html#a31d380c260cce25902eace6917fbeebb">action_notifier_draw</a></div><div class="ttdeci">void action_notifier_draw(ActionNotifier *notifier, UIContext *ui_ctx, int screen_width, int screen_height)</div><div class="ttdoc">Renders active notifications to the screen.</div><div class="ttdef"><b>Definition:</b> action_notifier.c:69</div></div>
+<div class="ttc" id="aaction__notifier_8h_html_a4c0116f42158803a0387e8d864d72889"><div class="ttname"><a href="action__notifier_8h.html#a4c0116f42158803a0387e8d864d72889">MAX_ACTION_NOTIFICATIONS</a></div><div class="ttdeci">#define MAX_ACTION_NOTIFICATIONS</div><div class="ttdoc">Maximum number of concurrent notifications.</div><div class="ttdef"><b>Definition:</b> action_notifier.h:13</div></div>
+<div class="ttc" id="aaction__notifier_8h_html_a68e7a028ca326da5893c84e2a8115cd3"><div class="ttname"><a href="action__notifier_8h.html#a68e7a028ca326da5893c84e2a8115cd3">action_notifier_update</a></div><div class="ttdeci">void action_notifier_update(ActionNotifier *notifier, float delta_time)</div><div class="ttdoc">Updates notification timers.</div><div class="ttdef"><b>Definition:</b> action_notifier.c:52</div></div>
+<div class="ttc" id="aaction__notifier_8h_html_a895cb5fef25c1dbd6612396f11d3e560"><div class="ttname"><a href="action__notifier_8h.html#a895cb5fef25c1dbd6612396f11d3e560">MAX_ACTION_TEXT_LENGTH</a></div><div class="ttdeci">#define MAX_ACTION_TEXT_LENGTH</div><div class="ttdoc">Maximum length of a notification message.</div><div class="ttdef"><b>Definition:</b> action_notifier.h:16</div></div>
+<div class="ttc" id="aaction__notifier_8h_html_a8facec5ee2a33b00e3a12b03fb75c378"><div class="ttname"><a href="action__notifier_8h.html#a8facec5ee2a33b00e3a12b03fb75c378">action_notifier_push</a></div><div class="ttdeci">void action_notifier_push(ActionNotifier *notifier, const char *text, float duration)</div><div class="ttdoc">Adds a new notification message.</div><div class="ttdef"><b>Definition:</b> action_notifier.c:18</div></div>
+<div class="ttc" id="astructActionNotification_html"><div class="ttname"><a href="structActionNotification.html">ActionNotification</a></div><div class="ttdoc">Represents a single active notification.</div><div class="ttdef"><b>Definition:</b> action_notifier.h:31</div></div>
+<div class="ttc" id="astructActionNotification_html_a10b1fe51b67c571125ff4714837fe8b3"><div class="ttname"><a href="structActionNotification.html#a10b1fe51b67c571125ff4714837fe8b3">ActionNotification::active</a></div><div class="ttdeci">bool active</div><div class="ttdef"><b>Definition:</b> action_notifier.h:35</div></div>
+<div class="ttc" id="astructActionNotification_html_a5e58db6c629676dfd931706f39204f56"><div class="ttname"><a href="structActionNotification.html#a5e58db6c629676dfd931706f39204f56">ActionNotification::max_lifetime</a></div><div class="ttdeci">float max_lifetime</div><div class="ttdef"><b>Definition:</b> action_notifier.h:34</div></div>
+<div class="ttc" id="astructActionNotification_html_a81ae26ad59c9628b29e363594b84fc24"><div class="ttname"><a href="structActionNotification.html#a81ae26ad59c9628b29e363594b84fc24">ActionNotification::lifetime</a></div><div class="ttdeci">float lifetime</div><div class="ttdef"><b>Definition:</b> action_notifier.h:33</div></div>
+<div class="ttc" id="astructActionNotification_html_aad94b322eb9ad45b29235de70fa0415f"><div class="ttname"><a href="structActionNotification.html#aad94b322eb9ad45b29235de70fa0415f">ActionNotification::text</a></div><div class="ttdeci">char text[128]</div><div class="ttdef"><b>Definition:</b> action_notifier.h:32</div></div>
+<div class="ttc" id="astructActionNotifier_html"><div class="ttname"><a href="structActionNotifier.html">ActionNotifier</a></div><div class="ttdoc">Manager for action notifications.</div><div class="ttdef"><b>Definition:</b> action_notifier.h:42</div></div>
+<div class="ttc" id="astructActionNotifier_html_a5aef1dd4aeeaa10ff2e1c7855c05c825"><div class="ttname"><a href="structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825">ActionNotifier::notes</a></div><div class="ttdeci">ActionNotification notes[5]</div><div class="ttdef"><b>Definition:</b> action_notifier.h:43</div></div>
+<div class="ttc" id="astructUIContext_html"><div class="ttname"><a href="structUIContext.html">UIContext</a></div><div class="ttdoc">Persistent state for the UI system.</div><div class="ttdef"><b>Definition:</b> ui.h:52</div></div>
+<div class="ttc" id="aui_8h_html"><div class="ttname"><a href="ui_8h.html">ui.h</a></div><div class="ttdoc">Minimal immediate-mode User Interface (UI) library.</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="action__notifier_8h.html">action_notifier.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
