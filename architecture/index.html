@@ -645,6 +645,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#descriptor-call-order-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descriptor Call-Order Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-traceability-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static Traceability Annotations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#how-to-add-a-new-subsystem" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3859,30 +3881,119 @@
     PROF --&gt;|"gpu_profiler"| PP
     SC --&gt;|"gpu resources"| PP</code></pre>
 <p><strong>Legend</strong>: 🟡 must be first (creates GL context), 🔵 needs GL, 🟢 no GL dependency.</p>
+<h4 id="descriptor-call-order-table">Descriptor Call-Order Table<a class="headerlink" href="#descriptor-call-order-table" title="Permanent link">¶</a></h4>
+<p>The table below lists each subsystem in init order (cleanup runs in reverse):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>Descriptor Macro</th>
+<th>Init Function</th>
+<th>Cleanup Function</th>
+<th>Source File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>APP_WINDOW_DESCRIPTOR</code></td>
+<td><code>app_window_subsys_init</code></td>
+<td><code>app_window_subsys_cleanup</code></td>
+<td><code>src/app_window.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>APP_INPUT_DESCRIPTOR</code></td>
+<td><code>app_input_subsys_init</code></td>
+<td><code>app_input_subsys_cleanup</code></td>
+<td><code>src/app_input_state.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>APP_PROFILING_DESCRIPTOR</code></td>
+<td><code>app_profiling_subsys_init</code></td>
+<td><code>app_profiling_subsys_cleanup</code></td>
+<td><code>src/app_profiling.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>APP_ASYNC_COORD_DESCRIPTOR</code></td>
+<td><code>async_coord_subsys_init</code></td>
+<td><code>async_coord_subsys_cleanup</code></td>
+<td><code>src/async_coordinator.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>APP_LUM_HISTOGRAM_DESCRIPTOR</code></td>
+<td><code>lum_histogram_subsys_init</code></td>
+<td><code>lum_histogram_subsys_cleanup</code></td>
+<td><code>src/lum_histogram.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>APP_ASYNC_LOADER_DESCRIPTOR</code></td>
+<td><code>async_loader_subsys_init</code></td>
+<td><code>async_loader_subsys_cleanup</code></td>
+<td><code>src/async_loader.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>APP_SCENE_DESCRIPTOR</code></td>
+<td><code>scene_subsys_init</code></td>
+<td><code>scene_subsys_cleanup</code></td>
+<td><code>src/scene_init.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>APP_ENV_MGR_DESCRIPTOR</code></td>
+<td><code>env_mgr_subsys_init</code></td>
+<td><code>env_mgr_subsys_cleanup</code></td>
+<td><code>src/env_manager.c</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>APP_POSTPROCESS_DESCRIPTOR</code></td>
+<td><code>postprocess_subsys_init</code></td>
+<td><code>postprocess_subsys_cleanup</code></td>
+<td><code>src/postprocess_init.c</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="static-traceability-annotations">Static Traceability Annotations<a class="headerlink" href="#static-traceability-annotations" title="Permanent link">¶</a></h4>
+<p>Because function pointers break static call-graph analysis (clangd "Call Hierarchy", "Find All References"), each <code>*_subsys_init</code> / <code>*_subsys_cleanup</code> definition carries a traceability comment:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="n">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="p">...</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Naming convention</strong>: All subsystem lifecycle functions use the <code>*_subsys_init</code> / <code>*_subsys_cleanup</code> suffix. This guarantees reliable grep-based discovery:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>grep<span class="w"> </span>-rn<span class="w"> </span><span class="s2">"_subsys_init\|_subsys_cleanup"</span><span class="w"> </span>src/<span class="w"> </span>--include<span class="o">=</span><span class="s2">"*.c"</span>
+</span></code></pre></div>
 <h4 id="how-to-add-a-new-subsystem">How to Add a New Subsystem<a class="headerlink" href="#how-to-add-a-new-subsystem" title="Permanent link">¶</a></h4>
 <ol>
 <li>
 <p><strong>Create the init/cleanup pair</strong> in your module's <code>.c</code> file:</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">));</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="c1">// ... further initialization ...</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">}</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">my_module_subsys_cleanup</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="c1">// ... teardown GL resources, free buffers ...</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">);</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">));</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="c1">// ... further initialization ...</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">my_module_subsys_cleanup</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="c1">// ... teardown GL resources, free buffers ...</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="p">);</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">my_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">}</span>
 </span></code></pre></div>
 </li>
 <li>
 <p><strong>Declare the descriptor macro</strong> in the module's <code>.h</code> file:</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">my_module_subsys_cleanup</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#define APP_MY_MODULE_DESCRIPTOR \</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="cp">    {"MY_MODULE", my_module_subsys_init, my_module_subsys_cleanup}</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">my_module_subsys_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">my_module_subsys_cleanup</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="p">);</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="cp">#define APP_MY_MODULE_DESCRIPTOR \</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cp">    {"MY_MODULE", my_module_subsys_init, my_module_subsys_cleanup}</span>
 </span></code></pre></div>
 </li>
 <li>
@@ -4468,7 +4579,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 11, 2026 07:16:58 UTC">May 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 15, 2026 09:56:43 UTC">May 15, 2026</span>
   </span>
 
     
