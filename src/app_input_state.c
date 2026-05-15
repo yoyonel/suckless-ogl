@@ -22,6 +22,7 @@ void app_input_state_cleanup(AppInput* input)
 	adaptive_sampler_cleanup(&input->fps_sampler);
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int app_input_subsys_init(App* app)
 {
 	app->input =
@@ -34,6 +35,7 @@ int app_input_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void app_input_subsys_cleanup(App* app)
 {
 	if (app->input) {

@@ -3,6 +3,7 @@
 #include "app_settings.h"
 #include "window.h"
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int app_window_subsys_init(App* app)
 {
 	app->win.is_fullscreen = false;
@@ -25,6 +26,7 @@ int app_window_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void app_window_subsys_cleanup(App* app)
 {
 	if (app->win.handle) {

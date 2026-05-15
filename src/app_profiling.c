@@ -27,6 +27,7 @@ void app_profiling_cleanup(AppProfiling* prof)
 	tracy_manager_cleanup(&prof->tracy_mgr);
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int app_profiling_subsys_init(App* app)
 {
 	app->profiling =
@@ -39,6 +40,7 @@ int app_profiling_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void app_profiling_subsys_cleanup(App* app)
 {
 	if (app->profiling) {

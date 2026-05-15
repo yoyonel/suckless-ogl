@@ -427,12 +427,14 @@ void async_loader_cancel(AsyncLoader* loader)
 #include "app.h"
 #include "app_profiling.h"
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int async_loader_subsys_init(App* app)
 {
 	app->async_loader = async_loader_create(&app->profiling->tracy_mgr);
 	return app->async_loader != NULL;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void async_loader_subsys_cleanup(App* app)
 {
 	async_loader_destroy(app->async_loader);

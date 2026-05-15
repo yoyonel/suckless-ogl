@@ -377,6 +377,7 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 
 /* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int postprocess_subsys_init(App* app)
 {
 	app->postprocess =
@@ -395,6 +396,7 @@ int postprocess_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void postprocess_subsys_cleanup(App* app)
 {
 	if (app->postprocess) {
