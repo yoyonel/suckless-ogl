@@ -375,6 +375,11 @@ test-python:
     @echo "Running Python script tests..."
     @{{py_run}} .github/workflows/scripts/test_trace_analyze.py
 
+# Show subsystem descriptor init/cleanup call order
+subsystem-order:
+    @chmod +x scripts/show_subsystem_order.sh
+    @./scripts/show_subsystem_order.sh
+
 # Build the Docker image
 docker-build:
     @{{container_engine}} build -t {{image_name}} .

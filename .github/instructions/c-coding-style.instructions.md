@@ -158,3 +158,28 @@ volatile bool results_ready;
 ```
 
 This is well-defined in C99/C11 for simple flag signaling (not for synchronization — use mutexes for that).
+
+## Subsystem Function Naming Convention
+
+### Rule: `*_subsys_init` / `*_subsys_cleanup` for descriptor-driven lifecycle
+
+Any function registered in `APP_SUBSYSTEM_TABLE` (the subsystem descriptor pattern) **MUST** follow this naming:
+
+```c
+int  <module>_subsys_init(App* app);    // returns 1 on success, 0 on failure
+void <module>_subsys_cleanup(App* app);
+```
+
+### Rule: Traceability comment above every definition
+
+Because function pointers break static call-graph tools, add this comment immediately before the function body:
+
+```c
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
+int my_module_subsys_init(App* app)
+{
+    ...
+}
+```
+
+This enables `grep -rn "_subsys_init\|_subsys_cleanup" src/` for reliable discovery.

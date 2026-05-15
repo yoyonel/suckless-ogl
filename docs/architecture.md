@@ -197,6 +197,40 @@ graph LR
 
 **Legend**: 🟡 must be first (creates GL context), 🔵 needs GL, 🟢 no GL dependency.
 
+#### Descriptor Call-Order Table
+
+The table below lists each subsystem in init order (cleanup runs in reverse):
+
+| # | Descriptor Macro | Init Function | Cleanup Function | Source File |
+|--:|------------------|---------------|------------------|-------------|
+| 0 | `APP_WINDOW_DESCRIPTOR` | `app_window_subsys_init` | `app_window_subsys_cleanup` | `src/app_window.c` |
+| 1 | `APP_INPUT_DESCRIPTOR` | `app_input_subsys_init` | `app_input_subsys_cleanup` | `src/app_input_state.c` |
+| 2 | `APP_PROFILING_DESCRIPTOR` | `app_profiling_subsys_init` | `app_profiling_subsys_cleanup` | `src/app_profiling.c` |
+| 3 | `APP_ASYNC_COORD_DESCRIPTOR` | `async_coord_subsys_init` | `async_coord_subsys_cleanup` | `src/async_coordinator.c` |
+| 4 | `APP_LUM_HISTOGRAM_DESCRIPTOR` | `lum_histogram_subsys_init` | `lum_histogram_subsys_cleanup` | `src/lum_histogram.c` |
+| 5 | `APP_ASYNC_LOADER_DESCRIPTOR` | `async_loader_subsys_init` | `async_loader_subsys_cleanup` | `src/async_loader.c` |
+| 6 | `APP_SCENE_DESCRIPTOR` | `scene_subsys_init` | `scene_subsys_cleanup` | `src/scene_init.c` |
+| 7 | `APP_ENV_MGR_DESCRIPTOR` | `env_mgr_subsys_init` | `env_mgr_subsys_cleanup` | `src/env_manager.c` |
+| 8 | `APP_POSTPROCESS_DESCRIPTOR` | `postprocess_subsys_init` | `postprocess_subsys_cleanup` | `src/postprocess_init.c` |
+
+#### Static Traceability Annotations
+
+Because function pointers break static call-graph analysis (clangd "Call Hierarchy", "Find All References"), each `*_subsys_init` / `*_subsys_cleanup` definition carries a traceability comment:
+
+```c
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
+int my_module_subsys_init(App* app)
+{
+    ...
+}
+```
+
+**Naming convention**: All subsystem lifecycle functions use the `*_subsys_init` / `*_subsys_cleanup` suffix. This guarantees reliable grep-based discovery:
+
+```bash
+grep -rn "_subsys_init\|_subsys_cleanup" src/ --include="*.c"
+```
+
 #### How to Add a New Subsystem
 
 1. **Create the init/cleanup pair** in your module's `.c` file:

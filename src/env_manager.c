@@ -324,6 +324,7 @@ void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene)
 
 /* --- Subsystem descriptor (Phase 1: alloc + defaults) --- */
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int env_mgr_subsys_init(App* app)
 {
 	app->env_mgr =
@@ -340,6 +341,7 @@ int env_mgr_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void env_mgr_subsys_cleanup(App* app)
 {
 	if (app->env_mgr) {

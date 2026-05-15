@@ -88,6 +88,7 @@ bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
 
 /* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int async_coord_subsys_init(App* app)
 {
 	app->async_coord =
@@ -100,6 +101,7 @@ int async_coord_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void async_coord_subsys_cleanup(App* app)
 {
 	if (app->async_coord) {

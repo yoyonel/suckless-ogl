@@ -157,6 +157,40 @@ graph LR
 
 **Légende** : 🟡 doit être premier (crée le contexte GL), 🔵 nécessite GL, 🟢 pas de dépendance GL.
 
+#### Table d'ordre d'appel des descripteurs
+
+Le tableau ci-dessous liste chaque sous-système dans l'ordre d'initialisation (le cleanup s'exécute en ordre inverse) :
+
+| # | Macro descripteur | Fonction init | Fonction cleanup | Fichier source |
+|--:|-------------------|---------------|------------------|----------------|
+| 0 | `APP_WINDOW_DESCRIPTOR` | `app_window_subsys_init` | `app_window_subsys_cleanup` | `src/app_window.c` |
+| 1 | `APP_INPUT_DESCRIPTOR` | `app_input_subsys_init` | `app_input_subsys_cleanup` | `src/app_input_state.c` |
+| 2 | `APP_PROFILING_DESCRIPTOR` | `app_profiling_subsys_init` | `app_profiling_subsys_cleanup` | `src/app_profiling.c` |
+| 3 | `APP_ASYNC_COORD_DESCRIPTOR` | `async_coord_subsys_init` | `async_coord_subsys_cleanup` | `src/async_coordinator.c` |
+| 4 | `APP_LUM_HISTOGRAM_DESCRIPTOR` | `lum_histogram_subsys_init` | `lum_histogram_subsys_cleanup` | `src/lum_histogram.c` |
+| 5 | `APP_ASYNC_LOADER_DESCRIPTOR` | `async_loader_subsys_init` | `async_loader_subsys_cleanup` | `src/async_loader.c` |
+| 6 | `APP_SCENE_DESCRIPTOR` | `scene_subsys_init` | `scene_subsys_cleanup` | `src/scene_init.c` |
+| 7 | `APP_ENV_MGR_DESCRIPTOR` | `env_mgr_subsys_init` | `env_mgr_subsys_cleanup` | `src/env_manager.c` |
+| 8 | `APP_POSTPROCESS_DESCRIPTOR` | `postprocess_subsys_init` | `postprocess_subsys_cleanup` | `src/postprocess_init.c` |
+
+#### Annotations statiques de traçabilité
+
+Les pointeurs de fonctions cassent l'analyse statique du graphe d'appels (clangd « Call Hierarchy », « Find All References »). Pour compenser, chaque définition `*_subsys_init` / `*_subsys_cleanup` porte un commentaire de traçabilité :
+
+```c
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
+int my_module_subsys_init(App* app)
+{
+    ...
+}
+```
+
+**Convention de nommage** : toutes les fonctions de cycle de vie utilisent le suffixe `*_subsys_init` / `*_subsys_cleanup`. Cela garantit une découverte fiable par grep :
+
+```bash
+grep -rn "_subsys_init\|_subsys_cleanup" src/ --include="*.c"
+```
+
 #### Comment ajouter un nouveau sous-système
 
 1. **Créer la paire init/cleanup** dans le fichier `.c` du module :

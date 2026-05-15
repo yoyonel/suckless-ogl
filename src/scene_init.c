@@ -495,6 +495,7 @@ int scene_init(Scene* scene)
 
 /* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int scene_subsys_init(App* app)
 {
 	app->scene =
@@ -513,6 +514,7 @@ int scene_subsys_init(App* app)
 	return 1;
 }
 
+/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void scene_subsys_cleanup(App* app)
 {
 	if (app->scene) {
