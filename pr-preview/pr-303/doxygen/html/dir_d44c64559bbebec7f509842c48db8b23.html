@@ -1,0 +1,503 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include Directory Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('dir_d44c64559bbebec7f509842c48db8b23.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">include Directory Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
+Files</h2></td></tr>
+<tr class="memitem:action__notifier_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="action__notifier_8h.html">action_notifier.h</a> <a href="action__notifier_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:action__notifier_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temporary on-screen notification system for user actions. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaptive__sampler_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html">adaptive_sampler.h</a> <a href="adaptive__sampler_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:adaptive__sampler_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adaptive sampling utility for performance metrics. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html">app.h</a> <a href="app_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__binding_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__binding_8h.html">app_binding.h</a> <a href="app__binding_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__input_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html">app_input.h</a> <a href="app__input_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__input_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">User input orchestration and application state toggles. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__input__state_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input__state_8h.html">app_input_state.h</a> <a href="app__input__state_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__input__state_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a>, gamepad, key-bindings, and input smoothing sub-struct. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__metrics_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__metrics_8h.html">app_metrics.h</a> <a href="app__metrics_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__profiling_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__profiling_8h.html">app_profiling.h</a> <a href="app__profiling_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__profiling_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Profiling, metrics, and performance monitoring sub-struct. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__settings_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__settings_8h.html">app_settings.h</a> <a href="app__settings_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__settings_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global application constants, configuration macros, and default values. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__subsystem_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__subsystem_8h.html">app_subsystem.h</a> <a href="app__subsystem_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__subsystem_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subsystem descriptor pattern for structured init/cleanup. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__ui_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html">app_ui.h</a> <a href="app__ui_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__ui_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">UI rendering module for the application. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__ui__layout_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui__layout_8h.html">app_ui_layout.h</a> <a href="app__ui__layout_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:app__ui__layout_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private UI layout constants, keyboard and gamepad layout data. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:app__window_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__window_8h.html">app_window.h</a> <a href="app__window_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:async__loader_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8h.html">async_loader.h</a> <a href="async__loader_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:async__loader_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Threaded asynchronous file loader for heavy assets (HDR, textures). <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:billboard__rendering_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html">billboard_rendering.h</a> <a href="billboard__rendering_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:billboard__rendering_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">View-aligned quad rendering (billboarding) for optimized sphere drawing. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:billboard__sorting_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8h.html">billboard_sorting.h</a> <a href="billboard__sorting_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:billboard__sorting_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Back-to-front sorting for transparent geometry. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:bool__utils_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bool__utils_8h.html">bool_utils.h</a> <a href="bool__utils_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:bool__utils_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Portable bool↔int conversion macros for clang-tidy compliance. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:camera_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html">camera.h</a> <a href="camera_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:camera_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">First-person camera module with realistic physics and head-bobbing. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:camera__input_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera__input_8h.html">camera_input.h</a> <a href="camera__input_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:camera__input_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Input handling adapter for the <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> system. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:cli_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cli_8h.html">cli.h</a> <a href="cli_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:cli_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command-line interface and argument parsing. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:dvec3_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html">dvec3.h</a> <a href="dvec3_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:dvec3_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Double-precision 3D vector helpers for physics simulation. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:effect__benchmark_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="effect__benchmark_8h.html">effect_benchmark.h</a> <a href="effect__benchmark_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:effect__benchmark_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automated A/B GPU cost measurement for individual postprocess effects. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:env__manager_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8h.html">env_manager.h</a> <a href="env__manager_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:env__manager_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Environment and IBL management module. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:fps_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fps_8h.html">fps.h</a> <a href="fps_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gamepad__context_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gamepad__context_8h.html">gamepad_context.h</a> <a href="gamepad__context_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:gamepad__context_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decoupling seam between gamepad input and camera internals. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gamepad__input_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gamepad__input_8h.html">gamepad_input.h</a> <a href="gamepad__input_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:gamepad__input_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gamepad/controller input adapter for camera control. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gl__common_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html">gl_common.h</a> <a href="gl__common_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:gl__common_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common OpenGL definitions, RAII helpers, and utilities. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gl__debug_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__debug_8h.html">gl_debug.h</a> <a href="gl__debug_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gpu__profiler_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html">gpu_profiler.h</a> <a href="gpu__profiler_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gpu__profiler__ui_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler__ui_8h.html">gpu_profiler_ui.h</a> <a href="gpu__profiler__ui_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gpu__profiler__ui__layout_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler__ui__layout_8h.html">gpu_profiler_ui_layout.h</a> <a href="gpu__profiler__ui__layout_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:gpu__profiler__ui__layout_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private UI layout constants for the GPU profiler overlay. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gpu__usage_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__usage_8h.html">gpu_usage.h</a> <a href="gpu__usage_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ibl__coordinator_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html">ibl_coordinator.h</a> <a href="ibl__coordinator_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:ibl__coordinator_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Coordinator for progressive Image-Based Lighting (IBL) generation. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:icosphere_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icosphere_8h.html">icosphere.h</a> <a href="icosphere_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:icosphere_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Procedural icosphere geometry generation. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:instanced__rendering_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8h.html">instanced_rendering.h</a> <a href="instanced__rendering_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:instanced__rendering_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mesh-based instanced rendering for spheres. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:io_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="io_8h.html">io.h</a> <a href="io_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:io_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Centralized secure file loading utilities. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:light__probes_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8h.html">light_probes.h</a> <a href="light__probes_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:log_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html">log.h</a> <a href="log_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:log_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread-safe logging utility with timestamps and severity levels. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:lum__histogram_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lum__histogram_8h.html">lum_histogram.h</a> <a href="lum__histogram_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:main_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8h.html">main.h</a> <a href="main_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:main_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structEntry.html">Entry</a> point configuration and global constants. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:material_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8h.html">material.h</a> <a href="material_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:material_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">PBR material definitions and management. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:mem_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mem_8h.html">mem.h</a> <a href="mem_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:metric__stack_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="metric__stack_8h.html">metric_stack.h</a> <a href="metric__stack_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:nbody_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html">nbody.h</a> <a href="nbody_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:nbody_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">N-body gravitational simulation (Velocity Verlet + Plummer softening). <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:pbr_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8h.html">pbr.h</a> <a href="pbr_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:pbr_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Physically-Based Rendering (PBR) and Image-Based Lighting (IBL) utilities. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:perf__mode_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8h.html">perf_mode.h</a> <a href="perf__mode_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:perf__mode_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runtime performance optimization module. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:perf__timer_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html">perf_timer.h</a> <a href="perf__timer_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:perf__timer_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">High-precision performance measurement (CPU and GPU). <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:postprocess_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html">postprocess.h</a> <a href="postprocess_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:postprocess_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for the post-processing pipeline. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:postprocess__input_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8h.html">postprocess_input.h</a> <a href="postprocess__input_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:postprocess__internal_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__internal_8h.html">postprocess_internal.h</a> <a href="postprocess__internal_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:postprocess__internal_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structPostProcess.html" title="Main pipeline state for post-processing.">PostProcess</a> struct definition and internal helpers. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:postprocess__presets_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__presets_8h.html">postprocess_presets.h</a> <a href="postprocess__presets_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:postprocess__presets_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extern declarations for predefined post-processing pipeline presets. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:postprocess__readback_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__readback_8h.html">postprocess_readback.h</a> <a href="postprocess__readback_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:postprocess__readback_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async GPU readback and histogram API for post-processing. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:postprocess__setters_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8h.html">postprocess_setters.h</a> <a href="postprocess__setters_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:postprocess__setters_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter setter/getter API for the post-processing pipeline. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:pp__exposure__readback_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__exposure__readback_8h.html">pp_exposure_readback.h</a> <a href="pp__exposure__readback_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:pp__exposure__readback_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async GPU readback state for exposure and histogram. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:pp__gpu__resources_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__gpu__resources_8h.html">pp_gpu_resources.h</a> <a href="pp__gpu__resources_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:pp__gpu__resources_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU resource handles for the post-processing pipeline. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:pp__params_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__params_8h.html">pp_params.h</a> <a href="pp__params_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:pp__params_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter structs and defaults for uber-shader post-processing effects. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:pp__shader__state_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__shader__state_8h.html">pp_shader_state.h</a> <a href="pp__shader__state_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:pp__shader__state_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> management state for the optimized uber-shader pipeline. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:pp__ubo_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pp__ubo_8h.html">pp_ubo.h</a> <a href="pp__ubo_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:pp__ubo_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU-side Uniform Buffer Object layout for the post-processing uber-shader. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:profiler_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html">profiler.h</a> <a href="profiler_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:render__utils_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html">render_utils.h</a> <a href="render__utils_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:render__utils_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utilities for OpenGL rendering, focusing on robustness and NVIDIA compatibility. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:renderer_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="renderer_8h.html">renderer.h</a> <a href="renderer_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html">scene.h</a> <a href="scene_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__config_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__config_8h.html">scene_config.h</a> <a href="scene__config_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__config_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render configuration flags extracted from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__gpu__resources_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__gpu__resources_8h.html">scene_gpu_resources.h</a> <a href="scene__gpu__resources_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__gpu__resources_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU resource handles extracted from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a> to reduce fan-out. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__internal_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__internal_8h.html">scene_internal.h</a> <a href="scene__internal_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__internal_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal declarations shared across scene_*.c translation units. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__lighting_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__lighting_8h.html">scene_lighting.h</a> <a href="scene__lighting_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__lighting_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">IBL, probes, and materials sub-struct extracted from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__shaders_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__shaders_8h.html">scene_shaders.h</a> <a href="scene__shaders_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__shaders_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> pointers and uniform caches extracted from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__simulation_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__simulation_8h.html">scene_simulation.h</a> <a href="scene__simulation_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__simulation_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">N-body simulation sub-struct extracted from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__uniforms_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__uniforms_8h.html">scene_uniforms.h</a> <a href="scene__uniforms_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__uniforms_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> uniform cache structs and GPU UBO layouts for scene rendering. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:scene__visuals_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__visuals_8h.html">scene_visuals.h</a> <a href="scene__visuals_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:scene__visuals_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visual effects sub-struct extracted from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:sh__math_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8h.html">sh_math.h</a> <a href="sh__math_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:shader_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html">shader.h</a> <a href="shader_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:shader_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">High-level OpenGL shader management with metadata and uniform caching. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:shockwave_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shockwave_8h.html">shockwave.h</a> <a href="shockwave_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:shockwave_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Visual shockwave effect for N-body confinement boundary impacts. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:simd__utils_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simd__utils_8h.html">simd_utils.h</a> <a href="simd__utils_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:skybox_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="skybox_8h.html">skybox.h</a> <a href="skybox_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:skybox_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Infinite-distance background rendering (fullscreen quad approach). <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:sphere__types_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__types_8h.html">sphere_types.h</a> <a href="sphere__types_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:sphere__types_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure-data type for per-instance sphere attributes. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ssbo__rendering_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ssbo__rendering_8h.html">ssbo_rendering.h</a> <a href="ssbo__rendering_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:ssbo__rendering_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer-backed instancing for ultra-large-scale rendering. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:texture_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html">texture.h</a> <a href="texture_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:texture_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Image loading and GPU texture management. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:tracy__gpu_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tracy__gpu_8h.html">tracy_gpu.h</a> <a href="tracy__gpu_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:tracy__log_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tracy__log_8h.html">tracy_log.h</a> <a href="tracy__log_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:tracy__manager_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tracy__manager_8h.html">tracy_manager.h</a> <a href="tracy__manager_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:trail__renderer_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html">trail_renderer.h</a> <a href="trail__renderer_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:trail__renderer_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU-accelerated ribbon trail renderer for N-body simulation. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ui_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8h.html">ui.h</a> <a href="ui_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:ui_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimal immediate-mode User Interface (UI) library. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:utils_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html">utils.h</a> <a href="utils_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:utils_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero-overhead utility functions and RAII cleanup helpers. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:window_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="window_8h.html">window.h</a> <a href="window_8h_source.html">[code]</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

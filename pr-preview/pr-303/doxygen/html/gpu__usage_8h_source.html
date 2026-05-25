@@ -1,0 +1,317 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/gpu_usage.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('gpu__usage_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">gpu_usage.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="gpu__usage_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef GPU_USAGE_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define GPU_USAGE_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a3e6eb091de6b23f865e61b0e5b5ab472">    9</a></span>&#160;    <a class="code" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a3e6eb091de6b23f865e61b0e5b5ab472">GPU_USAGE_MAX_FDS</a> = 64,</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a56afb59436e4309556f8dc003660d2bc">   10</a></span>&#160;    <a class="code" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a56afb59436e4309556f8dc003660d2bc">GPU_USAGE_MAX_KEY_LEN</a> = 48,</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;};</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html">   25</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#ace661c99712846bc010fcb3ab72f93d8">   26</a></span>&#160;    FILE* streams[<a class="code" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a3e6eb091de6b23f865e61b0e5b5ab472">GPU_USAGE_MAX_FDS</a>];</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#a0d0dcf9039370a5d6354f76d7c9ee117">   27</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structGPUUsageMonitor.html#a0d0dcf9039370a5d6354f76d7c9ee117">stream_count</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#a5f72936fc4c0bf0f88b7d8480d642ec3">   29</a></span>&#160;    uint64_t <a class="code" href="structGPUUsageMonitor.html#a5f72936fc4c0bf0f88b7d8480d642ec3">prev_gpu_time_ns</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#ae02cd4ac29146779c4a65c92b6d5020f">   30</a></span>&#160;    uint64_t <a class="code" href="structGPUUsageMonitor.html#ae02cd4ac29146779c4a65c92b6d5020f">prev_wall_time_ns</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#aca62bead945ddc4f7a85b267bf81d1db">   32</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structGPUUsageMonitor.html#aca62bead945ddc4f7a85b267bf81d1db">load_percent</a>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#a9a756b49148f4845b8f0f92662578e08">   33</a></span>&#160;    <span class="keywordtype">char</span> driver[<a class="code" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a56afb59436e4309556f8dc003660d2bc">GPU_USAGE_MAX_KEY_LEN</a>];</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#a9acf64820d6cd1c690583a3d41794185">   34</a></span>&#160;    <span class="keywordtype">char</span> engine_key[<a class="code" href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a56afb59436e4309556f8dc003660d2bc">GPU_USAGE_MAX_KEY_LEN</a>];</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structGPUUsageMonitor.html#a815a9e1cb99076dd7da00fb098b1d4eb">   36</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structGPUUsageMonitor.html#a815a9e1cb99076dd7da00fb098b1d4eb">available</a>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;} <a class="code" href="structGPUUsageMonitor.html">GPUUsageMonitor</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keywordtype">void</span> <a class="code" href="gpu__usage_8h.html#a2d0af5de4f732d0ebe37b0252b70fcd3">gpu_usage_init</a>(<a class="code" href="structGPUUsageMonitor.html">GPUUsageMonitor</a>* mon);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span> <a class="code" href="gpu__usage_8h.html#ad721ee9657a2311067270a1eb2650322">gpu_usage_cleanup</a>(<a class="code" href="structGPUUsageMonitor.html">GPUUsageMonitor</a>* mon);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keywordtype">void</span> <a class="code" href="gpu__usage_8h.html#a1c9dedfc65533d5d96593b2f47a81d91">gpu_usage_update</a>(<a class="code" href="structGPUUsageMonitor.html">GPUUsageMonitor</a>* mon);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">float</span> <a class="code" href="gpu__usage_8h.html#a24593696790917b4e4587190634ed65d">gpu_usage_get_load</a>(<span class="keyword">const</span> <a class="code" href="structGPUUsageMonitor.html">GPUUsageMonitor</a>* mon);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="gpu__usage_8h.html#ac8f6cb11fff7656acd2a2739a8286a36">gpu_usage_is_available</a>(<span class="keyword">const</span> <a class="code" href="structGPUUsageMonitor.html">GPUUsageMonitor</a>* mon);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GPU_USAGE_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agpu__usage_8h_html_a1c9dedfc65533d5d96593b2f47a81d91"><div class="ttname"><a href="gpu__usage_8h.html#a1c9dedfc65533d5d96593b2f47a81d91">gpu_usage_update</a></div><div class="ttdeci">void gpu_usage_update(GPUUsageMonitor *mon)</div><div class="ttdoc">Re-reads fdinfo streams and computes GPU load %. Should be called periodically (e....</div><div class="ttdef"><b>Definition:</b> gpu_usage.c:337</div></div>
+<div class="ttc" id="agpu__usage_8h_html_a24593696790917b4e4587190634ed65d"><div class="ttname"><a href="gpu__usage_8h.html#a24593696790917b4e4587190634ed65d">gpu_usage_get_load</a></div><div class="ttdeci">float gpu_usage_get_load(const GPUUsageMonitor *mon)</div><div class="ttdoc">Returns the last computed GPU load (0.0–100.0).</div><div class="ttdef"><b>Definition:</b> gpu_usage.c:344</div></div>
+<div class="ttc" id="agpu__usage_8h_html_a2d0af5de4f732d0ebe37b0252b70fcd3"><div class="ttname"><a href="gpu__usage_8h.html#a2d0af5de4f732d0ebe37b0252b70fcd3">gpu_usage_init</a></div><div class="ttdeci">void gpu_usage_init(GPUUsageMonitor *mon)</div><div class="ttdoc">Scans /proc/self/fdinfo/ and opens streams for GPU engine time reading.</div><div class="ttdef"><b>Definition:</b> gpu_usage.c:318</div></div>
+<div class="ttc" id="agpu__usage_8h_html_ac8f6cb11fff7656acd2a2739a8286a36"><div class="ttname"><a href="gpu__usage_8h.html#ac8f6cb11fff7656acd2a2739a8286a36">gpu_usage_is_available</a></div><div class="ttdeci">bool gpu_usage_is_available(const GPUUsageMonitor *mon)</div><div class="ttdoc">Returns true if a supported DRM driver was detected.</div><div class="ttdef"><b>Definition:</b> gpu_usage.c:352</div></div>
+<div class="ttc" id="agpu__usage_8h_html_ad721ee9657a2311067270a1eb2650322"><div class="ttname"><a href="gpu__usage_8h.html#ad721ee9657a2311067270a1eb2650322">gpu_usage_cleanup</a></div><div class="ttdeci">void gpu_usage_cleanup(GPUUsageMonitor *mon)</div><div class="ttdoc">Closes all open fdinfo streams.</div><div class="ttdef"><b>Definition:</b> gpu_usage.c:328</div></div>
+<div class="ttc" id="agpu__usage_8h_html_af9bdc3014f3d54c426b6d2df10de4960a3e6eb091de6b23f865e61b0e5b5ab472"><div class="ttname"><a href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a3e6eb091de6b23f865e61b0e5b5ab472">GPU_USAGE_MAX_FDS</a></div><div class="ttdeci">@ GPU_USAGE_MAX_FDS</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:9</div></div>
+<div class="ttc" id="agpu__usage_8h_html_af9bdc3014f3d54c426b6d2df10de4960a56afb59436e4309556f8dc003660d2bc"><div class="ttname"><a href="gpu__usage_8h.html#af9bdc3014f3d54c426b6d2df10de4960a56afb59436e4309556f8dc003660d2bc">GPU_USAGE_MAX_KEY_LEN</a></div><div class="ttdeci">@ GPU_USAGE_MAX_KEY_LEN</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:10</div></div>
+<div class="ttc" id="astructGPUUsageMonitor_html"><div class="ttname"><a href="structGPUUsageMonitor.html">GPUUsageMonitor</a></div><div class="ttdoc">Reads GPU utilization % via Linux DRM fdinfo (same method as MangoHud).</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:25</div></div>
+<div class="ttc" id="astructGPUUsageMonitor_html_a0d0dcf9039370a5d6354f76d7c9ee117"><div class="ttname"><a href="structGPUUsageMonitor.html#a0d0dcf9039370a5d6354f76d7c9ee117">GPUUsageMonitor::stream_count</a></div><div class="ttdeci">int stream_count</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:27</div></div>
+<div class="ttc" id="astructGPUUsageMonitor_html_a5f72936fc4c0bf0f88b7d8480d642ec3"><div class="ttname"><a href="structGPUUsageMonitor.html#a5f72936fc4c0bf0f88b7d8480d642ec3">GPUUsageMonitor::prev_gpu_time_ns</a></div><div class="ttdeci">uint64_t prev_gpu_time_ns</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:29</div></div>
+<div class="ttc" id="astructGPUUsageMonitor_html_a815a9e1cb99076dd7da00fb098b1d4eb"><div class="ttname"><a href="structGPUUsageMonitor.html#a815a9e1cb99076dd7da00fb098b1d4eb">GPUUsageMonitor::available</a></div><div class="ttdeci">bool available</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:36</div></div>
+<div class="ttc" id="astructGPUUsageMonitor_html_aca62bead945ddc4f7a85b267bf81d1db"><div class="ttname"><a href="structGPUUsageMonitor.html#aca62bead945ddc4f7a85b267bf81d1db">GPUUsageMonitor::load_percent</a></div><div class="ttdeci">float load_percent</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:32</div></div>
+<div class="ttc" id="astructGPUUsageMonitor_html_ae02cd4ac29146779c4a65c92b6d5020f"><div class="ttname"><a href="structGPUUsageMonitor.html#ae02cd4ac29146779c4a65c92b6d5020f">GPUUsageMonitor::prev_wall_time_ns</a></div><div class="ttdeci">uint64_t prev_wall_time_ns</div><div class="ttdef"><b>Definition:</b> gpu_usage.h:30</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="gpu__usage_8h.html">gpu_usage.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
