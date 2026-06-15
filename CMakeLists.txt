@@ -520,3 +520,20 @@ if(BUILD_TESTS AND NOT ENABLE_TRACY)
 else()
   message(STATUS "Unit Testing: DISABLED (Tracy Profiler Active)")
 endif()
+
+# Target pour nettoyer uniquement le dossier d'analyse
+add_custom_target(audit-clean
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/build-audit"
+    COMMENT "Nettoyage des artefacts d'audit"
+)
+
+# Audit simple : on suppose que build-audit est déjà configuré et compilé
+add_custom_target(audit
+    COMMAND bloaty "${CMAKE_BINARY_DIR}/app" -d compileunits -n 20
+    COMMENT "Audit de binaire complet"
+)
+
+# TODO: à intégrer mais faut réflêchir ^^
+# add_custom_command(TARGET audit POST_BUILD
+#     COMMAND sh -c "if [ $(du -k ${CMAKE_BINARY_DIR}/build-audit/app | cut -f1) -gt 3000 ]; then echo 'ERREUR: Binaire trop gros !'; exit 1; fi"
+# )
