@@ -1,0 +1,389 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/app_input.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('app__input_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">app_input.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="app__input_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#ifndef APP_INPUT_H</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#define APP_INPUT_H</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/* Forward declarations — avoids pulling heavy headers into app_input.h */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structApp.html">App</a> <a class="code" href="structApp.html">App</a>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structCamera.html">Camera</a> <a class="code" href="structCamera.html">Camera</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structScene.html">Scene</a> <a class="code" href="structScene.html">Scene</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structPostProcess.html">PostProcess</a> <a class="code" href="structPostProcess.html">PostProcess</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structEnvManager.html">EnvManager</a> <a class="code" href="structEnvManager.html">EnvManager</a>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structActionNotifier.html">ActionNotifier</a> <a class="code" href="structActionNotifier.html">ActionNotifier</a>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAppUIOverlay.html">AppUIOverlay</a> <a class="code" href="structAppUIOverlay.html">AppUIOverlay</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structGPUProfilerUI.html">GPUProfilerUI</a> <a class="code" href="structGPUProfilerUI.html">GPUProfilerUI</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structEffectBenchmark.html">EffectBenchmark</a> <a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structPerfModeContext.html">PerfModeContext</a> <a class="code" href="structPerfModeContext.html">PerfModeContext</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structGamepadState.html">GamepadState</a> <a class="code" href="structGamepadState.html">GamepadState</a>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAsyncLoader.html">AsyncLoader</a> <a class="code" href="structAsyncLoader.html">AsyncLoader</a>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structAppInputContext.html">   42</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structAppInputContext.html#aef424306ce284114f58dea80cfcd9323">   43</a></span>&#160;    <a class="code" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* <a class="code" href="structAppInputContext.html#aef424306ce284114f58dea80cfcd9323">window</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structAppInputContext.html#aa22ede3fbd57b28bc5979e2174a12c59">   44</a></span>&#160;    <a class="code" href="structCamera.html">Camera</a>* <a class="code" href="structAppInputContext.html#aa22ede3fbd57b28bc5979e2174a12c59">camera</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structAppInputContext.html#ac2b6d304781d3f00a901e0b7480e22f1">   45</a></span>&#160;    <a class="code" href="structScene.html">Scene</a>* <a class="code" href="structAppInputContext.html#ac2b6d304781d3f00a901e0b7480e22f1">scene</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structAppInputContext.html#ad0660fcc8300d5fbdad8a2e80ffd921b">   46</a></span>&#160;    <a class="code" href="structPostProcess.html">PostProcess</a>* <a class="code" href="structAppInputContext.html#ad0660fcc8300d5fbdad8a2e80ffd921b">postprocess</a>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structAppInputContext.html#abdb758c084e367120fc60af45fcf8a1e">   47</a></span>&#160;    <a class="code" href="structEnvManager.html">EnvManager</a>* <a class="code" href="structAppInputContext.html#abdb758c084e367120fc60af45fcf8a1e">env_mgr</a>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a4f2657f2dd9debfe011747ce643a8ac6">   48</a></span>&#160;    <a class="code" href="structActionNotifier.html">ActionNotifier</a>* <a class="code" href="structAppInputContext.html#a4f2657f2dd9debfe011747ce643a8ac6">notifier</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="structAppInputContext.html#ae9ed81377392d7e726b76c301ea3cf2c">   49</a></span>&#160;    <a class="code" href="structAppUIOverlay.html">AppUIOverlay</a>* <a class="code" href="structAppInputContext.html#ae9ed81377392d7e726b76c301ea3cf2c">overlay</a>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a9a024b1267e74915dc2721e391913397">   50</a></span>&#160;    <a class="code" href="structGPUProfilerUI.html">GPUProfilerUI</a>* <a class="code" href="structAppInputContext.html#a9a024b1267e74915dc2721e391913397">timeline_ui</a>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structAppInputContext.html#ad010c6d11e3fbc8240c27d7710638e21">   51</a></span>&#160;    <a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>* <a class="code" href="structAppInputContext.html#ad010c6d11e3fbc8240c27d7710638e21">effect_bench</a>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a852c51494ef768624efd6a20ae9fcff8">   52</a></span>&#160;    <a class="code" href="structPerfModeContext.html">PerfModeContext</a>* <a class="code" href="structAppInputContext.html#a852c51494ef768624efd6a20ae9fcff8">perf_context</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a6f1a3f1b085070c54d4ecade4d548f5b">   53</a></span>&#160;    <a class="code" href="structGamepadState.html">GamepadState</a>* <a class="code" href="structAppInputContext.html#a6f1a3f1b085070c54d4ecade4d548f5b">gamepad</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516">   54</a></span>&#160;    <a class="code" href="structAsyncLoader.html">AsyncLoader</a>* <a class="code" href="structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516">async_loader</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="comment">/* Mutable scalar state (pointers so mutations propagate to App) */</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structAppInputContext.html#acb891570d79be6d7cd83b285a5a5a036">   57</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#acb891570d79be6d7cd83b285a5a5a036">width</a>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a4037473adf9e4515586be2a8b3d7d375">   58</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#a4037473adf9e4515586be2a8b3d7d375">height</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structAppInputContext.html#adbc78fab9478d8293beb3fd98de0021f">   59</a></span>&#160;    <span class="keywordtype">bool</span>* <a class="code" href="structAppInputContext.html#adbc78fab9478d8293beb3fd98de0021f">camera_enabled</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a2263b0b10c065b94b54cdb4388523b59">   60</a></span>&#160;    <span class="keywordtype">bool</span>* <a class="code" href="structAppInputContext.html#a2263b0b10c065b94b54cdb4388523b59">is_fullscreen</a>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a2b726c0e570dd39270c00037f3e389ad">   61</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#a2b726c0e570dd39270c00037f3e389ad">saved_x</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a37fa65c8c5c195d47e3ae67755fe08da">   62</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#a37fa65c8c5c195d47e3ae67755fe08da">saved_y</a>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structAppInputContext.html#acd48b90c8643c0d2505688819ae92484">   63</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#acd48b90c8643c0d2505688819ae92484">saved_width</a>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a660404c8121777cc20d29367ba8fbdd9">   64</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#a660404c8121777cc20d29367ba8fbdd9">saved_height</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a5ac5910ff7e40894760ed275ec4e51d2">   65</a></span>&#160;    <span class="keywordtype">bool</span>* <a class="code" href="structAppInputContext.html#a5ac5910ff7e40894760ed275ec4e51d2">resize_pending</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a2d11531ca1f969158eaee06971d71457">   66</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#a2d11531ca1f969158eaee06971d71457">pending_width</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a05bc4e02a34cf1b6fc7d7f6e60fc55c3">   67</a></span>&#160;    <span class="keywordtype">int</span>* <a class="code" href="structAppInputContext.html#a05bc4e02a34cf1b6fc7d7f6e60fc55c3">pending_height</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structAppInputContext.html#a0ee4f6fbd0ebaa40a9550d5023ca1a21">   68</a></span>&#160;    <span class="keywordtype">bool</span>* <a class="code" href="structAppInputContext.html#a0ee4f6fbd0ebaa40a9550d5023ca1a21">perf_mode_active</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="structAppInputContext.html#aa3483aad7c3883b4f1bfba7b5d6ba39f">   69</a></span>&#160;    <span class="keywordtype">bool</span>* <a class="code" href="structAppInputContext.html#aa3483aad7c3883b4f1bfba7b5d6ba39f">log_gpu_metrics</a>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;} <a class="code" href="structAppInputContext.html">AppInputContext</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#a286930f4e8ede059b83ff6eafa2ff718">key_callback</a>(<a class="code" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* window, <span class="keywordtype">int</span> key, <span class="keywordtype">int</span> scancode, <span class="keywordtype">int</span> action,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                  <span class="keywordtype">int</span> mods);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#af4ca2891044ac10a664b8d83ce590f1f">mouse_callback</a>(<a class="code" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* window, <span class="keywordtype">double</span> xpos, <span class="keywordtype">double</span> ypos);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">scroll_callback</a>(<a class="code" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* window, <span class="keywordtype">double</span> xoffset, <span class="keywordtype">double</span> yoffset);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac">framebuffer_size_callback</a>(<a class="code" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* window, <span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#a1d63ad1a32fac850f5605d3aa86a14d1">handle_app_input</a>(<a class="code" href="structAppInputContext.html">AppInputContext</a>* ctx, <span class="keywordtype">int</span> key, <span class="keywordtype">int</span> mods);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">/* --- Internal Logic Bridge Functions --- */</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#a9d0f19f7bfea020e20384f68ca1c0c41">app_handle_env_input</a>(<a class="code" href="structAppInputContext.html">AppInputContext</a>* ctx, <span class="keywordtype">int</span> action, <span class="keywordtype">int</span> mods, <span class="keywordtype">int</span> key);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#ade6689829860792608f4d1339c52a987">app_toggle_fullscreen</a>(<a class="code" href="structAppInputContext.html">AppInputContext</a>* ctx, <a class="code" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* window);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keywordtype">void</span> <a class="code" href="app__input_8h.html#a2baeec3c1c8b4b797122ee40faa97e59">app_save_png_frame</a>(<a class="code" href="structAppInputContext.html">AppInputContext</a>* ctx, <span class="keyword">const</span> <span class="keywordtype">char</span>* filename);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<a class="code" href="structAppInputContext.html">AppInputContext</a> <a class="code" href="app__input_8h.html#a9a39ad19162e3daedcb6b073cbf90de5">app_input_ctx_from_app</a>(<a class="code" href="structApp.html">App</a>* app);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* APP_INPUT_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aapp__input_8h_html_a06ad2502008f16fbcf01dfaa7f7bc9ea"><div class="ttname"><a href="app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">scroll_callback</a></div><div class="ttdeci">void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)</div><div class="ttdoc">Primary GLFW scroll callback.</div><div class="ttdef"><b>Definition:</b> app_input.c:886</div></div>
+<div class="ttc" id="aapp__input_8h_html_a1d63ad1a32fac850f5605d3aa86a14d1"><div class="ttname"><a href="app__input_8h.html#a1d63ad1a32fac850f5605d3aa86a14d1">handle_app_input</a></div><div class="ttdeci">void handle_app_input(AppInputContext *ctx, int key, int mods)</div><div class="ttdoc">Dispatches application-level logic for key inputs.</div><div class="ttdef"><b>Definition:</b> app_input.c:650</div></div>
+<div class="ttc" id="aapp__input_8h_html_a286930f4e8ede059b83ff6eafa2ff718"><div class="ttname"><a href="app__input_8h.html#a286930f4e8ede059b83ff6eafa2ff718">key_callback</a></div><div class="ttdeci">void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)</div><div class="ttdoc">Primary GLFW key callback.</div><div class="ttdef"><b>Definition:</b> app_input.c:761</div></div>
+<div class="ttc" id="aapp__input_8h_html_a2baeec3c1c8b4b797122ee40faa97e59"><div class="ttname"><a href="app__input_8h.html#a2baeec3c1c8b4b797122ee40faa97e59">app_save_png_frame</a></div><div class="ttdeci">void app_save_png_frame(AppInputContext *ctx, const char *filename)</div><div class="ttdoc">Captures the current framebuffer and saves it as a PNG file.</div><div class="ttdef"><b>Definition:</b> app_input.c:895</div></div>
+<div class="ttc" id="aapp__input_8h_html_a5180f7bf2b71421af837035824a8c8ac"><div class="ttname"><a href="app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac">framebuffer_size_callback</a></div><div class="ttdeci">void framebuffer_size_callback(GLFWwindow *window, int width, int height)</div><div class="ttdoc">Primary GLFW framebuffer size callback.</div><div class="ttdef"><b>Definition:</b> app_input.c:40</div></div>
+<div class="ttc" id="aapp__input_8h_html_a9a39ad19162e3daedcb6b073cbf90de5"><div class="ttname"><a href="app__input_8h.html#a9a39ad19162e3daedcb6b073cbf90de5">app_input_ctx_from_app</a></div><div class="ttdeci">AppInputContext app_input_ctx_from_app(App *app)</div><div class="ttdoc">Constructs an AppInputContext from the full App state.</div><div class="ttdef"><b>Definition:</b> app.c:378</div></div>
+<div class="ttc" id="aapp__input_8h_html_a9d0f19f7bfea020e20384f68ca1c0c41"><div class="ttname"><a href="app__input_8h.html#a9d0f19f7bfea020e20384f68ca1c0c41">app_handle_env_input</a></div><div class="ttdeci">void app_handle_env_input(AppInputContext *ctx, int action, int mods, int key)</div><div class="ttdoc">Handles input for cycling environment maps.</div><div class="ttdef"><b>Definition:</b> app_input.c:94</div></div>
+<div class="ttc" id="aapp__input_8h_html_ade6689829860792608f4d1339c52a987"><div class="ttname"><a href="app__input_8h.html#ade6689829860792608f4d1339c52a987">app_toggle_fullscreen</a></div><div class="ttdeci">void app_toggle_fullscreen(AppInputContext *ctx, GLFWwindow *window)</div><div class="ttdoc">Toggles the application window between Windowed and Fullscreen.</div><div class="ttdef"><b>Definition:</b> app_input.c:827</div></div>
+<div class="ttc" id="aapp__input_8h_html_af4ca2891044ac10a664b8d83ce590f1f"><div class="ttname"><a href="app__input_8h.html#af4ca2891044ac10a664b8d83ce590f1f">mouse_callback</a></div><div class="ttdeci">void mouse_callback(GLFWwindow *window, double xpos, double ypos)</div><div class="ttdoc">Primary GLFW mouse position callback.</div><div class="ttdef"><b>Definition:</b> app_input.c:871</div></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="astructActionNotifier_html"><div class="ttname"><a href="structActionNotifier.html">ActionNotifier</a></div><div class="ttdoc">Manager for action notifications.</div><div class="ttdef"><b>Definition:</b> action_notifier.h:42</div></div>
+<div class="ttc" id="astructAppInputContext_html"><div class="ttname"><a href="structAppInputContext.html">AppInputContext</a></div><div class="ttdoc">Focused context for application-level input handling.</div><div class="ttdef"><b>Definition:</b> app_input.h:42</div></div>
+<div class="ttc" id="astructAppInputContext_html_a05bc4e02a34cf1b6fc7d7f6e60fc55c3"><div class="ttname"><a href="structAppInputContext.html#a05bc4e02a34cf1b6fc7d7f6e60fc55c3">AppInputContext::pending_height</a></div><div class="ttdeci">int * pending_height</div><div class="ttdef"><b>Definition:</b> app_input.h:67</div></div>
+<div class="ttc" id="astructAppInputContext_html_a0ee4f6fbd0ebaa40a9550d5023ca1a21"><div class="ttname"><a href="structAppInputContext.html#a0ee4f6fbd0ebaa40a9550d5023ca1a21">AppInputContext::perf_mode_active</a></div><div class="ttdeci">bool * perf_mode_active</div><div class="ttdef"><b>Definition:</b> app_input.h:68</div></div>
+<div class="ttc" id="astructAppInputContext_html_a2263b0b10c065b94b54cdb4388523b59"><div class="ttname"><a href="structAppInputContext.html#a2263b0b10c065b94b54cdb4388523b59">AppInputContext::is_fullscreen</a></div><div class="ttdeci">bool * is_fullscreen</div><div class="ttdef"><b>Definition:</b> app_input.h:60</div></div>
+<div class="ttc" id="astructAppInputContext_html_a2a26b7cbb253e8c43a7e8d346c1dc516"><div class="ttname"><a href="structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516">AppInputContext::async_loader</a></div><div class="ttdeci">AsyncLoader * async_loader</div><div class="ttdef"><b>Definition:</b> app_input.h:54</div></div>
+<div class="ttc" id="astructAppInputContext_html_a2b726c0e570dd39270c00037f3e389ad"><div class="ttname"><a href="structAppInputContext.html#a2b726c0e570dd39270c00037f3e389ad">AppInputContext::saved_x</a></div><div class="ttdeci">int * saved_x</div><div class="ttdef"><b>Definition:</b> app_input.h:61</div></div>
+<div class="ttc" id="astructAppInputContext_html_a2d11531ca1f969158eaee06971d71457"><div class="ttname"><a href="structAppInputContext.html#a2d11531ca1f969158eaee06971d71457">AppInputContext::pending_width</a></div><div class="ttdeci">int * pending_width</div><div class="ttdef"><b>Definition:</b> app_input.h:66</div></div>
+<div class="ttc" id="astructAppInputContext_html_a37fa65c8c5c195d47e3ae67755fe08da"><div class="ttname"><a href="structAppInputContext.html#a37fa65c8c5c195d47e3ae67755fe08da">AppInputContext::saved_y</a></div><div class="ttdeci">int * saved_y</div><div class="ttdef"><b>Definition:</b> app_input.h:62</div></div>
+<div class="ttc" id="astructAppInputContext_html_a4037473adf9e4515586be2a8b3d7d375"><div class="ttname"><a href="structAppInputContext.html#a4037473adf9e4515586be2a8b3d7d375">AppInputContext::height</a></div><div class="ttdeci">int * height</div><div class="ttdef"><b>Definition:</b> app_input.h:58</div></div>
+<div class="ttc" id="astructAppInputContext_html_a4f2657f2dd9debfe011747ce643a8ac6"><div class="ttname"><a href="structAppInputContext.html#a4f2657f2dd9debfe011747ce643a8ac6">AppInputContext::notifier</a></div><div class="ttdeci">ActionNotifier * notifier</div><div class="ttdef"><b>Definition:</b> app_input.h:48</div></div>
+<div class="ttc" id="astructAppInputContext_html_a5ac5910ff7e40894760ed275ec4e51d2"><div class="ttname"><a href="structAppInputContext.html#a5ac5910ff7e40894760ed275ec4e51d2">AppInputContext::resize_pending</a></div><div class="ttdeci">bool * resize_pending</div><div class="ttdef"><b>Definition:</b> app_input.h:65</div></div>
+<div class="ttc" id="astructAppInputContext_html_a660404c8121777cc20d29367ba8fbdd9"><div class="ttname"><a href="structAppInputContext.html#a660404c8121777cc20d29367ba8fbdd9">AppInputContext::saved_height</a></div><div class="ttdeci">int * saved_height</div><div class="ttdef"><b>Definition:</b> app_input.h:64</div></div>
+<div class="ttc" id="astructAppInputContext_html_a6f1a3f1b085070c54d4ecade4d548f5b"><div class="ttname"><a href="structAppInputContext.html#a6f1a3f1b085070c54d4ecade4d548f5b">AppInputContext::gamepad</a></div><div class="ttdeci">GamepadState * gamepad</div><div class="ttdef"><b>Definition:</b> app_input.h:53</div></div>
+<div class="ttc" id="astructAppInputContext_html_a852c51494ef768624efd6a20ae9fcff8"><div class="ttname"><a href="structAppInputContext.html#a852c51494ef768624efd6a20ae9fcff8">AppInputContext::perf_context</a></div><div class="ttdeci">PerfModeContext * perf_context</div><div class="ttdef"><b>Definition:</b> app_input.h:52</div></div>
+<div class="ttc" id="astructAppInputContext_html_a9a024b1267e74915dc2721e391913397"><div class="ttname"><a href="structAppInputContext.html#a9a024b1267e74915dc2721e391913397">AppInputContext::timeline_ui</a></div><div class="ttdeci">GPUProfilerUI * timeline_ui</div><div class="ttdef"><b>Definition:</b> app_input.h:50</div></div>
+<div class="ttc" id="astructAppInputContext_html_aa22ede3fbd57b28bc5979e2174a12c59"><div class="ttname"><a href="structAppInputContext.html#aa22ede3fbd57b28bc5979e2174a12c59">AppInputContext::camera</a></div><div class="ttdeci">Camera * camera</div><div class="ttdef"><b>Definition:</b> app_input.h:44</div></div>
+<div class="ttc" id="astructAppInputContext_html_aa3483aad7c3883b4f1bfba7b5d6ba39f"><div class="ttname"><a href="structAppInputContext.html#aa3483aad7c3883b4f1bfba7b5d6ba39f">AppInputContext::log_gpu_metrics</a></div><div class="ttdeci">bool * log_gpu_metrics</div><div class="ttdef"><b>Definition:</b> app_input.h:69</div></div>
+<div class="ttc" id="astructAppInputContext_html_abdb758c084e367120fc60af45fcf8a1e"><div class="ttname"><a href="structAppInputContext.html#abdb758c084e367120fc60af45fcf8a1e">AppInputContext::env_mgr</a></div><div class="ttdeci">EnvManager * env_mgr</div><div class="ttdef"><b>Definition:</b> app_input.h:47</div></div>
+<div class="ttc" id="astructAppInputContext_html_ac2b6d304781d3f00a901e0b7480e22f1"><div class="ttname"><a href="structAppInputContext.html#ac2b6d304781d3f00a901e0b7480e22f1">AppInputContext::scene</a></div><div class="ttdeci">Scene * scene</div><div class="ttdef"><b>Definition:</b> app_input.h:45</div></div>
+<div class="ttc" id="astructAppInputContext_html_acb891570d79be6d7cd83b285a5a5a036"><div class="ttname"><a href="structAppInputContext.html#acb891570d79be6d7cd83b285a5a5a036">AppInputContext::width</a></div><div class="ttdeci">int * width</div><div class="ttdef"><b>Definition:</b> app_input.h:57</div></div>
+<div class="ttc" id="astructAppInputContext_html_acd48b90c8643c0d2505688819ae92484"><div class="ttname"><a href="structAppInputContext.html#acd48b90c8643c0d2505688819ae92484">AppInputContext::saved_width</a></div><div class="ttdeci">int * saved_width</div><div class="ttdef"><b>Definition:</b> app_input.h:63</div></div>
+<div class="ttc" id="astructAppInputContext_html_ad010c6d11e3fbc8240c27d7710638e21"><div class="ttname"><a href="structAppInputContext.html#ad010c6d11e3fbc8240c27d7710638e21">AppInputContext::effect_bench</a></div><div class="ttdeci">EffectBenchmark * effect_bench</div><div class="ttdef"><b>Definition:</b> app_input.h:51</div></div>
+<div class="ttc" id="astructAppInputContext_html_ad0660fcc8300d5fbdad8a2e80ffd921b"><div class="ttname"><a href="structAppInputContext.html#ad0660fcc8300d5fbdad8a2e80ffd921b">AppInputContext::postprocess</a></div><div class="ttdeci">PostProcess * postprocess</div><div class="ttdef"><b>Definition:</b> app_input.h:46</div></div>
+<div class="ttc" id="astructAppInputContext_html_adbc78fab9478d8293beb3fd98de0021f"><div class="ttname"><a href="structAppInputContext.html#adbc78fab9478d8293beb3fd98de0021f">AppInputContext::camera_enabled</a></div><div class="ttdeci">bool * camera_enabled</div><div class="ttdef"><b>Definition:</b> app_input.h:59</div></div>
+<div class="ttc" id="astructAppInputContext_html_ae9ed81377392d7e726b76c301ea3cf2c"><div class="ttname"><a href="structAppInputContext.html#ae9ed81377392d7e726b76c301ea3cf2c">AppInputContext::overlay</a></div><div class="ttdeci">AppUIOverlay * overlay</div><div class="ttdef"><b>Definition:</b> app_input.h:49</div></div>
+<div class="ttc" id="astructAppInputContext_html_aef424306ce284114f58dea80cfcd9323"><div class="ttname"><a href="structAppInputContext.html#aef424306ce284114f58dea80cfcd9323">AppInputContext::window</a></div><div class="ttdeci">GLFWwindow * window</div><div class="ttdef"><b>Definition:</b> app_input.h:43</div></div>
+<div class="ttc" id="astructAppUIOverlay_html"><div class="ttname"><a href="structAppUIOverlay.html">AppUIOverlay</a></div><div class="ttdef"><b>Definition:</b> app_ui.h:41</div></div>
+<div class="ttc" id="astructApp_html"><div class="ttname"><a href="structApp.html">App</a></div><div class="ttdoc">The central state container for the entire application.</div><div class="ttdef"><b>Definition:</b> app.h:24</div></div>
+<div class="ttc" id="astructAsyncLoader_html"><div class="ttname"><a href="structAsyncLoader.html">AsyncLoader</a></div><div class="ttdoc">Opaque handle to the asynchronous loader context.</div><div class="ttdef"><b>Definition:</b> async_loader.c:17</div></div>
+<div class="ttc" id="astructCamera_html"><div class="ttname"><a href="structCamera.html">Camera</a></div><div class="ttdoc">Represents a 3D camera with orientation, movement, and physical properties.</div><div class="ttdef"><b>Definition:</b> camera.h:41</div></div>
+<div class="ttc" id="astructEffectBenchmark_html"><div class="ttname"><a href="structEffectBenchmark.html">EffectBenchmark</a></div><div class="ttdoc">State for the automated benchmark sweep.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:65</div></div>
+<div class="ttc" id="astructEnvManager_html"><div class="ttname"><a href="structEnvManager.html">EnvManager</a></div><div class="ttdoc">Encapsulates state for environment loading, transitions, and IBL.</div><div class="ttdef"><b>Definition:</b> env_manager.h:27</div></div>
+<div class="ttc" id="astructGPUProfilerUI_html"><div class="ttname"><a href="structGPUProfilerUI.html">GPUProfilerUI</a></div><div class="ttdoc">Manages the visual state and animations for the GPU timeline.</div><div class="ttdef"><b>Definition:</b> gpu_profiler_ui.h:12</div></div>
+<div class="ttc" id="astructGamepadState_html"><div class="ttname"><a href="structGamepadState.html">GamepadState</a></div><div class="ttdef"><b>Definition:</b> gamepad_input.h:45</div></div>
+<div class="ttc" id="astructPerfModeContext_html"><div class="ttname"><a href="structPerfModeContext.html">PerfModeContext</a></div><div class="ttdoc">State container for performance mode.</div><div class="ttdef"><b>Definition:</b> perf_mode.h:53</div></div>
+<div class="ttc" id="astructPostProcess_html"><div class="ttname"><a href="structPostProcess.html">PostProcess</a></div><div class="ttdoc">Main pipeline state for post-processing.</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:46</div></div>
+<div class="ttc" id="astructScene_html"><div class="ttname"><a href="structScene.html">Scene</a></div><div class="ttdoc">Encapsulates all 3D scene data, geometry, and rendering state.</div><div class="ttdef"><b>Definition:</b> scene.h:28</div></div>
+<div class="ttc" id="awindow_8h_html_a3c96d80d363e67d13a41b5d1821f3242"><div class="ttname"><a href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a></div><div class="ttdeci">struct GLFWwindow GLFWwindow</div><div class="ttdef"><b>Definition:</b> window.h:4</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="app__input_8h.html">app_input.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
