@@ -1,5 +1,9 @@
 var NAVTREEINDEX10 =
 {
+"structGamepadState.html":[5,0,42],
+"structGamepadState.html#a57a6f8ac377f9da9a70368f5a8bf90f5":[5,0,42,5],
+"structGamepadState.html#a66613551f374fa5f157632cdf39ef812":[5,0,42,0],
+"structGamepadState.html#a7864a4d8855432b5528f9fcae4f49ba2":[5,0,42,6],
 "structGamepadState.html#a79c17a223b5395ed7ea77a2370108db8":[5,0,42,4],
 "structGamepadState.html#a7c3ffbfac8b566b210679ffb89d5b98c":[5,0,42,3],
 "structGamepadState.html#a856c789141feef27ccb0598a408325f6":[5,0,42,7],
@@ -245,9 +249,5 @@ var NAVTREEINDEX10 =
 "structPostProcess.html#a8362e441c1070f454241f61975e5be5c":[5,0,81,1],
 "structPostProcess.html#a94be299863c33dd03d91f9e0f5b3fddc":[5,0,81,27],
 "structPostProcess.html#a95a38057950cc92a1af929ee18726d6c":[5,0,81,21],
-"structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01":[5,0,81,7],
-"structPostProcess.html#a9f1a75962d0e9069fa9ee66a1eb562b8":[5,0,81,20],
-"structPostProcess.html#aa73e2397b40ec74c59dbd86df6a08053":[5,0,81,19],
-"structPostProcess.html#aaac67359cd05c2eb46134105e71ea043":[5,0,81,30],
-"structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b":[5,0,81,10]
+"structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01":[5,0,81,7]
 };

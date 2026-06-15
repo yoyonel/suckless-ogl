@@ -1,5 +1,9 @@
 var NAVTREEINDEX12 =
 {
+"structSphereInstanceSSBO.html#ad85153e7c453578678358c0f087cc203":[5,0,103,0],
+"structSubsystemDescriptor.html":[5,0,105],
+"structSubsystemDescriptor.html#a2267326617493d4a6f8b540c62699b2b":[5,0,105,1],
+"structSubsystemDescriptor.html#a5f90aee50b80070369d5e66528d92706":[5,0,105,0],
 "structSubsystemDescriptor.html#aede6cf2b63036531212cfb868d8583e2":[5,0,105,2],
 "structTonemapParams.html":[5,0,106],
 "structTonemapParams.html#a11935b3c9a4eea555fcf07002816f05a":[5,0,106,4],
@@ -245,9 +249,5 @@ var NAVTREEINDEX12 =
 "ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c":[6,0,4,64,20],
 "ui_8frag.html":[6,0,3,30],
 "ui_8frag.html#a51c484d54db26f0613da14a4190f28ea":[6,0,3,30,1],
-"ui_8frag.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,30,2],
-"ui_8frag.html#af17e16713b330fa91f81be3b8e04749a":[6,0,3,30,0],
-"ui_8h.html":[6,0,2,84],
-"ui_8h.html#a04ff141f59212601e740294c9159dbe7":[6,0,2,84,21],
-"ui_8h.html#a092e3880109fbbe26972f6c5e3866c17":[6,0,2,84,11]
+"ui_8frag.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,30,2]
 };
