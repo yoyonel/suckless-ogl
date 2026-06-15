@@ -47,8 +47,9 @@ static void add_body(NBodySim* sim, const double pos[3], const double vel[3],
                      double mass, float radius, const float albedo[3],
                      float metallic, float roughness)
 {
-	if (sim->body_count >= NBODY_MAX_BODIES)
+	if (sim->body_count >= NBODY_MAX_BODIES) {
 		return;
+	}
 
 	NBodyParticle* body = &sim->bodies[sim->body_count];
 	dvec3_copy(pos, body->position);

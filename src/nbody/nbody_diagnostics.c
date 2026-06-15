@@ -56,8 +56,9 @@ float nbody_kinetic_energy(const NBodySim* sim)
 float nbody_energy_drift(const NBodySim* sim)
 {
 	float ref_energy = sim->initial_energy;
-	if (ref_energy == 0.0F)
+	if (ref_energy == 0.0F) {
 		return 0.0F;
+	}
 
 	float current = nbody_total_energy(sim);
 	float diff = current - ref_energy;
@@ -68,8 +69,9 @@ float nbody_energy_drift(const NBodySim* sim)
 float nbody_energy_drift_signed(const NBodySim* sim)
 {
 	float ref_energy = sim->initial_energy;
-	if (ref_energy == 0.0F)
+	if (ref_energy == 0.0F) {
 		return 0.0F;
+	}
 
 	float current = nbody_total_energy(sim);
 	float diff = current - ref_energy;

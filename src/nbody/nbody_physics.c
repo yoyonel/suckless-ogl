@@ -124,8 +124,9 @@ static void integrate_step(NBodySim* sim, float delta_time)
 				    (overshoot /
 				     (double)NBODY_CONFINEMENT_RADIUS) *
 				    fabs((double)delta_time);
-				if (damp > 1.0)
+				if (damp > 1.0) {
 					damp = 1.0;
+				}
 
 				dvec3 delta_v;
 				dvec3_scale(r_hat, -v_radial * damp, delta_v);
