@@ -3907,7 +3907,7 @@
 
 <h1 id="n-body-gravity-simulation-physics-reference">N-Body Gravity Simulation — Physics Reference<a class="headerlink" href="#n-body-gravity-simulation-physics-reference" title="Permanent link">¶</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>The N-body module (<code>nbody.h</code> / <code>nbody.c</code>) implements a real-time gravitational
+<p>The N-body module (<code>src/nbody/</code> directory) implements a real-time gravitational
 simulation of up to 16 bodies orbiting a central star.  The physics engine
 prioritises <strong>long-term stability</strong> (energy conservation over thousands of
 simulated seconds) using well-established techniques from computational
@@ -3954,7 +3954,7 @@ $<span class="arithmatex">\(\mathbf{x} \leftarrow \mathbf{x} + \mathbf{v}\,\Delt
 <li>Update velocities:
 $<span class="arithmatex">\(\mathbf{v} \leftarrow \mathbf{v} + \tfrac{1}{2}(\mathbf{a}_\text{old} + \mathbf{a}_\text{new})\,\Delta t\)</span>$</li>
 </ol>
-<p>This is implemented in <code>integrate_step()</code> in <code>src/nbody.c</code>.</p>
+<p>This is implemented in <code>integrate_step()</code> in <code>src/nbody/nbody_physics.c</code>.</p>
 <h3 id="why-symplectic-matters">Why Symplectic Matters<a class="headerlink" href="#why-symplectic-matters" title="Permanent link">¶</a></h3>
 <p>Non-symplectic methods (Euler, RK4) accumulate a secular energy drift
 proportional to the number of steps.  Over 1 200 s at 120 Hz that is 144 000
@@ -4674,12 +4674,28 @@ aligned instance array, sphere sorter).</p>
 </thead>
 <tbody>
 <tr>
-<td><code>include/nbody.h</code></td>
-<td>Public API, constants, data structures</td>
+<td><code>src/nbody/nbody.h</code></td>
+<td>Public API facade (the only header to include)</td>
 </tr>
 <tr>
-<td><code>src/nbody.c</code></td>
-<td>Physics implementation (Verlet, softening, preset)</td>
+<td><code>src/nbody/nbody_types.h</code></td>
+<td>Data structures (<code>NBodySim</code>) and physics constants</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_physics.c</code></td>
+<td>Math core: Verlet integrator and Plummer softening</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_diagnostics.c</code></td>
+<td>Stability metrics (Hamiltonian, energy drift)</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_preset.c</code></td>
+<td>Initial setup and orbiter configurations</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_render.c</code></td>
+<td>Graphics bridge: mapping state to <code>SphereInstance</code></td>
 </tr>
 <tr>
 <td><code>tests/test_nbody_stability.c</code></td>
@@ -4751,7 +4767,7 @@ aligned instance array, sphere sorter).</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 25, 2026 12:54:33 UTC">April 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 15, 2026 13:13:28 UTC">June 15, 2026</span>
   </span>
 
     

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['nbody_2ec_2597',['nbody.c',['../nbody_8c.html',1,'']]],
-  ['nbody_2eh_2598',['nbody.h',['../nbody_8h.html',1,'']]]
+  ['nbody_2eh_2579',['nbody.h',['../nbody_8h.html',1,'']]],
+  ['nbody_5finternal_2eh_2580',['nbody_internal.h',['../nbody__internal_8h.html',1,'']]],
+  ['nbody_5ftypes_2eh_2581',['nbody_types.h',['../nbody__types_8h.html',1,'']]]
 ];

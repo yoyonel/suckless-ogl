@@ -3636,8 +3636,13 @@
 </p><div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">damping_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0F</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">sim</span><span class="o">-&gt;</span><span class="n">damping</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">fabsf</span><span class="p">(</span><span class="n">delta_time</span><span class="p">));</span>
 </span></code></pre></div><p></p>
 <h3 id="3-gestion-des-flags-au-niveau-du-build">3. Gestion des Flags au Niveau du Build<a class="headerlink" href="#3-gestion-des-flags-au-niveau-du-build" title="Permanent link">¶</a></h3>
-<p>Au lieu de pragmas dans le code source, nous imposons désormais un comportement flottant standard via <code>CMakeLists.txt</code> :
-</p><div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">set_source_files_properties</span><span class="p">(</span><span class="s">src/nbody.c</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">COMPILE_FLAGS</span><span class="w"> </span><span class="s2">"-fno-fast-math"</span><span class="p">)</span>
+<p>Au lieu de pragmas dans le code source, nous imposons désormais un comportement flottant standard via <code>CMakeLists.txt</code> sur les fichiers critiques :
+</p><div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">set_source_files_properties</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="s">src/nbody/nbody_physics.c</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s">src/nbody/nbody_diagnostics.c</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="s">src/nbody/nbody_preset.c</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">COMPILE_FLAGS</span><span class="w"> </span><span class="s2">"-fno-fast-math"</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
 </span></code></pre></div>
 Cela garantit que le cœur de la physique est toujours compilé avec une conformité IEEE 754 stricte, même si le reste de l'application utilise des optimisations agressives.<p></p>
 <h2 id="verification">Vérification<a class="headerlink" href="#verification" title="Permanent link">¶</a></h2>
@@ -3805,7 +3810,7 @@ identique à la version manuelle.</p>
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="8 mai 2026 09:59:48 UTC">8 mai 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="15 juin 2026 13:13:28 UTC">15 juin 2026</span>
   </span>
 
     

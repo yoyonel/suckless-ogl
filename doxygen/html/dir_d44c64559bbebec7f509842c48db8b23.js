@@ -46,6 +46,8 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "mem.h", "mem_8h.html", null ],
     [ "metric_stack.h", "metric__stack_8h.html", "metric__stack_8h" ],
     [ "nbody.h", "nbody_8h.html", "nbody_8h" ],
+    [ "nbody_internal.h", "nbody__internal_8h.html", "nbody__internal_8h" ],
+    [ "nbody_types.h", "nbody__types_8h.html", "nbody__types_8h" ],
     [ "pbr.h", "pbr_8h.html", "pbr_8h" ],
     [ "perf_mode.h", "perf__mode_8h.html", "perf__mode_8h" ],
     [ "perf_timer.h", "perf__timer_8h.html", "perf__timer_8h" ],

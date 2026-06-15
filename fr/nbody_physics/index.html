@@ -3907,7 +3907,7 @@
 
 <h1 id="simulation-n-corps-reference-physique">Simulation N-Corps — Référence Physique<a class="headerlink" href="#simulation-n-corps-reference-physique" title="Permanent link">¶</a></h1>
 <h2 id="vue-densemble">Vue d'ensemble<a class="headerlink" href="#vue-densemble" title="Permanent link">¶</a></h2>
-<p>Le module N-corps (<code>nbody.h</code> / <code>nbody.c</code>) implémente une simulation
+<p>Le module N-corps (sous-dossier <code>src/nbody/</code>) implémente une simulation
 gravitationnelle temps réel de jusqu'à 16 corps en orbite autour d'une étoile
 centrale.  Le moteur physique privilégie la <strong>stabilité long terme</strong>
 (conservation de l'énergie sur des milliers de secondes simulées) en utilisant
@@ -3955,7 +3955,7 @@ $<span class="arithmatex">\(\mathbf{x} \leftarrow \mathbf{x} + \mathbf{v}\,\Delt
 <li>Mettre à jour les vitesses :
 $<span class="arithmatex">\(\mathbf{v} \leftarrow \mathbf{v} + \tfrac{1}{2}(\mathbf{a}_\text{old} + \mathbf{a}_\text{new})\,\Delta t\)</span>$</li>
 </ol>
-<p>Implémenté dans <code>integrate_step()</code> dans <code>src/nbody.c</code>.</p>
+<p>Implémenté dans <code>integrate_step()</code> dans <code>src/nbody/nbody_physics.c</code>.</p>
 <h3 id="pourquoi-le-symplectique-est-important">Pourquoi le Symplectique est Important<a class="headerlink" href="#pourquoi-le-symplectique-est-important" title="Permanent link">¶</a></h3>
 <p>Les méthodes non-symplectiques (Euler, RK4) accumulent une dérive séculaire
 d'énergie proportionnelle au nombre de pas.  Sur 1 200 s à 120 Hz, cela
@@ -4695,12 +4695,32 @@ instance VBO, billboard VBO, tableau d'instances aligné, trieur de sphères).</
 </thead>
 <tbody>
 <tr>
-<td><code>include/nbody.h</code></td>
-<td>API publique, constantes, structures de données</td>
+<td><code>src/nbody/nbody.h</code></td>
+<td>API publique de la façade (seul fichier à inclure)</td>
 </tr>
 <tr>
-<td><code>src/nbody.c</code></td>
-<td>Implémentation physique (Verlet, adoucissement, preset)</td>
+<td><code>src/nbody/nbody_types.h</code></td>
+<td>Structures de données (NBodySim, NBodyParticle) et constantes</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_physics.c</code></td>
+<td>Cœur mathématique : Intégrateur Verlet et adoucissement</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_diagnostics.c</code></td>
+<td>Mesures de stabilité (Hamiltonien, dérive d'énergie)</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_preset.c</code></td>
+<td>Configuration initiale et constantes des astres (OrbiterDef)</td>
+</tr>
+<tr>
+<td><code>src/nbody/nbody_render.c</code></td>
+<td>Pont graphique : traduction vers <code>SphereInstance</code></td>
+</tr>
+<tr>
+<td><code>tests/test_nbody_stability.c</code></td>
+<td>Suite de tests de stabilité (8 tests)</td>
 </tr>
 <tr>
 <td><code>tests/test_nbody_stability.c</code></td>
@@ -4772,7 +4792,7 @@ instance VBO, billboard VBO, tableau d'instances aligné, trieur de sphères).</
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 avril 2026 12:54:33 UTC">25 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="15 juin 2026 13:13:28 UTC">15 juin 2026</span>
   </span>
 
     

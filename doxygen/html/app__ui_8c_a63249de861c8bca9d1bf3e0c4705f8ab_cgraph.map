@@ -1,30 +1,24 @@
 <map id="draw_nbody_overlay" name="draw_nbody_overlay">
-<area shape="rect" id="node1" title=" " alt="" coords="5,233,163,260"/>
-<area shape="rect" id="node2" href="$background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e" title=" " alt="" coords="457,284,519,311"/>
-<area shape="rect" id="node3" href="$nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17" title="Returns the relative energy drift |E(t) &#45; E₀| / |E₀|." alt="" coords="211,91,357,117"/>
-<area shape="rect" id="node10" href="$nbody_8h.html#a41041d18672c901e03f26b9c9e6fced8" title=" " alt="" coords="211,142,357,183"/>
-<area shape="rect" id="node11" href="$nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c" title="Computes kinetic energy only: Σ ½ m v²." alt="" coords="405,208,571,235"/>
-<area shape="rect" id="node12" href="$utils_8h.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="231,309,337,336"/>
-<area shape="rect" id="node13" href="$ui_8h.html#a741fab59d05880f3bf5362d101833451" title="Draws text and advances the layout cursor." alt="" coords="227,360,341,387"/>
-<area shape="rect" id="node4" href="$nbody_8c.html#a785533e1f63e381530bfb5c3531238dc" title="Computes the total energy (kinetic + gravitational potential)." alt="" coords="413,99,563,125"/>
-<area shape="rect" id="node5" href="$dvec3_8h.html#a22e38b31ee09d7da21b47b57392a1eba" title=" " alt="" coords="635,107,738,133"/>
-<area shape="rect" id="node6" href="$dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097" title=" " alt="" coords="825,157,935,184"/>
-<area shape="rect" id="node8" href="$dvec3_8h.html#a98af61b1fa7c66fd349618f272188ac2" title=" " alt="" coords="641,5,732,32"/>
-<area shape="rect" id="node9" href="$nbody_8c.html#a90ad4f2cde85500e0405e89275bf426c" title=" " alt="" coords="619,56,755,83"/>
-<area shape="rect" id="node7" href="$dvec3_8h.html#a2d1901301689257333f9d6bf88cf6d27" title=" " alt="" coords="1031,157,1120,184"/>
-<area shape="rect" id="node14" href="$ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac" title="Draws a single text string at a specific coordinate." alt="" coords="435,360,541,387"/>
-<area shape="rect" id="node15" href="$ui_8c.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="622,360,751,387"/>
-<area shape="rect" id="node16" href="$ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b" title="Draws text with custom alpha transparency and a scale factor." alt="" coords="803,360,957,387"/>
-<area shape="rect" id="node17" href="$ui_8c.html#a6f543873f648c1c65a3cce1db844d95a" title=" " alt="" coords="1005,335,1145,361"/>
-<area shape="rect" id="node18" href="$ui_8c.html#a2542a31c87c66c322c255f6110d7b273" title=" " alt="" coords="1018,385,1133,412"/>
-<area shape="rect" id="node24" href="$ui_8c.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="1037,436,1114,463"/>
-<area shape="rect" id="node27" href="$ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="1043,284,1108,311"/>
-<area shape="rect" id="node19" href="$ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd" title="Flushes the current UI batch to the GPU." alt="" coords="1246,353,1318,380"/>
-<area shape="rect" id="node20" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="1419,328,1553,355"/>
-<area shape="rect" id="node23" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="1438,379,1534,405"/>
-<area shape="rect" id="node21" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="1601,321,1753,362"/>
-<area shape="rect" id="node22" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1801,328,1951,355"/>
-<area shape="rect" id="node25" href="$render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="1193,476,1371,503"/>
-<area shape="rect" id="node26" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="1199,425,1365,452"/>
-<area shape="rect" id="node28" href="$render__utils_8h.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="1206,277,1358,318"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,125,163,151"/>
+<area shape="rect" id="node2" href="$background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e" title=" " alt="" coords="446,95,509,122"/>
+<area shape="rect" id="node3" href="$nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17" title="Returns the relative energy drift |E(t) &#45; E₀| / |E₀|." alt="" coords="220,37,367,63"/>
+<area shape="rect" id="node4" href="$nbody_8h.html#a41041d18672c901e03f26b9c9e6fced8" title="Signed energy drift." alt="" coords="220,88,367,129"/>
+<area shape="rect" id="node5" href="$nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c" title="Computes kinetic energy only: Σ ½ m v²." alt="" coords="211,154,376,181"/>
+<area shape="rect" id="node6" href="$utils_8h.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="240,205,347,231"/>
+<area shape="rect" id="node7" href="$ui_8h.html#a741fab59d05880f3bf5362d101833451" title="Draws text and advances the layout cursor." alt="" coords="236,255,351,282"/>
+<area shape="rect" id="node8" href="$ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac" title="Draws a single text string at a specific coordinate." alt="" coords="424,255,531,282"/>
+<area shape="rect" id="node9" href="$ui_8c.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="579,255,708,282"/>
+<area shape="rect" id="node10" href="$ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b" title="Draws text with custom alpha transparency and a scale factor." alt="" coords="756,255,911,282"/>
+<area shape="rect" id="node11" href="$ui_8c.html#a6f543873f648c1c65a3cce1db844d95a" title=" " alt="" coords="959,179,1099,206"/>
+<area shape="rect" id="node12" href="$ui_8c.html#a2542a31c87c66c322c255f6110d7b273" title=" " alt="" coords="971,281,1086,307"/>
+<area shape="rect" id="node18" href="$ui_8c.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="990,230,1067,257"/>
+<area shape="rect" id="node21" href="$ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="996,331,1061,358"/>
+<area shape="rect" id="node13" href="$ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd" title="Flushes the current UI batch to the GPU." alt="" coords="1199,281,1271,307"/>
+<area shape="rect" id="node14" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="1372,255,1507,282"/>
+<area shape="rect" id="node17" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="1391,306,1487,333"/>
+<area shape="rect" id="node15" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="1555,248,1707,289"/>
+<area shape="rect" id="node16" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1755,255,1904,282"/>
+<area shape="rect" id="node19" href="$render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="1147,230,1324,257"/>
+<area shape="rect" id="node20" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="1152,179,1319,206"/>
+<area shape="rect" id="node22" href="$render__utils_8h.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="1159,332,1311,373"/>
 </map>

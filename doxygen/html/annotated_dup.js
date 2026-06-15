@@ -74,7 +74,6 @@ var annotated_dup =
     [ "NBodyImpact", "structNBodyImpact.html", "structNBodyImpact" ],
     [ "NBodyParticle", "structNBodyParticle.html", "structNBodyParticle" ],
     [ "NBodySim", "structNBodySim.html", "structNBodySim" ],
-    [ "OrbiterDef", "structOrbiterDef.html", "structOrbiterDef" ],
     [ "PBRIrrUniforms", "structPBRIrrUniforms.html", "structPBRIrrUniforms" ],
     [ "PBRLumUniforms", "structPBRLumUniforms.html", "structPBRLumUniforms" ],
     [ "PBRMaterial", "structPBRMaterial.html", "structPBRMaterial" ],
