@@ -28,9 +28,14 @@ float damping_factor = 1.0F - (sim->damping * fabsf(delta_time));
 ```
 
 ### 3. Build-Level Flag Management
-Instead of fragile source-code pragmas, we now enforce standard floating-point behavior via `CMakeLists.txt`:
+Instead of fragile source-code pragmas, we now enforce standard floating-point behavior via `CMakeLists.txt` on the critical modules:
 ```cmake
-set_source_files_properties(src/nbody.c PROPERTIES COMPILE_FLAGS "-fno-fast-math")
+set_source_files_properties(
+    src/nbody/nbody_physics.c
+    src/nbody/nbody_diagnostics.c
+    src/nbody/nbody_preset.c
+    PROPERTIES COMPILE_FLAGS "-fno-fast-math"
+)
 ```
 This ensures the physics core is always compiled with strict IEEE 754 compliance, even if the rest of the application uses aggressive optimizations.
 

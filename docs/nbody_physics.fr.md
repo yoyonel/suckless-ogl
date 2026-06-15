@@ -2,7 +2,7 @@
 
 ## Vue d'ensemble
 
-Le module N-corps (`nbody.h` / `nbody.c`) implémente une simulation
+Le module N-corps (sous-dossier `src/nbody/`) implémente une simulation
 gravitationnelle temps réel de jusqu'à 16 corps en orbite autour d'une étoile
 centrale.  Le moteur physique privilégie la **stabilité long terme**
 (conservation de l'énergie sur des milliers de secondes simulées) en utilisant
@@ -36,7 +36,7 @@ $$\mathbf{x} \leftarrow \mathbf{x} + \mathbf{v}\,\Delta t + \tfrac{1}{2}\,\mathb
 4. Mettre à jour les vitesses :
 $$\mathbf{v} \leftarrow \mathbf{v} + \tfrac{1}{2}(\mathbf{a}_\text{old} + \mathbf{a}_\text{new})\,\Delta t$$
 
-Implémenté dans `integrate_step()` dans `src/nbody.c`.
+Implémenté dans `integrate_step()` dans `src/nbody/nbody_physics.c`.
 
 ### Pourquoi le Symplectique est Important
 
@@ -598,8 +598,13 @@ Validé avec `just test-integration-valgrind-full` — **0 bytes definitely lost
 
 | Fichier | Rôle |
 |---------|------|
-| `include/nbody.h` | API publique, constantes, structures de données |
-| `src/nbody.c` | Implémentation physique (Verlet, adoucissement, preset) |
+| `src/nbody/nbody.h` | API publique de la façade (seul fichier à inclure) |
+| `src/nbody/nbody_types.h` | Structures de données (NBodySim, NBodyParticle) et constantes |
+| `src/nbody/nbody_physics.c` | Cœur mathématique : Intégrateur Verlet et adoucissement |
+| `src/nbody/nbody_diagnostics.c` | Mesures de stabilité (Hamiltonien, dérive d'énergie) |
+| `src/nbody/nbody_preset.c` | Configuration initiale et constantes des astres (OrbiterDef) |
+| `src/nbody/nbody_render.c` | Pont graphique : traduction vers `SphereInstance` |
+| `tests/test_nbody_stability.c` | Suite de tests de stabilité (8 tests) |
 | `tests/test_nbody_stability.c` | Suite de tests de stabilité (8 tests) |
 | `include/trail_renderer.h` | Rendu des traînées (rubans visuels derrière les corps) |
 | `src/trail_renderer.c` | Implémentation des traînées en rubans billboard |
