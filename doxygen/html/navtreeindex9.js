@@ -1,5 +1,9 @@
 var NAVTREEINDEX9 =
 {
+"structBillboardSorter.html#a5dc17de0e0ec703056257fe420eb9a00":[5,0,17,7],
+"structBillboardSorter.html#a718c6f6b94fd67ff15a8fcbb33fe163e":[5,0,17,0],
+"structBillboardSorter.html#ac3cdc2bff2b4b7707f6be87f393a5aeb":[5,0,17,12],
+"structBillboardSorter.html#ac3d3ca74ea3932296c64db0f799a0146":[5,0,17,15],
 "structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6":[5,0,17,13],
 "structBillboardSorter.html#ad591c3d3c296117270271b9dc6e4d2d9":[5,0,17,10],
 "structBillboardSorter.html#ae5211cd10d71410ac839c400a36d3cd9":[5,0,17,11],
@@ -245,9 +249,5 @@ var NAVTREEINDEX9 =
 "structGamepadControlPos.html#a34584dc2b41f00b2433d016f1f1e2ff4":[5,0,41,4],
 "structGamepadControlPos.html#a6909542a6401c225f5863c0756cc8fef":[5,0,41,1],
 "structGamepadControlPos.html#ab86d4739b79108acebe41e472f4f7c48":[5,0,41,11],
-"structGamepadControlPos.html#ab87e1ef55e28cda145036b67343467c5":[5,0,41,8],
-"structGamepadState.html":[5,0,42],
-"structGamepadState.html#a57a6f8ac377f9da9a70368f5a8bf90f5":[5,0,42,5],
-"structGamepadState.html#a66613551f374fa5f157632cdf39ef812":[5,0,42,0],
-"structGamepadState.html#a7864a4d8855432b5528f9fcae4f49ba2":[5,0,42,6]
+"structGamepadControlPos.html#ab87e1ef55e28cda145036b67343467c5":[5,0,41,8]
 };

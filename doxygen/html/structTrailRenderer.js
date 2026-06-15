@@ -7,6 +7,7 @@ var structTrailRenderer =
     [ "sample_timer", "structTrailRenderer.html#a82d0b15e7daf9435c3c74b10f0964f2c", null ],
     [ "shader", "structTrailRenderer.html#a5fe190d038615f049365c812f60b6ccd", null ],
     [ "sim_time", "structTrailRenderer.html#a986d214bd6bb2a9dd4ee03520217642f", null ],
+    [ "staging", "structTrailRenderer.html#a800f330d4199cb520ab0535c45434956", null ],
     [ "trail_duration", "structTrailRenderer.html#a2ffb15a93b1862e3ac95799a9815d594", null ],
     [ "vao", "structTrailRenderer.html#a5f1380bdd02bf5cbc446407601f1c690", null ],
     [ "vbo", "structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0", null ],

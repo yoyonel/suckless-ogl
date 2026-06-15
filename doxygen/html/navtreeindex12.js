@@ -1,5 +1,9 @@
 var NAVTREEINDEX12 =
 {
+"structSphereInstanceSSBO.html#ad85153e7c453578678358c0f087cc203":[5,0,103,0],
+"structSubsystemDescriptor.html":[5,0,105],
+"structSubsystemDescriptor.html#a2267326617493d4a6f8b540c62699b2b":[5,0,105,1],
+"structSubsystemDescriptor.html#a5f90aee50b80070369d5e66528d92706":[5,0,105,0],
 "structSubsystemDescriptor.html#aede6cf2b63036531212cfb868d8583e2":[5,0,105,2],
 "structTonemapParams.html":[5,0,106],
 "structTonemapParams.html#a11935b3c9a4eea555fcf07002816f05a":[5,0,106,4],
@@ -15,16 +19,17 @@ var NAVTREEINDEX12 =
 "structTrailNeonParams.html#ab8483aaa0f010e21a779433cafc5346f":[5,0,108,2],
 "structTrailRenderer.html":[5,0,109],
 "structTrailRenderer.html#a067bde5dbf3273f4cdbaf69a50394d79":[5,0,109,2],
-"structTrailRenderer.html#a2ffb15a93b1862e3ac95799a9815d594":[5,0,109,7],
+"structTrailRenderer.html#a2ffb15a93b1862e3ac95799a9815d594":[5,0,109,8],
 "structTrailRenderer.html#a3cca3a9b3481a85b6b18d68bbe15a264":[5,0,109,3],
 "structTrailRenderer.html#a42736add9cd8e8d0902da76e096969a6":[5,0,109,1],
 "structTrailRenderer.html#a5409308b329d738678a0fbde9968087b":[5,0,109,0],
-"structTrailRenderer.html#a5f1380bdd02bf5cbc446407601f1c690":[5,0,109,8],
+"structTrailRenderer.html#a5f1380bdd02bf5cbc446407601f1c690":[5,0,109,9],
 "structTrailRenderer.html#a5fe190d038615f049365c812f60b6ccd":[5,0,109,5],
+"structTrailRenderer.html#a800f330d4199cb520ab0535c45434956":[5,0,109,7],
 "structTrailRenderer.html#a82d0b15e7daf9435c3c74b10f0964f2c":[5,0,109,4],
 "structTrailRenderer.html#a986d214bd6bb2a9dd4ee03520217642f":[5,0,109,6],
-"structTrailRenderer.html#aa98b7a30610d2aee1b257a047c151951":[5,0,109,10],
-"structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0":[5,0,109,9],
+"structTrailRenderer.html#aa98b7a30610d2aee1b257a047c151951":[5,0,109,11],
+"structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0":[5,0,109,10],
 "structTrailRing.html":[5,0,110],
 "structTrailRing.html#a0d1b0c64a68ee8ec65b463551dad32f7":[5,0,110,0],
 "structTrailRing.html#aca2481df97027f58c9d18fc952b47a8e":[5,0,110,1],
@@ -244,10 +249,5 @@ var NAVTREEINDEX12 =
 "ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c":[6,0,4,64,20],
 "ui_8frag.html":[6,0,3,30],
 "ui_8frag.html#a51c484d54db26f0613da14a4190f28ea":[6,0,3,30,1],
-"ui_8frag.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,30,2],
-"ui_8frag.html#af17e16713b330fa91f81be3b8e04749a":[6,0,3,30,0],
-"ui_8h.html":[6,0,2,84],
-"ui_8h.html#a04ff141f59212601e740294c9159dbe7":[6,0,2,84,21],
-"ui_8h.html#a092e3880109fbbe26972f6c5e3866c17":[6,0,2,84,11],
-"ui_8h.html#a230bc2320e5c5a94d5634132ad7ecd05":[6,0,2,84,24]
+"ui_8frag.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,30,2]
 };

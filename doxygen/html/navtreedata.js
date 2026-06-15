@@ -90,11 +90,11 @@ var NAVTREEINDEX =
 "postprocess__input_8c.html#ab5c5e3bd95f2a6bdd9c714a9f1e56fc8",
 "render__utils_8c.html#acb93c5e9986da209ae59c3e07e9c1bf4",
 "shockwave_8h.html#afbf21e0c5fc61bb6ec85409f54013716",
-"structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6",
-"structGamepadState.html#a79c17a223b5395ed7ea77a2370108db8",
-"structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76",
-"structSubsystemDescriptor.html#aede6cf2b63036531212cfb868d8583e2",
-"ui_8h.html#a5356c389352db784027765ad0ef3aca5"
+"structBillboardSorter.html#a5dc17de0e0ec703056257fe420eb9a00",
+"structGamepadState.html",
+"structPostProcess.html#a9f1a75962d0e9069fa9ee66a1eb562b8",
+"structSphereInstanceSSBO.html#ad85153e7c453578678358c0f087cc203",
+"ui_8frag.html#af17e16713b330fa91f81be3b8e04749a"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
