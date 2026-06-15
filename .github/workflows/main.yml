@@ -18,7 +18,7 @@ on:
     types: [opened, reopened, synchronize, closed]
   schedule:
     # Build nightly tous les jours à 01h00 UTC
-    - cron: '0 1 * * *'
+    - cron: "0 1 * * *"
 
 jobs:
   # --- JOB 1 : QUALITÉ ET LINT (RAPIDE) ---
@@ -105,7 +105,6 @@ jobs:
             CC="clang" \
             CXX="clang++"
 
-
       - name: Generate Visual Artifacts
         if: always()
         run: |
@@ -152,6 +151,47 @@ jobs:
           name: coverage-report
           path: build-coverage/coverage_report/
 
+    # --- JOB : AUDIT DE BINAIRE ---
+  binary-audit:
+    # needs: [test-and-coverage]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository }}-ci:latest
+      options: --user root # <--- LA LIGNE MAGIQUE
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies for Audit
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends \
+            libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev
+
+      - name: Build with Audit Flags
+        run: |
+          cmake -B build-audit \
+            -DCMAKE_C_FLAGS="-gdwarf-4 -ffunction-sections -fdata-sections" \
+            -DCMAKE_EXE_LINKER_FLAGS="-Wl,--gc-sections" \
+            -DCMAKE_BUILD_TYPE=Debug .
+          cmake --build build-audit --parallel $(nproc)
+
+      - name: Run Bloaty Analysis
+        uses: carlosperate/bloaty-action@v1
+        id: bloaty-step
+        with:
+          bloaty-args: build-audit/app -d compileunits -n 20
+          output-to-summary: true
+          summary-title: "Audit de taille binaire (Compile Units)"
+
+      - name: Gatekeeper (Size Limit)
+        run: |
+          SIZE=$(du -k build-audit/app | cut -f1)
+          if [ "$SIZE" -gt 3000 ]; then
+            echo "::error::Binaire trop lourd : ${SIZE}KB (Limite: 3000KB)"
+            exit 1
+          fi
+
   # --- NEW JOB : TESTS WINDOWS (WINE) ---
   test-windows:
     if: github.event.action != 'closed'
@@ -179,7 +219,6 @@ jobs:
       - name: Run Windows tests under Wine
         run: |
           cd build-test-win && ctest --output-on-failure
-
 
   # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
   documentation:
