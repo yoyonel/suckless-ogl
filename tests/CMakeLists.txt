@@ -7,7 +7,7 @@
 
 set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Threads::Threads)
 if(UNIX)
-    list(APPEND TEST_COMMON_LIBS m dl)
+  list(APPEND TEST_COMMON_LIBS m dl)
 endif()
 set(TEST_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/src
@@ -20,7 +20,7 @@ set(TEST_INCLUDE_DIRS
 )
 
 if(ENABLE_TRACY)
-    list(APPEND TEST_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  list(APPEND TEST_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 # =============================================================================
@@ -30,13 +30,13 @@ endif()
 # Convertir les chemins relatifs de SOURCES en chemins absolus
 set(TEST_LIB_SOURCES "")
 foreach(source ${SOURCES})
-    # Si le chemin est déjà absolu, le garder tel quel
-    if(IS_ABSOLUTE ${source})
-        list(APPEND TEST_LIB_SOURCES ${source})
-    else()
-        # Sinon, le préfixer avec CMAKE_SOURCE_DIR
-        list(APPEND TEST_LIB_SOURCES ${CMAKE_SOURCE_DIR}/${source})
-    endif()
+  # Si le chemin est déjà absolu, le garder tel quel
+  if(IS_ABSOLUTE ${source})
+    list(APPEND TEST_LIB_SOURCES ${source})
+  else()
+    # Sinon, le préfixer avec CMAKE_SOURCE_DIR
+    list(APPEND TEST_LIB_SOURCES ${CMAKE_SOURCE_DIR}/${source})
+  endif()
 endforeach()
 
 # Exclure main.c
@@ -44,12 +44,12 @@ list(FILTER TEST_LIB_SOURCES EXCLUDE REGEX ".*main\\.c$")
 
 # Créer la bibliothèque de test (compilée une seule fois)
 if(ENABLE_TRACY)
-    list(APPEND TEST_LIB_SOURCES "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  list(APPEND TEST_LIB_SOURCES "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 # Force Unity to support doubles
 if(TARGET unity)
-    target_compile_definitions(unity PUBLIC UNITY_INCLUDE_DOUBLE)
+  target_compile_definitions(unity PUBLIC UNITY_INCLUDE_DOUBLE)
 endif()
 
 add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
@@ -96,13 +96,13 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_render\\.c$")
 
 # Exclure les tests spécifiques à POSIX sur Windows
 if(WIN32)
-    message(STATUS "Excluding POSIX-only tests from Windows build")
-    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_log\\.c$")
-    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader_perf\\.c$")
-    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader\\.c$")
-    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_api\\.c$")
-    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_uniforms_loc\\.c$")
-    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_usage\\.c$")
+  message(STATUS "Excluding POSIX-only tests from Windows build")
+  list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_log\\.c$")
+  list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader_perf\\.c$")
+  list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader\\.c$")
+  list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_api\\.c$")
+  list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_uniforms_loc\\.c$")
+  list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_usage\\.c$")
 endif()
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
@@ -136,41 +136,41 @@ set(OPENGL_TESTS
 
 # Pour chaque fichier test trouvé
 foreach(test_file ${TEST_SOURCES})
-    # Extraire le nom du test (sans .c)
-    get_filename_component(test_name ${test_file} NAME_WE)
+  # Extraire le nom du test (sans .c)
+  get_filename_component(test_name ${test_file} NAME_WE)
 
-    # Créer l'exécutable
-    add_executable(${test_name} ${test_file})
-    target_link_libraries(${test_name} PRIVATE app_testlib)
+  # Créer l'exécutable
+  add_executable(${test_name} ${test_file})
+  target_link_libraries(${test_name} PRIVATE app_testlib)
 
-    # Injecter les variables pour le test de sécurité du log
-    if(${test_name} STREQUAL "test_log_security")
-        target_compile_definitions(${test_name} PRIVATE
+  # Injecter les variables pour le test de sécurité du log
+  if(${test_name} STREQUAL "test_log_security")
+    target_compile_definitions(${test_name} PRIVATE
             TEST_COMPILER=\"${CMAKE_C_COMPILER}\"
             TEST_INCLUDE_DIR=\"${CMAKE_SOURCE_DIR}/include\"
         )
-    endif()
+  endif()
 
-    # Déterminer si c'est un test OpenGL ou si on est sur Windows (cross-compilation)
-    if(${test_name} IN_LIST OPENGL_TESTS OR WIN32)
-        # Test avec Xvfb (et Wine sur Windows via le wrapper)
-        add_test(NAME ${test_name}
+  # Déterminer si c'est un test OpenGL ou si on est sur Windows (cross-compilation)
+  if(${test_name} IN_LIST OPENGL_TESTS OR WIN32)
+    # Test avec Xvfb (et Wine sur Windows via le wrapper)
+    add_test(NAME ${test_name}
                  COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
-        message(STATUS "Test découvert (avec wrapper): ${test_name}")
-    else()
-        # Test simple
-        add_test(NAME ${test_name} COMMAND ${test_name})
-        message(STATUS "Test unitaire découvert: ${test_name}")
-    endif()
+    message(STATUS "Test découvert (avec wrapper): ${test_name}")
+  else()
+    # Test simple
+    add_test(NAME ${test_name} COMMAND ${test_name})
+    message(STATUS "Test unitaire découvert: ${test_name}")
+  endif()
 
-    # Working directory = racine du projet
-    set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+  # Working directory = racine du projet
+  set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
-    # Serialize OpenGL tests to prevent GPU/display contention when running
-    # with ctest -j$(nproc). Non-GPU tests remain fully parallelizable.
-    if(${test_name} IN_LIST OPENGL_TESTS)
-        set_tests_properties(${test_name} PROPERTIES RESOURCE_LOCK "gpu")
-    endif()
+  # Serialize OpenGL tests to prevent GPU/display contention when running
+  # with ctest -j$(nproc). Non-GPU tests remain fully parallelizable.
+  if(${test_name} IN_LIST OPENGL_TESTS)
+    set_tests_properties(${test_name} PROPERTIES RESOURCE_LOCK "gpu")
+  endif()
 endforeach()
 
 # =============================================================================
@@ -193,7 +193,7 @@ add_executable(test_shader_path_security_standalone
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_shader_path_security_standalone PRIVATE
@@ -205,7 +205,7 @@ target_include_directories(test_shader_path_security_standalone PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 # On ne link PAS contre app_testlib, seulement libc/libm si besoin
@@ -219,10 +219,10 @@ target_link_libraries(test_shader_path_security_standalone PRIVATE cglm m)
 target_compile_definitions(test_shader_path_security_standalone PRIVATE _GNU_SOURCE)
 
 if(WIN32)
-    add_test(NAME test_shader_path_security_standalone
+  add_test(NAME test_shader_path_security_standalone
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_shader_path_security_standalone>)
 else()
-    add_test(NAME test_shader_path_security_standalone
+  add_test(NAME test_shader_path_security_standalone
              COMMAND test_shader_path_security_standalone)
 endif()
 
@@ -236,7 +236,7 @@ add_executable(test_texture_toctou
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 target_include_directories(test_texture_toctou PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
@@ -247,15 +247,15 @@ target_include_directories(test_texture_toctou PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 target_link_libraries(test_texture_toctou PRIVATE cglm m)
 target_compile_definitions(test_texture_toctou PRIVATE _GNU_SOURCE)
 if(WIN32)
-    add_test(NAME test_texture_toctou
+  add_test(NAME test_texture_toctou
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_texture_toctou>)
 else()
-    add_test(NAME test_texture_toctou
+  add_test(NAME test_texture_toctou
              COMMAND test_texture_toctou)
 endif()
 
@@ -269,7 +269,7 @@ add_executable(test_billboard_cleanup
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_billboard_cleanup PRIVATE
@@ -281,16 +281,16 @@ target_include_directories(test_billboard_cleanup PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 target_link_libraries(test_billboard_cleanup PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_billboard_cleanup
+  add_test(NAME test_billboard_cleanup
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_billboard_cleanup>)
 else()
-    add_test(NAME test_billboard_cleanup
+  add_test(NAME test_billboard_cleanup
              COMMAND test_billboard_cleanup)
 endif()
 
@@ -304,7 +304,7 @@ add_executable(test_billboard_overflow
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_billboard_overflow PRIVATE
@@ -316,16 +316,16 @@ target_include_directories(test_billboard_overflow PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 target_link_libraries(test_billboard_overflow PRIVATE cglm)
 
 if(WIN32)
-    add_test(NAME test_billboard_overflow
+  add_test(NAME test_billboard_overflow
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_billboard_overflow>)
 else()
-    add_test(NAME test_billboard_overflow
+  add_test(NAME test_billboard_overflow
              COMMAND test_billboard_overflow)
 endif()
 
@@ -346,7 +346,7 @@ add_executable(test_gpu_profiler_repro
     ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_gpu_profiler_repro PRIVATE
@@ -358,16 +358,16 @@ target_include_directories(test_gpu_profiler_repro PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 target_link_libraries(test_gpu_profiler_repro PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_gpu_profiler_repro
+  add_test(NAME test_gpu_profiler_repro
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_gpu_profiler_repro>)
 else()
-    add_test(NAME test_gpu_profiler_repro
+  add_test(NAME test_gpu_profiler_repro
              COMMAND test_gpu_profiler_repro)
 endif()
 
@@ -394,10 +394,10 @@ target_include_directories(test_shader_limit PRIVATE
 target_link_libraries(test_shader_limit PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_shader_limit
+  add_test(NAME test_shader_limit
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_shader_limit>)
 else()
-    add_test(NAME test_shader_limit
+  add_test(NAME test_shader_limit
              COMMAND test_shader_limit)
 endif()
 
@@ -422,10 +422,10 @@ target_include_directories(test_camera_input PRIVATE
 target_link_libraries(test_camera_input PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_camera_input
+  add_test(NAME test_camera_input
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_camera_input>)
 else()
-    add_test(NAME test_camera_input
+  add_test(NAME test_camera_input
              COMMAND test_camera_input)
 endif()
 
@@ -451,10 +451,10 @@ target_include_directories(test_gamepad_input PRIVATE
 target_link_libraries(test_gamepad_input PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_gamepad_input
+  add_test(NAME test_gamepad_input
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_gamepad_input>)
 else()
-    add_test(NAME test_gamepad_input COMMAND test_gamepad_input)
+  add_test(NAME test_gamepad_input COMMAND test_gamepad_input)
 endif()
 
 # =============================================================================
@@ -472,7 +472,7 @@ add_executable(test_ibl_coordinator
     ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_ibl_coordinator PRIVATE
@@ -484,16 +484,16 @@ target_include_directories(test_ibl_coordinator PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 target_link_libraries(test_ibl_coordinator PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_ibl_coordinator
+  add_test(NAME test_ibl_coordinator
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_ibl_coordinator>)
 else()
-    add_test(NAME test_ibl_coordinator
+  add_test(NAME test_ibl_coordinator
              COMMAND test_ibl_coordinator)
 endif()
 
@@ -520,10 +520,10 @@ target_include_directories(test_benchmark_billboard_sorting PRIVATE
 target_link_libraries(test_benchmark_billboard_sorting PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_benchmark_billboard_sorting
+  add_test(NAME test_benchmark_billboard_sorting
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_billboard_sorting>)
 else()
-    add_test(NAME test_benchmark_billboard_sorting
+  add_test(NAME test_benchmark_billboard_sorting
              COMMAND test_benchmark_billboard_sorting)
 endif()
 # NOTES ET DOCUMENTATION
@@ -577,10 +577,10 @@ target_include_directories(test_billboard_sorting PRIVATE
 )
 target_link_libraries(test_billboard_sorting PRIVATE cglm m)
 if(WIN32)
-    add_test(NAME test_billboard_sorting
+  add_test(NAME test_billboard_sorting
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_billboard_sorting>)
 else()
-    add_test(NAME test_billboard_sorting COMMAND test_billboard_sorting)
+  add_test(NAME test_billboard_sorting COMMAND test_billboard_sorting)
 endif()
 
 add_executable(test_benchmark_billboard_sorting_perf
@@ -603,10 +603,10 @@ target_include_directories(test_benchmark_billboard_sorting_perf PRIVATE
 )
 target_link_libraries(test_benchmark_billboard_sorting_perf PRIVATE cglm m)
 if(WIN32)
-    add_test(NAME test_benchmark_billboard_sorting_perf
+  add_test(NAME test_benchmark_billboard_sorting_perf
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_billboard_sorting_perf>)
 else()
-    add_test(NAME test_benchmark_billboard_sorting_perf COMMAND test_benchmark_billboard_sorting_perf)
+  add_test(NAME test_benchmark_billboard_sorting_perf COMMAND test_benchmark_billboard_sorting_perf)
 endif()
 
 # =============================================================================
@@ -622,10 +622,10 @@ target_include_directories(test_sh_precision PRIVATE
 )
 target_link_libraries(test_sh_precision PRIVATE cglm m)
 if(WIN32)
-    add_test(NAME test_sh_precision
+  add_test(NAME test_sh_precision
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_sh_precision>)
 else()
-    add_test(NAME test_sh_precision COMMAND test_sh_precision)
+  add_test(NAME test_sh_precision COMMAND test_sh_precision)
 endif()
 
 # =============================================================================
@@ -650,10 +650,10 @@ target_include_directories(test_sh_integration PRIVATE
 )
 target_link_libraries(test_sh_integration PRIVATE cglm m pthread)
 if(WIN32)
-    add_test(NAME test_sh_integration
+  add_test(NAME test_sh_integration
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_sh_integration>)
 else()
-    add_test(NAME test_sh_integration COMMAND test_sh_integration)
+  add_test(NAME test_sh_integration COMMAND test_sh_integration)
 endif()
 
 # =============================================================================
@@ -675,10 +675,10 @@ target_include_directories(test_async_coordinator PRIVATE
 )
 target_link_libraries(test_async_coordinator PRIVATE cglm m)
 if(WIN32)
-    add_test(NAME test_async_coordinator
+  add_test(NAME test_async_coordinator
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_async_coordinator>)
 else()
-    add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
+  add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
 endif()
 
 # =============================================================================
@@ -703,15 +703,15 @@ target_include_directories(test_async_loader PRIVATE
 )
 target_compile_definitions(test_async_loader PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
 if(UNIX)
-    target_link_libraries(test_async_loader PRIVATE cglm m pthread dl)
+  target_link_libraries(test_async_loader PRIVATE cglm m pthread dl)
 else()
-    target_link_libraries(test_async_loader PRIVATE cglm pthread)
+  target_link_libraries(test_async_loader PRIVATE cglm pthread)
 endif()
 if(WIN32)
-    add_test(NAME test_async_loader
+  add_test(NAME test_async_loader
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_async_loader>)
 else()
-    add_test(NAME test_async_loader COMMAND test_async_loader)
+  add_test(NAME test_async_loader COMMAND test_async_loader)
 endif()
 # =============================================================================
 # TEXTURE SECURITY TEST (MOCKED)
@@ -738,15 +738,15 @@ target_include_directories(test_texture_security PRIVATE
 )
 target_compile_definitions(test_texture_security PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
 if(UNIX)
-    target_link_libraries(test_texture_security PRIVATE cglm m pthread dl)
+  target_link_libraries(test_texture_security PRIVATE cglm m pthread dl)
 else()
-    target_link_libraries(test_texture_security PRIVATE cglm pthread)
+  target_link_libraries(test_texture_security PRIVATE cglm pthread)
 endif()
 if(WIN32)
-    add_test(NAME test_texture_security
+  add_test(NAME test_texture_security
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_texture_security>)
 else()
-    add_test(NAME test_texture_security COMMAND test_texture_security)
+  add_test(NAME test_texture_security COMMAND test_texture_security)
 endif()
 # =============================================================================
 # SCENE N-BODY (STANDALONE MOCKED)
@@ -755,12 +755,15 @@ add_executable(test_scene_nbody
     test_scene_nbody.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
-    ${CMAKE_SOURCE_DIR}/src/nbody.c
+    ${CMAKE_SOURCE_DIR}/src/nbody/nbody_physics.c
+    ${CMAKE_SOURCE_DIR}/src/nbody/nbody_preset.c
+    ${CMAKE_SOURCE_DIR}/src/nbody/nbody_diagnostics.c
+    ${CMAKE_SOURCE_DIR}/src/nbody/nbody_render.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_scene_nbody PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_scene_nbody PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_scene_nbody PRIVATE
@@ -772,20 +775,20 @@ target_include_directories(test_scene_nbody PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_scene_nbody PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_scene_nbody PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(test_scene_nbody PRIVATE cglm m)
+  target_link_libraries(test_scene_nbody PRIVATE cglm m)
 else()
-    target_link_libraries(test_scene_nbody PRIVATE cglm)
+  target_link_libraries(test_scene_nbody PRIVATE cglm)
 endif()
 
 if(WIN32)
-    add_test(NAME test_scene_nbody
+  add_test(NAME test_scene_nbody
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_nbody>)
 else()
-    add_test(NAME test_scene_nbody COMMAND test_scene_nbody)
+  add_test(NAME test_scene_nbody COMMAND test_scene_nbody)
 endif()
 
 # =============================================================================
@@ -800,7 +803,7 @@ add_executable(test_shockwave
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_shockwave PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_shockwave PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_shockwave PRIVATE
@@ -813,20 +816,20 @@ target_include_directories(test_shockwave PRIVATE
     ${glad_BINARY_DIR}/include
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_shockwave PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_shockwave PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(test_shockwave PRIVATE cglm m)
+  target_link_libraries(test_shockwave PRIVATE cglm m)
 else()
-    target_link_libraries(test_shockwave PRIVATE cglm)
+  target_link_libraries(test_shockwave PRIVATE cglm)
 endif()
 
 if(WIN32)
-    add_test(NAME test_shockwave
+  add_test(NAME test_shockwave
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_shockwave>)
 else()
-    add_test(NAME test_shockwave COMMAND test_shockwave)
+  add_test(NAME test_shockwave COMMAND test_shockwave)
 endif()
 
 # =============================================================================
@@ -842,7 +845,7 @@ add_executable(test_trail_renderer
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_trail_renderer PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_trail_renderer PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_trail_renderer PRIVATE
@@ -855,20 +858,20 @@ target_include_directories(test_trail_renderer PRIVATE
     ${glad_BINARY_DIR}/include
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_trail_renderer PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_trail_renderer PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(test_trail_renderer PRIVATE cglm m)
+  target_link_libraries(test_trail_renderer PRIVATE cglm m)
 else()
-    target_link_libraries(test_trail_renderer PRIVATE cglm)
+  target_link_libraries(test_trail_renderer PRIVATE cglm)
 endif()
 
 if(WIN32)
-    add_test(NAME test_trail_renderer
+  add_test(NAME test_trail_renderer
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_trail_renderer>)
 else()
-    add_test(NAME test_trail_renderer COMMAND test_trail_renderer)
+  add_test(NAME test_trail_renderer COMMAND test_trail_renderer)
 endif()
 
 # =============================================================================
@@ -884,7 +887,7 @@ add_executable(test_postprocess_input
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_postprocess_input PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_postprocess_input PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_postprocess_input PRIVATE
@@ -898,20 +901,20 @@ target_include_directories(test_postprocess_input PRIVATE
     ${glad_BINARY_DIR}/include
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_postprocess_input PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_postprocess_input PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(test_postprocess_input PRIVATE cglm m)
+  target_link_libraries(test_postprocess_input PRIVATE cglm m)
 else()
-    target_link_libraries(test_postprocess_input PRIVATE cglm)
+  target_link_libraries(test_postprocess_input PRIVATE cglm)
 endif()
 
 if(WIN32)
-    add_test(NAME test_postprocess_input
+  add_test(NAME test_postprocess_input
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_postprocess_input>)
 else()
-    add_test(NAME test_postprocess_input COMMAND test_postprocess_input)
+  add_test(NAME test_postprocess_input COMMAND test_postprocess_input)
 endif()
 
 # =============================================================================
@@ -926,7 +929,7 @@ add_executable(test_scene_render
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 if(ENABLE_TRACY)
-    target_sources(test_scene_render PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+  target_sources(test_scene_render PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
 endif()
 
 target_include_directories(test_scene_render PRIVATE
@@ -939,20 +942,20 @@ target_include_directories(test_scene_render PRIVATE
     ${glad_BINARY_DIR}/include
 )
 if(ENABLE_TRACY)
-    target_include_directories(test_scene_render PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+  target_include_directories(test_scene_render PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(test_scene_render PRIVATE cglm m)
+  target_link_libraries(test_scene_render PRIVATE cglm m)
 else()
-    target_link_libraries(test_scene_render PRIVATE cglm)
+  target_link_libraries(test_scene_render PRIVATE cglm)
 endif()
 
 if(WIN32)
-    add_test(NAME test_scene_render
+  add_test(NAME test_scene_render
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_render>)
 else()
-    add_test(NAME test_scene_render COMMAND test_scene_render)
+  add_test(NAME test_scene_render COMMAND test_scene_render)
 endif()
 
 # =============================================================================
