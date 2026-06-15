@@ -28,9 +28,14 @@ float damping_factor = 1.0F - (sim->damping * fabsf(delta_time));
 ```
 
 ### 3. Gestion des Flags au Niveau du Build
-Au lieu de pragmas dans le code source, nous imposons désormais un comportement flottant standard via `CMakeLists.txt` :
+Au lieu de pragmas dans le code source, nous imposons désormais un comportement flottant standard via `CMakeLists.txt` sur les fichiers critiques :
 ```cmake
-set_source_files_properties(src/nbody.c PROPERTIES COMPILE_FLAGS "-fno-fast-math")
+set_source_files_properties(
+    src/nbody/nbody_physics.c
+    src/nbody/nbody_diagnostics.c
+    src/nbody/nbody_preset.c
+    PROPERTIES COMPILE_FLAGS "-fno-fast-math"
+)
 ```
 Cela garantit que le cœur de la physique est toujours compilé avec une conformité IEEE 754 stricte, même si le reste de l'application utilise des optimisations agressives.
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The N-body module (`nbody.h` / `nbody.c`) implements a real-time gravitational
+The N-body module (`src/nbody/` directory) implements a real-time gravitational
 simulation of up to 16 bodies orbiting a central star.  The physics engine
 prioritises **long-term stability** (energy conservation over thousands of
 simulated seconds) using well-established techniques from computational
@@ -35,7 +35,7 @@ $$\mathbf{x} \leftarrow \mathbf{x} + \mathbf{v}\,\Delta t + \tfrac{1}{2}\,\mathb
 4. Update velocities:
 $$\mathbf{v} \leftarrow \mathbf{v} + \tfrac{1}{2}(\mathbf{a}_\text{old} + \mathbf{a}_\text{new})\,\Delta t$$
 
-This is implemented in `integrate_step()` in `src/nbody.c`.
+This is implemented in `integrate_step()` in `src/nbody/nbody_physics.c`.
 
 ### Why Symplectic Matters
 
@@ -577,8 +577,12 @@ Validated with `just test-integration-valgrind-full` — **0 bytes definitely lo
 
 | File | Role |
 |------|------|
-| `include/nbody.h` | Public API, constants, data structures |
-| `src/nbody.c` | Physics implementation (Verlet, softening, preset) |
+| `src/nbody/nbody.h` | Public API facade (the only header to include) |
+| `src/nbody/nbody_types.h` | Data structures (`NBodySim`) and physics constants |
+| `src/nbody/nbody_physics.c` | Math core: Verlet integrator and Plummer softening |
+| `src/nbody/nbody_diagnostics.c` | Stability metrics (Hamiltonian, energy drift) |
+| `src/nbody/nbody_preset.c` | Initial setup and orbiter configurations |
+| `src/nbody/nbody_render.c` | Graphics bridge: mapping state to `SphereInstance` |
 | `tests/test_nbody_stability.c` | Stability test suite (8 tests) |
 | `include/trail_renderer.h` | Trail rendering (visual ribbons behind bodies) |
 | `src/trail_renderer.c` | Billboard ribbon trail implementation |
