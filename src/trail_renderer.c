@@ -3,6 +3,7 @@
 #include "gl_common.h"
 #include "log.h"
 #include "nbody_types.h"
+#include "platform/platform_utils.h"
 #include "profiler.h"
 #include "shader.h"
 #include "utils.h"
@@ -59,6 +60,16 @@ bool trail_renderer_init(TrailRenderer* trail, int body_count)
 	(void)safe_memset(trail, sizeof(*trail), 0, sizeof(*trail));
 	trail->body_count = body_count;
 
+	// 1. Allocation dynamique alignée (16 ou 32 octets pour SIMD)
+	size_t staging_size = MAX_TRAIL_VERTICES * sizeof(TrailVertex);
+	trail->staging =
+	    (TrailVertex*)platform_aligned_alloc(staging_size, SIMD_ALIGNMENT);
+	if (!trail->staging) {
+		LOG_ERROR("suckless-ogl.trail",
+		          "Failed to allocate staging buffer");
+		return false;
+	}
+
 	/* Load trail shader */
 	trail->shader = shader_load("shaders/trail.vert", "shaders/trail.frag");
 	if (!trail->shader) {
@@ -113,6 +124,12 @@ void trail_renderer_set_color(TrailRenderer* trail, int body_index,
 
 void trail_renderer_cleanup(TrailRenderer* trail)
 {
+	// 2. Libération propre
+	if (trail->staging) {
+		platform_aligned_free(trail->staging);
+		trail->staging = NULL;
+	}
+
 	GL_SAFE_DELETE_BUFFER(trail->vbo);
 	GL_SAFE_DELETE_VAO(trail->vao);
 	if (trail->shader) {
@@ -272,8 +289,8 @@ static int build_ribbon(const TrailRing* ring, const vec3 color,
 void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
                          vec3 cam_pos)
 {
-	/* Build all ribbon geometry into a staging buffer */
-	static TrailVertex staging[MAX_TRAIL_VERTICES];
+	// 3. Utilisation du buffer de la structure plutôt que le static
+	TrailVertex* staging = trail->staging;
 	int total_verts = 0;
 
 	/* Track per-body start offsets and vertex counts for batched draw.

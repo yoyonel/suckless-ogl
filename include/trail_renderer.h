@@ -104,10 +104,11 @@ static const float TRAIL_NEON_WIDTH_MIN = 0.04F;
  */
 typedef struct {
 	TrailRing rings[NBODY_MAX_BODIES]; /**< Per-body position history. */
-	int body_count;                    /**< Number of tracked bodies. */
-	float sample_timer;                /**< Accumulator for sample rate. */
-	float sim_time;                    /**< Monotonic simulation time. */
-	float trail_duration;              /**< Trail lifetime in seconds. */
+	TrailVertex* staging;
+	int body_count;       /**< Number of tracked bodies. */
+	float sample_timer;   /**< Accumulator for sample rate. */
+	float sim_time;       /**< Monotonic simulation time. */
+	float trail_duration; /**< Trail lifetime in seconds. */
 
 	/* GPU Resources */
 	GLuint vao;       /**< VAO for ribbon geometry. */

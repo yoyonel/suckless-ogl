@@ -81,6 +81,16 @@ run: build
 run-soft: build
     @LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe {{build_dir}}/app
 
+audit:
+    @echo "--- Préparation de l'audit ---"
+    @# On crée le dossier et on configure proprement
+    @{{distrobox}} cmake -B build-audit -DCMAKE_C_FLAGS="-gdwarf-4" -DCMAKE_BUILD_TYPE=Debug .
+    @echo "--- Compilation ---"
+    @{{distrobox}} cmake --build build-audit --parallel {{nprocs}} > build_log.txt 2>&1
+    @echo "--- Analyse Bloaty ---"
+    @# On pointe directement sur le binaire qui vient d'être généré
+    @bloaty build-audit/app -d compileunits -n 20
+
 # =============================================================================
 # Build Variants
 # =============================================================================
