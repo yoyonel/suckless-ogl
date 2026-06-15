@@ -2,7 +2,7 @@
 
 #include "gl_common.h"
 #include "log.h"
-#include "nbody.h"
+#include "nbody_types.h"
 #include "profiler.h"
 #include "shader.h"
 #include "utils.h"

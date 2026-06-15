@@ -144,8 +144,9 @@ static void integrate_step(NBodySim* sim, float delta_time)
 
 void nbody_step(NBodySim* sim, float delta_time)
 {
-	if (sim->paused)
+	if (sim->paused) {
 		return;
+	}
 
 	for (int i = 0; i < sim->body_count; i++) {
 		dvec3_copy(sim->bodies[i].position,
@@ -177,8 +178,9 @@ void nbody_step(NBodySim* sim, float delta_time)
 void nbody_update_time_scale(NBodySim* sim, float delta_time)
 {
 	float diff = sim->target_time_scale - sim->time_scale;
-	if (diff == 0.0F)
+	if (diff == 0.0F) {
 		return;
+	}
 
 	float step = NBODY_TIME_SCALE_RATE * delta_time;
 	if (fabsf(diff) <= step) {
