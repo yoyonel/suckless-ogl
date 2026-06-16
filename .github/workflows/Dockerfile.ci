@@ -65,6 +65,8 @@ RUN pip3 install --no-cache-dir \
 # 3. Pre-build Tracy CLI Tools (Capture & CSV Export)
 RUN echo "Building Tracy CLI Tools v0.13.1..." && \
     git clone --branch v0.13.1 --depth 1 https://github.com/wolfpld/tracy.git /tmp/tracy && \
+    # Empêcher Tracy d'utiliser -march=native pour garantir la portabilité de l'image Docker sur tout le parc CI
+    find /tmp/tracy -type f \( -name "CMakeLists.txt" -o -name "*.cmake" \) -exec sed -i 's/-march=native//g' {} + && \
     # Build Capture
     cmake -B /tmp/tracy/capture/build -S /tmp/tracy/capture -DCMAKE_BUILD_TYPE=Release && \
     cmake --build /tmp/tracy/capture/build --parallel $(nproc) && \

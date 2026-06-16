@@ -26,35 +26,14 @@ tracy-capture -a 127.0.0.1 -p $TRACY_PORT -o "$TRACE_OUTPUT" -s 3
 
 echo "📊 Validation basique de l'artefact..."
 if [ ! -s "$TRACE_OUTPUT" ]; then
-    echo "❌ Échec : Le fichier $TRACE_OUTPUT est introuvable ou totalement vide."
+    echo "❌ Échec : Le fichier $TRACE_OUTPUT est introuvable ou vide."
     exit 1
 fi
 
 echo "🖨️ Extraction des données avec tracy-csvexport..."
+# C'est cette ligne critique qui manquait !
 tracy-csvexport "$TRACE_OUTPUT" >trace_stats.csv
 
 echo "🔍 Analyse sémantique de la trace..."
-# Zones critiques extraites du code source
-# On vérifie le Core (Update/Render), le Windowing (SwapBuffers) et les features Tracy
-ZONES_TO_CHECK=(
-    "App Update"
-    "App Render"
-    "Frame Timing"
-    "GLFW SwapBuffers"
-    "Tracy Screenshot Update"
-)
-
-for zone in "${ZONES_TO_CHECK[@]}"; do
-    # On cherche la ligne contenant le nom exact de la zone dans le CSV
-    if ! grep -q "$zone" trace_stats.csv; then
-        echo "❌ Échec : La zone de profilage critique '$zone' est absente de la trace !"
-        echo "    (Le système sous-jacent a crashé silencieusement ou la macro TRACY_ENABLE a sauté)."
-        exit 1
-    fi
-
-    # Récupération du nombre d'appels (colonne 2 par défaut dans l'export Tracy)
-    CALL_COUNT=$(grep "$zone" trace_stats.csv | awk -F',' '{print $2}')
-    echo "  ✓ Zone '$zone' validée ($CALL_COUNT appels enregistrés)."
-done
-
-echo "✅ Succès : La trace est structurellement cohérente et exploitable !"
+# Appel de ton nouveau script Python externe
+python3 .github/workflows/scripts/analyze_tracy_traces.py
