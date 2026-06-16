@@ -1,0 +1,478 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/postprocess_internal.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('postprocess__internal_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">postprocess_internal.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="postprocess__internal_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef POSTPROCESS_INTERNAL_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define POSTPROCESS_INTERNAL_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;effects/fx_auto_exposure.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;effects/fx_bloom.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;effects/fx_dof.h&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;effects/fx_lut3d.h&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;effects/fx_lut_viz.h&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;effects/fx_motion_blur.h&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gpu__profiler_8h.html">gpu_profiler.h</a>&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="postprocess_8h.html">postprocess.h</a>&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="pp__exposure__readback_8h.html">pp_exposure_readback.h</a>&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="pp__gpu__resources_8h.html">pp_gpu_resources.h</a>&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="pp__params_8h.html">pp_params.h</a>&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="pp__shader__state_8h.html">pp_shader_state.h</a>&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="pp__ubo_8h.html">pp_ubo.h</a>&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="shader_8h.html">shader.h</a>&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;cglm/types.h&gt;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">/* --- FX-specific DEFAULT VALUES (owned by PostProcess init) --- */</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a64a9e1a6bbe5e74db0f77c17c04ee918">   30</a></span>&#160;<span class="preprocessor">#define DEFAULT_BLOOM_INTENSITY 0.0F</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#acdd4a3cba1a04e1866e280b84a064dee">   31</a></span>&#160;<span class="preprocessor">#define DEFAULT_BLOOM_THRESHOLD 1.0F</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a222b8356f0589002c336b3b47ef99be5">   32</a></span>&#160;<span class="preprocessor">#define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a3a160badf1723b03fe88e13e84e1410a">   33</a></span>&#160;<span class="preprocessor">#define DEFAULT_BLOOM_RADIUS 1.0F</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">/* DoF defaults */</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a8704ac8e54f944f1ff3218c4ef5f59e4">   36</a></span>&#160;<span class="preprocessor">#define DEFAULT_DOF_FOCAL_DISTANCE 20.0F</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a63ba03e343f9b5cabd43b1cb6a9839d9">   37</a></span>&#160;<span class="preprocessor">#define DEFAULT_DOF_FOCAL_RANGE 5.0F</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a478a7691189f64138ffea55e94d0be7b">   38</a></span>&#160;<span class="preprocessor">#define DEFAULT_DOF_BOKEH_SCALE 10.0F</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#define DEFAULT_DOF_ANAMORPHIC_RATIO \</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#a9e0952cc10ca6b3d92996a4f7068e5ed">   40</a></span>&#160;<span class="preprocessor">    1.0F </span></div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structPostProcess.html">   46</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structPostProcess.html">PostProcess</a> {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="comment">/* GPU Resources */</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9">   48</a></span>&#160;    <a class="code" href="structPPGPUResources.html">PPGPUResources</a> <a class="code" href="structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9">gpu</a>; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">/* Module Resources */</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structPostProcess.html#ad1ef49a6b253f10b01e92851768891d6">   51</a></span>&#160;    BloomFX <a class="code" href="structPostProcess.html#ad1ef49a6b253f10b01e92851768891d6">bloom_fx</a>;                </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9">   52</a></span>&#160;    DoFFX <a class="code" href="structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9">dof_fx</a>;                    </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structPostProcess.html#a3e461c228e9958518b604890bcfb198b">   53</a></span>&#160;    AutoExposureFX <a class="code" href="structPostProcess.html#a3e461c228e9958518b604890bcfb198b">auto_exposure_fx</a>; </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structPostProcess.html#af7cf9020b7201cb1293cb2f827b50144">   54</a></span>&#160;    MotionBlurFX <a class="code" href="structPostProcess.html#af7cf9020b7201cb1293cb2f827b50144">motion_blur_fx</a>;     </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structPostProcess.html#a9f1a75962d0e9069fa9ee66a1eb562b8">   55</a></span>&#160;    LUT3DFX <a class="code" href="structPostProcess.html#a9f1a75962d0e9069fa9ee66a1eb562b8">lut3d_fx</a>;                </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structPostProcess.html#a95a38057950cc92a1af929ee18726d6c">   56</a></span>&#160;    LUTVizFX <a class="code" href="structPostProcess.html#a95a38057950cc92a1af929ee18726d6c">lut_viz_fx</a>;             </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="comment">/* Shader Management */</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structPostProcess.html#a0a473e5615f9975ff758e179afd2e90f">   59</a></span>&#160;    <a class="code" href="structPPShaderState.html">PPShaderState</a> <a class="code" href="structPostProcess.html#a0a473e5615f9975ff758e179afd2e90f">shaders</a>; </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structPostProcess.html#a65b8eb5b5bd81fd7cad569919a2559a3">   61</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structPostProcess.html#a65b8eb5b5bd81fd7cad569919a2559a3">width</a>;  </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structPostProcess.html#a01b97fc45027e3395f825daaa28109ef">   62</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structPostProcess.html#a01b97fc45027e3395f825daaa28109ef">height</a>; </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structPostProcess.html#a30dfc3030196ea124e2134aec8776e95">   64</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structPostProcess.html#a30dfc3030196ea124e2134aec8776e95">active_effects</a>; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">/* Logic Parameters */</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="structPostProcess.html#ae49ebd9e9dd9845b9c781c534530998d">   67</a></span>&#160;    <a class="code" href="structVignetteParams.html">VignetteParams</a> <a class="code" href="structPostProcess.html#ae49ebd9e9dd9845b9c781c534530998d">vignette</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structPostProcess.html#abbcfbc94b0f008cc6d78785d6b4b1ecc">   68</a></span>&#160;    <a class="code" href="structGrainParams.html">GrainParams</a> <a class="code" href="structPostProcess.html#abbcfbc94b0f008cc6d78785d6b4b1ecc">grain</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb">   69</a></span>&#160;    <a class="code" href="structExposureParams.html">ExposureParams</a> <a class="code" href="structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb">exposure</a>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01">   70</a></span>&#160;    <a class="code" href="structChromAbberationParams.html">ChromAbberationParams</a> <a class="code" href="structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01">chrom_abbr</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structPostProcess.html#aaac67359cd05c2eb46134105e71ea043">   71</a></span>&#160;    <a class="code" href="structWhiteBalanceParams.html">WhiteBalanceParams</a> <a class="code" href="structPostProcess.html#aaac67359cd05c2eb46134105e71ea043">white_balance</a>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="structPostProcess.html#afc4b24420a5dbf1fe0a0095d788dfcd8">   72</a></span>&#160;    <a class="code" href="structColorGradingParams.html">ColorGradingParams</a> <a class="code" href="structPostProcess.html#afc4b24420a5dbf1fe0a0095d788dfcd8">color_grading</a>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structPostProcess.html#a94be299863c33dd03d91f9e0f5b3fddc">   73</a></span>&#160;    <a class="code" href="structTonemapParams.html">TonemapParams</a> <a class="code" href="structPostProcess.html#a94be299863c33dd03d91f9e0f5b3fddc">tonemapper</a>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="structPostProcess.html#ad2439be6cfa64d705a75e26ec5f0f725">   74</a></span>&#160;    BloomParams <a class="code" href="structPostProcess.html#ad2439be6cfa64d705a75e26ec5f0f725">bloom</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b">   75</a></span>&#160;    DoFParams <a class="code" href="structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b">dof</a>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structPostProcess.html#a8362e441c1070f454241f61975e5be5c">   76</a></span>&#160;    AutoExposureParams <a class="code" href="structPostProcess.html#a8362e441c1070f454241f61975e5be5c">auto_exposure</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structPostProcess.html#abd63360f1379962d296fc26d23f0f1f0">   77</a></span>&#160;    MotionBlurParams <a class="code" href="structPostProcess.html#abd63360f1379962d296fc26d23f0f1f0">motion_blur</a>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76">   78</a></span>&#160;    <a class="code" href="structFXAAParams.html">FXAAParams</a> <a class="code" href="structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76">fxaa</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="structPostProcess.html#af411419ec733b3e01c935b9f646d1a82">   79</a></span>&#160;    <a class="code" href="structBandingParams.html">BandingParams</a> <a class="code" href="structPostProcess.html#af411419ec733b3e01c935b9f646d1a82">banding</a>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="structPostProcess.html#a09533273202880d19b3143ee5694f2f9">   80</a></span>&#160;    <a class="code" href="structFogParams.html">FogParams</a> <a class="code" href="structPostProcess.html#a09533273202880d19b3143ee5694f2f9">fog</a>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="structPostProcess.html#aa73e2397b40ec74c59dbd86df6a08053">   81</a></span>&#160;    LUT3DParams <a class="code" href="structPostProcess.html#aa73e2397b40ec74c59dbd86df6a08053">lut3d</a>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="structPostProcess.html#afb71aa02b237fe2666213becfa342d31">   83</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcess.html#afb71aa02b237fe2666213becfa342d31">time</a>;       </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f">   84</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f">delta_time</a>; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="structPostProcess.html#a66656d6950a7540d140bd93c19c73d55">   85</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structPostProcess.html#a66656d6950a7540d140bd93c19c73d55">ubo_dirty</a>;   </div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="structPostProcess.html#acb108231128817d5e9f495a70df22f1b">   87</a></span>&#160;    <a class="code" href="structGPUProfiler.html">GPUProfiler</a>* <a class="code" href="structPostProcess.html#acb108231128817d5e9f495a70df22f1b">gpu_profiler</a>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20">   88</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20">banding_preset_idx</a>; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="comment">/* Exposure Readback */</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="structPostProcess.html#ae9c0c825b8ad02bf0e5bd71f891d4f23">   91</a></span>&#160;    <a class="code" href="structPPExposureReadback.html">PPExposureReadback</a> <a class="code" href="structPostProcess.html#ae9c0c825b8ad02bf0e5bd71f891d4f23">readback</a>; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;};</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html">   98</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structPostProcessPreset.html">PostProcessPreset</a> {</div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a81fff6e04a4ac67920c56c1071da42c3">   99</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structPostProcessPreset.html#a81fff6e04a4ac67920c56c1071da42c3">active_effects</a>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a92dbacc225792a6e1cf041cd9599379c">  100</a></span>&#160;    <a class="code" href="structVignetteParams.html">VignetteParams</a> <a class="code" href="structPostProcessPreset.html#a92dbacc225792a6e1cf041cd9599379c">vignette</a>;</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0">  101</a></span>&#160;    <a class="code" href="structGrainParams.html">GrainParams</a> <a class="code" href="structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0">grain</a>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1">  102</a></span>&#160;    <a class="code" href="structExposureParams.html">ExposureParams</a> <a class="code" href="structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1">exposure</a>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#aa1802cfe2b682a235bbcaef29719c7bd">  103</a></span>&#160;    <a class="code" href="structChromAbberationParams.html">ChromAbberationParams</a> <a class="code" href="structPostProcessPreset.html#aa1802cfe2b682a235bbcaef29719c7bd">chrom_abbr</a>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a6c8c3ef05c36c0590581f9382a25736d">  104</a></span>&#160;    <a class="code" href="structWhiteBalanceParams.html">WhiteBalanceParams</a> <a class="code" href="structPostProcessPreset.html#a6c8c3ef05c36c0590581f9382a25736d">white_balance</a>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272">  105</a></span>&#160;    <a class="code" href="structColorGradingParams.html">ColorGradingParams</a> <a class="code" href="structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272">color_grading</a>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a414f30957b85919adfa385296c2f6181">  106</a></span>&#160;    <a class="code" href="structTonemapParams.html">TonemapParams</a> <a class="code" href="structPostProcessPreset.html#a414f30957b85919adfa385296c2f6181">tonemapper</a>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a40d0d59ac2cd0abe56c818238ffa52e3">  107</a></span>&#160;    BloomParams <a class="code" href="structPostProcessPreset.html#a40d0d59ac2cd0abe56c818238ffa52e3">bloom</a>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a3ccb7525d0d096c03ab429e0ac16ee21">  108</a></span>&#160;    DoFParams <a class="code" href="structPostProcessPreset.html#a3ccb7525d0d096c03ab429e0ac16ee21">dof</a>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd">  109</a></span>&#160;    <a class="code" href="structFXAAParams.html">FXAAParams</a> <a class="code" href="structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd">fxaa</a>;</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#a6f762dab60d7c55557c3d35f58847a20">  110</a></span>&#160;    <a class="code" href="structBandingParams.html">BandingParams</a> <a class="code" href="structPostProcessPreset.html#a6f762dab60d7c55557c3d35f58847a20">banding</a>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#aba5562c520b09436141bdaa254886af2">  111</a></span>&#160;    <a class="code" href="structFogParams.html">FogParams</a> <a class="code" href="structPostProcessPreset.html#aba5562c520b09436141bdaa254886af2">fog</a>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="structPostProcessPreset.html#affd57f46b38e3b7f6a9f8c207b2aad15">  112</a></span>&#160;    LUT3DParams <a class="code" href="structPostProcessPreset.html#affd57f46b38e3b7f6a9f8c207b2aad15">lut3d</a>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;};</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">/* ---- Texture Units (shared across init, apply, shader TUs) ---- */</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18af0ee1ef93d8f949e7b1de75a547fc375">  117</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18af0ee1ef93d8f949e7b1de75a547fc375">POSTPROCESS_TEX_UNIT_SCENE</a> = 0,</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18ab6618e9fdfdf7789a88005e92bb84dc2">  118</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18ab6618e9fdfdf7789a88005e92bb84dc2">POSTPROCESS_TEX_UNIT_BLOOM</a> = 1,</div>
+<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a57215ee1830aba58fb6da7f967c6b2bb">  119</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a57215ee1830aba58fb6da7f967c6b2bb">POSTPROCESS_TEX_UNIT_DEPTH</a> = 2,</div>
+<div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18af0b77e7be4c1e923a25968ee4c7467f3">  120</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18af0b77e7be4c1e923a25968ee4c7467f3">POSTPROCESS_TEX_UNIT_EXPOSURE</a> = 3,</div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a8de6ad4fd3743301ea00af66f439290b">  121</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a8de6ad4fd3743301ea00af66f439290b">POSTPROCESS_TEX_UNIT_VELOCITY</a> = 4,</div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a7863dbb9a8b92cd5e52d432ec6e37e22">  122</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a7863dbb9a8b92cd5e52d432ec6e37e22">POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX</a> = 5,</div>
+<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a52208723fe78be596e51122ff09e11e1">  123</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a52208723fe78be596e51122ff09e11e1">POSTPROCESS_TEX_UNIT_DOF_BLUR</a> = 6,</div>
+<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a0770bd525edea8e093a584f6dca5f753">  124</a></span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a0770bd525edea8e093a584f6dca5f753">POSTPROCESS_TEX_UNIT_STENCIL</a> = 7,</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18ab86b269f3f9bd7fbab9260119664325c">POSTPROCESS_TEX_UNIT_LUT3D</a> = 8</div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18ab86b269f3f9bd7fbab9260119664325c">  126</a></span>&#160;};</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment">/* ---- Internal helpers shared across TUs ---- */</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keywordtype">void</span> <a class="code" href="postprocess__internal_8h.html#aff62c837ec8fdb56fb854ea33a87e30f">pp_destroy_framebuffer</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keywordtype">void</span> <a class="code" href="postprocess__internal_8h.html#a21415636eae1a5f68907613bb54e467b">pp_destroy_screen_quad</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="keywordtype">void</span> <a class="code" href="postprocess__internal_8h.html#a87bedfc4aa29245ba136d153697a09df">pp_destroy_readback_buffers</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="keywordtype">void</span> <a class="code" href="postprocess__internal_8h.html#a740fcd0d08d450e6ee0256d6f5763b0d">pp_destroy_cached_shaders</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="postprocess__internal_8h.html#abc47308c6fbeae221ab3c4b8fccfd47f">pp_is_shader_in_cache</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing, <a class="code" href="structShader.html">Shader</a>* shader);</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="keywordtype">int</span> <a class="code" href="postprocess__internal_8h.html#a6d14382f9f74ec6f92b07099e05350f3">pp_create_framebuffer</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keywordtype">void</span> <a class="code" href="postprocess__internal_8h.html#ad729a6bd46b45e8b85070f02a3195031">pp_setup_sampler_uniforms</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keywordtype">void</span> <a class="code" href="postprocess__internal_8h.html#a255fa49cbe02cfc65e5289793c60fea2">pp_update_current_shader</a>(<a class="code" href="structPostProcess.html">PostProcess</a>* post_processing, <a class="code" href="structShader.html">Shader</a>* new_shader,</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                              <span class="keywordtype">bool</span> is_optimized);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* POSTPROCESS_INTERNAL_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agpu__profiler_8h_html"><div class="ttname"><a href="gpu__profiler_8h.html">gpu_profiler.h</a></div></div>
+<div class="ttc" id="apostprocess_8h_html"><div class="ttname"><a href="postprocess_8h.html">postprocess.h</a></div><div class="ttdoc">Public API for the post-processing pipeline.</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_a21415636eae1a5f68907613bb54e467b"><div class="ttname"><a href="postprocess__internal_8h.html#a21415636eae1a5f68907613bb54e467b">pp_destroy_screen_quad</a></div><div class="ttdeci">void pp_destroy_screen_quad(PostProcess *post_processing)</div><div class="ttdef"><b>Definition:</b> postprocess_cleanup.c:28</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_a255fa49cbe02cfc65e5289793c60fea2"><div class="ttname"><a href="postprocess__internal_8h.html#a255fa49cbe02cfc65e5289793c60fea2">pp_update_current_shader</a></div><div class="ttdeci">void pp_update_current_shader(PostProcess *post_processing, Shader *new_shader, bool is_optimized)</div><div class="ttdef"><b>Definition:</b> postprocess_shader.c:41</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_a6d14382f9f74ec6f92b07099e05350f3"><div class="ttname"><a href="postprocess__internal_8h.html#a6d14382f9f74ec6f92b07099e05350f3">pp_create_framebuffer</a></div><div class="ttdeci">int pp_create_framebuffer(PostProcess *post_processing)</div><div class="ttdef"><b>Definition:</b> postprocess_init.c:15</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_a740fcd0d08d450e6ee0256d6f5763b0d"><div class="ttname"><a href="postprocess__internal_8h.html#a740fcd0d08d450e6ee0256d6f5763b0d">pp_destroy_cached_shaders</a></div><div class="ttdeci">void pp_destroy_cached_shaders(PostProcess *post_processing)</div><div class="ttdef"><b>Definition:</b> postprocess_cleanup.c:54</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_a87bedfc4aa29245ba136d153697a09df"><div class="ttname"><a href="postprocess__internal_8h.html#a87bedfc4aa29245ba136d153697a09df">pp_destroy_readback_buffers</a></div><div class="ttdeci">void pp_destroy_readback_buffers(PostProcess *post_processing)</div><div class="ttdef"><b>Definition:</b> postprocess_cleanup.c:34</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_abc47308c6fbeae221ab3c4b8fccfd47f"><div class="ttname"><a href="postprocess__internal_8h.html#abc47308c6fbeae221ab3c4b8fccfd47f">pp_is_shader_in_cache</a></div><div class="ttdeci">bool pp_is_shader_in_cache(PostProcess *post_processing, Shader *shader)</div><div class="ttdef"><b>Definition:</b> postprocess_shader.c:6</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ad729a6bd46b45e8b85070f02a3195031"><div class="ttname"><a href="postprocess__internal_8h.html#ad729a6bd46b45e8b85070f02a3195031">pp_setup_sampler_uniforms</a></div><div class="ttdeci">void pp_setup_sampler_uniforms(PostProcess *post_processing)</div><div class="ttdef"><b>Definition:</b> postprocess_shader.c:19</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18a0770bd525edea8e093a584f6dca5f753"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a0770bd525edea8e093a584f6dca5f753">POSTPROCESS_TEX_UNIT_STENCIL</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_STENCIL</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:124</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18a52208723fe78be596e51122ff09e11e1"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a52208723fe78be596e51122ff09e11e1">POSTPROCESS_TEX_UNIT_DOF_BLUR</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_DOF_BLUR</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:123</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18a57215ee1830aba58fb6da7f967c6b2bb"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a57215ee1830aba58fb6da7f967c6b2bb">POSTPROCESS_TEX_UNIT_DEPTH</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_DEPTH</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:119</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18a7863dbb9a8b92cd5e52d432ec6e37e22"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a7863dbb9a8b92cd5e52d432ec6e37e22">POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:122</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18a8de6ad4fd3743301ea00af66f439290b"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18a8de6ad4fd3743301ea00af66f439290b">POSTPROCESS_TEX_UNIT_VELOCITY</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_VELOCITY</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:121</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18ab6618e9fdfdf7789a88005e92bb84dc2"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18ab6618e9fdfdf7789a88005e92bb84dc2">POSTPROCESS_TEX_UNIT_BLOOM</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_BLOOM</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:118</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18ab86b269f3f9bd7fbab9260119664325c"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18ab86b269f3f9bd7fbab9260119664325c">POSTPROCESS_TEX_UNIT_LUT3D</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_LUT3D</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:125</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18af0b77e7be4c1e923a25968ee4c7467f3"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18af0b77e7be4c1e923a25968ee4c7467f3">POSTPROCESS_TEX_UNIT_EXPOSURE</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:120</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_ae4d5251432e1a9e6803c0240cc492e18af0ee1ef93d8f949e7b1de75a547fc375"><div class="ttname"><a href="postprocess__internal_8h.html#ae4d5251432e1a9e6803c0240cc492e18af0ee1ef93d8f949e7b1de75a547fc375">POSTPROCESS_TEX_UNIT_SCENE</a></div><div class="ttdeci">@ POSTPROCESS_TEX_UNIT_SCENE</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:117</div></div>
+<div class="ttc" id="apostprocess__internal_8h_html_aff62c837ec8fdb56fb854ea33a87e30f"><div class="ttname"><a href="postprocess__internal_8h.html#aff62c837ec8fdb56fb854ea33a87e30f">pp_destroy_framebuffer</a></div><div class="ttdeci">void pp_destroy_framebuffer(PostProcess *post_processing)</div><div class="ttdef"><b>Definition:</b> postprocess_cleanup.c:11</div></div>
+<div class="ttc" id="app__exposure__readback_8h_html"><div class="ttname"><a href="pp__exposure__readback_8h.html">pp_exposure_readback.h</a></div><div class="ttdoc">Async GPU readback state for exposure and histogram.</div></div>
+<div class="ttc" id="app__gpu__resources_8h_html"><div class="ttname"><a href="pp__gpu__resources_8h.html">pp_gpu_resources.h</a></div><div class="ttdoc">GPU resource handles for the post-processing pipeline.</div></div>
+<div class="ttc" id="app__params_8h_html"><div class="ttname"><a href="pp__params_8h.html">pp_params.h</a></div><div class="ttdoc">Parameter structs and defaults for uber-shader post-processing effects.</div></div>
+<div class="ttc" id="app__shader__state_8h_html"><div class="ttname"><a href="pp__shader__state_8h.html">pp_shader_state.h</a></div><div class="ttdoc">Shader management state for the optimized uber-shader pipeline.</div></div>
+<div class="ttc" id="app__ubo_8h_html"><div class="ttname"><a href="pp__ubo_8h.html">pp_ubo.h</a></div><div class="ttdoc">GPU-side Uniform Buffer Object layout for the post-processing uber-shader.</div></div>
+<div class="ttc" id="ashader_8h_html"><div class="ttname"><a href="shader_8h.html">shader.h</a></div><div class="ttdoc">High-level OpenGL shader management with metadata and uniform caching.</div></div>
+<div class="ttc" id="astructBandingParams_html"><div class="ttname"><a href="structBandingParams.html">BandingParams</a></div><div class="ttdoc">Controls for color banding/quantization.</div><div class="ttdef"><b>Definition:</b> pp_params.h:158</div></div>
+<div class="ttc" id="astructChromAbberationParams_html"><div class="ttname"><a href="structChromAbberationParams.html">ChromAbberationParams</a></div><div class="ttdoc">Focal-length distortion simulation.</div><div class="ttdef"><b>Definition:</b> pp_params.h:106</div></div>
+<div class="ttc" id="astructColorGradingParams_html"><div class="ttname"><a href="structColorGradingParams.html">ColorGradingParams</a></div><div class="ttdoc">Unreal-style color grading parameters.</div><div class="ttdef"><b>Definition:</b> pp_params.h:61</div></div>
+<div class="ttc" id="astructExposureParams_html"><div class="ttname"><a href="structExposureParams.html">ExposureParams</a></div><div class="ttdoc">Manual exposure tuning.</div><div class="ttdef"><b>Definition:</b> pp_params.h:98</div></div>
+<div class="ttc" id="astructFXAAParams_html"><div class="ttname"><a href="structFXAAParams.html">FXAAParams</a></div><div class="ttdoc">Parameters for Fast Approximate Anti-Aliasing.</div><div class="ttdef"><b>Definition:</b> pp_params.h:135</div></div>
+<div class="ttc" id="astructFogParams_html"><div class="ttname"><a href="structFogParams.html">FogParams</a></div><div class="ttdoc">Depth-based atmospheric fog parameters.</div><div class="ttdef"><b>Definition:</b> pp_params.h:170</div></div>
+<div class="ttc" id="astructGPUProfiler_html"><div class="ttname"><a href="structGPUProfiler.html">GPUProfiler</a></div><div class="ttdoc">Manages GPU timing using double-buffered queries to avoid stalls.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:86</div></div>
+<div class="ttc" id="astructGrainParams_html"><div class="ttname"><a href="structGrainParams.html">GrainParams</a></div><div class="ttdoc">Fine-grained controls for film noise.</div><div class="ttdef"><b>Definition:</b> pp_params.h:84</div></div>
+<div class="ttc" id="astructPPExposureReadback_html"><div class="ttname"><a href="structPPExposureReadback.html">PPExposureReadback</a></div><div class="ttdoc">Async GPU readback state for exposure and histogram.</div><div class="ttdef"><b>Definition:</b> pp_exposure_readback.h:19</div></div>
+<div class="ttc" id="astructPPGPUResources_html"><div class="ttname"><a href="structPPGPUResources.html">PPGPUResources</a></div><div class="ttdoc">GPU handles for the post-processing pipeline (FBOs, textures, UBO).</div><div class="ttdef"><b>Definition:</b> pp_gpu_resources.h:15</div></div>
+<div class="ttc" id="astructPPShaderState_html"><div class="ttname"><a href="structPPShaderState.html">PPShaderState</a></div><div class="ttdoc">Shader management state for the optimized uber-shader pipeline.</div><div class="ttdef"><b>Definition:</b> pp_shader_state.h:28</div></div>
+<div class="ttc" id="astructPostProcessPreset_html"><div class="ttname"><a href="structPostProcessPreset.html">PostProcessPreset</a></div><div class="ttdoc">Snapshot of every configurable parameter in the pipeline.</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:98</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a3ccb7525d0d096c03ab429e0ac16ee21"><div class="ttname"><a href="structPostProcessPreset.html#a3ccb7525d0d096c03ab429e0ac16ee21">PostProcessPreset::dof</a></div><div class="ttdeci">DoFParams dof</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:108</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a40d0d59ac2cd0abe56c818238ffa52e3"><div class="ttname"><a href="structPostProcessPreset.html#a40d0d59ac2cd0abe56c818238ffa52e3">PostProcessPreset::bloom</a></div><div class="ttdeci">BloomParams bloom</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:107</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a414f30957b85919adfa385296c2f6181"><div class="ttname"><a href="structPostProcessPreset.html#a414f30957b85919adfa385296c2f6181">PostProcessPreset::tonemapper</a></div><div class="ttdeci">TonemapParams tonemapper</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:106</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a6c8c3ef05c36c0590581f9382a25736d"><div class="ttname"><a href="structPostProcessPreset.html#a6c8c3ef05c36c0590581f9382a25736d">PostProcessPreset::white_balance</a></div><div class="ttdeci">WhiteBalanceParams white_balance</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:104</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a6f762dab60d7c55557c3d35f58847a20"><div class="ttname"><a href="structPostProcessPreset.html#a6f762dab60d7c55557c3d35f58847a20">PostProcessPreset::banding</a></div><div class="ttdeci">BandingParams banding</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:110</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a72e94687c1c3bd420232bb853c30bee1"><div class="ttname"><a href="structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1">PostProcessPreset::exposure</a></div><div class="ttdeci">ExposureParams exposure</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:102</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a81fff6e04a4ac67920c56c1071da42c3"><div class="ttname"><a href="structPostProcessPreset.html#a81fff6e04a4ac67920c56c1071da42c3">PostProcessPreset::active_effects</a></div><div class="ttdeci">unsigned int active_effects</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:99</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_a92dbacc225792a6e1cf041cd9599379c"><div class="ttname"><a href="structPostProcessPreset.html#a92dbacc225792a6e1cf041cd9599379c">PostProcessPreset::vignette</a></div><div class="ttdeci">VignetteParams vignette</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:100</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_aa100ec8656fb47c1c9fecf39b91a8272"><div class="ttname"><a href="structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272">PostProcessPreset::color_grading</a></div><div class="ttdeci">ColorGradingParams color_grading</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:105</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_aa1802cfe2b682a235bbcaef29719c7bd"><div class="ttname"><a href="structPostProcessPreset.html#aa1802cfe2b682a235bbcaef29719c7bd">PostProcessPreset::chrom_abbr</a></div><div class="ttdeci">ChromAbberationParams chrom_abbr</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:103</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_aa95a69dc4a02264eb4e3164d551b50bd"><div class="ttname"><a href="structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd">PostProcessPreset::fxaa</a></div><div class="ttdeci">FXAAParams fxaa</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:109</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_aba5562c520b09436141bdaa254886af2"><div class="ttname"><a href="structPostProcessPreset.html#aba5562c520b09436141bdaa254886af2">PostProcessPreset::fog</a></div><div class="ttdeci">FogParams fog</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:111</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_af7645e0d8755d89fdb54e405518233f0"><div class="ttname"><a href="structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0">PostProcessPreset::grain</a></div><div class="ttdeci">GrainParams grain</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:101</div></div>
+<div class="ttc" id="astructPostProcessPreset_html_affd57f46b38e3b7f6a9f8c207b2aad15"><div class="ttname"><a href="structPostProcessPreset.html#affd57f46b38e3b7f6a9f8c207b2aad15">PostProcessPreset::lut3d</a></div><div class="ttdeci">LUT3DParams lut3d</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:112</div></div>
+<div class="ttc" id="astructPostProcess_html"><div class="ttname"><a href="structPostProcess.html">PostProcess</a></div><div class="ttdoc">Main pipeline state for post-processing.</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:46</div></div>
+<div class="ttc" id="astructPostProcess_html_a01b97fc45027e3395f825daaa28109ef"><div class="ttname"><a href="structPostProcess.html#a01b97fc45027e3395f825daaa28109ef">PostProcess::height</a></div><div class="ttdeci">int height</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:62</div></div>
+<div class="ttc" id="astructPostProcess_html_a09533273202880d19b3143ee5694f2f9"><div class="ttname"><a href="structPostProcess.html#a09533273202880d19b3143ee5694f2f9">PostProcess::fog</a></div><div class="ttdeci">FogParams fog</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:80</div></div>
+<div class="ttc" id="astructPostProcess_html_a0a473e5615f9975ff758e179afd2e90f"><div class="ttname"><a href="structPostProcess.html#a0a473e5615f9975ff758e179afd2e90f">PostProcess::shaders</a></div><div class="ttdeci">PPShaderState shaders</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:59</div></div>
+<div class="ttc" id="astructPostProcess_html_a1813de0e43098c83bdc497a1b23bdfb9"><div class="ttname"><a href="structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9">PostProcess::gpu</a></div><div class="ttdeci">PPGPUResources gpu</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:48</div></div>
+<div class="ttc" id="astructPostProcess_html_a28e331d9437d9dc2237aefb1df3eee20"><div class="ttname"><a href="structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20">PostProcess::banding_preset_idx</a></div><div class="ttdeci">int banding_preset_idx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:88</div></div>
+<div class="ttc" id="astructPostProcess_html_a30dfc3030196ea124e2134aec8776e95"><div class="ttname"><a href="structPostProcess.html#a30dfc3030196ea124e2134aec8776e95">PostProcess::active_effects</a></div><div class="ttdeci">unsigned int active_effects</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:64</div></div>
+<div class="ttc" id="astructPostProcess_html_a3e461c228e9958518b604890bcfb198b"><div class="ttname"><a href="structPostProcess.html#a3e461c228e9958518b604890bcfb198b">PostProcess::auto_exposure_fx</a></div><div class="ttdeci">AutoExposureFX auto_exposure_fx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:53</div></div>
+<div class="ttc" id="astructPostProcess_html_a50a6cfbff2d74a962ebd0d7a9eed09fb"><div class="ttname"><a href="structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb">PostProcess::exposure</a></div><div class="ttdeci">ExposureParams exposure</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:69</div></div>
+<div class="ttc" id="astructPostProcess_html_a5614c55f1fd52a32d3cfcaf5d40471b9"><div class="ttname"><a href="structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9">PostProcess::dof_fx</a></div><div class="ttdeci">DoFFX dof_fx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:52</div></div>
+<div class="ttc" id="astructPostProcess_html_a65b8eb5b5bd81fd7cad569919a2559a3"><div class="ttname"><a href="structPostProcess.html#a65b8eb5b5bd81fd7cad569919a2559a3">PostProcess::width</a></div><div class="ttdeci">int width</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:61</div></div>
+<div class="ttc" id="astructPostProcess_html_a66656d6950a7540d140bd93c19c73d55"><div class="ttname"><a href="structPostProcess.html#a66656d6950a7540d140bd93c19c73d55">PostProcess::ubo_dirty</a></div><div class="ttdeci">bool ubo_dirty</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:85</div></div>
+<div class="ttc" id="astructPostProcess_html_a8362e441c1070f454241f61975e5be5c"><div class="ttname"><a href="structPostProcess.html#a8362e441c1070f454241f61975e5be5c">PostProcess::auto_exposure</a></div><div class="ttdeci">AutoExposureParams auto_exposure</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:76</div></div>
+<div class="ttc" id="astructPostProcess_html_a94be299863c33dd03d91f9e0f5b3fddc"><div class="ttname"><a href="structPostProcess.html#a94be299863c33dd03d91f9e0f5b3fddc">PostProcess::tonemapper</a></div><div class="ttdeci">TonemapParams tonemapper</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:73</div></div>
+<div class="ttc" id="astructPostProcess_html_a95a38057950cc92a1af929ee18726d6c"><div class="ttname"><a href="structPostProcess.html#a95a38057950cc92a1af929ee18726d6c">PostProcess::lut_viz_fx</a></div><div class="ttdeci">LUTVizFX lut_viz_fx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:56</div></div>
+<div class="ttc" id="astructPostProcess_html_a9a1e8a0d6ba0fb13446fb3b665a8af01"><div class="ttname"><a href="structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01">PostProcess::chrom_abbr</a></div><div class="ttdeci">ChromAbberationParams chrom_abbr</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:70</div></div>
+<div class="ttc" id="astructPostProcess_html_a9f1a75962d0e9069fa9ee66a1eb562b8"><div class="ttname"><a href="structPostProcess.html#a9f1a75962d0e9069fa9ee66a1eb562b8">PostProcess::lut3d_fx</a></div><div class="ttdeci">LUT3DFX lut3d_fx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:55</div></div>
+<div class="ttc" id="astructPostProcess_html_aa73e2397b40ec74c59dbd86df6a08053"><div class="ttname"><a href="structPostProcess.html#aa73e2397b40ec74c59dbd86df6a08053">PostProcess::lut3d</a></div><div class="ttdeci">LUT3DParams lut3d</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:81</div></div>
+<div class="ttc" id="astructPostProcess_html_aaac67359cd05c2eb46134105e71ea043"><div class="ttname"><a href="structPostProcess.html#aaac67359cd05c2eb46134105e71ea043">PostProcess::white_balance</a></div><div class="ttdeci">WhiteBalanceParams white_balance</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:71</div></div>
+<div class="ttc" id="astructPostProcess_html_ab4fd67effb078dbf22ed15cb24dbdc3b"><div class="ttname"><a href="structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b">PostProcess::dof</a></div><div class="ttdeci">DoFParams dof</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:75</div></div>
+<div class="ttc" id="astructPostProcess_html_ab6dd21a9e441fb05688017da0fdeab76"><div class="ttname"><a href="structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76">PostProcess::fxaa</a></div><div class="ttdeci">FXAAParams fxaa</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:78</div></div>
+<div class="ttc" id="astructPostProcess_html_abbcfbc94b0f008cc6d78785d6b4b1ecc"><div class="ttname"><a href="structPostProcess.html#abbcfbc94b0f008cc6d78785d6b4b1ecc">PostProcess::grain</a></div><div class="ttdeci">GrainParams grain</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:68</div></div>
+<div class="ttc" id="astructPostProcess_html_abd63360f1379962d296fc26d23f0f1f0"><div class="ttname"><a href="structPostProcess.html#abd63360f1379962d296fc26d23f0f1f0">PostProcess::motion_blur</a></div><div class="ttdeci">MotionBlurParams motion_blur</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:77</div></div>
+<div class="ttc" id="astructPostProcess_html_acb108231128817d5e9f495a70df22f1b"><div class="ttname"><a href="structPostProcess.html#acb108231128817d5e9f495a70df22f1b">PostProcess::gpu_profiler</a></div><div class="ttdeci">GPUProfiler * gpu_profiler</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:87</div></div>
+<div class="ttc" id="astructPostProcess_html_ad1ef49a6b253f10b01e92851768891d6"><div class="ttname"><a href="structPostProcess.html#ad1ef49a6b253f10b01e92851768891d6">PostProcess::bloom_fx</a></div><div class="ttdeci">BloomFX bloom_fx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:51</div></div>
+<div class="ttc" id="astructPostProcess_html_ad2439be6cfa64d705a75e26ec5f0f725"><div class="ttname"><a href="structPostProcess.html#ad2439be6cfa64d705a75e26ec5f0f725">PostProcess::bloom</a></div><div class="ttdeci">BloomParams bloom</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:74</div></div>
+<div class="ttc" id="astructPostProcess_html_ae49ebd9e9dd9845b9c781c534530998d"><div class="ttname"><a href="structPostProcess.html#ae49ebd9e9dd9845b9c781c534530998d">PostProcess::vignette</a></div><div class="ttdeci">VignetteParams vignette</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:67</div></div>
+<div class="ttc" id="astructPostProcess_html_ae9c0c825b8ad02bf0e5bd71f891d4f23"><div class="ttname"><a href="structPostProcess.html#ae9c0c825b8ad02bf0e5bd71f891d4f23">PostProcess::readback</a></div><div class="ttdeci">PPExposureReadback readback</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:91</div></div>
+<div class="ttc" id="astructPostProcess_html_af411419ec733b3e01c935b9f646d1a82"><div class="ttname"><a href="structPostProcess.html#af411419ec733b3e01c935b9f646d1a82">PostProcess::banding</a></div><div class="ttdeci">BandingParams banding</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:79</div></div>
+<div class="ttc" id="astructPostProcess_html_af7cf9020b7201cb1293cb2f827b50144"><div class="ttname"><a href="structPostProcess.html#af7cf9020b7201cb1293cb2f827b50144">PostProcess::motion_blur_fx</a></div><div class="ttdeci">MotionBlurFX motion_blur_fx</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:54</div></div>
+<div class="ttc" id="astructPostProcess_html_af90a6604c8211ecd0d8bfb61854c6c3f"><div class="ttname"><a href="structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f">PostProcess::delta_time</a></div><div class="ttdeci">float delta_time</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:84</div></div>
+<div class="ttc" id="astructPostProcess_html_afb71aa02b237fe2666213becfa342d31"><div class="ttname"><a href="structPostProcess.html#afb71aa02b237fe2666213becfa342d31">PostProcess::time</a></div><div class="ttdeci">float time</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:83</div></div>
+<div class="ttc" id="astructPostProcess_html_afc4b24420a5dbf1fe0a0095d788dfcd8"><div class="ttname"><a href="structPostProcess.html#afc4b24420a5dbf1fe0a0095d788dfcd8">PostProcess::color_grading</a></div><div class="ttdeci">ColorGradingParams color_grading</div><div class="ttdef"><b>Definition:</b> postprocess_internal.h:72</div></div>
+<div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition:</b> shader.h:71</div></div>
+<div class="ttc" id="astructTonemapParams_html"><div class="ttname"><a href="structTonemapParams.html">TonemapParams</a></div><div class="ttdoc">ACES-like filmic tonemapping curve parameters.</div><div class="ttdef"><b>Definition:</b> pp_params.h:123</div></div>
+<div class="ttc" id="astructVignetteParams_html"><div class="ttname"><a href="structVignetteParams.html">VignetteParams</a></div><div class="ttdoc">Controls for the screen-edge darkening effect.</div><div class="ttdef"><b>Definition:</b> pp_params.h:74</div></div>
+<div class="ttc" id="astructWhiteBalanceParams_html"><div class="ttname"><a href="structWhiteBalanceParams.html">WhiteBalanceParams</a></div><div class="ttdoc">Temperature and tint correction.</div><div class="ttdef"><b>Definition:</b> pp_params.h:114</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="postprocess__internal_8h.html">postprocess_internal.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
