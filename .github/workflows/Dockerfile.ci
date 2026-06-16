@@ -24,6 +24,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrandr-dev \
     xorg-dev \
     xvfb \
+    libcapstone-dev \
+    libdbus-1-dev \
+    pkg-config \
+    libssl-dev \
     libgl1-mesa-dri \
     mesa-vulkan-drivers \
     imagemagick \
@@ -58,7 +62,21 @@ RUN pip3 install --no-cache-dir \
     mkdocs-static-i18n \
     tzdata
 
-# 3. Environment Setup
+# 3. Pre-build Tracy CLI Tools (Capture & CSV Export)
+RUN echo "Building Tracy CLI Tools v0.13.1..." && \
+    git clone --branch v0.13.1 --depth 1 https://github.com/wolfpld/tracy.git /tmp/tracy && \
+    # Build Capture
+    cmake -B /tmp/tracy/capture/build -S /tmp/tracy/capture -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build /tmp/tracy/capture/build --parallel $(nproc) && \
+    cp /tmp/tracy/capture/build/tracy-capture /usr/local/bin/ && \
+    # Build CSV Export
+    cmake -B /tmp/tracy/csvexport/build -S /tmp/tracy/csvexport -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build /tmp/tracy/csvexport/build --parallel $(nproc) && \
+    cp /tmp/tracy/csvexport/build/tracy-csvexport /usr/local/bin/ && \
+    # Cleanup
+    rm -rf /tmp/tracy
+
+# 4. Environment Setup
 RUN useradd -m -u 1001 ciuser && \
     mkdir -p /home/ciuser/.cache/cltcache && \
     chown -R ciuser:ciuser /home/ciuser

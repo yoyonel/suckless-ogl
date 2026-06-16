@@ -192,6 +192,22 @@ jobs:
             exit 1
           fi
 
+  # --- JOB : TEST INTÉGRATION TRACY (HEADLESS) ---
+  test-tracy:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci:latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Run Tracy Profiler Integration Test
+        run: |
+          git config --global --add safe.directory '*'
+          chmod +x .github/workflows/scripts/test_integration_tracy.sh
+          ./.github/workflows/scripts/test_integration_tracy.sh
+
   # --- NEW JOB : TESTS WINDOWS (WINE) ---
   test-windows:
     if: github.event.action != 'closed'
