@@ -257,41 +257,43 @@ $(document).ready(function(){initNavTree('tracy__gpu_8h_source.html',''); initRe
 <a href="tracy__gpu_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef TRACY_GPU_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define TRACY_GPU_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span> <span class="comment">/* Ajoute cette ligne pour uint16_t et uint32_t */</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9">tracy_gpu_init</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30">tracy_gpu_collect</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keywordtype">void</span> tracy_gpu_screenshot(<span class="keyword">const</span> <span class="keywordtype">void</span>* data, uint16_t w, uint16_t h);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keywordtype">void</span>* <a class="code" href="tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03">tracy_gpu_zone_begin</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">function</span>,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                           <span class="keyword">const</span> <span class="keywordtype">char</span>* file, uint32_t line, uint32_t color);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">tracy_gpu_zone_end</a>(<span class="keywordtype">void</span>* ctx);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9">tracy_gpu_init</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30">tracy_gpu_collect</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keywordtype">void</span> tracy_gpu_screenshot(<span class="keyword">const</span> <span class="keywordtype">void</span>* data, uint16_t w, uint16_t h);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">void</span>* <a class="code" href="tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03">tracy_gpu_zone_begin</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">function</span>,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                           <span class="keyword">const</span> <span class="keywordtype">char</span>* file, uint32_t line, uint32_t color);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">void</span> <a class="code" href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">tracy_gpu_zone_end</a>(<span class="keywordtype">void</span>* ctx);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9">   30</a></span>&#160;<span class="preprocessor">#define tracy_gpu_init() ((void)0)</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30">   31</a></span>&#160;<span class="preprocessor">#define tracy_gpu_collect() ((void)0)</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03">   32</a></span>&#160;<span class="preprocessor">#define tracy_gpu_zone_begin(name, function, file, line, color) (0)</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">   33</a></span>&#160;<span class="preprocessor">#define tracy_gpu_zone_end(ctx) ((void)0)</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9">   32</a></span>&#160;<span class="preprocessor">#define tracy_gpu_init() ((void)0)</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30">   33</a></span>&#160;<span class="preprocessor">#define tracy_gpu_collect() ((void)0)</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03">   34</a></span>&#160;<span class="preprocessor">#define tracy_gpu_zone_begin(name, function, file, line, color) (0)</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">   35</a></span>&#160;<span class="preprocessor">#define tracy_gpu_zone_end(ctx) ((void)0)</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// TRACY_GPU_H</span></div>
-<div class="ttc" id="atracy__gpu_8h_html_a5aa3f109f7e6661a515cb3cc8c9a495c"><div class="ttname"><a href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">tracy_gpu_zone_end</a></div><div class="ttdeci">#define tracy_gpu_zone_end(ctx)</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:33</div></div>
-<div class="ttc" id="atracy__gpu_8h_html_a757115c86dcbb90152280afe939329f9"><div class="ttname"><a href="tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9">tracy_gpu_init</a></div><div class="ttdeci">#define tracy_gpu_init()</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:30</div></div>
-<div class="ttc" id="atracy__gpu_8h_html_aa82c1f83708e717191fc7fb327a76c30"><div class="ttname"><a href="tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30">tracy_gpu_collect</a></div><div class="ttdeci">#define tracy_gpu_collect()</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:31</div></div>
-<div class="ttc" id="atracy__gpu_8h_html_acd73931d20ace2076b5e4557ecec5f03"><div class="ttname"><a href="tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03">tracy_gpu_zone_begin</a></div><div class="ttdeci">#define tracy_gpu_zone_begin(name, function, file, line, color)</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:32</div></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// TRACY_GPU_H</span></div>
+<div class="ttc" id="atracy__gpu_8h_html_a5aa3f109f7e6661a515cb3cc8c9a495c"><div class="ttname"><a href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">tracy_gpu_zone_end</a></div><div class="ttdeci">#define tracy_gpu_zone_end(ctx)</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:35</div></div>
+<div class="ttc" id="atracy__gpu_8h_html_a757115c86dcbb90152280afe939329f9"><div class="ttname"><a href="tracy__gpu_8h.html#a757115c86dcbb90152280afe939329f9">tracy_gpu_init</a></div><div class="ttdeci">#define tracy_gpu_init()</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:32</div></div>
+<div class="ttc" id="atracy__gpu_8h_html_aa82c1f83708e717191fc7fb327a76c30"><div class="ttname"><a href="tracy__gpu_8h.html#aa82c1f83708e717191fc7fb327a76c30">tracy_gpu_collect</a></div><div class="ttdeci">#define tracy_gpu_collect()</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:33</div></div>
+<div class="ttc" id="atracy__gpu_8h_html_acd73931d20ace2076b5e4557ecec5f03"><div class="ttname"><a href="tracy__gpu_8h.html#acd73931d20ace2076b5e4557ecec5f03">tracy_gpu_zone_begin</a></div><div class="ttdeci">#define tracy_gpu_zone_begin(name, function, file, line, color)</div><div class="ttdef"><b>Definition:</b> tracy_gpu.h:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
