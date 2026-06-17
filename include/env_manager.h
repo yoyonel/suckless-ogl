@@ -20,13 +20,21 @@
 typedef struct Scene Scene;
 typedef struct PostProcess PostProcess;
 
+typedef enum {
+	EML_STOP = 0,
+	EML_UPLOAD_HDR_FROM_PBO,
+	EML_MIPMAP,
+	EML_START_IBL,
+} EnvMapLoadingState;
+
 /**
  * @struct EnvManager
  * @brief Encapsulates state for environment loading, transitions, and IBL.
  */
 typedef struct EnvManager {
-	bool env_map_loading;     /**< Async lock for HDR loading. */
-	int env_map_loading_step; /**< Multi-frame loading step counter. */
+	bool env_map_loading; /**< Async lock for HDR loading. */
+	EnvMapLoadingState
+	    env_map_loading_step; /**< Multi-frame loading step counter. */
 	AsyncRequest
 	    current_env_req; /**< Currently processing async request. */
 	TransitionState transition_state;

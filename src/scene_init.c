@@ -1,5 +1,6 @@
 #include "app.h"
 #include "app_settings.h"
+#include "asset_manager.h"
 #include "billboard_rendering.h"
 #include "ibl_coordinator.h"
 #include "instanced_rendering.h"
@@ -25,9 +26,6 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-static const char* const HDR_TEXTURE_PATH = "assets/textures/hdr";
-static const char* const HDR_EXTENSION = ".hdr";
-
 static int compare_strings(const void* string_a, const void* string_b)
 {
 	return strcmp(*(const char**)string_a, *(const char**)string_b);
@@ -47,8 +45,9 @@ static void scene_hdr_file_callback(const char* filename, bool is_dir,
 	struct HdrScanContext* ctx = (struct HdrScanContext*)user_data;
 	Scene* scene = ctx->scene;
 
-	const char* dot = strrchr(filename, '.');
-	if (!dot || strcmp(dot, HDR_EXTENSION) != 0) {
+	/* On accepte tout ce qui est capable de fournir du HDR (.hdr, .ktx2...)
+	 */
+	if (!asset_has_flag(filename, ASSET_FLAG_HDR_CAPABLE)) {
 		return;
 	}
 
@@ -73,10 +72,11 @@ static void scene_scan_hdr_files(Scene* scene)
 	scene->current_hdr_index = -1;
 
 	struct HdrScanContext ctx = {scene};
-	if (!platform_dir_list(HDR_TEXTURE_PATH, scene_hdr_file_callback,
-	                       &ctx)) {
-		LOG_ERROR("suckless-ogl.scene",
-		          "Failed to open assets/textures/hdr directory!");
+
+	/* Utilisation de la constante globale de l'Asset Manager */
+	if (!platform_dir_list(ASSET_DIR_HDR, scene_hdr_file_callback, &ctx)) {
+		LOG_ERROR("suckless-ogl.scene", "Failed to open %s directory!",
+		          ASSET_DIR_HDR);
 		return;
 	}
 
@@ -84,7 +84,8 @@ static void scene_scan_hdr_files(Scene* scene)
 		qsort(scene->hdr_files, (size_t)scene->hdr_count, sizeof(char*),
 		      compare_strings);
 	}
-	LOG_INFO("suckless-ogl.scene", "Found %d HDR files.", scene->hdr_count);
+	LOG_INFO("suckless-ogl.scene", "Found %d HDR capable files.",
+	         scene->hdr_count);
 }
 
 void scene_init_instancing(Scene* scene)

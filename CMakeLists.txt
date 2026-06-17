@@ -92,6 +92,7 @@ set(SOURCES
     src/adaptive_sampler.c
     src/app.c
     src/app_binding.c
+    src/asset_manager.c
     src/env_manager.c
     src/app_input.c
     src/app_input_state.c
@@ -101,6 +102,9 @@ set(SOURCES
     src/app_ui.c
     src/app_window.c
     src/async_loader.c
+    src/async_backend.c
+    src/async_backend_stb.c
+    src/async_backend_ktx.c
     src/async_coordinator.c
     src/billboard_rendering.c
     src/camera.c
@@ -189,7 +193,7 @@ if(EXISTS "${OFFLINE_DEPS_DIR}")
   message(STATUS "Offline mode: Checking for local dependencies in ${OFFLINE_DEPS_DIR}")
 
   # List of dependencies we want to support overrides for
-  set(MANIFEST_DEPS "cglm" "glad" "stb" "unity" "cjson")
+  set(MANIFEST_DEPS "cglm" "glad" "stb" "unity" "cjson" "glfw" "libktx")
 
   foreach(dep ${MANIFEST_DEPS})
     if(EXISTS "${OFFLINE_DEPS_DIR}/${dep}")
@@ -331,6 +335,38 @@ elseif(ENABLE_ASAN)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_PROFILING OFF)
 endif()
 
+# Mettre le transcodeur KTX au régime sec sur les formats mobiles
+# (On conserve uniquement les chemins de code utiles pour OpenGL Desktop : BC7, DXT1, etc.)
+add_compile_definitions(
+    BASISD_SUPPORT_ETC2_EAC_A8=0
+    BASISD_SUPPORT_ASTC=0
+    BASISD_SUPPORT_PVRTC1=0
+    BASISD_SUPPORT_ATC=0
+    BASISD_SUPPORT_FXT1=0
+    BASISD_SUPPORT_PVRTC2=0
+)
+
+# 6. libktx (Static Build)
+message(STATUS "Fetching libktx...")
+include(FetchContent)
+FetchContent_Declare(
+    libktx
+    GIT_REPOSITORY https://github.com/KhronosGroup/KTX-Software.git
+    GIT_TAG        v5.0.0-rc1
+)
+# --- libktx : Désactivation stricte des encodeurs ---
+set(KTX_FEATURE_TESTS OFF CACHE BOOL "Disable KTX tests" FORCE)
+set(KTX_FEATURE_TOOLS OFF CACHE BOOL "Disable KTX tools" FORCE)
+set(KTX_FEATURE_WRITE OFF CACHE BOOL "Disable KTX write/encode support" FORCE)
+set(KTX_FEATURE_GL_UPLOAD ON CACHE BOOL "Enable KTX GL upload" FORCE)
+set(KTX_FEATURE_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
+
+# FORCER BASIS UNIVERSAL À NE COMPILER QUE LE TRANSCODEUR
+set(BASISU_SUPPORT_ENCODING OFF CACHE BOOL "Disable Basis encoder" FORCE)
+set(BASISU_SUPPORT_UASTC OFF CACHE BOOL "Disable Basis UASTC encoder" FORCE)
+
+FetchContent_MakeAvailable(libktx)
+
 # App target
 set(APP_SOURCES ${SOURCES})
 if(ENABLE_TRACY)
@@ -407,6 +443,7 @@ target_link_libraries(app PRIVATE
     cjson
     ${GLFW3_LIBRARIES}
     Threads::Threads
+    ktx_read
 )
 
 if(UNIX)
@@ -537,3 +574,34 @@ add_custom_target(audit
 # add_custom_command(TARGET audit POST_BUILD
 #     COMMAND sh -c "if [ $(du -k ${CMAKE_BINARY_DIR}/build-audit/app | cut -f1) -gt 3000 ]; then echo 'ERREUR: Binaire trop gros !'; exit 1; fi"
 # )
+
+# --- KTX Viewer Standalone Target ---
+# On s'assure que le fichier source existe avant d'ajouter la cible
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/ktx_viewer.c")
+  add_executable(ktx_viewer src/ktx_viewer.c src/utils.c)
+
+  # On inclut les headers générés par FetchContent
+  target_include_directories(ktx_viewer PRIVATE
+        include
+        ${glfw_SOURCE_DIR}/include
+        ${glad_BINARY_DIR}/include
+    )
+
+  # On link avec les mêmes libs statiques que l'app principale
+  target_link_libraries(ktx_viewer PRIVATE
+        glad
+        ${GLFW3_LIBRARIES}
+        ktx
+        Threads::Threads
+    )
+
+  if(UNIX)
+    target_link_libraries(ktx_viewer PRIVATE m dl)
+  endif()
+
+  if(WIN32)
+    target_link_options(ktx_viewer PRIVATE -static)
+  endif()
+
+  message(STATUS "Added target: ktx_viewer")
+endif()

@@ -45,6 +45,9 @@ typedef unsigned int GLbitfield;
 #define GL_REPEAT 0x2901
 #define GL_RGBA32F 0x8814
 #define GL_RGBA16F 0x881A
+#define GL_RGB32F 0x8815
+#define GL_RGB16F 0x881B
+#define GL_RGB 0x1907
 #define GL_RGBA 0x1908
 #define GL_FLOAT 0x1406
 #define GL_HALF_FLOAT 0x140B
@@ -76,6 +79,13 @@ void glTexImage2D(GLenum t, GLint l, GLint i, GLsizei w, GLsizei h, GLint b,
                   GLenum f, GLenum ty, const void* p);
 void glTexSubImage2D(GLenum t, GLint l, GLint x, GLint y, GLsizei w, GLsizei h,
                      GLenum f, GLenum ty, const void* p);
+/* Prototype pour garantir la compilation de texture.c dans les tests unitaires
+ */
+#undef glCompressedTexSubImage2D
+void glCompressedTexSubImage2D(unsigned int target, int level, int xoffset,
+                               int yoffset, int width, int height,
+                               unsigned int format, int imageSize,
+                               const void* data);
 void glTexParameteri(GLenum target, GLenum pname, GLint param);
 void glGenerateMipmap(GLenum target);
 void glDeleteTextures(GLsizei n, const GLuint* ids);

@@ -54,4 +54,11 @@ GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void);
 #define DEFAULT_BUFFER_ID 100
 #define DEFAULT_VAO_ID 200
 
+/* Annule la macro GLAD pour forcer l'édition de lien vers notre mock CPU */
+#undef glCompressedTexSubImage2D
+void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset,
+                               GLint yoffset, GLsizei width, GLsizei height,
+                               GLenum format, GLsizei imageSize,
+                               const void* data);
+
 #endif /* MOCK_GL_STANDALONE_H */

@@ -44,8 +44,10 @@ bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
 			/* Use ping-pong index to avoid stalling on previous
 			 * frame's upload */
 			int pbo_idx = coord->upload_pbo_idx;
-			size_t size = (size_t)req.width * (size_t)req.height *
-			              4 * sizeof(uint16_t);
+
+			/* Consomme la taille pré-calculée par le worker */
+			size_t size = req.required_pbo_size;
+
 			PROFILE_ZONE(pbo_ctx, "PBO Setup & Map");
 			texture_ensure_pbo(&coord->upload_pbo[pbo_idx],
 			                   &coord->upload_pbo_size[pbo_idx],
@@ -53,6 +55,7 @@ bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
 			void* ptr =
 			    texture_map_pbo(coord->upload_pbo[pbo_idx], size);
 			PROFILE_ZONE_END(pbo_ctx);
+
 			if (ptr) {
 				async_loader_provide_pbo(
 				    loader, ptr, coord->upload_pbo[pbo_idx]);

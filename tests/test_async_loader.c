@@ -1,5 +1,6 @@
 #ifndef GL_COMMON_NO_GLAD
 #define GL_COMMON_NO_GLAD
+#include "asset_manager.h"
 #endif
 #ifndef GL_COMMON_NO_GLFW
 #define GL_COMMON_NO_GLFW
@@ -10,6 +11,7 @@
 #include "log.h"
 #include "platform/platform_time.h"
 #include "profiler.h"
+#include <ktx.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -18,9 +20,18 @@
 #include <time.h>
 #include <unity.h>
 
+/* Helper pour forger un handle dans les tests sans dépendre de io/fs */
+static AssetHandle make_test_handle(const char* path, AssetType type)
+{
+	AssetHandle asset_handler = {0};
+	strncpy(asset_handler.full_path, path,
+	        sizeof(asset_handler.full_path) - 1);
+	asset_handler.type = type;
+	return asset_handler;
+}
+
 /* --- Mocks --- */
 
-/* Mock texture_load_pixels to avoid real I/O and STB dependencies */
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
@@ -33,13 +44,11 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 	return malloc(16 * 16 * 4 * sizeof(float));
 }
 
-/* Mock STB */
 void stbi_image_free(void* p)
 {
 	free(p);
 }
 
-/* Mock conversion utils */
 void convert_float_to_half_simd(const float* src, uint16_t* dst, size_t count)
 {
 	(void)src;
@@ -47,7 +56,6 @@ void convert_float_to_half_simd(const float* src, uint16_t* dst, size_t count)
 	(void)count;
 }
 
-/* Mock log */
 void log_message(LogLevel level, const char* tag, const char* format, ...)
 {
 	(void)level;
@@ -55,7 +63,6 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	(void)format;
 }
 
-/* Mock tracy_manager functions used by async_loader */
 void tracy_manager_async_transition(struct TracyManager* mgr, AsyncState state)
 {
 	(void)mgr;
@@ -67,7 +74,6 @@ void tracy_manager_async_end(struct TracyManager* mgr)
 	(void)mgr;
 }
 
-/* GL Mocks for perf_timer.c dependency */
 void glGenQueries(GLsizei n, GLuint* ids)
 {
 	for (int i = 0; i < n; i++) {
@@ -113,7 +119,6 @@ void glFinish(void)
 {
 }
 
-/* GPU Profiler Mocks - Correct signatures to match gpu_profiler.h */
 void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
                               uint32_t color)
 {
@@ -126,8 +131,6 @@ void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
 	(void)profiler;
 }
-
-/* --- Helpers --- */
 
 static void sleep_ms(long milliseconds)
 {
@@ -150,10 +153,11 @@ void tearDown(void)
 
 void test_AsyncLoader_RequestAndPollSuccess(void)
 {
-	bool req_ok = async_loader_request(loader, "test.hdr");
+	AssetHandle handle =
+	    make_test_handle("test.hdr", ASSET_TYPE_TEXTURE_STB);
+	bool req_ok = async_loader_request(loader, &handle);
 	TEST_ASSERT_TRUE(req_ok);
 
-	/* Poll until it's waiting for PBO */
 	AsyncRequest out_req = {0};
 	bool found = false;
 	for (int i = 0; i < 50; ++i) {
@@ -168,11 +172,9 @@ void test_AsyncLoader_RequestAndPollSuccess(void)
 	TEST_ASSERT_TRUE_MESSAGE(found, "Should reach WAITING_FOR_PBO");
 	TEST_ASSERT_EQUAL_INT(16, out_req.width);
 
-	/* Provide a dummy PBO/ptr */
 	char dummy_pbo_mem[4096];
 	async_loader_provide_pbo(loader, dummy_pbo_mem, 123);
 
-	/* Poll until it's ready */
 	found = false;
 	for (int i = 0; i < 50; ++i) {
 		if (async_loader_poll(loader, &out_req)) {
@@ -189,12 +191,10 @@ void test_AsyncLoader_RequestAndPollSuccess(void)
 
 void test_AsyncLoader_HandleLoadFailure(void)
 {
-	async_loader_request(loader, "fail.hdr");
+	AssetHandle handle =
+	    make_test_handle("fail.hdr", ASSET_TYPE_TEXTURE_STB);
+	async_loader_request(loader, &handle);
 
-	/* Poll should eventually see a reset to IDLE or just never return true
-	   The current implementation of poll returns false and resets to IDLE
-	   if failed.
-	*/
 	bool found_ready = false;
 	for (int i = 0; i < 50; ++i) {
 		AsyncRequest out_req = {0};
@@ -209,10 +209,144 @@ void test_AsyncLoader_HandleLoadFailure(void)
 	                          "Should not reach READY on failure");
 }
 
+void test_AsyncLoader_TaggedUnion_STB(void)
+{
+	AssetHandle handle =
+	    make_test_handle("test.hdr", ASSET_TYPE_TEXTURE_STB);
+	bool req_ok = async_loader_request(loader, &handle);
+	TEST_ASSERT_TRUE(req_ok);
+
+	AsyncRequest out_req = {0};
+	bool found = false;
+
+	for (int i = 0; i < 50; ++i) {
+		if (async_loader_poll(loader, &out_req)) {
+			if (out_req.state == ASYNC_WAITING_FOR_PBO) {
+				found = true;
+				break;
+			}
+		}
+		sleep_ms(10);
+	}
+
+	TEST_ASSERT_TRUE_MESSAGE(
+	    found, "La requête n'a pas atteint l'état WAITING_FOR_PBO");
+
+	/* Vérification via le pointeur opaque de contexte du backend */
+	TEST_ASSERT_EQUAL_INT(ASSET_TYPE_TEXTURE_STB, out_req.resource_type);
+	TEST_ASSERT_NOT_NULL_MESSAGE(
+	    out_req.backend_data,
+	    "Le backend_data STB doit contenir les données float décodées");
+
+	size_t expected_pbo_size =
+	    (size_t)out_req.width * out_req.height * 4 * sizeof(uint16_t);
+	TEST_ASSERT_EQUAL_UINT64_MESSAGE(
+	    expected_pbo_size, out_req.required_pbo_size,
+	    "Le worker doit pré-calculer la taille du PBO requise");
+}
+
+void test_AsyncLoader_TaggedUnion_KTX_Routing(void)
+{
+	AssetHandle handle =
+	    make_test_handle("missing_dummy.ktx2", ASSET_TYPE_TEXTURE_KTX);
+	bool req_ok = async_loader_request(loader, &handle);
+	TEST_ASSERT_TRUE(req_ok);
+
+	AsyncRequest out_req = {0};
+	bool found_failed = false;
+
+	for (int i = 0; i < 50; ++i) {
+		if (async_loader_poll(loader, &out_req)) {
+			if (out_req.state == ASYNC_FAILED) {
+				found_failed = true;
+				break;
+			}
+		}
+		sleep_ms(10);
+	}
+
+	TEST_ASSERT_TRUE_MESSAGE(
+	    found_failed, "La requête aurait dû échouer (fichier inexistant)");
+
+	TEST_ASSERT_EQUAL_INT(ASSET_TYPE_TEXTURE_KTX, out_req.resource_type);
+}
+
+void test_AsyncLoader_PerformConversion_KTX(void)
+{
+	const char* dummy_file = "test_conversion.ktx2";
+
+	ktxTextureCreateInfo createInfo = {0};
+	createInfo.vkFormat = 43; /* VK_FORMAT_R8G8B8A8_UNORM */
+	createInfo.baseWidth = 2;
+	createInfo.baseHeight = 2;
+	createInfo.baseDepth = 1;
+	createInfo.numDimensions = 2;
+	createInfo.numLevels = 1;
+	createInfo.numLayers = 1;
+	createInfo.numFaces = 1;
+
+	ktxTexture2* out_tex = NULL;
+	KTX_error_code res = ktxTexture2_Create(
+	    &createInfo, KTX_TEXTURE_CREATE_ALLOC_STORAGE, &out_tex);
+	TEST_ASSERT_EQUAL_INT(KTX_SUCCESS, res);
+
+	uint8_t src_pixels[16] = {0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22,
+	                          0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+	                          0x99, 0x00, 0xAA, 0xFF};
+
+	ktxTexture_SetImageFromMemory((ktxTexture*)out_tex, 0, 0, 0, src_pixels,
+	                              sizeof(src_pixels));
+	ktxTexture_WriteToNamedFile((ktxTexture*)out_tex, dummy_file);
+	ktxTexture_Destroy((ktxTexture*)out_tex);
+
+	AssetHandle handle =
+	    make_test_handle(dummy_file, ASSET_TYPE_TEXTURE_KTX);
+	TEST_ASSERT_TRUE(async_loader_request(loader, &handle));
+
+	AsyncRequest req = {0};
+	bool waiting = false;
+	for (int i = 0; i < 50; ++i) {
+		if (async_loader_poll(loader, &req) &&
+		    req.state == ASYNC_WAITING_FOR_PBO) {
+			waiting = true;
+			break;
+		}
+	subsys_lock_retry:
+		sleep_ms(10);
+	}
+
+	TEST_ASSERT_TRUE_MESSAGE(waiting, "Le loader devrait attendre le PBO");
+	TEST_ASSERT_EQUAL_INT(ASSET_TYPE_TEXTURE_KTX, req.resource_type);
+	TEST_ASSERT_EQUAL_UINT64(16, req.required_pbo_size);
+
+	uint8_t dummy_pbo[16] = {0};
+	async_loader_provide_pbo(loader, dummy_pbo, 999);
+
+	bool ready = false;
+	for (int i = 0; i < 50; ++i) {
+		if (async_loader_poll(loader, &req) &&
+		    req.state == ASYNC_READY) {
+			ready = true;
+			break;
+		}
+		sleep_ms(10);
+	}
+
+	TEST_ASSERT_TRUE_MESSAGE(
+	    ready, "Le loader devrait passer en ASYNC_READY après la copie");
+
+	TEST_ASSERT_EQUAL_UINT8_ARRAY(src_pixels, dummy_pbo, 16);
+
+	remove(dummy_file);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_AsyncLoader_RequestAndPollSuccess);
 	RUN_TEST(test_AsyncLoader_HandleLoadFailure);
+	RUN_TEST(test_AsyncLoader_TaggedUnion_STB);
+	RUN_TEST(test_AsyncLoader_TaggedUnion_KTX_Routing);
+	RUN_TEST(test_AsyncLoader_PerformConversion_KTX);
 	return UNITY_END();
 }

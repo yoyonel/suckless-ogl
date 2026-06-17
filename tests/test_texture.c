@@ -99,7 +99,9 @@ void test_texture_integration_success(void)
 	memcpy(mapped, half_data, (size_t)pbo_size);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-	GLuint tex = texture_upload_hdr_from_pbo(pbo, mapped, width, height, 0);
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, mapped, width, height, 0,
+	                                         GL_RGBA16F, GL_RGBA,
+	                                         GL_HALF_FLOAT, false, 0);
 	glDeleteBuffers(1, &pbo);
 	free(data);
 	free(half_data);
@@ -140,7 +142,9 @@ void test_texture_upload_hdr_properties(void)
 	memcpy(mapped, half_data, (size_t)pbo_size);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-	GLuint tex = texture_upload_hdr_from_pbo(pbo, mapped, width, height, 0);
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, mapped, width, height, 0,
+	                                         GL_RGBA16F, GL_RGBA,
+	                                         GL_HALF_FLOAT, false, 0);
 	glDeleteBuffers(1, &pbo);
 	free(data);
 	free(half_data);
@@ -184,6 +188,26 @@ void test_texture_upload_hdr_properties(void)
 	TEST_ASSERT_EQUAL(GL_CLAMP_TO_EDGE, wrap_t);
 
 	glBindTexture(GL_TEXTURE_2D, INVALID_TEX);
+	glDeleteTextures(DELETE_COUNT, &tex);
+}
+
+void test_Texture_upload_respects_provided_formats_realgl(void)
+{
+	// On définit un format différent de RGBA16F pour tester la flexibilité
+	// Utilisons RGBA8 par exemple
+	GLuint tex = texture_upload_hdr_from_pbo(
+	    0, NULL, 64, 64, 0, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, false, 0);
+
+	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	GLint internal_fmt = 0;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, TEX_LEVEL_0,
+	                         GL_TEXTURE_INTERNAL_FORMAT, &internal_fmt);
+
+	// Assert que le format interne est bien celui qu'on a demandé
+	TEST_ASSERT_EQUAL(GL_RGBA8, internal_fmt);
+
 	glDeleteTextures(DELETE_COUNT, &tex);
 }
 

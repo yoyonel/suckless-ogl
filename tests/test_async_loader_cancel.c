@@ -1,9 +1,11 @@
 // tests/test_async_loader_cancel.c
+#include "asset_manager.h"
 #define _POSIX_C_SOURCE 200809L
 #include "async_loader.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <unity.h>
 
@@ -18,6 +20,16 @@ static void sleep_ms(long milliseconds)
 	req.tv_nsec =
 	    (milliseconds % MS_MULTIPLIER) * MS_MULTIPLIER * MS_MULTIPLIER;
 	nanosleep(&req, NULL);
+}
+
+/* Helper pour forger un handle dans les tests sans dépendre de io/fs */
+static AssetHandle make_test_handle(const char* path, AssetType type)
+{
+	AssetHandle asset_handler = {0};
+	strncpy(asset_handler.full_path, path,
+	        sizeof(asset_handler.full_path) - 1);
+	asset_handler.type = type;
+	return asset_handler;
 }
 
 void setUp(void)
@@ -42,7 +54,9 @@ void tearDown(void)
 void test_cancel_request(void)
 {
 	// 1. Submit request
-	bool accepted = async_loader_request(loader, TEMP_FILENAME);
+	AssetHandle handle =
+	    make_test_handle(TEMP_FILENAME, ASSET_TYPE_TEXTURE_STB);
+	bool accepted = async_loader_request(loader, &handle);
 	TEST_ASSERT_TRUE(accepted);
 
 	// 2. Wait until it reaches ASYNC_WAITING_FOR_PBO
@@ -95,14 +109,17 @@ void test_cancel_request(void)
 	// So we wait a bit for worker to process cancellation
 	sleep_ms(50);
 
-	// Now polling should return false (because it was failed/cancelled)
-	// and internal state should be IDLE.
-	AsyncRequest dummy_req;
+	// Now polling should return true to notify the caller of the event,
+	// and the request state should explicitly be ASYNC_FAILED.
+	AsyncRequest dummy_req = {0};
 	bool res = async_loader_poll(loader, &dummy_req);
-	TEST_ASSERT_FALSE(res);
+	TEST_ASSERT_TRUE_MESSAGE(
+	    res, "Le poll doit signaler l'événement d'annulation/échec");
+	TEST_ASSERT_EQUAL_INT(ASYNC_FAILED, dummy_req.state);
 
 	// 5. Verify we can submit a new request
-	accepted = async_loader_request(loader, TEMP_FILENAME);
+	handle = make_test_handle(TEMP_FILENAME, ASSET_TYPE_TEXTURE_STB);
+	accepted = async_loader_request(loader, &handle);
 	TEST_ASSERT_TRUE_MESSAGE(
 	    accepted, "Should be able to submit new request after cancel");
 }

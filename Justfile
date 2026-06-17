@@ -56,6 +56,63 @@ default:
     @just --list
 
 # =============================================================================
+# KTX Viewer (outil standalone, build ULTRA-RAPIDE)
+# =============================================================================
+
+ktx_viewer_build_dir := "build-ktx-viewer"
+ktx_viewer_asset     := "assets/textures/hdr/axis_test.ktx2"
+
+# Configure le build autonome du viewer KTX2 (CMake minimal, sans FetchContent)
+# Pré-requis : just build doit avoir été exécuté au moins une fois pour que
+# build/_deps/glad-build/ soit disponible.
+configure-ktx-viewer:
+    @{{ distrobox }} cmake -G "Unix Makefiles" \
+        -B {{ ktx_viewer_build_dir }} \
+        -S cmake/ktx_viewer \
+        -DCMAKE_BUILD_TYPE=Debug
+
+# Compile uniquement le binaire ktx_viewer (sans reconstruire l'app principale)
+build-ktx-viewer:
+    @if [ ! -d {{ ktx_viewer_build_dir }} ]; then just configure-ktx-viewer; fi
+    @{{ distrobox }} cmake --build {{ ktx_viewer_build_dir }} --target ktx_viewer --parallel {{ nprocs }}
+
+# Exécute le viewer sur l'asset par défaut (ou un asset fourni en argument)
+# Usage :  just run-ktx-viewer
+#          just run-ktx-viewer assets/textures/hdr/axis_test_uastc.ktx2
+run-ktx-viewer asset="assets/textures/hdr/axis_test.ktx2": build-ktx-viewer
+    @{{ ktx_viewer_build_dir }}/ktx_viewer {{ asset }}
+
+# Supprime uniquement le répertoire de build du viewer KTX
+clean-ktx-viewer:
+    @rm -rf {{ ktx_viewer_build_dir }}
+    @echo "✓ build-ktx-viewer supprimé"
+
+# Lance clang-tidy sur ktx_viewer.c uniquement, en utilisant le compile_commands
+# du build isolé (build-ktx-viewer/). Le flag --warnings-as-errors='*' est
+# déjà dans .clang-tidy (WarningsAsErrors: '*').
+# Pré-requis : configure-ktx-viewer doit avoir été lancé avec EXPORT_COMPILE_COMMANDS=ON.
+lint-ktx-viewer:
+    @if [ ! -f {{ ktx_viewer_build_dir }}/compile_commands.json ]; then \
+        {{ distrobox }} cmake -G "Unix Makefiles" \
+            -B {{ ktx_viewer_build_dir }} \
+            -S cmake/ktx_viewer \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON > /dev/null; \
+    fi
+    @echo "→ clang-tidy sur src/ktx_viewer.c ..."
+    @{{ distrobox }} clang-tidy \
+        -p {{ ktx_viewer_build_dir }} \
+        --config-file=.clang-tidy \
+        src/ktx_viewer.c
+    @echo "✓ clang-tidy ktx_viewer : OK"
+
+# Formate ktx_viewer.c et utils.c avec clang-format (in-place)
+format-ktx-viewer:
+    @echo "→ clang-format sur src/ktx_viewer.c ..."
+    @{{ distrobox }} clang-format -i src/ktx_viewer.c
+    @echo "✓ clang-format ktx_viewer : OK"
+
+# =============================================================================
 # Build & Run Standard
 # =============================================================================
 
