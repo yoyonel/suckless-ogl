@@ -2,6 +2,7 @@
 
 #include "app.h"
 #include "app_settings.h"
+#include "asset_manager.h"
 #include "async_loader.h"
 #include "gl_common.h"
 #include "ibl_coordinator.h"
@@ -26,40 +27,51 @@ int env_manager_load(EnvManager* mgr, AsyncLoader* loader, const char* filename)
 		return 0;
 	}
 
-	char path[MAX_PATH_LENGTH];
-	if (safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
-	                  filename) < 0) {
-		LOG_ERROR("suckless-ogl.env", "Filename too long: %s",
-		          filename);
-		return false;
+	AssetHandle handle;
+	/* On demande à l'Asset Manager de résoudre le chemin complet et le type
+	 */
+	if (!asset_resolve_path(ASSET_DIR_HDR, filename, &handle)) {
+		LOG_ERROR(
+		    "suckless-ogl.env",
+		    "Unsupported asset format or path resolution failed: %s",
+		    filename);
+		return 0;
 	}
 
-	LOG_INFO("suckless-ogl.env", "Queuing async load for: %s", path);
-	if (async_loader_request(loader, path)) {
+	LOG_INFO("suckless-ogl.env", "Queuing async load for: %s (Type: %d)",
+	         handle.full_path, handle.type);
+
+	/* On passe le handle typé plutôt que le chemin */
+	if (async_loader_request(loader, &handle)) {
 		mgr->env_map_loading = true;
 		return 1;
 	}
+
 	LOG_WARNING("suckless-ogl.env",
-	            "Async load request failed/ignored for: %s", path);
+	            "Async load request failed/ignored for: %s",
+	            handle.full_path);
 	return 0;
 }
 
 void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
                                       IBLCoordinator* ibl)
 {
-	if (mgr->env_map_loading_step == 0) {
+	if (mgr->env_map_loading_step == EML_STOP) {
 		return;
 	}
 
 	AsyncRequest* req = &mgr->current_env_req;
 
-	if (mgr->env_map_loading_step == 1) {
-		/* Step 1: Upload texture to GPU (No Mipmaps) */
-		if (!req->half_data && !req->pbo_mapped_ptr) {
+	if (mgr->env_map_loading_step == EML_UPLOAD_HDR_FROM_PBO) {
+		/* Étape 1 : Transfert de la texture vers le GPU (Sans Mipmaps)
+		 * Grâce aux backends d'implémentation, req->pbo_mapped_ptr
+		 * contient toujours les données décodées finales (qu'il
+		 * s'agisse d'un vrai PBO ou d'un fallback CPU). */
+		if (!req->pbo_mapped_ptr) {
 			LOG_ERROR("suckless-ogl.env",
 			          "Async request data is NULL!");
 			mgr->env_map_loading = false;
-			mgr->env_map_loading_step = 0;
+			mgr->env_map_loading_step = EML_STOP;
 			return;
 		}
 
@@ -67,32 +79,35 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 		         "Finalizing environment load (Step 1/3): Upload...");
 		mgr->pending_env_tex = texture_upload_hdr_from_pbo(
 		    req->pbo_id, req->pbo_mapped_ptr, req->width, req->height,
-		    *recycled_hdr_tex);
+		    *recycled_hdr_tex,
+		    req->gl_internal_format,  // ex: GL_RGBA16F ou GL_RGB16F
+		    req->gl_format,           // ex: GL_RGBA ou GL_RGB
+		    req->gl_type,             // ex: GL_HALF_FLOAT
+		    req->is_compressed,       // ex: false
+		    (GLsizei)req->required_pbo_size);
 
 		if (mgr->pending_env_tex != 0) {
 			*recycled_hdr_tex = 0;
 		}
 
-		/* If this was a CPU fallback (malloc), free the buffer now */
+		/* Si pbo_id == 0, cela signifie qu'un fallback malloc CPU a été
+		 * utilisé. On libère la mémoire ici sur le thread principal
+		 * après l'upload. */
 		if (req->pbo_id == 0 && req->pbo_mapped_ptr != NULL) {
 			free(req->pbo_mapped_ptr);
 			req->pbo_mapped_ptr = NULL;
 		}
 
-		if (req->half_data) {
-			free(req->half_data);
-			req->half_data = NULL;
-		}
+		mgr->env_map_loading_step = EML_MIPMAP; /* Prochaine frame */
 
-		mgr->env_map_loading_step = 2; /* Next frame */
-
-	} else if (mgr->env_map_loading_step == 2) {
-		/* Step 2: Generate Mipmaps */
+	} else if (mgr->env_map_loading_step == EML_MIPMAP) {
+		/* Étape 2 : Génération de la chaîne de Mipmaps */
 		LOG_INFO("suckless-ogl.env",
 		         "Finalizing environment load (Step 2/3): Mipmaps...");
 		if (mgr->pending_env_tex) {
 			texture_generate_hdr_mipmap(mgr->pending_env_tex);
-			mgr->env_map_loading_step = 3; /* Next frame */
+			mgr->env_map_loading_step =
+			    EML_START_IBL; /* Prochaine frame */
 		} else {
 			LOG_ERROR("suckless-ogl.env",
 			          "Failed to create texture from HDR data!");
@@ -100,8 +115,8 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 			mgr->env_map_loading_step = 0;
 		}
 
-	} else if (mgr->env_map_loading_step == 3) {
-		/* Step 3: Start IBL Coordinator */
+	} else if (mgr->env_map_loading_step == EML_START_IBL) {
+		/* Étape 3 : Lancement du traitement IBL synchrone étalé */
 		LOG_INFO(
 		    "suckless-ogl.env",
 		    "Finalizing environment load (Step 3/3): Start IBL...");
@@ -111,19 +126,18 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 			mgr->pending_env_tex = 0;
 		}
 		mgr->env_map_loading = false;
-		mgr->env_map_loading_step = 0;
+		mgr->env_map_loading_step = EML_STOP;
 	}
 }
 
 int env_manager_trigger_transition(EnvManager* mgr, AsyncLoader* loader,
                                    const char* filename)
 {
-	/* Don't trigger if already fading or loading */
+	/* Évite les doubles transitions si déjà en chargement */
 	if (mgr->transition_state != TRANSITION_IDLE) {
 		return 0;
 	}
 
-	/* Start loading in background */
 	mgr->transition_state = TRANSITION_LOADING;
 	mgr->transition_alpha = 0.0F;
 
@@ -151,15 +165,13 @@ static void finalize_ibl_swap(Scene* scene, PostProcess* postproc,
 {
 	postprocess_set_exposure_target(postproc, threshold);
 
-	/* Recycle the old HDR texture instead of deleting it */
+	/* Recyclage de l'ancienne texture HDR pour éviter les allocations
+	 * coûteuses */
 	if (scene->gpu->hdr_texture) {
 		if (scene->gpu->recycled_hdr_tex) {
-			/* If we already have one (weird edge case),
-			 * delete the old one */
 			glDeleteTextures(1, &scene->gpu->recycled_hdr_tex);
 		}
 		scene->gpu->recycled_hdr_tex = scene->gpu->hdr_texture;
-		/* scene->gpu->hdr_texture will be overwritten below */
 	}
 
 	if (scene->gpu->spec_prefiltered_tex) {
@@ -201,12 +213,9 @@ static void handle_ibl_done_loading_state(EnvManager* mgr, Scene* scene,
                                           int height)
 {
 	if (mgr->env_transition_mode == ENV_TRANSITION_BLACK_SCREEN) {
-		/* Black Screen mode: Start fading out to black.
-		 * Do NOT consume results yet (wait for fade out). */
 		mgr->transition_state = TRANSITION_FADE_OUT;
 		mgr->transition_alpha = 0.0F;
 	} else {
-		/* Crossfade mode: Capture, swap and fade in */
 		GLuint hdr_tex = 0;
 		GLuint spec_tex = 0;
 		GLuint irr_tex = 0;
@@ -260,7 +269,6 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
 			}
 			mgr->transition_alpha = 1.0F;
 
-			/* BLACK SCREEN SWAP HAPPENS HERE */
 			GLuint hdr_tex = 0;
 			GLuint spec_tex = 0;
 			GLuint irr_tex = 0;
@@ -304,11 +312,9 @@ void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene)
 		if (mgr->env_transition_mode == ENV_TRANSITION_CROSSFADE &&
 		    scene->gpu->transition_snapshot_tex != 0 &&
 		    mgr->transition_state == TRANSITION_FADE_IN) {
-			/* Crossfade: Bind snapshot texture */
 			glBindTexture(GL_TEXTURE_2D,
 			              scene->gpu->transition_snapshot_tex);
 		} else {
-			/* Black Screen / Initial Load: Bind dummy black */
 			glBindTexture(GL_TEXTURE_2D,
 			              scene->gpu->dummy_black_tex);
 		}
@@ -322,9 +328,6 @@ void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene)
 	}
 }
 
-/* --- Subsystem descriptor (Phase 1: alloc + defaults) --- */
-
-/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int env_mgr_subsys_init(App* app)
 {
 	app->env_mgr =
@@ -341,7 +344,6 @@ int env_mgr_subsys_init(App* app)
 	return 1;
 }
 
-/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void env_mgr_subsys_cleanup(App* app)
 {
 	if (app->env_mgr) {

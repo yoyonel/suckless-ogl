@@ -1,18 +1,14 @@
 #include "async_loader.h"
 
+#include "async_backend.h"
 #include "log.h"
 #include "perf_timer.h"
 #include "profiler.h"
-#include "simd_utils.h"
-#include "texture.h"
 #include "tracy_manager.h"
 #include "utils.h"
 #include <pthread.h>
-#include <stb_image.h>
-#include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
-
-enum { MSG_BUF_SIZE = 128 };
 
 struct AsyncLoader {
 	AsyncRequest current_request;
@@ -29,120 +25,187 @@ struct AsyncLoader {
 	tracy_manager_async_transition(loader->tracy_mgr, s)
 #define cleanup_tracy_states() tracy_manager_async_end(loader->tracy_mgr)
 
-static bool async_load_data(const char* path, float** out_data, int* width,
-                            int* height, int* channels)
-{
-	PROFILE_ZONE(work_ctx, "I/O & Decoding");
-	PROFILE_MESSAGE(path, strlen(path));
-
-	PerfTimer disk_timer;
-	perf_timer_start(&disk_timer);
-	*out_data = texture_load_pixels(path, width, height, channels);
-
-	double load_ms = perf_timer_elapsed_ms(&disk_timer);
-	char msg[MSG_BUF_SIZE];
-	int res = safe_snprintf(msg, sizeof(msg), "Load: %.2f ms", load_ms);
-	if (res >= 0) {
-		PROFILE_MESSAGE(msg, (size_t)res);
-	}
-	PROFILE_ZONE_END(work_ctx);
-	return *out_data != NULL;
-}
-
+/**
+ * @brief Performs the actual format conversion (e.g., float -> half float) into
+ * the PBO.
+ *
+ * Runs the format-specific backend conversion. Since writing to mapped PBO
+ * memory can be slow, the request mutex is released during the conversion
+ * process to keep the main thread from stalling.
+ *
+ * @param loader Pointer to the AsyncLoader instance.
+ *
+ * Concurrency constraints:
+ * - PRECONDITION: request_mutex MUST be HELD on entry.
+ * - POSTCONDITION: request_mutex is HELD on exit.
+ * - Mutex is temporarily released during backend->convert().
+ * - Expected state on entry: ASYNC_CONVERTING.
+ * - State on exit: ASYNC_READY.
+ */
 static void async_perform_conversion(AsyncLoader* loader)
 {
-	/* Unlock mutex to allow main thread to poll without blocking! */
-	float* src_data = loader->current_request.float_data;
+	/* Extract request info while holding lock (lock is held on entry) */
+	AssetType rtype = loader->current_request.resource_type;
 	void* dst_ptr = loader->current_request.pbo_mapped_ptr;
-	int width = loader->current_request.width;
-	int height = loader->current_request.height;
+	const AsyncBackendInterface* backend = async_backend_get(rtype);
 
+	if (!backend || !backend->convert) {
+		pthread_mutex_unlock(&loader->request_mutex);
+		return;
+	}
+
+	/* Relâchement du verrou pour le transfert lourd de données (I/O ou
+	 * conversion) afin que le thread principal continue à rendre les frames
+	 * sans saccade. */
 	pthread_mutex_unlock(&loader->request_mutex);
 
-	PROFILE_ZONE(conv_ctx, "Float->Half Convert");
-	size_t pixel_count = (size_t)width * (size_t)height * 4;
+	backend->convert(dst_ptr, &loader->current_request);
 
-	/* Perform conversion directly into mapped PBO memory */
-	if (dst_ptr && src_data) {
-		convert_float_to_half_simd(src_data, (uint16_t*)dst_ptr,
-		                           pixel_count);
-	}
-
-	/* Free CPU float data */
-	if (src_data) {
-		stbi_image_free(src_data);
-	}
-
-	PROFILE_ZONE_END(conv_ctx);
-	/* Re-acquire mutex to update state */
 	pthread_mutex_lock(&loader->request_mutex);
 
-	loader->current_request.float_data = NULL; /* Marked as freed */
+	/* Common End State: La conversion est terminée, la ressource est prête
+	 * à être uploadée */
 	loader->current_request.state = ASYNC_READY;
 	transition_tracy_state(ASYNC_READY);
 	LOG_INFO("suckless-ogl.async", "Finished loading & converting: %s",
 	         loader->current_request.path);
 }
 
-static void async_handle_io(AsyncLoader* loader, char* path_to_load)
+/**
+ * @brief Destroys backend-specific payload allocations.
+ *
+ * Invokes the active format backend's cleanup function to free CPU allocations
+ * loaded during the IO phase.
+ *
+ * @param loader Pointer to the AsyncLoader instance.
+ *
+ * Concurrency constraints:
+ * - PRECONDITION: request_mutex MUST be HELD on entry.
+ * - POSTCONDITION: request_mutex is HELD on exit.
+ */
+static void async_cleanup_payload(AsyncLoader* loader)
 {
-	int width = 0;
-	int height = 0;
-	int channels = 0;
-	float* data = NULL;
-
-	/* 1. Heavy I/O */
-	if (!async_load_data(path_to_load, &data, &width, &height, &channels)) {
-		pthread_mutex_lock(&loader->request_mutex);
-		loader->current_request.state = ASYNC_FAILED;
-		transition_tracy_state(ASYNC_FAILED);
-		LOG_ERROR("suckless-ogl.async", "Failed loading: %s",
-		          path_to_load);
-		return;
+	/* Le mutex est supposé être verrouillé ici */
+	const AsyncBackendInterface* backend =
+	    async_backend_get(loader->current_request.resource_type);
+	if (backend && backend->cleanup) {
+		backend->cleanup(&loader->current_request);
 	}
+}
 
-	/* 2. Update state to WAITING_FOR_PBO */
-	pthread_mutex_lock(&loader->request_mutex);
-	loader->current_request.float_data = data;
-	loader->current_request.width = width;
-	loader->current_request.height = height;
-	loader->current_request.channels = channels;
-	loader->current_request.state = ASYNC_WAITING_FOR_PBO;
+/**
+ * @brief Worker thread wait loop for PBO allocation from the main thread.
+ *
+ * Blocks the worker thread until the main thread allocates a PBO, maps it,
+ * and calls async_loader_provide_pbo() (which transitions state to
+ * ASYNC_CONVERTING and signals request_cond).
+ *
+ * @param loader Pointer to the AsyncLoader instance.
+ *
+ * Concurrency constraints:
+ * - PRECONDITION: request_mutex MUST be HELD on entry.
+ * - POSTCONDITION: request_mutex is HELD on exit.
+ * - Temporarily releases the mutex during pthread_cond_wait().
+ * - Expected state on entry: ASYNC_WAITING_FOR_PBO.
+ * - State on exit: ASYNC_READY (success) or ASYNC_FAILED (cancel/shutdown).
+ */
+static void async_wait_and_convert(AsyncLoader* loader)
+{
+	/* Le mutex DOIT être verrouillé avant d'appeler cette fonction.
+	   La requête DOIT être dans l'état ASYNC_WAITING_FOR_PBO. */
 	transition_tracy_state(ASYNC_WAITING_FOR_PBO);
 
-	/* 3. Wait for PBO */
+	/* 1. Wait for PBO to be mapped and provided by the main thread.
+	 * We use a while loop to protect against spurious wakeups. */
 	while (loader->running &&
 	       loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
 		pthread_cond_wait(&loader->request_cond,
 		                  &loader->request_mutex);
 	}
 
-	/* 4. Convert or Clean up */
+	/* 2. Convert or Clean up */
 	if (!loader->running ||
 	    loader->current_request.state != ASYNC_CONVERTING) {
-		/* Cancelled or failed */
-		if (loader->current_request.float_data) {
-			stbi_image_free(loader->current_request.float_data);
-			loader->current_request.float_data = NULL;
-		}
+		/* Cancelled or failed during wait */
+		async_cleanup_payload(loader);
 		loader->current_request.state = ASYNC_FAILED;
 		transition_tracy_state(ASYNC_FAILED);
+		/* Le unlock final est géré par la boucle du worker */
 	} else {
-		/* 5. Convert (Mutex is unlocked inside) */
+		/* Convert (async_perform_conversion gère son propre
+		 * unlock/lock) */
 		async_perform_conversion(loader);
 	}
 }
 
+/**
+ * @brief Heavy-lifting disk IO loading phase.
+ *
+ * Loads the asset payload from disk into temporary CPU memory. This is executed
+ * entirely outside the request_mutex to keep disk latency from blocking the
+ * main thread.
+ *
+ * @param loader Pointer to the AsyncLoader instance.
+ * @param path_to_load Absolute or relative path to the asset on disk.
+ *
+ * Concurrency constraints:
+ * - PRECONDITION: request_mutex MUST NOT be held on entry (called without
+ * lock).
+ * - POSTCONDITION: request_mutex is HELD on exit.
+ * - State on entry: ASYNC_LOADING.
+ * - State on exit: ASYNC_WAITING_FOR_PBO (success) or ASYNC_FAILED (failure).
+ */
+static void async_handle_io(AsyncLoader* loader, const char* path_to_load)
+{
+	const AsyncBackendInterface* backend =
+	    async_backend_get(loader->current_request.resource_type);
+
+	if (!backend || !backend->load) {
+		LOG_ERROR("suckless-ogl.async",
+		          "No backend found for asset type: %d",
+		          loader->current_request.resource_type);
+		pthread_mutex_lock(&loader->request_mutex);
+		loader->current_request.state = ASYNC_FAILED;
+		transition_tracy_state(ASYNC_FAILED);
+		return;
+	}
+
+	/* Phase de chargement lourd HORS du mutex pour éviter de figer le
+	 * thread de rendu */
+	bool success = backend->load(path_to_load, &loader->current_request);
+
+	pthread_mutex_lock(&loader->request_mutex);
+	if (!success) {
+		loader->current_request.state = ASYNC_FAILED;
+		transition_tracy_state(ASYNC_FAILED);
+		LOG_ERROR("suckless-ogl.async", "Backend failed loading: %s",
+		          path_to_load);
+		return;
+	}
+
+	/* Le chargement I/O CPU a réussi. Nous passons à l'attente du PBO. */
+	loader->current_request.state = ASYNC_WAITING_FOR_PBO;
+	async_wait_and_convert(loader);
+}
+
+/**
+ * @brief Thread entry point for the background worker.
+ *
+ * Handles the main execution loop, waiting passively for submitted requests,
+ * coordinating IO and conversion task dispatches.
+ *
+ * @param arg Opaque pointer to the AsyncLoader instance.
+ * @return NULL.
+ */
 static void* async_worker_func(void* arg)
 {
 	AsyncLoader* loader = (AsyncLoader*)arg;
-
 	PROFILE_THREAD_NAME("Async Loader");
 
 	pthread_mutex_lock(&loader->request_mutex);
 	while (loader->running) {
+		/* Wait passively for new work to be submitted */
 		while (loader->running && !loader->has_pending_work) {
-			PROFILE_MESSAGE_L("Waiting for work...");
 			pthread_cond_wait(&loader->request_cond,
 			                  &loader->request_mutex);
 		}
@@ -174,7 +237,9 @@ static void* async_worker_func(void* arg)
 			has_work = true;
 		}
 
-		/* Unlock to perform heavy work */
+		/* Unlock the mutex while executing heavy work (I/O, decryption,
+		 * format decoding) so the main thread remains completely
+		 * non-blocking. */
 		pthread_mutex_unlock(&loader->request_mutex);
 
 		if (has_work) {
@@ -183,8 +248,8 @@ static void* async_worker_func(void* arg)
 			 * paths (success, failure, cancel). No re-lock needed.
 			 */
 		} else {
-			/* No work was dispatched, re-acquire for next
-			 * iteration */
+			/* No work was dispatched, re-acquire lock for the next
+			 * iteration check */
 			pthread_mutex_lock(&loader->request_mutex);
 		}
 		loader->has_pending_work = false;
@@ -195,24 +260,28 @@ static void* async_worker_func(void* arg)
 
 AsyncLoader* async_loader_create(struct TracyManager* mgr)
 {
+	/* Allocation dynamique du conteneur opaque du chargeur */
 	AsyncLoader* loader = (AsyncLoader*)calloc(1, sizeof(AsyncLoader));
 	if (!loader) {
-		LOG_ERROR("suckless-ogl.async", "Failed to allocate loader");
 		return NULL;
 	}
 
-	(void)safe_memset(&loader->current_request, sizeof(AsyncRequest), 0,
-	                  sizeof(AsyncRequest));
+	/* Initialisation de la requête dans un état inactif */
 	loader->current_request.state = ASYNC_IDLE;
 
+	/* Initialisation du mutex gérant tout l'automate d'états de la requête
+	 */
 	if (pthread_mutex_init(&loader->request_mutex, NULL) != 0) {
-		LOG_ERROR("suckless-ogl.async", "Mutex init failed");
 		free(loader);
 		return NULL;
 	}
 
+	/* Initialisation de la variable de condition pour l'attente passive
+	 * bidirectionnelle :
+	 * 1. Le worker attend qu'une tâche soit soumise ou qu'un PBO soit
+	 * fourni.
+	 * 2. La destruction ou l'annulation réveille le worker. */
 	if (pthread_cond_init(&loader->request_cond, NULL) != 0) {
-		LOG_ERROR("suckless-ogl.async", "Cond init failed");
 		pthread_mutex_destroy(&loader->request_mutex);
 		free(loader);
 		return NULL;
@@ -223,9 +292,9 @@ AsyncLoader* async_loader_create(struct TracyManager* mgr)
 	perf_timer_start(&loader->sys_timer);
 	transition_tracy_state(ASYNC_IDLE);
 
+	/* Création du thread d'arrière-plan */
 	if (pthread_create(&loader->worker_thread, NULL, async_worker_func,
 	                   loader) != 0) {
-		LOG_ERROR("suckless-ogl.async", "Thread creation failed");
 		loader->running = false;
 		pthread_cond_destroy(&loader->request_cond);
 		pthread_mutex_destroy(&loader->request_mutex);
@@ -233,7 +302,6 @@ AsyncLoader* async_loader_create(struct TracyManager* mgr)
 		return NULL;
 	}
 
-	LOG_INFO("suckless-ogl.async", "Async loader initialized.");
 	return loader;
 }
 
@@ -243,25 +311,25 @@ void async_loader_destroy(AsyncLoader* loader)
 		return;
 	}
 
+	/* Signalement d'arrêt au thread worker */
 	if (loader->running) {
 		pthread_mutex_lock(&loader->request_mutex);
 		loader->running = false;
+		/* Réveille le worker s'il attendait du travail ou un PBO */
 		pthread_cond_broadcast(&loader->request_cond);
 		pthread_mutex_unlock(&loader->request_mutex);
 
+		/* Attente bloquante de la fin du worker thread.
+		 * Cela garantit que le worker n'écrira plus jamais dans la
+		 * mémoire et qu'il a quitté sa boucle principale. */
 		pthread_join(loader->worker_thread, NULL);
 	}
 
-	/* Cleanup any pending request data that wasn't consumed */
-	if (loader->current_request.half_data) {
-		free(loader->current_request.half_data);
-		loader->current_request.half_data = NULL;
-	}
-	if (loader->current_request.float_data) {
-		stbi_image_free(loader->current_request.float_data);
-		loader->current_request.float_data = NULL;
-	}
+	/* Nettoyage final sécurisé des allocations résiduelles du backend de
+	 * format */
+	async_cleanup_payload(loader);
 
+	/* Libération des primitives de synchronisation */
 	pthread_cond_destroy(&loader->request_cond);
 	pthread_mutex_destroy(&loader->request_mutex);
 	cleanup_tracy_states();
@@ -270,98 +338,81 @@ void async_loader_destroy(AsyncLoader* loader)
 	LOG_INFO("suckless-ogl.async", "Async loader destroyed.");
 }
 
-bool async_loader_request(AsyncLoader* loader, const char* path)
+bool async_loader_request(AsyncLoader* loader, const AssetHandle* asset)
 {
-	PROFILE_ZONE(req_ctx, "async_loader_request");
-	PROFILE_MESSAGE(path, path ? strlen(path) : 0);
-
-	if (!loader || !path) {
-		PROFILE_ZONE_END(req_ctx);
+	if (!loader || !asset) {
 		return false;
 	}
-
 	bool accepted = false;
-	PROFILE_ZONE(mtx_ctx, "Request Mutex Lock");
-	pthread_mutex_lock(&loader->request_mutex);
-	PROFILE_ZONE_END(mtx_ctx);
 
-	/* Only accept if idle or failed (retry) */
+	/* Verrouillage pour inspecter et modifier l'état de la requête */
+	pthread_mutex_lock(&loader->request_mutex);
+
+	/* Invariant : On n'accepte une nouvelle tâche que si le loader est
+	 * inactif ou a fini (READY / FAILED) */
 	if (loader->current_request.state == ASYNC_IDLE ||
 	    loader->current_request.state == ASYNC_FAILED ||
 	    loader->current_request.state == ASYNC_READY) {
-		/* Cleanup previous result if it wasn't consumed */
-		if (loader->current_request.half_data) {
-			free(loader->current_request.half_data);
-			loader->current_request.half_data = NULL;
-		}
-		if (loader->current_request.float_data) {
-			stbi_image_free(loader->current_request.float_data);
-			loader->current_request.float_data = NULL;
-		}
+		/* Libère les structures de la requête précédente si nécessaire
+		 */
+		async_cleanup_payload(loader);
 
 		if (safe_snprintf(loader->current_request.path,
 		                  sizeof(loader->current_request.path), "%s",
-		                  path) < 0) {
-			LOG_ERROR("suckless-ogl.async", "Path too long: %s",
-			          path);
-			loader->current_request.state = ASYNC_IDLE;
-			transition_tracy_state(ASYNC_IDLE);
-		} else {
+		                  asset->full_path) >= 0) {
+			loader->current_request.resource_type = asset->type;
 			loader->current_request.state = ASYNC_PENDING;
 			loader->current_request.submission_time =
 			    perf_timer_elapsed_ms(&loader->sys_timer);
 			transition_tracy_state(ASYNC_PENDING);
 			loader->has_pending_work = true;
+
+			/* Réveille le worker qui attendait passivement du
+			 * travail */
 			pthread_cond_signal(&loader->request_cond);
 			accepted = true;
 		}
 	}
-
 	pthread_mutex_unlock(&loader->request_mutex);
-	PROFILE_ZONE_END(req_ctx);
 	return accepted;
 }
 
 bool async_loader_poll(AsyncLoader* loader, AsyncRequest* out_req)
 {
-	PROFILE_ZONE(poll_ctx, "async_loader_poll");
 	if (!loader || !out_req) {
-		PROFILE_ZONE_END(poll_ctx);
 		return false;
 	}
-
 	bool result = false;
-	PROFILE_ZONE(mtx_ctx, "Poll Mutex Lock");
+
+	/* Verrouillage requis car l'automate d'états est accédé en
+	 * lecture/écriture par les deux threads */
 	pthread_mutex_lock(&loader->request_mutex);
-	PROFILE_ZONE_END(mtx_ctx);
 
 	if (loader->current_request.state == ASYNC_READY ||
 	    loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
-		/* Copy result to caller */
+		/* Copie de l'état actuel pour le thread principal */
 		*out_req = loader->current_request;
 
+		/* Si READY, la requête a été entièrement traitée. On repasse
+		 * immédiatement à IDLE pour que le loader puisse accepter une
+		 * nouvelle requête. Le cycle de vie des PBO est maintenant sous
+		 * la responsabilité du thread de rendu principal. */
 		if (loader->current_request.state == ASYNC_READY) {
-			/* Only clear if fully ready */
 			loader->current_request.state = ASYNC_IDLE;
 			transition_tracy_state(ASYNC_IDLE);
-			loader->current_request.half_data =
-			    NULL; /* Ownership transferred */
+			loader->current_request.backend_data = NULL;
 			loader->current_request.pbo_mapped_ptr = NULL;
 		}
-		/* If WAITING_FOR_PBO, we just return true with state,
-		   but don't clear internal state yet. Main thread must act. */
-
 		result = true;
 	} else if (loader->current_request.state == ASYNC_FAILED) {
-		/* Failed loading, just reset */
-		LOG_ERROR("suckless-ogl.async", "Async load failed for: %s",
-		          loader->current_request.path);
+		/* En cas d'échec, on signale l'erreur au thread principal et on
+		 * réinitialise l'état */
+		*out_req = loader->current_request;
 		loader->current_request.state = ASYNC_IDLE;
 		transition_tracy_state(ASYNC_IDLE);
+		result = true;
 	}
-
 	pthread_mutex_unlock(&loader->request_mutex);
-	PROFILE_ZONE_END(poll_ctx);
 	return result;
 }
 
@@ -371,26 +422,21 @@ void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
 	if (!loader) {
 		return;
 	}
-	PROFILE_ZONE(ctx, "async_loader_provide_pbo");
-	PROFILE_ZONE(mtx_ctx, "Provide PBO Mutex Lock");
 	pthread_mutex_lock(&loader->request_mutex);
-	PROFILE_ZONE_END(mtx_ctx);
 
+	/* Invariant : On ne fournit le PBO que si le worker l'attend activement
+	 */
 	if (loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
 		loader->current_request.pbo_mapped_ptr = mapped_ptr;
 		loader->current_request.pbo_id = pbo_id;
 		loader->current_request.state = ASYNC_CONVERTING;
 		transition_tracy_state(ASYNC_CONVERTING);
-		pthread_cond_signal(&loader->request_cond); /* Wake up worker */
-	} else {
-		LOG_ERROR("suckless-ogl.async",
-		          "Main thread provided PBO but loader not waiting "
-		          "(State: %d)",
-		          loader->current_request.state);
-	}
 
+		/* Réveille le worker bloqué dans pthread_cond_wait de
+		 * async_wait_and_convert */
+		pthread_cond_signal(&loader->request_cond);
+	}
 	pthread_mutex_unlock(&loader->request_mutex);
-	PROFILE_ZONE_END(ctx);
 }
 
 void async_loader_cancel(AsyncLoader* loader)
@@ -398,47 +444,36 @@ void async_loader_cancel(AsyncLoader* loader)
 	if (!loader) {
 		return;
 	}
-	PROFILE_ZONE(ctx, "async_loader_cancel");
-	PROFILE_ZONE(mtx_ctx, "Cancel Mutex Lock");
 	pthread_mutex_lock(&loader->request_mutex);
-	PROFILE_ZONE_END(mtx_ctx);
 
+	/* Invariant : L'annulation n'est possible que si le worker attend le
+	 * PBO. Si la conversion a commencé (ASYNC_CONVERTING), on ne peut plus
+	 * annuler de cette façon afin d'éviter les corruptions de mémoire PBO
+	 * en cours d'écriture. */
 	if (loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
-		/* Set state to FAILED to break the worker loop */
 		loader->current_request.state = ASYNC_FAILED;
 		transition_tracy_state(ASYNC_FAILED);
-		pthread_cond_signal(&loader->request_cond); /* Wake up worker */
-		LOG_INFO("suckless-ogl.async",
-		         "Request cancelled by main thread: %s",
-		         loader->current_request.path);
-	} else {
-		LOG_ERROR("suckless-ogl.async",
-		          "Attempted to cancel request but state is %d",
-		          loader->current_request.state);
-	}
 
+		/* Réveille le worker pour qu'il sorte de sa boucle d'attente et
+		 * procède au nettoyage */
+		pthread_cond_signal(&loader->request_cond);
+	}
 	pthread_mutex_unlock(&loader->request_mutex);
-	PROFILE_ZONE_END(ctx);
 }
 
-/* --- Subsystem descriptor (excluded from standalone tests) --- */
 #ifndef GL_COMMON_NO_GLFW
-
 #include "app.h"
 #include "app_profiling.h"
 
-/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int async_loader_subsys_init(App* app)
 {
 	app->async_loader = async_loader_create(&app->profiling->tracy_mgr);
 	return app->async_loader != NULL;
 }
 
-/* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 void async_loader_subsys_cleanup(App* app)
 {
 	async_loader_destroy(app->async_loader);
 	app->async_loader = NULL;
 }
-
-#endif /* GL_COMMON_NO_GLFW */
+#endif

@@ -139,7 +139,7 @@ void* texture_map_pbo(GLuint pbo_id, size_t size_bytes)
  *
  * @return true if width, height and format (GL_RGBA16F) all match.
  */
-static bool texture_matches_hdr(int width, int height)
+static bool texture_matches_hdr(int width, int height, GLuint expected_internal)
 {
 	int existing_w = 0;
 	int existing_h = 0;
@@ -150,8 +150,8 @@ static bool texture_matches_hdr(int width, int height)
 	                         &existing_h);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT,
 	                         &existing_fmt);
-	return (existing_w == width && existing_h == height &&
-	        existing_fmt == GL_RGBA16F) != 0;
+	return (bool)(existing_w == width && existing_h == height &&
+	              existing_fmt == (int)expected_internal);
 }
 
 GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex)
@@ -165,7 +165,9 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex)
 	/* If old_tex already matches, keep it — zero-cost reuse */
 	if (old_tex != 0) {
 		glBindTexture(GL_TEXTURE_2D, old_tex);
-		if (texture_matches_hdr(width, height)) {
+		/* Par défaut, on se base sur RGBA16F pour le prealloc s'il est
+		 * inconnu */
+		if (texture_matches_hdr(width, height, GL_RGBA16F)) {
 			glBindTexture(GL_TEXTURE_2D, 0);
 			LOG_INFO("suckless-ogl.texture",
 			         "Pre-alloc: reusing texture %u (%dx%d)",
@@ -200,7 +202,8 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex)
 
 static GLuint texture_reuse_or_create_hdr(int width, int height,
                                           GLuint reuse_tex_id, bool* is_reused,
-                                          int* levels_out)
+                                          int* levels_out,
+                                          GLuint expected_internal)
 {
 	GLuint tex = 0;
 	*is_reused = false;
@@ -216,7 +219,7 @@ static GLuint texture_reuse_or_create_hdr(int width, int height,
 	/* Attempt to reuse existing texture */
 	if (reuse_tex_id != 0) {
 		glBindTexture(GL_TEXTURE_2D, reuse_tex_id);
-		if (texture_matches_hdr(width, height)) {
+		if (texture_matches_hdr(width, height, expected_internal)) {
 			tex = reuse_tex_id;
 			*is_reused = true;
 			LOG_INFO("suckless-ogl.texture",
@@ -235,12 +238,14 @@ static GLuint texture_reuse_or_create_hdr(int width, int height,
 	return tex;
 }
 
-static bool texture_allocate_storage_hdr(int width, int height, int levels)
+static bool texture_allocate_storage_hdr(int width, int height, int levels,
+                                         GLuint expected_internal)
 {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	{
 		TRACE_GPU_SCOPE("TexStorageHDR", TRACY_COLOR_TEXTURE_STORAGE);
-		glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width,
+		/* UTILISATION DU FORMAT DYNAMIQUE */
+		glTexStorage2D(GL_TEXTURE_2D, levels, expected_internal, width,
 		               height);
 	}
 
@@ -256,7 +261,9 @@ static bool texture_allocate_storage_hdr(int width, int height, int levels)
 }
 
 GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, void* ptr, int width,
-                                   int height, GLuint reuse_tex_id)
+                                   int height, GLuint reuse_tex_id,
+                                   GLuint internal, GLuint fmt, GLuint type,
+                                   bool is_compressed, GLsizei pbo_size)
 {
 	TRACE_GPU_SCOPE("TextureUploadHDR_PBO",
 	                TRACY_COLOR_TEXTURE_UPLOAD_FULL);
@@ -271,10 +278,11 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, void* ptr, int width,
 	bool is_reused = false;
 	int levels = 1;
 	GLuint CLEANUP_TEXTURE tex = texture_reuse_or_create_hdr(
-	    width, height, reuse_tex_id, &is_reused, &levels);
+	    width, height, reuse_tex_id, &is_reused, &levels, internal);
 
 	if (!is_reused) {
-		if (!texture_allocate_storage_hdr(width, height, levels)) {
+		if (!texture_allocate_storage_hdr(width, height, levels,
+		                                  internal)) {
 			return 0;
 		}
 	} else {
@@ -296,8 +304,16 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, void* ptr, int width,
 	{
 		TRACE_GPU_SCOPE("TexUploadHDR_SubImage",
 		                TRACY_COLOR_TEXTURE_UPLOAD);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
-		                GL_HALF_FLOAT, upload_ptr);
+
+		/* LE BRANCHEMENT CRUCIAL : Compressed VS Uncompressed */
+		if (is_compressed) {
+			glCompressedTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
+			                          height, internal, pbo_size,
+			                          upload_ptr);
+		} else {
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
+			                fmt, type, upload_ptr);
+		}
 	}
 
 	if (pbo_id != 0) {

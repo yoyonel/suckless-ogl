@@ -7,6 +7,7 @@
 #define TEXTURE_H
 
 #include "gl_common.h"
+#include <stdbool.h>
 
 enum { MAX_TEXTURE_DIMENSION = 8192 };
 
@@ -58,7 +59,9 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex);
  * @return GLuint The texture ID (new or reused).
  */
 GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, void* ptr, int width,
-                                   int height, GLuint reuse_tex_id);
+                                   int height, GLuint reuse_tex_id,
+                                   GLuint internal, GLuint fmt, GLuint type,
+                                   bool is_compressed, GLsizei pbo_size);
 
 /**
  * @brief Generates mipmaps for an HDR texture.

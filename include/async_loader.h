@@ -1,24 +1,18 @@
 /**
  * @file async_loader.h
- * @brief Threaded asynchronous file loader for heavy assets (HDR, textures).
- *
- * This module manages a background worker thread that handles I/O and
- * image decoding, preventing main-thread stalls during asset transitions.
+ * @brief Threaded asynchronous file loader engine (Format-agnostic).
  */
 
 #ifndef ASYNC_LOADER_H
 #define ASYNC_LOADER_H
 
+#include "asset_manager.h"
 #include "gl_common.h"
 #include <stdbool.h>
+#include <stdint.h>
 
-/** @brief Maximum path length for an asynchronous load request. */
 #define ASYNC_MAX_PATH 256
 
-/**
- * @enum AsyncState
- * @brief Lifecycle states for an individual asynchronous request.
- */
 typedef enum {
 	ASYNC_IDLE = 0, /**< No active request. */
 	ASYNC_PENDING,  /**< Request submitted but not yet picked up by worker.
@@ -33,81 +27,149 @@ typedef enum {
 
 /**
  * @struct AsyncRequest
- * @brief Container for asynchronous load results and metadata.
+ * @brief Données de la requête asynchrone transférées entre les threads.
+ * @note Totalement indépendante des formats d'images concrets.
  */
-#include <stdint.h>
-
 typedef struct AsyncRequest {
-	char path[ASYNC_MAX_PATH]; /**< Absolute path to the source file. */
-	/* --- Internal Data for Async Ops --- */
-	float* float_data;   /* For loading stage */
-	uint16_t* half_data; /* For legacy upload (if no PBO) */
-	void* pbo_mapped_ptr;
-	GLuint pbo_id; /* ID of the PBO used for this request */
-	int width;     /**< Image width in pixels. */
-	int height;    /**< Image height in pixels. */
-	int channels;  /**< Number of color channels (e.g., 3 for RGB). */
-	double submission_time; /**< Time when request was submitted. */
-	volatile AsyncState
-	    state; /**< Current state (atomic/volatile for thread-safety). */
+	char path[ASYNC_MAX_PATH];
+	AssetType resource_type;
+
+	void* backend_data; /**< Payload opaque géré exclusivement par le module
+	                       de format. */
+	void* pbo_mapped_ptr; /**< Pointeur vers la mémoire PBO mappée par le
+	                         thread principal. */
+	GLuint pbo_id;        /**< ID du Pixel Buffer Object OpenGL cible. */
+	size_t required_pbo_size; /**< Taille totale requise pour le transfert
+	                             en VRAM. */
+
+	int width;
+	int height;
+	int channels;
+
+	bool is_compressed;
+	uint32_t gl_internal_format;
+	uint32_t gl_format;
+	uint32_t gl_type;
+
+	double submission_time;
+	volatile AsyncState state;
 } AsyncRequest;
 
-/**
- * @struct AsyncLoader
- * @brief Opaque handle to the asynchronous loader context.
- */
 typedef struct AsyncLoader AsyncLoader;
-
 struct TracyManager;
 
 /**
- * @brief Creates and initializes a new async loader instance.
- * @param mgr The Tracy instrumentation manager.
- * @return Pointer to the new loader, or NULL on failure.
+ * @brief Initialize the asynchronous loader subsystem.
+ *
+ * Allocates resources, initializes synchronization primitives (mutex, condvar),
+ * and spawns the background worker thread.
+ *
+ * @param mgr Tracy profiler manager instance.
+ * @return A new AsyncLoader instance on success, NULL on failure.
+ *
+ * Concurrency: Thread-safe. Lock initialized inside.
+ * Initial state: ASYNC_IDLE.
  */
 AsyncLoader* async_loader_create(struct TracyManager* mgr);
 
 /**
- * @brief Destroys the async loader and frees resources.
- * @param loader The loader instance to destroy.
+ * @brief Tear down the asynchronous loader subsystem.
+ *
+ * Signals the worker thread to exit, waits for its completion (joins it),
+ * releases any pending resources/requests, and destroys synchronization
+ * primitives.
+ *
+ * @param loader Loader instance to destroy. Can be NULL (no-op).
+ *
+ * Concurrency: Safe to call from the main thread during cleanup.
+ * Post-condition: Mutex/condvar are destroyed and memory is freed.
  */
 void async_loader_destroy(AsyncLoader* loader);
 
 /**
- * @brief Submits a new file path for background loading.
- * @param loader The loader instance.
- * @param path The absolute path to the HDR/texture file.
- * @return true if the request was successfully queued, false if queue is full.
+ * @brief Request a new asset to be loaded asynchronously.
+ *
+ * Accepts a loading task if the loader is idle or finished with the previous
+ * one.
+ *
+ * @param loader Loader instance.
+ * @param asset Path and format metadata of the asset.
+ * @return true if the request was accepted, false if the loader was busy or
+ * invalid.
+ *
+ * State transitions:
+ * - Expected Input State: ASYNC_IDLE, ASYNC_FAILED, or ASYNC_READY.
+ * - On success: Transits to ASYNC_PENDING, signals the worker thread.
+ * - On failure: State remains unchanged (loader is currently busy:
+ * ASYNC_LOADING, ASYNC_WAITING_FOR_PBO, ASYNC_CONVERTING).
+ *
+ * Concurrency: Thread-safe. Acquires request_mutex.
  */
-bool async_loader_request(AsyncLoader* loader, const char* path);
+bool async_loader_request(AsyncLoader* loader, const AssetHandle* asset);
 
 /**
- * @brief Polls the loader for any completed requests.
+ * @brief Poll the status of the current request.
  *
- * This should be called from the main (OpenGL) thread once per frame.
- * @param loader The loader instance.
- * @param[out] out_req Pointer to store the successfully loaded data.
- * @return true if data was retrieved, false otherwise.
+ * Checks if the request is ready for GPU upload, waiting for PBO allocation,
+ * or has failed. This is meant to be called periodically from the main thread.
+ *
+ * @param loader Loader instance.
+ * @param out_req Destination structure to copy the request snapshot if
+ * ready/waiting.
+ * @return true if a state transition needs handling (READY, WAITING_FOR_PBO,
+ * FAILED), false otherwise.
+ *
+ * State transitions:
+ * - Expected Input State: Any state.
+ * - If current state is ASYNC_READY: Copies request, resets state to
+ * ASYNC_IDLE, returns true.
+ * - If current state is ASYNC_FAILED: Copies request, resets state to
+ * ASYNC_IDLE, returns true.
+ * - If current state is ASYNC_WAITING_FOR_PBO: Copies request, state remains
+ * ASYNC_WAITING_FOR_PBO, returns true.
+ * - For any other state: Returns false (no action needed yet).
+ *
+ * Concurrency: Thread-safe. Acquires request_mutex.
  */
 bool async_loader_poll(AsyncLoader* loader, AsyncRequest* out_req);
 
 /**
- * @brief Provides a mapped PBO pointer to the async loader for conversion.
+ * @brief Provide the mapped memory address and GL buffer ID for PBO writing.
  *
- * Call this when async_loader_poll returns a request in
- * ASYNC_WAITING_FOR_PBO state.
- * @param loader The loader instance.
- * @param mapped_ptr Pointer to the mapped PBO memory.
- * @param pbo_id ID of the PBO being used.
+ * Called by the main thread after detecting ASYNC_WAITING_FOR_PBO during poll.
+ * Maps the CPU pointer to the PBO and allows the worker to perform the
+ * conversion.
+ *
+ * @param loader Loader instance.
+ * @param mapped_ptr Pointer to the mapped buffer memory (CPU visible).
+ * @param pbo_id OpenGL buffer object ID (or 0 for CPU-only malloc fallback).
+ *
+ * State transitions:
+ * - Expected Input State: ASYNC_WAITING_FOR_PBO.
+ * - On success: Transits to ASYNC_CONVERTING, signals the worker thread to
+ * resume.
+ * - If called in any other state: Ignored (no-op).
+ *
+ * Concurrency: Thread-safe. Acquires request_mutex.
  */
 void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
                               GLuint pbo_id);
 
 /**
- * @brief Cancels the current request if it is waiting for a PBO.
+ * @brief Cancel a loading request waiting for PBO input.
  *
- * Use this if the main thread fails to map a PBO and cannot proceed.
- * @param loader The loader instance.
+ * Aborts the current request if it is still waiting for the main thread to
+ * provide a PBO.
+ *
+ * @param loader Loader instance.
+ *
+ * State transitions:
+ * - Expected Input State: ASYNC_WAITING_FOR_PBO.
+ * - On success: Transits to ASYNC_FAILED, signals the worker thread to cleanup.
+ * - If called in any other state (e.g. ASYNC_CONVERTING): Ignored to prevent
+ * data corruption.
+ *
+ * Concurrency: Thread-safe. Acquires request_mutex.
  */
 void async_loader_cancel(AsyncLoader* loader);
 

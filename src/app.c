@@ -359,10 +359,10 @@ void app_update(App* app)
 	                             &ready_req)) {
 		/* Step 2: Begin multi-frame finalize process */
 		app->env_mgr->current_env_req = ready_req;
-		app->env_mgr->env_map_loading_step = 1;
+		app->env_mgr->env_map_loading_step = EML_UPLOAD_HDR_FROM_PBO;
 	}
 
-	if (app->env_mgr->env_map_loading_step > 0) {
+	if (app->env_mgr->env_map_loading_step != EML_STOP) {
 		env_manager_process_loading_step(
 		    app->env_mgr, &app->scene->gpu->recycled_hdr_tex,
 		    &app->scene->lighting.ibl_coord);

@@ -5,7 +5,7 @@
 # CONFIGURATION COMMUNE
 # =============================================================================
 
-set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Threads::Threads)
+set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Threads::Threads ktx)
 if(UNIX)
   list(APPEND TEST_COMMON_LIBS m dl)
 endif()
@@ -134,6 +134,7 @@ set(OPENGL_TESTS
     test_fx_dof
 )
 
+
 # Pour chaque fichier test trouvé
 foreach(test_file ${TEST_SOURCES})
   # Extraire le nom du test (sans .c)
@@ -141,7 +142,13 @@ foreach(test_file ${TEST_SOURCES})
 
   # Créer l'exécutable
   add_executable(${test_name} ${test_file})
-  target_link_libraries(${test_name} PRIVATE app_testlib)
+
+  # Condition spécifique pour le linkage de KTX
+  if(${test_name} STREQUAL "test_ktx_link")
+    target_link_libraries(${test_name} PRIVATE unity ktx)
+  else()
+    target_link_libraries(${test_name} PRIVATE app_testlib)
+  endif()
 
   # Injecter les variables pour le test de sécurité du log
   if(${test_name} STREQUAL "test_log_security")
@@ -688,6 +695,9 @@ add_executable(test_async_loader
     test_async_loader.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/src/async_loader.c
+    ${CMAKE_SOURCE_DIR}/src/async_backend.c
+    ${CMAKE_SOURCE_DIR}/src/async_backend_stb.c
+    ${CMAKE_SOURCE_DIR}/src/async_backend_ktx.c
     ${CMAKE_SOURCE_DIR}/src/perf_timer.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
@@ -703,9 +713,9 @@ target_include_directories(test_async_loader PRIVATE
 )
 target_compile_definitions(test_async_loader PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
 if(UNIX)
-  target_link_libraries(test_async_loader PRIVATE cglm m pthread dl)
+  target_link_libraries(test_async_loader PRIVATE cglm m pthread dl ktx)
 else()
-  target_link_libraries(test_async_loader PRIVATE cglm pthread)
+  target_link_libraries(test_async_loader PRIVATE cglm pthread ktx)
 endif()
 if(WIN32)
   add_test(NAME test_async_loader

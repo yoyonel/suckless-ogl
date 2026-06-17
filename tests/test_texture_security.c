@@ -114,6 +114,22 @@ void glTexSubImage2D(GLenum t, GLint l, GLint x, GLint y, GLsizei w, GLsizei h,
 	(void)p;
 }
 
+#undef glCompressedTexSubImage2D
+
+void glCompressedTexSubImage2D(GLenum t, GLint l, GLint x, GLint y, GLsizei w,
+                               GLsizei h, GLenum f, GLsizei s, const void* p)
+{
+	(void)t;
+	(void)l;
+	(void)x;
+	(void)y;
+	(void)w;
+	(void)h;
+	(void)f;
+	(void)s;
+	(void)p;
+}
+
 void glTexParameteri(GLenum target, GLenum pname, GLint param)
 {
 	(void)target;
@@ -223,13 +239,16 @@ void test_texture_upload_excessive_dimensions(void)
 
 	// We can pass 0 for pbo_id because the dimension check happens
 	// before any PBO operations.
-	GLuint tex = texture_upload_hdr_from_pbo(0, NULL, width, height, 0);
+	GLuint tex =
+	    texture_upload_hdr_from_pbo(0, NULL, width, height, 0, GL_RGBA16F,
+	                                GL_RGBA, GL_HALF_FLOAT, false, 0);
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    0, tex, "Should reject texture with width > MAX_TEXTURE_DIMENSION");
 
 	width = TEST_DIM;
 	height = MAX_TEXTURE_DIMENSION + 1;
-	tex = texture_upload_hdr_from_pbo(0, NULL, width, height, 0);
+	tex = texture_upload_hdr_from_pbo(0, NULL, width, height, 0, GL_RGBA16F,
+	                                  GL_RGBA, GL_HALF_FLOAT, false, 0);
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    0, tex,
 	    "Should reject texture with height > MAX_TEXTURE_DIMENSION");
@@ -253,7 +272,9 @@ void test_texture_upload_valid_dimensions(void)
 	memcpy(pbo_ptr, dummy_data, sizeof(dummy_data));
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-	GLuint tex = texture_upload_hdr_from_pbo(pbo, NULL, width, height, 0);
+	GLuint tex =
+	    texture_upload_hdr_from_pbo(pbo, NULL, width, height, 0, GL_RGBA16F,
+	                                GL_RGBA, GL_HALF_FLOAT, false, 0);
 	TEST_ASSERT_NOT_EQUAL(0, tex);
 
 	glDeleteTextures(1, &tex);

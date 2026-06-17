@@ -839,3 +839,21 @@ void glColorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b,
 	(void)b;
 	(void)a;
 }
+
+#undef glCompressedTexSubImage2D
+
+void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset,
+                               GLint yoffset, GLsizei width, GLsizei height,
+                               GLenum format, GLsizei imageSize,
+                               const void* data)
+{
+	(void)target;
+	(void)level;
+	(void)xoffset;
+	(void)yoffset;
+	(void)width;
+	(void)height;
+	(void)format;
+	(void)imageSize;
+	(void)data;
+}

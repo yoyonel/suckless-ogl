@@ -3,6 +3,7 @@
 #include "async_loader.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <time.h>
@@ -20,6 +21,16 @@ static void sleep_ms(long milliseconds)
 	req.tv_nsec =
 	    (milliseconds % MS_MULTIPLIER) * MS_MULTIPLIER * MS_MULTIPLIER;
 	nanosleep(&req, NULL);
+}
+
+/* Helper pour forger un handle dans les tests sans dépendre de io/fs */
+static AssetHandle make_test_handle(const char* path, AssetType type)
+{
+	AssetHandle asset_handler = {0};
+	strncpy(asset_handler.full_path, path,
+	        sizeof(asset_handler.full_path) - 1);
+	asset_handler.type = type;
+	return asset_handler;
 }
 
 static AsyncLoader* loader;
@@ -68,7 +79,9 @@ void test_load_request(void)
 {
 	// Request a non-existent file. It should fail, but the state cycle
 	// should complete. This verifies the worker thread wakes up.
-	bool accepted = async_loader_request(loader, "non_existent_file.png");
+	AssetHandle handle =
+	    make_test_handle("non_existent_file.png", ASSET_TYPE_TEXTURE_STB);
+	bool accepted = async_loader_request(loader, &handle);
 	TEST_ASSERT_TRUE(accepted);
 
 	// Poll until finished (by checking if we can submit again)
@@ -88,7 +101,9 @@ void test_load_request(void)
 
 		// Try to submit again. If successful, the previous one finished
 		// (failed).
-		if (async_loader_request(loader, "another_file.png")) {
+		AssetHandle handle = make_test_handle("another_file.png",
+		                                      ASSET_TYPE_TEXTURE_STB);
+		if (async_loader_request(loader, &handle)) {
 			finished = true;
 			break;
 		}

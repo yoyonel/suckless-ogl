@@ -52,6 +52,22 @@ else
     echo "✓ cJSON already exists in $DEPS_DIR"
 fi
 
+# glfw
+if [ ! -d "$DEPS_DIR/glfw" ]; then
+    echo "Cloning glfw..."
+    git clone --depth 1 --branch 3.3.8 https://github.com/glfw/glfw.git "$DEPS_DIR/glfw"
+else
+    echo "✓ glfw already exists in $DEPS_DIR"
+fi
+
+# libktx
+if [ ! -d "$DEPS_DIR/libktx" ]; then
+    echo "Cloning libktx..."
+    git clone --depth 1 --branch v5.0.0-rc1 https://github.com/KhronosGroup/KTX-Software.git "$DEPS_DIR/libktx"
+else
+    echo "✓ libktx already exists in $DEPS_DIR"
+fi
+
 echo ""
 echo "========================================="
 echo "Verification checks"
@@ -77,6 +93,20 @@ if [ ! -f "$DEPS_DIR/cglm/CMakeLists.txt" ]; then
     echo "⚠ Warning: cglm CMakeLists.txt not found"
 else
     echo "✓ cglm build system found"
+fi
+
+# --- Verification glfw ---
+if [ ! -f "$DEPS_DIR/glfw/CMakeLists.txt" ]; then
+    echo "⚠ Warning: glfw CMakeLists.txt not found"
+else
+    echo "✓ glfw build system found"
+fi
+
+# --- Verification libktx ---
+if [ ! -f "$DEPS_DIR/libktx/CMakeLists.txt" ]; then
+    echo "⚠ Warning: libktx CMakeLists.txt not found"
+else
+    echo "✓ libktx build system found"
 fi
 
 echo ""
