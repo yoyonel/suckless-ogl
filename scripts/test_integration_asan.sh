@@ -6,7 +6,7 @@ APP_PATH="./build-asan/app"
 
 # Ensure the app exists
 if [ ! -f "$APP_PATH" ]; then
-    echo "Error: ASan build not found at $APP_PATH. Run 'make asan' first."
+    echo "Error: ASan build not found at $APP_PATH. Run 'just asan' first."
     exit 1
 fi
 

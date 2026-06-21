@@ -484,6 +484,19 @@ if(ENABLE_ASAN)
   endif()
 endif()
 
+# Définir une option que vous pouvez activer lors de la configuration
+option(ENABLE_TSAN "Activer ThreadSanitizer pour l'analyse de concurrence" OFF)
+
+if(ENABLE_TSAN)
+  message(STATUS "ThreadSanitizer est ACTIVÉ")
+  # Ajout des flags de compilation (-g est crucial pour les numéros de ligne)
+  target_compile_options(app PRIVATE -fsanitize=thread -g -O1)
+  # Ajout des flags pour l'éditeur de liens (linker)
+  target_link_options(app PRIVATE -fsanitize=thread)
+  # (Optionnel) Si vous utilisez GCC/Clang, forcer la position independent code
+  set_target_properties(app PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+endif()
+
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
   # _FORTIFY_SOURCE=2: Enables compile-time and runtime checks for buffer overflows
   # (Requires optimization level -O1 or higher)
