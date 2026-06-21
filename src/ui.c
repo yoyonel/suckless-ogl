@@ -32,19 +32,30 @@ enum VertexConfig {
 	FLOATS_PER_VERTEX = 12
 };
 
+enum VertexID {
+	VERTEX_0 = 0,
+	VERTEX_1,
+	VERTEX_2,
+	VERTEX_3,
+	VERTEX_4,
+	VERTEX_5
+};
+
 static const float FONT_ATLAS_SIZE_F = 512.0F;
+
 static const float FONT_BASELINE_OFFSET = 30.0F;
 static const size_t MAX_FONT_FILE_SIZE = 10 * 1024 * 1024;  // 10 MB limit
 static const float UI_QUAD_POS_HALF = 0.5F;
 static const float UI_QUAD_TEX_MAX = 1.0F;
 static const float UI_QUAD_MIN = 0.0F;
 
-// ============================================================================
-// ============================================================================
-
-typedef struct {
-	UIVertex vertices[QUAD_VERTICES_COUNT];
-} UIQuad;
+// Modes de rendu pour le shader UI
+static const float UI_MODE_SOLID = 0.0F;
+static const float UI_MODE_TEXT = 1.0F;
+static const float UI_MODE_ROUNDED = 2.0F;
+static const float UI_MODE_TEXTURED = 3.0F;
+static const float UI_MODE_BLOOM = 4.0F;
+static const float UI_MODE_GLOW = 5.0F;
 
 // ============================================================================
 // Batch Rendering State
@@ -63,6 +74,37 @@ static void setup_ui_render_state(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+static inline void push_batch_quad(UIVertex* out_vert, float left, float right,
+                                   float top, float bottom, float tex_u0,
+                                   float tex_v0, float tex_u1, float tex_v1,
+                                   float col_r, float col_g, float col_b,
+                                   float col_a, float mode, float param_w,
+                                   float param_h, float radius)
+{
+	/* Triangle 1 */
+	out_vert[VERTEX_0] =
+	    (UIVertex){left,  bottom, tex_u0, tex_v1,  col_r,   col_g,
+	               col_b, col_a,  mode,   param_w, param_h, radius};
+	out_vert[VERTEX_1] =
+	    (UIVertex){left,  top,   tex_u0, tex_v0,  col_r,   col_g,
+	               col_b, col_a, mode,   param_w, param_h, radius};
+	out_vert[VERTEX_2] =
+	    (UIVertex){right, top,   tex_u1, tex_v0,  col_r,   col_g,
+	               col_b, col_a, mode,   param_w, param_h, radius};
+
+	/* Triangle 2 */
+	out_vert[VERTEX_3] =
+	    (UIVertex){left,  bottom, tex_u0, tex_v1,  col_r,   col_g,
+	               col_b, col_a,  mode,   param_w, param_h, radius};
+	out_vert[VERTEX_4] =
+	    (UIVertex){right, top,   tex_u1, tex_v0,  col_r,   col_g,
+	               col_b, col_a, mode,   param_w, param_h, radius};
+
+	out_vert[VERTEX_5] =
+	    (UIVertex){right, bottom, tex_u1, tex_v1,  col_r,   col_g,
+	               col_b, col_a,  mode,   param_w, param_h, radius};
 }
 
 // ============================================================================
@@ -190,43 +232,18 @@ static void prepare_batch(UIContext* ui_context, GLuint texture)
 // Glyph Quad Generation
 // ============================================================================
 
-static UIQuad make_glyph_quad(const GlyphInfo* glyph, float render_x,
-                              float render_y, float scale, const vec3 color,
-                              float alpha)
+static void make_glyph_quad(const GlyphInfo* glyph, float render_x,
+                            float render_y, float scale, const vec3 color,
+                            float alpha, UIVertex* out_vertices)
 {
-	const float width = glyph->w * scale;
-	const float height = glyph->h * scale;
-	const float left = render_x;
-	const float top = render_y;
-	const float right = render_x + width;
-	const float bottom = render_y + height;
-
-	const float col_r = color[0];
-	const float col_g = color[1];
-	const float col_b = color[2];
-	const float col_a = alpha;
-	const float mode = 1.0F; /* Text */
-
-	UIQuad quad = {
-	    .vertices = {
-	        /* Triangle 1 */
-	        {left, bottom, glyph->x0, glyph->y1, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
-	        {left, top, glyph->x0, glyph->y0, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-left */
-	        {right, top, glyph->x1, glyph->y0, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
-
-	        /* Triangle 2 */
-	        {left, bottom, glyph->x0, glyph->y1, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
-	        {right, top, glyph->x1, glyph->y0, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
-	        {right, bottom, glyph->x1, glyph->y1, col_r, col_g, col_b,
-	         col_a, mode, 0.0F, 0.0F, 0.0F} /* Bottom-right */
-	    }};
-
-	return quad;
+	push_batch_quad(
+	    out_vertices, render_x,
+	    render_x + (glyph->w * scale),              /* left, right */
+	    render_y, render_y + (glyph->h * scale),    /* top, bottom */
+	    glyph->x0, glyph->y0, glyph->x1, glyph->y1, /* UVs du glyph */
+	    color[0], color[1], color[2], alpha,        /* RGBA */
+	    UI_MODE_TEXT, 0.0F, 0.0F, 0.0F /* mode Text, params inutilisés */
+	);
 }
 
 // ============================================================================
@@ -426,7 +443,6 @@ void ui_draw_text_scaled(UIContext* ui_context, const char* text, float pos_x,
 	for (const char* ptr = text; *ptr != '\0'; ptr++) {
 		const unsigned char char_code = (unsigned char)*ptr;
 
-		// Skip characters outside supported range
 		if (char_code < FONT_FIRST_CHAR ||
 		    char_code >= (FONT_FIRST_CHAR + FONT_CHAR_COUNT)) {
 			continue;
@@ -435,22 +451,21 @@ void ui_draw_text_scaled(UIContext* ui_context, const char* text, float pos_x,
 		const GlyphInfo* glyph =
 		    &ui_context->cdata[char_code - FONT_FIRST_CHAR];
 
-		// Calculate render position
 		const float render_x = current_x + (glyph->x_off * scale);
 		const float render_y =
 		    pos_y + ((glyph->y_off + FONT_BASELINE_OFFSET) * scale);
 
 		prepare_batch(ui_context, ui_context->texture);
 
-		// Generate and append quad
-		const UIQuad quad = make_glyph_quad(glyph, render_x, render_y,
-		                                    scale, color, alpha);
-		for (int i = 0; i < VERTICES_PER_QUAD; i++) {
-			ui_context->batch_vertices[ui_context->batch_count++] =
-			    quad.vertices[i];
-		}
+		// Appel direct avec l'adresse du prochain emplacement
+		// disponible dans le batch
+		make_glyph_quad(
+		    glyph, render_x, render_y, scale, color, alpha,
+		    &ui_context->batch_vertices[ui_context->batch_count]);
 
-		// Advance cursor
+		// Avancer le compteur manuellement
+		ui_context->batch_count += VERTICES_PER_QUAD;
+
 		current_x += (glyph->advance * scale);
 	}
 
@@ -484,36 +499,13 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 
 	prepare_batch(ui_context, ui_context->texture);
 
-	const float col_r = color[0];
-	const float col_g = color[1];
-	const float col_b = color[2];
-	const float col_a = alpha;
-	const float mode = 0.0F; /* Solid */
+	UIVertex* out = &ui_context->batch_vertices[ui_context->batch_count];
 
-	/* Construct Quad manually */
-	UIQuad quad = {
-	    .vertices = {
-	        /* Triangle 1 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
-	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
-	         0.0F, 0.0F, 0.0F}, /* Top-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
+	push_batch_quad(out, rect_x, rect_x + width, rect_y, rect_y + height,
+	                0.0F, 0.0F, 1.0F, 1.0F, color[0], color[1], color[2],
+	                alpha, UI_MODE_SOLID, 0.0F, 0.0F, 0.0F);
 
-	        /* Triangle 2 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
-	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
-	         col_b, col_a, mode, 0.0F, 0.0F, 0.0F} /* Bottom-right */
-	    }};
-
-	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
-		ui_context->batch_vertices[ui_context->batch_count++] =
-		    quad.vertices[i];
-	}
+	ui_context->batch_count += VERTICES_PER_QUAD;
 
 	if (auto_batch) {
 		ui_end(ui_context);
@@ -624,29 +616,21 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	glBindVertexArray(ui_context->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
 
-	// Construct the unit quad using UIVertex layout (only pos and tex
-	// matter here, color is uniform for spinner, mode etc are ignored by
-	// spinner shader) We just zero out the rest
-	UIQuad quad = {
-	    .vertices = {
-	        /* Triangle 1 */
-	        {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
-	         UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0}, /* TL */
-	        {-UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_MIN, UI_QUAD_MIN,
-	         0, 0, 0, 0, 0, 0, 0, 0}, /* BL */
-	        {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
-	         UI_QUAD_MIN, 0, 0, 0, 0, 0, 0, 0, 0}, /* BR */
+	UIVertex vertices[VERTICES_PER_QUAD] = {
+	    {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN, UI_QUAD_TEX_MAX,
+	     0, 0, 0, 0, 0, 0, 0, 0},
+	    {-UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_MIN, UI_QUAD_MIN, 0,
+	     0, 0, 0, 0, 0, 0, 0},
+	    {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX, UI_QUAD_MIN,
+	     0, 0, 0, 0, 0, 0, 0, 0},
+	    {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN, UI_QUAD_TEX_MAX,
+	     0, 0, 0, 0, 0, 0, 0, 0},
+	    {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX, UI_QUAD_MIN,
+	     0, 0, 0, 0, 0, 0, 0, 0},
+	    {UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
+	     UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-	        /* Triangle 2 */
-	        {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
-	         UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0}, /* TL */
-	        {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
-	         UI_QUAD_MIN, 0, 0, 0, 0, 0, 0, 0, 0}, /* BR */
-	        {UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
-	         UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0} /* TR */
-	    }};
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
 
 	/* Cleanup */
@@ -680,30 +664,17 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
 	const float col_a = alpha;
 	const float mode = 2.0F; /* Rounded Rect */
 
-	/* Construct Quad manually */
-	UIQuad quad = {
-	    .vertices = {
-	        /* Triangle 1 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, width, height, radius}, /* Bottom-left */
-	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
-	         width, height, radius}, /* Top-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, width, height, radius}, /* Top-right */
+	UIVertex* out = &ui_context->batch_vertices[ui_context->batch_count];
 
-	        /* Triangle 2 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, width, height, radius}, /* Bottom-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, width, height, radius}, /* Top-right */
-	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
-	         col_b, col_a, mode, width, height, radius} /* Bottom-right */
-	    }};
+	push_batch_quad(out, rect_x, rect_x + width, rect_y,
+	                rect_y + height,                     /* coords */
+	                0.0F, 0.0F, 1.0F, 1.0F,              /* UVs pleins */
+	                color[0], color[1], color[2], alpha, /* RGBA */
+	                UI_MODE_ROUNDED, width, height,
+	                radius /* mode Rounded et params SDF */
+	);
 
-	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
-		ui_context->batch_vertices[ui_context->batch_count++] =
-		    quad.vertices[i];
-	}
+	ui_context->batch_count += VERTICES_PER_QUAD;
 
 	if (auto_batch) {
 		ui_end(ui_context);
@@ -732,34 +703,15 @@ void ui_draw_textured_quad(UIContext* ui_context, GLuint texture, float rect_x,
 
 	prepare_batch(ui_context, texture);
 
-	const float col_r = tint[0];
-	const float col_g = tint[1];
-	const float col_b = tint[2];
-	const float col_a = alpha;
-	const float mode = 3.0F; /* Textured Tinted */
+	UIVertex* out = &ui_context->batch_vertices[ui_context->batch_count];
 
-	UIQuad quad = {
-	    .vertices = {
-	        /* Triangle 1 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
-	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
-	         0.0F, 0.0F, 0.0F}, /* Top-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
-	        /* Triangle 2 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
-	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
-	         col_b, col_a, mode, 0.0F, 0.0F, 0.0F} /* Bottom-right */
-	    }};
+	push_batch_quad(out, rect_x, rect_x + width, rect_y, rect_y + height,
+	                0.0F, 0.0F, 1.0F, 1.0F, tint[0], tint[1], tint[2],
+	                alpha, UI_MODE_TEXTURED, 0.0F, 0.0F,
+	                0.0F /* mode Textured */
+	);
 
-	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
-		ui_context->batch_vertices[ui_context->batch_count++] =
-		    quad.vertices[i];
-	}
+	ui_context->batch_count += VERTICES_PER_QUAD;
 
 	if (auto_batch) {
 		ui_end(ui_context);
@@ -796,26 +748,13 @@ void ui_draw_bloom_quad(UIContext* ui_context, GLuint texture, float rect_x,
 	const float col_a = intensity;
 	const float mode = 4.0F; /* Textured Additive */
 
-	UIQuad quad = {.vertices = {
-	                   /* Triangle 1 */
-	                   {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g,
-	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
-	                   {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b,
-	                    col_a, mode, 0.0F, 0.0F, 0.0F},
-	                   {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g,
-	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
-	                   /* Triangle 2 */
-	                   {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g,
-	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
-	                   {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g,
-	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
-	                   {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r,
-	                    col_g, col_b, col_a, mode, 0.0F, 0.0F, 0.0F}}};
+	UIVertex* out = &ui_context->batch_vertices[ui_context->batch_count];
 
-	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
-		ui_context->batch_vertices[ui_context->batch_count++] =
-		    quad.vertices[i];
-	}
+	push_batch_quad(out, rect_x, rect_x + width, rect_y, rect_y + height,
+	                0.0F, 0.0F, 1.0F, 1.0F, tint[0], tint[1], tint[2],
+	                intensity, UI_MODE_BLOOM, 0.0F, 0.0F, 0.0F);
+
+	ui_context->batch_count += VERTICES_PER_QUAD;
 
 	ui_flush(ui_context);
 
@@ -841,36 +780,15 @@ void ui_draw_glow_rect(UIContext* ui_context, float rect_x, float rect_y,
 
 	prepare_batch(ui_context, ui_context->texture);
 
-	const float col_r = color[0];
-	const float col_g = color[1];
-	const float col_b = color[2];
-	const float col_a = alpha;
-	const float mode = 5.0F; /* SDF Neon Glow Border */
+	UIVertex* out = &ui_context->batch_vertices[ui_context->batch_count];
 
-	/* Construct Quad manually */
-	UIQuad quad = {
-	    .vertices = {
-	        /* Triangle 1 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, width, height, radius}, /* Bottom-left */
-	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
-	         width, height, radius}, /* Top-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, width, height, radius}, /* Top-right */
+	push_batch_quad(out, rect_x, rect_x + width, rect_y, rect_y + height,
+	                0.0F, 0.0F, 1.0F, 1.0F, color[0], color[1], color[2],
+	                alpha, UI_MODE_GLOW, width, height,
+	                radius /* mode Glow */
+	);
 
-	        /* Triangle 2 */
-	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
-	         col_a, mode, width, height, radius}, /* Bottom-left */
-	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
-	         mode, width, height, radius}, /* Top-right */
-	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
-	         col_b, col_a, mode, width, height, radius} /* Bottom-right */
-	    }};
-
-	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
-		ui_context->batch_vertices[ui_context->batch_count++] =
-		    quad.vertices[i];
-	}
+	ui_context->batch_count += VERTICES_PER_QUAD;
 
 	if (auto_batch) {
 		ui_end(ui_context);
