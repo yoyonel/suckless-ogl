@@ -6,7 +6,11 @@
 
 /* Centralisation stricte des chemins racine */
 #define ASSET_DIR_HDR "assets/textures/hdr"
+// non utilisée, il y a des traces de `shaders/` un peu partout !
+// principalement présents dans les calls de `shader_load(...)`,
+// `shader_load_compute_program(...)`, `shader_load_with_defines(...)`
 #define ASSET_DIR_SHADERS "shaders"
+// n'existe pas
 #define ASSET_DIR_MODELS "assets/models"
 
 /* Enumération universelle des types de ressources pris en charge */
