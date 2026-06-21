@@ -28,7 +28,7 @@ DELAY_MS="${3:-50}"
 WINDOW_NAME="Icosphere Phong"
 LOG_FILE="stress_fullscreen.log"
 STACKS_FILE="stress_fullscreen.stacks"
-TIMEOUT_SEC=5  # Max seconds to wait for toggle acknowledgment in logs
+TIMEOUT_SEC=5 # Max seconds to wait for toggle acknowledgment in logs
 
 # --- Source shared utilities ---
 SCRIPT_DIR=$(dirname "$0")
@@ -60,7 +60,7 @@ echo -e "${CYAN}╚════════════════════�
 
 # --- Clean previous artifacts ---
 rm -f "$LOG_FILE" "$STACKS_FILE"
-: > "$LOG_FILE"  # Create empty log file now (needed for tail -f)
+: >"$LOG_FILE" # Create empty log file now (needed for tail -f)
 
 # --- Launch application ---
 echo -e "\n${CYAN}[INIT]${NC} Starting application..."
@@ -69,7 +69,7 @@ export LSAN_OPTIONS="suppressions=lsan.supp"
 
 # Run app, tee stdout+stderr to log. Use stdbuf to line-buffer so we see
 # log lines as soon as they're printed (critical for our detection strategy).
-stdbuf -oL -eL $APP_PATH > >(tee "$LOG_FILE") 2>&1 &
+stdbuf -oL -eL "$APP_PATH" > >(tee "$LOG_FILE") 2>&1 &
 APP_PID=$!
 
 # Give stdbuf/tee time to set up
@@ -109,7 +109,7 @@ wait_for_log_pattern() {
     while [ $waited -lt $timeout_ms ]; do
         # Check process is still alive
         if ! kill -0 $APP_PID 2>/dev/null; then
-            return 1  # Crash
+            return 1 # Crash
         fi
 
         # Count lines matching pattern AFTER the line we snapshotted
@@ -117,10 +117,10 @@ wait_for_log_pattern() {
         current_count=$(grep -c "$pattern" "$LOG_FILE" 2>/dev/null || true)
         current_count=${current_count:-0}
         if [ "$current_count" -gt "$line_before" ]; then
-            return 0  # Pattern found — toggle succeeded
+            return 0 # Pattern found — toggle succeeded
         fi
 
-        sleep 0.$(printf '%03d' $poll_ms)
+        sleep "0.$(printf '%03d' $poll_ms)"
         waited=$((waited + poll_ms))
     done
 
@@ -142,7 +142,7 @@ capture_stacks() {
         echo "Timestamp: $(date -Iseconds)"
         echo "PID: $APP_PID"
         echo "============================================================"
-    } >> "$STACKS_FILE"
+    } >>"$STACKS_FILE"
 
     if command -v gdb &>/dev/null; then
         gdb -batch \
@@ -150,7 +150,7 @@ capture_stacks() {
             -ex "thread apply all bt full" \
             -ex "info threads" \
             -ex "detach" \
-            -p $APP_PID 2>/dev/null >> "$STACKS_FILE" || true
+            -p $APP_PID 2>/dev/null >>"$STACKS_FILE" || true
         echo -e "${YELLOW}[DIAG]${NC} GDB stack traces saved to ${BOLD}$STACKS_FILE${NC}"
     else
         echo -e "${YELLOW}[DIAG]${NC} GDB not available. Dumping /proc/$APP_PID/status instead."
@@ -162,13 +162,13 @@ capture_stacks() {
             cat /proc/$APP_PID/wchan 2>/dev/null || echo "(not available)"
             echo ""
             # Show all thread stacks via /proc
-            for tid_dir in /proc/$APP_PID/task/*/; do
+            for tid_dir in /proc/"$APP_PID"/task/*/; do
                 tid=$(basename "$tid_dir")
                 echo "--- Thread $tid stack ---"
-                cat /proc/$APP_PID/task/$tid/stack 2>/dev/null || echo "(not available)"
+                cat /proc/$APP_PID/task/"$tid"/stack 2>/dev/null || echo "(not available)"
                 echo ""
             done
-        } >> "$STACKS_FILE"
+        } >>"$STACKS_FILE"
         echo -e "${YELLOW}[DIAG]${NC} /proc stack info saved to ${BOLD}$STACKS_FILE${NC}"
     fi
 }
@@ -181,7 +181,7 @@ EXPECT_FULLSCREEN=true
 # --- Helper: send keystroke with timeout protection ---
 # xdotool can hang if the window is frozen (especially --sync variants).
 # We wrap EVERY xdotool interaction in a hard timeout.
-XDOTOOL_TIMEOUT=2  # seconds
+XDOTOOL_TIMEOUT=2 # seconds
 
 send_toggle_key() {
     local wid
@@ -206,7 +206,7 @@ send_toggle_key() {
 }
 
 # --- Main stress loop ---
-for ((i=1; i<=ITERATIONS; i++)); do
+for ((i = 1; i <= ITERATIONS; i++)); do
     # Check process is still alive before each toggle
     if ! kill -0 $APP_PID 2>/dev/null; then
         echo -e "${RED}[CRASH]${NC} Application died at iteration $i / $ITERATIONS"
@@ -287,8 +287,8 @@ for ((i=1; i<=ITERATIONS; i++)); do
     SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
 
     # Progress reporting
-    if (( (i*2) % 20 == 0 )) || (( i == ITERATIONS )); then
-        elapsed=$(( $(date +%s) - START_TIME ))
+    if (((i * 2) % 20 == 0)) || ((i == ITERATIONS)); then
+        elapsed=$(($(date +%s) - START_TIME))
         echo -e "${GREEN}[OK]${NC}    Toggle $i / $ITERATIONS completed (${elapsed}s elapsed, ${SUCCESS_COUNT} successful)"
     fi
 done

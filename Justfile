@@ -60,7 +60,7 @@ default:
 # =============================================================================
 
 ktx_viewer_build_dir := "build-ktx-viewer"
-ktx_viewer_asset     := "assets/textures/hdr/axis_test.ktx2"
+ktx_viewer_asset := "assets/textures/hdr/axis_test.ktx2"
 
 # Configure le build autonome du viewer KTX2 (CMake minimal, sans FetchContent)
 # Pré-requis : just build doit avoir été exécuté au moins une fois pour que
@@ -78,7 +78,7 @@ build-ktx-viewer:
 
 # Exécute le viewer sur l'asset par défaut (ou un asset fourni en argument)
 # Usage :  just run-ktx-viewer
-#          just run-ktx-viewer assets/textures/hdr/axis_test_uastc.ktx2
+# just run-ktx-viewer assets/textures/hdr/axis_test_uastc.ktx2
 run-ktx-viewer asset="assets/textures/hdr/axis_test.ktx2": build-ktx-viewer
     @{{ ktx_viewer_build_dir }}/ktx_viewer {{ asset }}
 
@@ -333,6 +333,11 @@ test-integration-asan: asan
     @{{ distrobox }} chmod +x scripts/test_integration_asan.sh
     @{{ distrobox }} bash scripts/test_integration_asan.sh
 
+# Run full UI integration test under TSan
+test-integration-tsan: tsan
+    @{{ distrobox }} chmod +x scripts/test_integration_tsan.sh
+    @{{ distrobox }} bash scripts/test_integration_tsan.sh
+
 # Stress test: rapid fullscreen/windowed toggling to find deadlocks
 stress-fullscreen iterations="100" delay="50": build
     @chmod +x scripts/test_stress_fullscreen.sh
@@ -342,6 +347,11 @@ stress-fullscreen iterations="100" delay="50": build
 stress-fullscreen-asan iterations="50" delay="100": asan
     @chmod +x scripts/test_stress_fullscreen.sh
     @{{ distrobox }} bash scripts/test_stress_fullscreen.sh ./build-asan/app {{ iterations }} {{ delay }}
+
+# Stress test environment map switching under TSan (ThreadSanitizer) to catch async loading data races
+stress-envmap-tsan iterations="30" delay="200": tsan
+    @chmod +x scripts/test_stress_envmap.sh
+    @{{ distrobox }} bash scripts/test_stress_envmap.sh ./build-tsan/app {{ iterations }} {{ delay }}
 
 # Run programmatic ApiTrace performance verification
 test-apitrace: build
@@ -397,6 +407,22 @@ asan:
     @mkdir -p build-asan
     @{{ distrobox }} cmake -G "Unix Makefiles" -B build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
     @{{ distrobox }} cmake --build build-asan --parallel {{ nprocs }}
+
+# Build with ThreadSanitizer (TSan)
+tsan:
+    @echo "Building with ThreadSanitizer (TSan)..."
+    @mkdir -p build-tsan
+    @{{ distrobox }} cmake -G "Unix Makefiles" -B build-tsan -DCMAKE_BUILD_TYPE=Debug -DENABLE_TSAN=ON -DENABLE_UNITY_BUILD=OFF
+    @{{ distrobox }} cmake --build build-tsan --parallel {{ nprocs }}
+    # nm: liste les symboles du binaire
+    @{{ distrobox }} nm build-tsan/app | grep __tsan
+    # readelf: liste les sections de débogage
+    @{{ distrobox }} readelf -S build-tsan/app | grep debug
+
+# Run with ThreadSanitizer
+run-tsan:
+    @echo "Running with TSan suppressions..."
+    @{{ distrobox }} env TSAN_OPTIONS="suppressions=tsan_suppressions.txt" ./build-tsan/app
 
 # Build for Valgrind (no -march=native to avoid unsupported GFNI/AVX instructions)
 build-valgrind:

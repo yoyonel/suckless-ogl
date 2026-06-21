@@ -1,0 +1,18 @@
+# --- SUPPRESSIONS POUR LES PILOTES GRAPHIQUES (MESA / GALLIUM) ---
+# Ignore les data races
+race:libgallium
+race:libGLX_mesa
+race:libGLX
+
+# Ignore les mauvaises manipulations de mutex (ex: unlock d'un mutex non verrouillé)
+mutex:libGLX_mesa
+mutex:libgallium
+
+# --- SUPPRESSIONS POUR LE SERVEUR D'AFFICHAGE (X11 / XCB) ---
+race:libxcb
+race:libX11
+
+# Ignore les inversions d'ordre de verrouillage (risques de deadlocks)
+deadlock:libX11
+deadlock:libGLX
+deadlock:libxcb

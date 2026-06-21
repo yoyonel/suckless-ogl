@@ -4,6 +4,7 @@
 #include "platform/platform_utils.h"
 #include "tracy_log.h"
 #include "utils.h"
+#include <pthread.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -111,14 +112,18 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 		return;
 	}
 
+	static pthread_mutex_t g_log_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 	int64_t sec = 0;
 	int64_t nsec = 0;
 	platform_get_time_precise(&sec, &nsec);
 
-	struct tm* tm_info = localtime((const time_t*)&sec);
+	struct tm tm_info;
+	localtime_r((const time_t*)&sec, &tm_info);
+
 	char time_buf[TIME_BUFFER_SIZE];
 	(void)strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S",
-	               tm_info);
+	               &tm_info);
 
 	char prefix[PREFIX_BUFFER_SIZE];
 	int32_t pid = platform_get_pid();
@@ -128,15 +133,20 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	                    (long)(nsec / MILLI_DIVISOR), (int)pid,
 	                    (unsigned long)tid, tag, level_to_string(level));
 
-	FILE* out = (level >= LOG_LEVEL_ERROR) ? stderr : stdout;
-	(void)fputs(prefix, out);
-
+	// Formatage du message dans le buffer local (peut être fait hors du
+	// mutex)
 	va_list args;
 	va_start(args, format);
-
 	char msg_buf[MSG_BUFFER_SIZE];
 	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)vsnprintf(msg_buf, sizeof(msg_buf), format, args);
+	va_end(args);
+
+	// Section critique pour garantir l'ordre d'affichage
+	pthread_mutex_lock(&g_log_mutex);
+
+	FILE* out = (level >= LOG_LEVEL_ERROR) ? stderr : stdout;
+	(void)fputs(prefix, out);
 
 	if (g_log_callback) {
 		g_log_callback(level, tag, msg_buf);
@@ -144,9 +154,8 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 
 	tracy_log_message(level, msg_buf);
 
-	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized)
 	(void)fputs(msg_buf, out);
-	va_end(args);
-
 	(void)fputs("\n", out);
+
+	pthread_mutex_unlock(&g_log_mutex);
 }
