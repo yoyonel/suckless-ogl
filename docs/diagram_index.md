@@ -1090,6 +1090,22 @@ C[Curved Blur \nRE Engine / SF6] -->|Sampling along a circular arc| D(Anime/Mang
 </div>
 
 
+## [Multi-Draw Indirect (MDI) Refactoring Study](../multi_draw_indirect/)
+
+<div class="diagram-item">
+  <a href="../multi_draw_indirect/#4-action-plan-atomic-steps" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4. Action Plan (Atomic Steps)</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+A[Step 1: Geometry Atlas & Basic DIB] --> B[Step 2: MDI Pipeline for Spheres]
+B --> C[Step 3: Dynamic MDI with Frustum Culling]
+```
+
+  </div>
+</div>
+
+
 ## [Neon Trail Rendering](../neon_trails/)
 
 <div class="diagram-item">
