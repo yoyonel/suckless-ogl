@@ -1,0 +1,835 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/dvec3.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('dvec3_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle">
+<div class="title">dvec3.h File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Double-precision 3D vector helpers for physics simulation.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;math.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for dvec3.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="dvec3_8h__incl.svg" width="135" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div>
+<p><a href="dvec3_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a6dd1988231447f1f4a0dde45f1d0eb76"><td class="memItemLeft" align="right" valign="top">typedef double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>[3]</td></tr>
+<tr class="separator:a6dd1988231447f1f4a0dde45f1d0eb76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a8703e51b10a3c9c8d86ca4fd7e2dc448"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a8703e51b10a3c9c8d86ca4fd7e2dc448">dvec3_zero</a> (<a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</td></tr>
+<tr class="separator:a8703e51b10a3c9c8d86ca4fd7e2dc448"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a15baf17277eef1ec62a9620447e7b7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a3a15baf17277eef1ec62a9620447e7b7">dvec3_copy</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> src, <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</td></tr>
+<tr class="separator:a3a15baf17277eef1ec62a9620447e7b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a8e0201888680fea9d22ab221cf3ef2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a1a8e0201888680fea9d22ab221cf3ef2">dvec3_set</a> (<a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, double x_val, double y_val, double z_val)</td></tr>
+<tr class="separator:a1a8e0201888680fea9d22ab221cf3ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d849fcb19a084760155076d918ed7dd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a2d849fcb19a084760155076d918ed7dd">dvec3_add</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> a_vec, const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec, <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</td></tr>
+<tr class="separator:a2d849fcb19a084760155076d918ed7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5b644711571fd1897922d8cb710098f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#af5b644711571fd1897922d8cb710098f">dvec3_addto</a> (<a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec)</td></tr>
+<tr class="separator:af5b644711571fd1897922d8cb710098f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98af61b1fa7c66fd349618f272188ac2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a98af61b1fa7c66fd349618f272188ac2">dvec3_sub</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> a_vec, const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec, <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</td></tr>
+<tr class="separator:a98af61b1fa7c66fd349618f272188ac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14226d4f4bde9722bad5b7a4c3953073"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a14226d4f4bde9722bad5b7a4c3953073">dvec3_subfrom</a> (<a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec)</td></tr>
+<tr class="separator:a14226d4f4bde9722bad5b7a4c3953073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a359f74777b0cdd5bc99c7c24cb4180b5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a359f74777b0cdd5bc99c7c24cb4180b5">dvec3_scale</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec, double scalar, <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest)</td></tr>
+<tr class="separator:a359f74777b0cdd5bc99c7c24cb4180b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18813adf5ab40d610ef0278761b2dfd7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a18813adf5ab40d610ef0278761b2dfd7">dvec3_muladds</a> (<a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> dest, const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec, double scalar)</td></tr>
+<tr class="separator:a18813adf5ab40d610ef0278761b2dfd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d1901301689257333f9d6bf88cf6d27"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a2d1901301689257333f9d6bf88cf6d27">dvec3_dot</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> a_vec, const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> b_vec)</td></tr>
+<tr class="separator:a2d1901301689257333f9d6bf88cf6d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add751e32ff88cf485914ecdb54bcf097"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#add751e32ff88cf485914ecdb54bcf097">dvec3_norm2</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec)</td></tr>
+<tr class="separator:add751e32ff88cf485914ecdb54bcf097"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22e38b31ee09d7da21b47b57392a1eba"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a22e38b31ee09d7da21b47b57392a1eba">dvec3_norm</a> (const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec)</td></tr>
+<tr class="separator:a22e38b31ee09d7da21b47b57392a1eba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5200b49d2532d1c65147935560e6fabc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dvec3_8h.html#a5200b49d2532d1c65147935560e6fabc">dvec3_normalize</a> (<a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a> v_vec)</td></tr>
+<tr class="separator:a5200b49d2532d1c65147935560e6fabc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Double-precision 3D vector helpers for physics simulation. </p>
+<p>cglm (v0.9.x) only provides float-precision vec3 operations — there is no dvec3 type and no SIMD acceleration for vec3 (SSE/NEON are only used for vec4 and mat4, where 4-wide lanes map naturally to 128-bit registers).</p>
+<p>These inline helpers mirror the cglm vec3 API (<code>glm_vec3_*</code>) but operate on plain <code>double[3]</code> arrays, giving the n-body simulation the numerical precision it needs without sacrificing readability.</p>
+<p>Performance note: on 14 bodies the overhead of double vs float is negligible. Should the body count grow to hundreds, consider migrating to AVX double SIMD (2-wide <code>__m128d</code> or 4-wide <code>__m256d</code>).</p>
+<dl class="section see"><dt>See also</dt><dd>docs/nbody_precision_fix.md for the full rationale. </dd></dl>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a6dd1988231447f1f4a0dde45f1d0eb76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dd1988231447f1f4a0dde45f1d0eb76">&#9670;&nbsp;</a></span>dvec3</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef double dvec3[3]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A double-precision 3D vector stored as a plain array. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a2d849fcb19a084760155076d918ed7dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d849fcb19a084760155076d918ed7dd">&#9670;&nbsp;</a></span>dvec3_add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_add </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>a_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>b_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dest = a + b </p>
+
+</div>
+</div>
+<a id="af5b644711571fd1897922d8cb710098f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5b644711571fd1897922d8cb710098f">&#9670;&nbsp;</a></span>dvec3_addto()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_addto </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>b_vec</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dest += b (in-place accumulate). </p>
+
+</div>
+</div>
+<a id="a3a15baf17277eef1ec62a9620447e7b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a15baf17277eef1ec62a9620447e7b7">&#9670;&nbsp;</a></span>dvec3_copy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_copy </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Copy src into dest. </p>
+
+</div>
+</div>
+<a id="a2d1901301689257333f9d6bf88cf6d27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d1901301689257333f9d6bf88cf6d27">&#9670;&nbsp;</a></span>dvec3_dot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double dvec3_dot </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>a_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>b_vec</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Dot product: a · b </p>
+
+</div>
+</div>
+<a id="a18813adf5ab40d610ef0278761b2dfd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18813adf5ab40d610ef0278761b2dfd7">&#9670;&nbsp;</a></span>dvec3_muladds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_muladds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>v_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scalar</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dest += v * s (multiply-add, used in Verlet integration). </p>
+
+</div>
+</div>
+<a id="a22e38b31ee09d7da21b47b57392a1eba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22e38b31ee09d7da21b47b57392a1eba">&#9670;&nbsp;</a></span>dvec3_norm()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double dvec3_norm </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>v_vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Length: |v| </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="dvec3_8h_a22e38b31ee09d7da21b47b57392a1eba_cgraph.svg" width="410" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="add751e32ff88cf485914ecdb54bcf097"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add751e32ff88cf485914ecdb54bcf097">&#9670;&nbsp;</a></span>dvec3_norm2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double dvec3_norm2 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>v_vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Squared length: |v|² </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="dvec3_8h_add751e32ff88cf485914ecdb54bcf097_cgraph.svg" width="259" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a5200b49d2532d1c65147935560e6fabc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5200b49d2532d1c65147935560e6fabc">&#9670;&nbsp;</a></span>dvec3_normalize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_normalize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>v_vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Normalize v in-place. No-op if length is zero. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="dvec3_8h_a5200b49d2532d1c65147935560e6fabc_cgraph.svg" width="591" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a359f74777b0cdd5bc99c7c24cb4180b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a359f74777b0cdd5bc99c7c24cb4180b5">&#9670;&nbsp;</a></span>dvec3_scale()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_scale </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>v_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scalar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dest = v * s (uniform scale). </p>
+
+</div>
+</div>
+<a id="a1a8e0201888680fea9d22ab221cf3ef2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a8e0201888680fea9d22ab221cf3ef2">&#9670;&nbsp;</a></span>dvec3_set()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_set </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x_val</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y_val</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>z_val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set dest from three scalars. </p>
+
+</div>
+</div>
+<a id="a98af61b1fa7c66fd349618f272188ac2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98af61b1fa7c66fd349618f272188ac2">&#9670;&nbsp;</a></span>dvec3_sub()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_sub </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>a_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>b_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dest = a - b </p>
+
+</div>
+</div>
+<a id="a14226d4f4bde9722bad5b7a4c3953073"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14226d4f4bde9722bad5b7a4c3953073">&#9670;&nbsp;</a></span>dvec3_subfrom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_subfrom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>b_vec</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dest -= b (in-place subtract). </p>
+
+</div>
+</div>
+<a id="a8703e51b10a3c9c8d86ca4fd7e2dc448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8703e51b10a3c9c8d86ca4fd7e2dc448">&#9670;&nbsp;</a></span>dvec3_zero()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void dvec3_zero </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76">dvec3</a>&#160;</td>
+          <td class="paramname"><em>dest</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set all components to zero: dest = {0, 0, 0}. </p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dvec3_8h.html">dvec3.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
