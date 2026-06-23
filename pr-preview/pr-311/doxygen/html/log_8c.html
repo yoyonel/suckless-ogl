@@ -235,6 +235,7 @@ $(document).ready(function(){initNavTree('log_8c.html',''); initResizable(); });
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -246,19 +247,32 @@ $(document).ready(function(){initNavTree('log_8c.html',''); initResizable(); });
 <code>#include &quot;platform/platform_utils.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="tracy__log_8h_source.html">tracy_log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
-<code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;stdarg.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;strings.h&gt;</code><br />
 <code>#include &lt;time.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for log.c:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="log_8c__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a319b7e59753905eaa37fd00fbc4d3956" id="r_a319b7e59753905eaa37fd00fbc4d3956"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a319b7e59753905eaa37fd00fbc4d3956">LOG_PLATFORM_POSIX</a></td></tr>
+<tr class="separator:a319b7e59753905eaa37fd00fbc4d3956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25ed385b5999ff952d0ca3ef14130540" id="r_a25ed385b5999ff952d0ca3ef14130540"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a25ed385b5999ff952d0ca3ef14130540">LOG_MUTEX_TYPE</a>&#160;&#160;&#160;pthread_mutex_t</td></tr>
+<tr class="separator:a25ed385b5999ff952d0ca3ef14130540"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e48a080df5925ca429a14aad3ae1fa2" id="r_a7e48a080df5925ca429a14aad3ae1fa2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a7e48a080df5925ca429a14aad3ae1fa2">LOG_MUTEX_INIT</a>&#160;&#160;&#160;PTHREAD_MUTEX_INITIALIZER</td></tr>
+<tr class="separator:a7e48a080df5925ca429a14aad3ae1fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63199fe1c2aabd267771afa2ffc4228a" id="r_a63199fe1c2aabd267771afa2ffc4228a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a63199fe1c2aabd267771afa2ffc4228a">LOG_MUTEX_LOCK</a>(m)&#160;&#160;&#160;pthread_mutex_lock(m)</td></tr>
+<tr class="separator:a63199fe1c2aabd267771afa2ffc4228a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a392af00ed55a34821e5c74b2d92c8505" id="r_a392af00ed55a34821e5c74b2d92c8505"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a392af00ed55a34821e5c74b2d92c8505">LOG_MUTEX_UNLOCK</a>(m)&#160;&#160;&#160;pthread_mutex_unlock(m)</td></tr>
+<tr class="separator:a392af00ed55a34821e5c74b2d92c8505"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:afccd240f973cf154952fb917c9209719" id="r_afccd240f973cf154952fb917c9209719"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="log_8c.html#afccd240f973cf154952fb917c9209719a490d7b93a43f9c7422bb90f9fdb1556f">MILLI_DIVISOR</a> = 1000000
@@ -298,6 +312,85 @@ Variables</h2></td></tr>
 <tr class="memitem:a3614ab5bdd1c64935cb35097746a5338" id="r_a3614ab5bdd1c64935cb35097746a5338"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a3614ab5bdd1c64935cb35097746a5338">g_log_callback</a> = NULL</td></tr>
 <tr class="separator:a3614ab5bdd1c64935cb35097746a5338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a7e48a080df5925ca429a14aad3ae1fa2" name="a7e48a080df5925ca429a14aad3ae1fa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e48a080df5925ca429a14aad3ae1fa2">&#9670;&#160;</a></span>LOG_MUTEX_INIT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_MUTEX_INIT&#160;&#160;&#160;PTHREAD_MUTEX_INITIALIZER</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a63199fe1c2aabd267771afa2ffc4228a" name="a63199fe1c2aabd267771afa2ffc4228a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63199fe1c2aabd267771afa2ffc4228a">&#9670;&#160;</a></span>LOG_MUTEX_LOCK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_MUTEX_LOCK</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">m</td><td>)</td>
+          <td>&#160;&#160;&#160;pthread_mutex_lock(m)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a25ed385b5999ff952d0ca3ef14130540" name="a25ed385b5999ff952d0ca3ef14130540"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25ed385b5999ff952d0ca3ef14130540">&#9670;&#160;</a></span>LOG_MUTEX_TYPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_MUTEX_TYPE&#160;&#160;&#160;pthread_mutex_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a392af00ed55a34821e5c74b2d92c8505" name="a392af00ed55a34821e5c74b2d92c8505"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a392af00ed55a34821e5c74b2d92c8505">&#9670;&#160;</a></span>LOG_MUTEX_UNLOCK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_MUTEX_UNLOCK</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">m</td><td>)</td>
+          <td>&#160;&#160;&#160;pthread_mutex_unlock(m)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a319b7e59753905eaa37fd00fbc4d3956" name="a319b7e59753905eaa37fd00fbc4d3956"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a319b7e59753905eaa37fd00fbc4d3956">&#9670;&#160;</a></span>LOG_PLATFORM_POSIX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_PLATFORM_POSIX</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="afccd240f973cf154952fb917c9209719" name="afccd240f973cf154952fb917c9209719"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afccd240f973cf154952fb917c9209719">&#9670;&#160;</a></span>anonymous enum</h2>

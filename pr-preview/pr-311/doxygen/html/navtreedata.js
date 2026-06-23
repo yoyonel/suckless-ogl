@@ -83,15 +83,15 @@ var NAVTREEINDEX =
 "camera_8h.html#aa47646370ef1804643d987edb53fe2f7",
 "gl__common_8h.html#ad734625837606032212a5f0706243b60",
 "group__Environment.html#ga9ae155b103e5528d5cb4530cf6ec8d28",
-"main_8h_source.html",
-"postprocess_8vert.html#acdef7a1fd863a6d3770c1268cb06add3",
-"profiler_8h.html#ae71d1f1907f3753a6dc82b4dce3b5bfa",
-"shockwave_8frag.html#a7ac062e5878827722a84658042fc800f",
-"structAsyncRequest.html#a6e3b0d386eb88fbeb7f187f9de964376",
-"structGPUTimer.html#a17143da57587c19c5d114c9611a325db",
-"structPPExposureReadback.html#ae00274c14b24eba9e9aba08b80970525",
-"structShader.html#a3cab8e98d59adca31fc046c28278b697",
-"trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba3d3561353a27be3250ac1821fe104381"
+"lum__histogram_8h.html#aa64fd9d992cb9bde3f01e1acca71b659",
+"postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5",
+"profiler_8h.html#a46997d39034fb02d50a70dbf8a15d7de",
+"shockwave_8frag.html#a2302819624057372b0a63d2e2c8312c7",
+"structAsyncRequest.html",
+"structGPUStageInfo.html#ae92767f48a0622028fb91be036eb7548",
+"structPPExposureReadback.html#a71c8c331311e9fafcc0334bd37cc8ae6",
+"structSceneVisuals.html",
+"trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

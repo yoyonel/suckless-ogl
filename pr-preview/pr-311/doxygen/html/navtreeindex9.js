@@ -1,5 +1,10 @@
 var NAVTREEINDEX9 =
 {
+"structAsyncRequest.html":[5,0,16],
+"structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15":[5,0,16,1],
+"structAsyncRequest.html#a1dd7955cf29312ed208b259ce91f4d51":[5,0,16,3],
+"structAsyncRequest.html#a21b6f76ab00ac6b37e4cd45acba5225e":[5,0,16,6],
+"structAsyncRequest.html#a3050b10d8e5b74f241183ab01eec97b5":[5,0,16,9],
 "structAsyncRequest.html#a6e3b0d386eb88fbeb7f187f9de964376":[5,0,16,10],
 "structAsyncRequest.html#a77510eb6e6dba67316f278ad55da34f9":[5,0,16,2],
 "structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995":[5,0,16,7],
@@ -244,10 +249,5 @@ var NAVTREEINDEX9 =
 "structGPUStage.html#af3691e1203e39115a62eb17e1f58d594":[5,0,54,0],
 "structGPUStageInfo.html":[5,0,55],
 "structGPUStageInfo.html#a713c400721e047edae10646a1c39ecd0":[5,0,55,1],
-"structGPUStageInfo.html#aa26aba38fa9e9f16179733e92c4db696":[5,0,55,0],
-"structGPUStageInfo.html#ae92767f48a0622028fb91be036eb7548":[5,0,55,2],
-"structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da":[5,0,55,3],
-"structGPUStageRAII.html":[5,0,56],
-"structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65":[5,0,56,0],
-"structGPUTimer.html":[5,0,57]
+"structGPUStageInfo.html#aa26aba38fa9e9f16179733e92c4db696":[5,0,55,0]
 };

@@ -1,5 +1,10 @@
 var NAVTREEINDEX10 =
 {
+"structGPUStageInfo.html#ae92767f48a0622028fb91be036eb7548":[5,0,55,2],
+"structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da":[5,0,55,3],
+"structGPUStageRAII.html":[5,0,56],
+"structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65":[5,0,56,0],
+"structGPUTimer.html":[5,0,57],
 "structGPUTimer.html#a17143da57587c19c5d114c9611a325db":[5,0,57,0],
 "structGPUTimer.html#a6cbbcc29ad48e891111c7ab4984261b6":[5,0,57,1],
 "structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c":[5,0,57,2],
@@ -244,10 +249,5 @@ var NAVTREEINDEX10 =
 "structPPExposureReadback.html#a302d30d06a1e2d327ccc3d8cf2b1587f":[5,0,91,8],
 "structPPExposureReadback.html#a358fc488663739dae590afe0f6f5f935":[5,0,91,3],
 "structPPExposureReadback.html#a42b6ed57a43647cbe60fa49806ef29e6":[5,0,91,4],
-"structPPExposureReadback.html#a45d7d07e80c1ddde925c20c81191ef87":[5,0,91,7],
-"structPPExposureReadback.html#a71c8c331311e9fafcc0334bd37cc8ae6":[5,0,91,9],
-"structPPExposureReadback.html#a7b8e6a12b111749203b5455f48602719":[5,0,91,0],
-"structPPExposureReadback.html#a7bda81eb2c8567e430a4061627f9f32e":[5,0,91,6],
-"structPPExposureReadback.html#a86e4736bdc99f7d4577358bf430f03d3":[5,0,91,10],
-"structPPExposureReadback.html#ab0f01de733bc2bd8904fb2e50934d758":[5,0,91,5]
+"structPPExposureReadback.html#a45d7d07e80c1ddde925c20c81191ef87":[5,0,91,7]
 };

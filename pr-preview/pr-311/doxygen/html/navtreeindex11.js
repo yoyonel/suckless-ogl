@@ -1,5 +1,10 @@
 var NAVTREEINDEX11 =
 {
+"structPPExposureReadback.html#a71c8c331311e9fafcc0334bd37cc8ae6":[5,0,91,9],
+"structPPExposureReadback.html#a7b8e6a12b111749203b5455f48602719":[5,0,91,0],
+"structPPExposureReadback.html#a7bda81eb2c8567e430a4061627f9f32e":[5,0,91,6],
+"structPPExposureReadback.html#a86e4736bdc99f7d4577358bf430f03d3":[5,0,91,10],
+"structPPExposureReadback.html#ab0f01de733bc2bd8904fb2e50934d758":[5,0,91,5],
 "structPPExposureReadback.html#ae00274c14b24eba9e9aba08b80970525":[5,0,91,2],
 "structPPGPUResources.html":[5,0,92],
 "structPPGPUResources.html#a05412258e94faf76b67e4d8784b9a395":[5,0,92,6],
@@ -244,10 +249,5 @@ var NAVTREEINDEX11 =
 "structSceneShaders.html#aecc0cb5172b564e0024959dbdabcf0c2":[5,0,99,2],
 "structSceneSimulation.html":[5,0,100],
 "structSceneSimulation.html#a02df20059a9bc4b5496f2436ad6df74a":[5,0,100,1],
-"structSceneSimulation.html#a2430eee7ff36a9c981dc98dcb632fe64":[5,0,100,0],
-"structSceneVisuals.html":[5,0,101],
-"structSceneVisuals.html#a0ef3c8494a9616d7b521bbc4d4113aa3":[5,0,101,1],
-"structSceneVisuals.html#a4a70708500c964eca2b8fbb6e32e4ec1":[5,0,101,0],
-"structSceneVisuals.html#abdd2ce072165d99c89ce71bdb93a4737":[5,0,101,2],
-"structShader.html":[5,0,103]
+"structSceneSimulation.html#a2430eee7ff36a9c981dc98dcb632fe64":[5,0,100,0]
 };

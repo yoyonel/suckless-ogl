@@ -1,5 +1,10 @@
 var NAVTREEINDEX12 =
 {
+"structSceneVisuals.html":[5,0,101],
+"structSceneVisuals.html#a0ef3c8494a9616d7b521bbc4d4113aa3":[5,0,101,1],
+"structSceneVisuals.html#a4a70708500c964eca2b8fbb6e32e4ec1":[5,0,101,0],
+"structSceneVisuals.html#abdd2ce072165d99c89ce71bdb93a4737":[5,0,101,2],
+"structShader.html":[5,0,103],
 "structShader.html#a3cab8e98d59adca31fc046c28278b697":[5,0,103,5],
 "structShader.html#a40b936cae39a7242aac2814066b966f2":[5,0,103,2],
 "structShader.html#a63fc645b9235c69c54c1a5b6a019db69":[5,0,103,3],
@@ -244,10 +249,5 @@ var NAVTREEINDEX12 =
 "trail__renderer_8h.html#a74ce508c09a63cbec3cd0f1017e2d8c5":[6,0,2,85,13],
 "trail__renderer_8h.html#a7e1c8078c51686832375c5f3f520b3e6":[6,0,2,85,10],
 "trail__renderer_8h.html#ab80eca51a868157a5bba3a75e72abb1f":[6,0,2,85,15],
-"trail__renderer_8h.html#ab8add3fd9059ce9286080fc30901afd2":[6,0,2,85,20],
-"trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03":[6,0,2,85,26],
-"trail__renderer_8h.html#ad65403268c340a602a289598ac94716d":[6,0,2,85,28],
-"trail__renderer_8h.html#ad796ac6e55dc2e5e8f3889babffd9f99":[6,0,2,85,12],
-"trail__renderer_8h.html#ae48865aefa5f44067796b4771d230cc4":[6,0,2,85,23],
-"trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b":[6,0,2,85,4]
+"trail__renderer_8h.html#ab8add3fd9059ce9286080fc30901afd2":[6,0,2,85,20]
 };
