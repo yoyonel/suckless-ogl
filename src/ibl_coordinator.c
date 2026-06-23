@@ -6,11 +6,14 @@
 #include "ibl_coordinator.h"
 
 #include "app_settings.h"
+#include "gl_common.h"
 #include "log.h"
 #include "pbr.h"
+#include "perf_timer.h"
 #include "utils.h"
 #include <float.h>
 #include <math.h>
+#include <stdint.h>
 #include <string.h>
 
 /**
@@ -132,7 +135,7 @@ void ibl_coordinator_init(IBLCoordinator* coord, GLuint spmap_program,
                           GLuint irmap_program, GLuint lum_pass1_program,
                           GLuint lum_pass2_program)
 {
-	safe_memset(coord, sizeof(IBLCoordinator), 0, sizeof(IBLCoordinator));
+	*coord = (IBLCoordinator){0};
 	coord->state = IBL_STATE_IDLE;
 
 	coord->spmap_program = spmap_program;

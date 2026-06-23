@@ -74,8 +74,7 @@ $(BUILD_DIR)/Makefile:
 
 clean:
 	@if [ -d $(BUILD_DIR) ]; then $(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target clean; fi
-	@$(DISTROBOX) rm -rf $(BUILD_DIR)
-	@rm -rf .lint_cache
+	@$(DISTROBOX) rm -rf $(BUILD_DIR) build-lint .lint_full
 
 docs:
 	@echo "Building MkDocs documentation..."
@@ -119,7 +118,7 @@ docs-clean:
 
 clean-all: docs-clean
 	@echo "Removing all build directories..."
-	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) $(BUILD_ASAN_DIR) build-ssbo build-tracy
+	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) $(BUILD_ASAN_DIR) build-ssbo build-tracy build-lint .lint_full
 	@rm -f build_*.log
 
 rebuild: clean-all all
@@ -165,13 +164,12 @@ CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cj
 CLT_CMD := $(shell $(DISTROBOX) command -v cltcache 2>/dev/null)
 CLANG_TIDY := $(if $(CLT_CMD),$(CLT_CMD) clang-tidy,clang-tidy)
 
-lint-deps: $(BUILD_DIR)/compile_commands.json
-	@echo "Ensuring generated headers are ready..."
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad --parallel $(NPROCS)
-
-lint: lint-deps
-	@echo "Linting C code (Incremental)..."
-	@$(DISTROBOX) python3 scripts/lint_incremental.py $(BUILD_DIR)
+lint:
+	@$(DISTROBOX) $(CMAKE) -B build-lint -G Ninja \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+		-DENABLE_CLANG_TIDY=ON \
+		-DCMAKE_C_COMPILER_LAUNCHER=ccache
+	@$(DISTROBOX) $(CMAKE) --build build-lint
 	@echo "Linting Python scripts..."
 	@$(TOOL_RUN) ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
@@ -180,28 +178,17 @@ lint-clean:
 	@echo "Cleaning lint cache..."
 	@rm -rf .lint_cache*
 
-# Ensure compile_commands.json is up to date before linting
-$(BUILD_DIR)/compile_commands.json: $(BUILD_DIR)/Makefile
-	@$(DISTROBOX) $(CMAKE) -B $(BUILD_DIR) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-
 # Full linting with all features enabled (Tracy, SSBO, etc.)
 LINT_FULL_DIR := .lint_full
-LINT_FULL_JSON := $(LINT_FULL_DIR)/compile_commands.json
 
-$(LINT_FULL_JSON): CMakeLists.txt Makefile
-	@echo "Generating compile_commands.json with all features enabled..."
-	@mkdir -p $(LINT_FULL_DIR)
-	@$(DISTROBOX) $(CMAKE) -B $(LINT_FULL_DIR) \
+lint-full:
+	@$(DISTROBOX) $(CMAKE) -B $(LINT_FULL_DIR) -G Ninja \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		-DENABLE_TRACY=ON \
 		-DUSE_SSBO_RENDERING=ON \
-		-G "Unix Makefiles" > /dev/null
-
-lint-full: $(LINT_FULL_JSON)
-	@echo "Ensuring generated headers are ready..."
-	@$(DISTROBOX) $(CMAKE) --build $(LINT_FULL_DIR) --target glad --parallel $(NPROCS) > /dev/null
-	@echo "Linting C code (Full Coverage)..."
-	@$(DISTROBOX) python3 scripts/lint_incremental.py $(LINT_FULL_DIR)
+		-DENABLE_CLANG_TIDY=ON \
+		-DCMAKE_C_COMPILER_LAUNCHER=ccache
+	@$(DISTROBOX) $(CMAKE) --build $(LINT_FULL_DIR)
 	@echo "✓ Full linting passed"
 
 check-nolint:

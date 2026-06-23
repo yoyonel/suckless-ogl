@@ -1,6 +1,8 @@
 #include "billboard_rendering.h"
 #include "billboard_sorting.h"
+#include "gl_common.h"
 #include "ibl_coordinator.h"
+#include "icosphere.h"
 #include "instanced_rendering.h"
 #include "light_probes.h"
 #include "material.h"
@@ -10,9 +12,10 @@
 #include "scene_shaders.h"
 #include "scene_visuals.h"
 #include "shader.h"
+#include "shockwave.h"
 #include "skybox.h"
+#include "trail_renderer.h"
 #include <stdlib.h>
-
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif

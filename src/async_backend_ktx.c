@@ -1,7 +1,10 @@
 #include "async_backend.h"
+#include "async_loader.h"
+#include "gl_common.h"
 #include "log.h"
 #include "utils.h"
 #include <ktx.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 

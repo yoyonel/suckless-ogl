@@ -1,6 +1,7 @@
 #include "dvec3.h"
 #include "nbody.h"
 #include "nbody_internal.h"
+#include "nbody_types.h"
 #include "utils.h"
 #include <cglm/vec3.h>
 #include <math.h>

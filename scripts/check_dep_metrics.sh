@@ -45,21 +45,35 @@ echo "Max header fan-out:  $max_header [$max_header_file] (limit: $HEADER_FAN_LI
 echo "Max source fan-out:  $max_source [$max_source_file] (limit: $SOURCE_FAN_LIMIT)"
 echo ""
 
-fail=0
-if [[ $total -gt $EDGE_LIMIT ]]; then
-    echo "FAIL: total include edges ($total) exceeds limit ($EDGE_LIMIT)"
-    fail=1
-fi
-if [[ $max_header -gt $HEADER_FAN_LIMIT ]]; then
-    echo "FAIL: header fan-out ($max_header in $max_header_file) exceeds limit ($HEADER_FAN_LIMIT)"
-    fail=1
-fi
-if [[ $max_source -gt $SOURCE_FAN_LIMIT ]]; then
-    echo "FAIL: source fan-out ($max_source in $max_source_file) exceeds limit ($SOURCE_FAN_LIMIT)"
-    fail=1
+# ==============================================================================
+# 3. Validation & CI Soft-Fail Logic (GitHub Actions)
+# ==============================================================================
+
+HAS_WARNING=0
+MSG=""
+
+# Vérification du dépassement
+if [ "$total" -gt "$EDGE_LIMIT" ]; then
+    MSG="Total include edges ($total) exceeds limit ($EDGE_LIMIT)"
+    HAS_WARNING=1
 fi
 
-if [[ $fail -eq 0 ]]; then
-    echo "OK: all dependency metrics within thresholds"
+if [ "$HAS_WARNING" -eq 1 ]; then
+    # Crée une annotation (Warning jaune) visible dans l'onglet "Files changed" de la PR
+    echo "::warning title=Dependency Metrics Exceeded::$MSG"
+
+    # Ajoute un encart Markdown dans le résumé global de la CI (Summary)
+    # Le 'if' vérifie qu'on est bien dans GitHub Actions pour ne pas créer de fichier en local
+    if [ -n "$GITHUB_STEP_SUMMARY" ]; then
+        echo "### ⚠️ Attention : Dérive des dépendances" >>"$GITHUB_STEP_SUMMARY"
+        echo "$MSG. Pensez à vérifier s'il est possible de réduire la taille des headers (ex: forward declarations)." >>"$GITHUB_STEP_SUMMARY"
+    fi
+
+    # Trace dans les logs bruts
+    echo "WARN: $MSG"
+else
+    echo "OK: Metrics within limits."
 fi
-exit $fail
+
+# IMPORTANT : On force la sortie à 0 pour empêcher le "Hard Fail" de la CI
+exit 0

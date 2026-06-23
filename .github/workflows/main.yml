@@ -25,40 +25,44 @@ jobs:
   lint-and-format:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}-ci:latest
+    container:
+      image: ghcr.io/${{ github.repository }}-ci:latest
+      options: --user root
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Cache Clang-Tidy Results
-        uses: actions/cache@v5
+      - name: Install tools (fallback)
+        run: |
+          if ! command -v just &>/dev/null || ! command -v ninja &>/dev/null || ! command -v ccache &>/dev/null || ! command -v glslangValidator &>/dev/null; then
+            apt-get update && apt-get install -y just ninja-build ccache glslang-tools
+          fi
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: |
-            ~/.cache/cltcache
-          key: ${{ runner.os }}-cltcache-${{ hashFiles('src/**/*.c', 'include/**/*.h', '.clang-tidy', 'Makefile') }}
-          restore-keys: |
-            ${{ runner.os }}-cltcache-
+          key: ${{ runner.os }}-ccache-${{ hashFiles('src/**/*.c', 'include/**/*.h', 'CMakeLists.txt') }}
 
       - name: Check for new NOLINT suppressions
         run: |
           git config --global --add safe.directory '*'
           BASE="origin/${{ github.base_ref || 'master' }}"
-          make check-nolint CONTAINER_RUN="" NOLINT_BASE_REF="${BASE}"
+          just check-nolint "${BASE}"
 
       - name: Dependency metrics gate
-        run: bash scripts/check_dep_metrics.sh
+        run: just dep-metrics
 
       - name: Run Format & Lint
         run: |
           git config --global --add safe.directory '*'
           clang-format --version
-          make format CONTAINER_RUN=""
+          just format
           git diff --exit-code || (echo "❌ Format error" && exit 1)
           # Linting stays strict for code quality, but we pass flags if needed for build steps
-          make lint CONTAINER_RUN=""
-          make lint-full CONTAINER_RUN=""
+          just lint
+          just lint-full
 
       - name: IWYU Include Hygiene (advisory)
         if: always()
@@ -151,7 +155,7 @@ jobs:
           name: coverage-report
           path: build-coverage/coverage_report/
 
-    # --- JOB : AUDIT DE BINAIRE ---
+  # --- JOB : AUDIT DE BINAIRE ---
   binary-audit:
     # needs: [test-and-coverage]
     runs-on: ubuntu-latest
@@ -172,6 +176,7 @@ jobs:
         run: |
           cmake -B build-audit \
             -DCMAKE_C_FLAGS="-gdwarf-4 -ffunction-sections -fdata-sections" \
+            -DCMAKE_CXX_FLAGS="-gdwarf-4 -ffunction-sections -fdata-sections" \
             -DCMAKE_EXE_LINKER_FLAGS="-Wl,--gc-sections" \
             -DCMAKE_BUILD_TYPE=Debug .
           cmake --build build-audit --parallel $(nproc)
@@ -186,11 +191,22 @@ jobs:
 
       - name: Gatekeeper (Size Limit)
         run: |
-          SIZE=$(du -k build-audit/app | cut -f1)
-          if [ "$SIZE" -gt 3000 ]; then
-            echo "::error::Binaire trop lourd : ${SIZE}KB (Limite: 3000KB)"
+          # On crée une copie strippée pour mesurer le "vrai" poids (payload de distribution)
+          cp build-audit/app build-audit/app_stripped
+          strip --strip-debug build-audit/app_stripped
+
+          SIZE=$(du -k build-audit/app_stripped | cut -f1)
+
+          # Nouvelle limite pour un moteur avec transcodeur KTX2 (ex: 2500 KB)
+          LIMIT=2500
+
+          if [ "$SIZE" -gt "$LIMIT" ]; then
+            echo "::error::Binaire strippé trop lourd : ${SIZE}KB (Limite: ${LIMIT}KB)"
             exit 1
           fi
+
+          # Optionnel : Afficher la taille exacte pour info dans les logs
+          echo "::notice::Taille finale du binaire strippé : ${SIZE}KB"
 
   # --- JOB : TEST INTÉGRATION TRACY (HEADLESS) ---
   test-tracy:
@@ -252,7 +268,7 @@ jobs:
       - name: Generate and Verify Docs
         run: |
           git config --global --add safe.directory '*'
-          make docs CONTAINER_RUN=""
+          make docs CONTAINER_RUN="" PY_RUN="python3"
 
       - name: Download Coverage for Preview
         if: github.event_name == 'pull_request'

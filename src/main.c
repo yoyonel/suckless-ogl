@@ -7,8 +7,8 @@
 #include "platform/platform_fs.h"
 #include "platform/platform_utils.h"
 #include "tracy_manager.h"
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int main(int argc, char** argv)
 {

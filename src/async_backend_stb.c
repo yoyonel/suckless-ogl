@@ -1,9 +1,13 @@
 #include "async_backend.h"
+#include "async_loader.h"
+#include "gl_common.h"
+#include "perf_timer.h"
 #include "profiler.h"
 #include "simd_utils.h"
 #include "texture.h"
 #include "utils.h"
 #include <stb_image.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 

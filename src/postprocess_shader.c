@@ -1,7 +1,11 @@
 #include "log.h"
+#include "postprocess.h"
 #include "postprocess_internal.h"
+#include "pp_shader_state.h"
 #include "profiler.h"
+#include "shader.h"
 #include "utils.h"
+#include <stdio.h>  // for NULL
 
 bool pp_is_shader_in_cache(PostProcess* post_processing, Shader* shader)
 {

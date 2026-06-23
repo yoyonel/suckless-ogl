@@ -1,12 +1,13 @@
 #include "async_loader.h"
 
+#include "asset_manager.h"
 #include "async_backend.h"
 #include "log.h"
 #include "perf_timer.h"
 #include "profiler.h"
 #include "tracy_manager.h"
 #include "utils.h"
-#include <pthread.h>
+#include <pthread.h>  // IWYU pragma: export
 #include <stdlib.h>
 #include <string.h>
 

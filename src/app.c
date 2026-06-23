@@ -1,5 +1,6 @@
 #include "app.h"
 
+#include "adaptive_sampler.h"
 #include "app_input.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
@@ -9,10 +10,19 @@
 #include "async/async_coordinator.h"
 #include "async_loader.h"
 #include "bool_utils.h"
+#include "camera.h"
 #include "camera_input.h"
 #include "env_manager.h"
+#include "gamepad_input.h"
+#include "icosphere.h"
+#ifdef USE_SSBO_RENDERING
+#include "ssbo_rendering.h"
+#else
+#include "instanced_rendering.h"
+#endif
 #include "lum_histogram.h"
-#include "postprocess_internal.h"
+#include "postprocess.h"
+#include "postprocess_internal.h"  // IWYU pragma: keep
 #include "profiler.h"
 #include "renderer.h"
 #include "scene.h"

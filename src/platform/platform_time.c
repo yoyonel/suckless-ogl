@@ -1,5 +1,6 @@
 #include "platform/platform_time.h"
 
+#include <stdint.h>
 #include <time.h>
 
 #ifdef _WIN32

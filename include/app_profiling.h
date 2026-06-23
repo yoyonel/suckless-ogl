@@ -10,12 +10,12 @@
  * only needs a single `#include "app_profiling.h"`.
  */
 
-#include "fps.h"
-#include "gpu_profiler.h"
-#include "gpu_profiler_ui.h"
-#include "gpu_usage.h"
-#include "perf_mode.h"
-#include "tracy_manager.h"
+#include "fps.h"              // IWYU pragma: export
+#include "gpu_profiler.h"     // IWYU pragma: export
+#include "gpu_profiler_ui.h"  // IWYU pragma: export
+#include "gpu_usage.h"        // IWYU pragma: export
+#include "perf_mode.h"        // IWYU pragma: export
+#include "tracy_manager.h"    // IWYU pragma: export
 #include <stdbool.h>
 
 /**

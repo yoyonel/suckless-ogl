@@ -1,20 +1,33 @@
 #include "app_ui.h"
 
+#include "adaptive_sampler.h"
 #include "app.h"
+#include "app_binding.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
+#include "app_settings.h"
 #include "app_ui_layout.h" /* Private: layout constants, keyboard/gamepad data */
 #include "bool_utils.h"
+#include "effects/fx_bloom.h"
 #include "env_manager.h"
+#include "gamepad_input.h"
 #include "glad/glad.h"
+#include "ibl_coordinator.h"
 #include "nbody.h"
-#include "postprocess_internal.h"
+#include "nbody_types.h"
+#include "postprocess_internal.h"  // IWYU pragma: keep
+#include "postprocess_readback.h"
+#include "postprocess_setters.h"
+#include "pp_params.h"
 #include "scene.h"
 #include "scene_simulation.h"
 #include "texture.h"
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
+#include <cglm/types.h>
+#include <cglm/util.h>
+#include <cglm/vec3.h>
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>

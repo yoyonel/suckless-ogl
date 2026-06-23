@@ -4,7 +4,7 @@
  * STB headers use standard allocators internally, which get intercepted
  * by these macro redirections — no explicit STBI_MALLOC override needed.
  */
-#include "mem.h"
+#include "mem.h"  // IWYU pragma: keep
 #else
 /* Standard Allocators (explicit overrides for STB) */
 #define STBI_MALLOC(sz) malloc(sz)

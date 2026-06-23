@@ -1,7 +1,9 @@
 #include "asset_manager.h"
 
 #include "utils.h"
+#include <stdint.h>
 #include <string.h>
+#include <strings.h>
 
 /* --- LE REGISTRE (Data-Oriented Pattern) --- */
 typedef struct {

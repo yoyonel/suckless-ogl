@@ -1,6 +1,7 @@
 #include "async/async_coordinator.h"
 
 #include "app.h"
+#include "async_loader.h"
 #include "gl_common.h"
 #include "log.h"
 #include "platform/platform_utils.h"

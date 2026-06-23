@@ -10,7 +10,9 @@
 
 #include "gpu_profiler.h"
 #include "log.h"
-#include "postprocess_internal.h"
+#include "postprocess.h"
+#include "postprocess_internal.h"  // IWYU pragma: keep
+#include "pp_params.h"
 #include <math.h>
 #include <string.h>
 

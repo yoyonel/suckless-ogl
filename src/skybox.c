@@ -1,5 +1,6 @@
 #include "skybox.h"
 
+#include "gl_common.h"
 #include "glad/glad.h"
 #include "render_utils.h"
 #include "shader.h"

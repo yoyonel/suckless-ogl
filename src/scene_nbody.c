@@ -3,6 +3,7 @@
 #include "billboard_sorting.h"
 #include "instanced_rendering.h"
 #include "nbody.h"
+#include "nbody_types.h"
 #include "platform/platform_utils.h"
 #include "profiler.h"
 #include "scene.h"
@@ -10,8 +11,10 @@
 #include "scene_simulation.h"
 #include "scene_visuals.h"
 #include "shockwave.h"
+#include "sphere_types.h"
 #include "trail_renderer.h"
 #include "utils.h"
+#include <stdio.h>
 
 void scene_toggle_nbody(Scene* scene)
 {

@@ -1,10 +1,14 @@
 #include "gpu_profiler_ui.h"
 
+#include "adaptive_sampler.h"
 #include "app_metrics.h"
+#include "gpu_profiler.h"
 #include "gpu_profiler_ui_layout.h" /* Private: layout constants */
 #include "ui.h"
 #include "utils.h"
+#include <cglm/types.h>
 #include <math.h>
+#include <stdint.h>
 #include <string.h>
 
 /* --- Local Helpers --- */

@@ -1,5 +1,6 @@
 #include "perf_timer.h"
 
+#include "gl_common.h"
 #include "log.h"
 #include <string.h>
 #include <time.h>  // Pour clock_gettime et CLOCK_MONOTONIC
@@ -32,7 +33,6 @@ void perf_timer_start(PerfTimer* timer)
 	if (timer == NULL) {
 		return;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->start);
 }
 
@@ -41,7 +41,6 @@ double perf_timer_elapsed_ms(PerfTimer* timer)
 	if (timer == NULL) {
 		return 0.0;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
@@ -57,7 +56,6 @@ double perf_timer_elapsed_us(PerfTimer* timer)
 	if (timer == NULL) {
 		return 0.0;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
@@ -73,7 +71,6 @@ double perf_timer_elapsed_s(PerfTimer* timer)
 	if (timer == NULL) {
 		return 0.0;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
@@ -184,6 +181,7 @@ void gpu_timer_cleanup(GPUTimer* timer)
 
 #ifdef TRACY_ENABLE
 #include "profiler.h"
+#include "tracy/TracyC.h"
 #include "utils.h"
 // Source location statique pour les tâches hybrides afin d'éviter la double
 // barre dans Tracy (on laisse 'function' à NULL pour n'afficher que le label)

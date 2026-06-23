@@ -4,7 +4,7 @@
 #include "gpu_profiler.h"
 #include "log.h"
 #include "utils.h"
-#include <stdio.h>
+#include <stdint.h>
 
 static void format_missed_frames(const AdaptiveSampler* sampler, char* buffer,
                                  size_t size)

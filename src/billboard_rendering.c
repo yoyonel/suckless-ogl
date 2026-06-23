@@ -2,6 +2,7 @@
 
 #include "gl_common.h"
 #include "render_utils.h"
+#include "sphere_types.h"
 #include <assert.h>
 #include <stddef.h>
 

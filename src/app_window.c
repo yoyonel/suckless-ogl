@@ -2,6 +2,7 @@
 #include "app_input.h"
 #include "app_settings.h"
 #include "window.h"
+#include <stddef.h>
 
 /* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int app_window_subsys_init(App* app)

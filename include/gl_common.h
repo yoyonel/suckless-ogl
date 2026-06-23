@@ -10,7 +10,7 @@
 #define GL_COMMON_H
 
 #ifndef GL_COMMON_NO_GLAD
-#include "glad/glad.h"
+#include "glad/glad.h"  // IWYU pragma: export
 #else
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
@@ -123,10 +123,10 @@ void glVertexBindingDivisor(GLuint bindingindex, GLuint divisor);
 #endif
 
 #ifndef GL_COMMON_NO_GLFW
-#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>  // IWYU pragma: export
 #endif
-#include <stddef.h>
-#include <stdint.h>
+#include <stddef.h>  // IWYU pragma: export
+#include <stdint.h>  // IWYU pragma: export
 
 /** @brief Minimum number of vertex attributes guaranteed by OpenGL 3.3+. */
 enum { MAX_VERTEX_ATTRIBS_BASELINE = 16 };

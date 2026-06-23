@@ -1,6 +1,8 @@
 #include "tracy_log.h"
 
+#include "log.h"
 #include "profiler.h"
+#include <stdint.h>
 #include <string.h>
 
 void tracy_log_message(LogLevel level, const char* msg)

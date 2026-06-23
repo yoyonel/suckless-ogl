@@ -4,6 +4,7 @@
 #include "log.h"
 #include "shader.h"
 #include "utils.h"
+#include <cglm/types.h>
 #include <cglm/vec3.h>
 #include <math.h>
 

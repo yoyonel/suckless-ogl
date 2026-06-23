@@ -8,6 +8,9 @@
 
 #include "postprocess_presets.h"
 
+#include "postprocess.h"
+#include "postprocess_internal.h"
+
 /* ── Helper macros (private to this TU) ───────────────────────────── */
 
 #define BANDING_COMMON_BASE                                      \

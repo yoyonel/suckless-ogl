@@ -2,24 +2,34 @@
 #include "app_settings.h"
 #include "asset_manager.h"
 #include "billboard_rendering.h"
+#include "billboard_sorting.h"
 #include "ibl_coordinator.h"
+#include "icosphere.h"
 #include "instanced_rendering.h"
 #include "light_probes.h"
 #include "log.h"
 #include "material.h"
+#include "pbr.h"
 #include "platform/platform_fs.h"
 #include "platform/platform_utils.h"
 #include "render_utils.h"
 #include "scene.h"
+#include "scene_config.h"
 #include "scene_gpu_resources.h"
 #include "scene_internal.h"
 #include "scene_shaders.h"
 #include "scene_simulation.h"
+#include "scene_uniforms.h"
 #include "scene_visuals.h"
+#include "shader.h"
+#include "skybox.h"
 #include "utils.h"
+#include <cglm/affine-pre.h>
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/vec3.h>
 #include <stdlib.h>
 #include <string.h>
-
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif

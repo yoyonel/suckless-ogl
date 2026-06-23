@@ -6,7 +6,11 @@
 #include "platform/platform_utils.h"
 #include "profiler.h"
 #include "shader.h"
+#include "sphere_types.h"
+#include <cglm/types.h>
+#include <cglm/vec3.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 /* Verify that C struct matches the GLSL layout (128 bytes). */

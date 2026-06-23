@@ -1,8 +1,9 @@
 // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 #include "sh_math.h"
 
+#include <cglm/types.h>
+#include <cglm/vec3.h>
 #include <math.h>
-#include <string.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -34,8 +35,9 @@ void sh_zero(SH9* sh_ptr)
 	if (!sh_ptr) {
 		return;
 	}
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(sh_ptr, 0, sizeof(SH9));
+
+	/* Le compilateur gère la taille et l'initialisation à zéro */
+	*sh_ptr = (SH9){0};
 }
 
 void sh_project_directional(const vec3 dir, const vec3 color, SH9* out_sh)

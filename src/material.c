@@ -1,5 +1,6 @@
 #include "material.h"
 
+#include "gl_common.h"
 #include "io.h"
 #include "log.h"
 #include "platform/platform_utils.h"
