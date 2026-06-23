@@ -1,12 +1,16 @@
 #include "postprocess_input.h"
 
+#include "action_notifier.h"
 #include "app_settings.h"
+#include "effect_benchmark.h"
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "log.h"
-#include "postprocess_internal.h"
+#include "postprocess.h"
 #include "postprocess_presets.h"
 #include "utils.h"
+#include <GLFW/glfw3.h>
+#include <stdbool.h>
 #include <string.h>
 
 enum { NOTIF_BUF_SIZE = 128 };

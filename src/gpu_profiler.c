@@ -2,9 +2,11 @@
 
 #include "adaptive_sampler.h"
 #include "glad/glad.h"
+#include "metric_stack.h"
 #include "profiler.h"
 #include "utils.h"
 #include <stddef.h> /* size_t */
+#include <stdint.h>
 
 #ifdef TRACY_ENABLE
 #include "tracy_gpu.h"

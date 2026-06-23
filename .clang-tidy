@@ -1,12 +1,12 @@
 # .clang-tidy
 ---
-Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*,misc-*,performance-*,readability-*,cert-*,portability-*,-readability-identifier-naming,-hicpp-no-array-decay,-cppcoreguidelines-pro-type-vararg,-clang-analyzer-deadcode.DeadStores,-clang-analyzer-security.insecureAPI.vararg,-misc-non-private-member-variables-in-classes,-performance-unnecessary-value-param,-misc-unused-parameters'
+Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*,misc-*,performance-*,readability-*,cert-*,portability-*,-readability-identifier-naming,-hicpp-no-array-decay,-cppcoreguidelines-pro-type-vararg,-clang-analyzer-deadcode.DeadStores,-clang-analyzer-security.insecureAPI.vararg,-misc-non-private-member-variables-in-classes,-performance-unnecessary-value-param,-misc-unused-parameters,misc-include-cleaner'
 HeaderFilterRegex: '^(src/|include/).*'
 WarningsAsErrors: '*'
 
 CheckOptions:
-  - key:             misc-include-cleaner.IgnoreHeaders
-    value:           'postprocess_internal\.h'
+  # - key:             misc-include-cleaner.IgnoreHeaders
+  #   value:           'postprocess_internal\.h'
   - key:             misc-include-cleaner.MissingIncludes
     value:           'false'
   - key:             readability-implicit-bool-conversion.AllowIntegerConditions
@@ -19,3 +19,7 @@ CheckOptions:
     value:           '200'
   - key:             readability‑identifier‑length.MinLength
     value:           '2'
+  - key:             misc-include-cleaner.IgnoreHeaders
+    value:           '(bits/.*|sys/.*|pthread.*|cglm/.*|linux/.*|asm/.*)'
+  - key:             misc-include-cleaner.MissingIncludes
+    value:           'false'

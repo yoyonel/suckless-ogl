@@ -5,6 +5,7 @@
 
 #include "async_backend.h"
 
+#include "asset_manager.h"
 #include <stddef.h>
 
 const AsyncBackendInterface* async_backend_get(AssetType type)

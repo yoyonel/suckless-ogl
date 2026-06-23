@@ -4,11 +4,16 @@
 
 #ifdef TRACY_ENABLE
 
+#include "async_loader.h"
 #include "mem.h"
 #include "profiler.h"
 #include "render_utils.h"
+#include "tracy/TracyC.h"
+#include "tracy_gpu.h"
 #include <cJSON.h>
 #include <pthread.h>
+#include <stddef.h>
+#include <stdint.h>
 
 void tracy_manager_init_global(void)
 {

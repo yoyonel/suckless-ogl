@@ -1,6 +1,10 @@
 #include "nbody.h"
+#include "nbody_types.h"
+#include "sphere_types.h"
+#include <cglm/affine-pre.h>
 #include <cglm/affine.h>
 #include <cglm/mat4.h>
+#include <cglm/types.h>
 #include <cglm/vec3.h>
 
 /* Note : SphereInstance est déjà connu ici via le nbody.h (qui inclut

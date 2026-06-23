@@ -46,7 +46,7 @@ xvfb_wrapper := ".github/workflows/scripts/run_test_with_xvfb.sh"
 extra_cmake_flags := ""
 
 # ApiTrace configuration
-apitrace_dir := env_var("HOME") / ".local/apitrace-latest-Linux"
+apitrace_dir := env("HOME") / ".local/apitrace-latest-Linux"
 apitrace_bin := `if [ -f "{{apitrace_dir}}/bin/apitrace" ]; then echo "{{apitrace_dir}}/bin/apitrace"; else echo "apitrace"; fi`
 
 # Container engine detection
@@ -64,7 +64,6 @@ default:
 # =============================================================================
 
 ktx_viewer_build_dir := "build-ktx-viewer"
-ktx_viewer_asset := "assets/textures/hdr/axis_test.ktx2"
 
 # Configure le build autonome du viewer KTX2 (CMake minimal, sans FetchContent)
 # Pré-requis : just build doit avoir été exécuté au moins une fois pour que
@@ -148,7 +147,7 @@ run-soft: build
 audit:
     @echo "--- Préparation de l'audit ---"
     @# On crée le dossier et on configure proprement
-    @{{ distrobox }} cmake -B build-audit -DCMAKE_C_FLAGS="-gdwarf-4" -DCMAKE_BUILD_TYPE=Debug .
+    @{{ distrobox }} cmake -B build-audit -DCMAKE_C_FLAGS="-gdwarf-4" -DCMAKE_CXX_FLAGS="-gdwarf-4" -DCMAKE_BUILD_TYPE=Debug .
     @echo "--- Compilation ---"
     @{{ distrobox }} cmake --build build-audit --parallel {{ nprocs }} > build_log.txt 2>&1
     @echo "--- Analyse Bloaty ---"
@@ -325,6 +324,11 @@ test-integration-tracy: build-tracy
     @chmod +x scripts/test_integration_generic.sh
     @{{ distrobox }} ./scripts/test_integration_generic.sh ./build-tracy/app
 
+# Run headless Tracy integration test (used in CI)
+test-integration-tracy-headless:
+    @chmod +x .github/workflows/scripts/test_integration_tracy.sh
+    @{{ distrobox }} ./.github/workflows/scripts/test_integration_tracy.sh
+
 # Run UI integration test under Valgrind (Minimal scenario, no -march=native)
 test-integration-valgrind: build-valgrind
     @{{ distrobox }} chmod +x scripts/test_integration_valgrind.sh
@@ -489,6 +493,13 @@ docker-build:
 docker-build-no-cache:
     @{{ container_engine }} build --no-cache -t {{ image_name }} .
 
+ci-lint:
+    @{{ container_engine }} run --rm -v $(pwd):/workspace -w /workspace --user $(id -u):$(id -g) -e CCACHE_DISABLE=1 ghcr.io/yoyonel/suckless-ogl-ci:latest sh -c "cmake -B build-ci-lint -DCMAKE_BUILD_TYPE=Debug -DENABLE_CLANG_TIDY=ON -DENABLE_NATIVE_ARCH=OFF /workspace && cmake --build build-ci-lint --target app"
+
+ci-lint-full:
+    rm -rf .lint_full
+    @{{ container_engine }} run --rm -v $(pwd):/workspace -w /workspace --user $(id -u):$(id -g) -e CCACHE_DISABLE=1 ghcr.io/yoyonel/suckless-ogl-ci:latest just lint-full
+
 # Build the CI Docker image
 ci-docker-build:
     @{{ container_engine }} build -t {{ ci_image_name }} -f .github/workflows/Dockerfile.ci .
@@ -508,12 +519,12 @@ docker-run:
         --ulimit rtprio=99 \
         --security-opt label=disable \
         --network host \
-        -e DISPLAY={{ env_var("DISPLAY") }} \
+        -e DISPLAY={{ env("DISPLAY") }} \
         -e DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
         -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
         -v /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-        {{ image_name }} /bin/bash -c "export DISPLAY={{ env_var("DISPLAY") }} && ./app"
+        {{ image_name }} /bin/bash -c "export DISPLAY={{ env("DISPLAY") }} && ./app"
 
 # Run the application container with host GPU passthrough (Intel/AMD via DRI)
 docker-run-gpu:
@@ -527,12 +538,12 @@ docker-run-gpu:
         --ulimit rtprio=99 \
         --security-opt label=disable \
         --network host \
-        -e DISPLAY={{ env_var("DISPLAY") }} \
+        -e DISPLAY={{ env("DISPLAY") }} \
         -e DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
         -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
         -v /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-        {{ image_name }} /bin/bash -c "export DISPLAY={{ env_var("DISPLAY") }} && ./app"
+        {{ image_name }} /bin/bash -c "export DISPLAY={{ env("DISPLAY") }} && ./app"
 
 # Clean dangling images
 docker-clean:
@@ -599,8 +610,13 @@ format:
 
 # Lint code using clang-tidy, ruff, and GLSL validation
 lint:
-    @if [ ! -f {{ build_dir }}/compile_commands.json ]; then {{ distrobox }} cmake -B {{ build_dir }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON; fi
-    @{{ distrobox }} python3 {{ justfile_directory() }}/scripts/lint_incremental.py {{ build_dir }}
+    @{{ distrobox }} cmake -B build-lint -G Ninja \
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DENABLE_NATIVE_ARCH=ON \
+        -DENABLE_CLANG_TIDY=ON \
+        -DCMAKE_C_COMPILER_LAUNCHER=ccache
+    @{{ distrobox }} cmake --build build-lint
     @{{ distrobox }} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
     @{{ distrobox }} bash scripts/lint_shaders.sh
 
@@ -618,18 +634,13 @@ lint-shaders-strict:
 
 # Full linting with all features enabled (Tracy, SSBO, etc.)
 lint-full:
-    @if [ ! -f .lint_full/compile_commands.json ] || [ CMakeLists.txt -nt .lint_full/compile_commands.json ]; then \
-        echo "Generating compile_commands.json with all features enabled..."; \
-        mkdir -p .lint_full; \
-        {{ distrobox }} cmake -B .lint_full \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-            -DENABLE_TRACY=ON \
-            -DUSE_SSBO_RENDERING=ON \
-            -G "Unix Makefiles" > /dev/null; \
-        {{ distrobox }} cmake --build .lint_full --target glad-generate-files > /dev/null; \
-    fi
-    @echo "Linting C code (Full Coverage)..."
-    @{{ distrobox }} python3 {{ justfile_directory() }}/scripts/lint_incremental.py .lint_full
+    @{{ distrobox }} cmake -B .lint_full -G Ninja \
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+        -DENABLE_TRACY=ON \
+        -DUSE_SSBO_RENDERING=ON \
+        -DENABLE_CLANG_TIDY=ON \
+        -DCMAKE_C_COMPILER_LAUNCHER=ccache
+    @{{ distrobox }} cmake --build .lint_full
     @echo "✓ Full linting passed"
 
 # Check for new NOLINT suppressions introduced vs a base ref (default: origin/master)
@@ -656,7 +667,7 @@ clean:
 tracy_legacy := `if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then echo OFF; else echo ON; fi`
 
 # Auto-detects the first free port in the 8086-8100 range
-tracy_port := env_var_or_default("TRACY_PORT", `for p in $(seq 8086 8100); do if ! ss -tlnH sport = :$p 2>/dev/null | grep -q .; then echo $p; exit 0; fi; done; echo "NONE"`)
+tracy_port := env("TRACY_PORT", `for p in $(seq 8086 8100); do if ! ss -tlnH sport = :$p 2>/dev/null | grep -q .; then echo $p; exit 0; fi; done; echo "NONE"`)
 
 # Build Tracy Server (X11 by default on Linux if LEGACY=ON)
 build-tracy-server:
@@ -713,7 +724,7 @@ run-tracy-release: build-tracy-release
 # RenderDoc (Frame Analysis)
 # =============================================================================
 
-renderdoc_dir := env_var_or_default("RENDERDOC_DIR", "/usr/bin")
+renderdoc_dir := env("RENDERDOC_DIR", "/usr/bin")
 
 # Build the application in Debug mode for RenderDoc analysis
 build-debug-renderdoc: configure

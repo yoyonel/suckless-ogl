@@ -1,6 +1,7 @@
 #include "dvec3.h"
 #include "nbody.h"
 #include "nbody_internal.h"
+#include "nbody_types.h"
 #include <math.h>
 
 float nbody_total_energy(const NBodySim* sim)

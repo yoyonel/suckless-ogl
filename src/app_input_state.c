@@ -2,9 +2,14 @@
 
 #include "app_input_state.h"
 
+#include "adaptive_sampler.h"
 #include "app.h"
+#include "app_binding.h"
 #include "app_settings.h"
+#include "camera.h"
+#include "gamepad_input.h"
 #include "platform/platform_utils.h"
+#include <stddef.h>
 
 void app_input_state_init(AppInput* input)
 {

@@ -1,7 +1,12 @@
 #include "app_settings.h"
+#include "cglm/types.h"
 #include "effects/fx_motion_blur.h"
 #include "gl_common.h"
-#include "postprocess_internal.h"
+#include "postprocess.h"
+#include "postprocess_internal.h"  // IWYU pragma: keep
+#include "pp_exposure_readback.h"
+#include <stddef.h>
+#include <stdint.h>
 
 void postprocess_update_time(PostProcess* post_processing, float delta_time)
 {

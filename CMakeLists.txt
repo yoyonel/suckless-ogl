@@ -6,36 +6,23 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # --- Clang-Tidy & Caching ---
 option(ENABLE_CLANG_TIDY "Enable clang-tidy linting during build" OFF)
-option(ENABLE_CLANG_TIDY_CACHE "Use caching for clang-tidy (requires ctcache)" OFF)
 
 if(ENABLE_CLANG_TIDY)
   find_program(CLANG_TIDY_BIN NAMES clang-tidy)
   if(CLANG_TIDY_BIN)
-    set(CLANG_TIDY_CMD "${CLANG_TIDY_BIN}")
-
-    if(ENABLE_CLANG_TIDY_CACHE)
-      # Try to find cltcache (or cltcache.py)
-      find_program(CTCACHE_BIN NAMES cltcache cltcache.py)
-      if(NOT CTCACHE_BIN)
-        # Fallback: check standard user paths
-        find_program(CTCACHE_BIN NAMES cltcache cltcache.py PATHS "${CMAKE_SOURCE_DIR}/.venv/bin" "$ENV{HOME}/.local/bin")
-      endif()
-
-      if(CTCACHE_BIN)
-        message(STATUS "Clang-Tidy with Cache: ENABLED (using ${CTCACHE_BIN})")
-        set(CLANG_TIDY_CMD "${CTCACHE_BIN}" "${CLANG_TIDY_BIN}")
-      else()
-        message(WARNING "cltcache not found even though ENABLE_CLANG_TIDY_CACHE is ON. Falling back to uncached clang-tidy.")
-      endif()
-    else()
-      message(STATUS "Clang-Tidy: ENABLED (Uncached)")
-    endif()
-
-    # Do NOT set CMAKE_C_CLANG_TIDY globally to avoid linting dependencies (cglm, glad, etc.)
-    # set(CMAKE_C_CLANG_TIDY "${CLANG_TIDY_CMD}")
+    set(CLANG_TIDY_CMD "${CLANG_TIDY_BIN};--quiet")
+    message(STATUS "Clang-Tidy: ENABLED")
   else()
     message(WARNING "clang-tidy not found, linting disabled")
   endif()
+endif()
+
+# Setup ccache if available (standard compiler launcher)
+find_program(CCACHE_BIN NAMES ccache)
+if(CCACHE_BIN)
+  set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_BIN}")
+  set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_BIN}")
+  message(STATUS "ccache: ENABLED")
 endif()
 
 # Option pour activer le rendu SSBO
@@ -614,6 +601,10 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/src/ktx_viewer.c")
 
   if(WIN32)
     target_link_options(ktx_viewer PRIVATE -static)
+  endif()
+
+  if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
+    set_target_properties(ktx_viewer PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")
   endif()
 
   message(STATUS "Added target: ktx_viewer")

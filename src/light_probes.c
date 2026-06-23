@@ -1,17 +1,23 @@
-#include <glad/glad.h>
-
 #include "light_probes.h"
 
+#include "gl_common.h"
 #include "log.h"
 #include "perf_timer.h"
 #include "platform/platform_utils.h"
 #include "profiler.h"
 #include "render_utils.h"
+#include "sh_math.h"
 #include "shader.h"
 #include "sphere_types.h"
 #include "utils.h"
+#include <cglm/affine-pre.h>
+#include <cglm/affine.h>
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/vec3.h>
 #include <float.h>
 #include <math.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 

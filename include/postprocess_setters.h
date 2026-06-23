@@ -11,7 +11,7 @@
 
 #include <glad/glad.h>
 
-#include "pp_params.h"
+#include "pp_params.h"  // IWYU pragma: export
 
 typedef struct PostProcess PostProcess;
 

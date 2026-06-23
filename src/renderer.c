@@ -1,6 +1,7 @@
 #include "renderer.h"
 
 #include "action_notifier.h"
+#include "app_settings.h"
 #include "bool_utils.h"
 #include "camera.h"
 #include "effect_benchmark.h"
@@ -9,11 +10,18 @@
 #include "gl_debug.h"
 #include "gpu_profiler.h"
 #include "gpu_profiler_ui.h"
-#include "postprocess_internal.h"
+#include "postprocess.h"
+#include "postprocess_internal.h"  // IWYU pragma: keep
+#include "postprocess_readback.h"
 #include "profiler.h"
 #include "scene.h"
 #include "scene_visuals.h"
 #include <GLFW/glfw3.h>
+#include <cglm/affine.h>  // IWYU pragma: keep
+#include <cglm/cam.h>     // IWYU pragma: keep
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/util.h>
 
 void renderer_draw_frame(const RenderContext* ctx)
 {

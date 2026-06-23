@@ -1,12 +1,12 @@
 #ifndef APP_H
 #define APP_H
 
-#include "action_notifier.h"
-#include "app_ui.h"
-#include "app_window.h"
-#include "effect_benchmark.h"
-#include "gl_common.h"
-#include <cglm/cglm.h>
+#include "action_notifier.h"   // IWYU pragma: export
+#include "app_ui.h"            // IWYU pragma: export
+#include "app_window.h"        // IWYU pragma: export
+#include "effect_benchmark.h"  // IWYU pragma: export
+#include "gl_common.h"         // IWYU pragma: export
+#include <cglm/cglm.h>         // IWYU pragma: export
 
 /* --- Opaque sub-struct forward declarations --- */
 typedef struct AppProfiling AppProfiling;

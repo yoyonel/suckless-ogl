@@ -1,5 +1,9 @@
+#include <glad/glad.h>
+
 #include "app_input.h"
 
+#include "action_notifier.h"
+#include "app_settings.h"
 #include "app_ui.h"
 #include "bool_utils.h"
 #include "camera.h"
@@ -8,17 +12,23 @@
 #include "gamepad_input.h"
 #include "gpu_profiler_ui.h"
 #include "log.h"
+#include "nbody.h"
+#include "nbody_types.h"
 #include "perf_mode.h"
 #include "postprocess_input.h"
 #include "profiler.h"
 #include "scene.h"
+#include "scene_config.h"
 #include "scene_simulation.h"
 #include "scene_visuals.h"
+#include "trail_renderer.h"
 #include "utils.h"
+#include <GLFW/glfw3.h>
 #include <math.h>
 #include <stb_image_write.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 enum { PBR_DEBUG_MODE_COUNT = 10 };
 

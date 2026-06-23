@@ -1,7 +1,7 @@
 #ifndef APP_BINDING_H
 #define APP_BINDING_H
 
-#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>  // IWYU pragma: export
 
 /**
  * @enum BindingCategory

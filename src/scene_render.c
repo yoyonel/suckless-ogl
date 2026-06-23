@@ -5,19 +5,25 @@
 #include "gl_debug.h"
 #include "glad/glad.h"
 #include "gpu_profiler.h"
+#include "instanced_rendering.h"  // IWYU pragma: export
 #include "light_probes.h"
 #include "profiler.h"
 #include "scene.h"
+#include "scene_config.h"
 #include "scene_gpu_resources.h"
 #include "scene_shaders.h"
 #include "scene_simulation.h"
+#include "scene_uniforms.h"
 #include "scene_visuals.h"
 #include "shader.h"
 #include "shockwave.h"
 #include "skybox.h"
 #include "trail_renderer.h"
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/vec3.h>
+#include <stdint.h>
 #include <string.h>
-
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif

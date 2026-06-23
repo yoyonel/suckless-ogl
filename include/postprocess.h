@@ -40,8 +40,8 @@ void postprocess_apply_preset(PostProcess* post_processing,
                               const PostProcessPreset* preset);
 
 /* Sub-API headers for specific consumers */
-#include "postprocess_readback.h"
-#include "postprocess_setters.h"
+#include "postprocess_readback.h"  // IWYU pragma: export
+#include "postprocess_setters.h"   // IWYU pragma: export
 
 /* --- Subsystem descriptor (alloc-only Phase 1) --- */
 #include "app_subsystem.h"

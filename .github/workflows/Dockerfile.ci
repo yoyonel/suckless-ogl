@@ -1,7 +1,7 @@
 # CI Container for Suckless-OGL
 # Consolidates all dependencies to speed up GitHub Actions setup.
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # Avoid interactive prompts during apt-get
 ENV DEBIAN_FRONTEND=noninteractive
@@ -11,10 +11,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
     clang \
+    libclang-rt-dev \
     llvm \
     clang-tidy \
     iwyu \
     git \
+    ccache \
+    ninja-build \
+    just \
     libgl1-mesa-dev \
     libglew-dev \
     libglfw3-dev \
@@ -30,6 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libgl1-mesa-dri \
     mesa-vulkan-drivers \
+    glslang-tools \
     imagemagick \
     gamemode-dev \
     doxygen \
@@ -44,12 +49,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Install Python Tools Consistently
-# Using requirements-dev.txt logic + specific CI versions
-RUN pip3 install --no-cache-dir \
-    clang-format==19.1.7 \
+# Récupération du binaire uv précompilé (ultra-rapide, zéro dépendance)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# uv pip install --system nécessite aussi de casser explicitement la protection PEP 668
+RUN uv pip install --system --break-system-packages --no-cache \
+    clang-format==22.1.5 \
     ruff \
-    cltcache \
     pytest \
     pytest-cov \
     Pillow \
@@ -63,8 +69,9 @@ RUN pip3 install --no-cache-dir \
     tzdata
 
 # 3. Pre-build Tracy CLI Tools (Capture & CSV Export)
-RUN echo "Building Tracy CLI Tools v0.13.1..." && \
-    git clone --branch v0.13.1 --depth 1 https://github.com/wolfpld/tracy.git /tmp/tracy && \
+# On copie la dépendance locale plutôt que de cloner pour garantir la cohérence des versions
+COPY deps/tracy /tmp/tracy
+RUN echo "Building Tracy CLI Tools..." && \
     # Empêcher Tracy d'utiliser -march=native pour garantir la portabilité de l'image Docker sur tout le parc CI
     find /tmp/tracy -type f \( -name "CMakeLists.txt" -o -name "*.cmake" \) -exec sed -i 's/-march=native//g' {} + && \
     # Build Capture
@@ -80,14 +87,14 @@ RUN echo "Building Tracy CLI Tools v0.13.1..." && \
 
 # 4. Environment Setup
 RUN useradd -m -u 1001 ciuser && \
-    mkdir -p /home/ciuser/.cache/cltcache && \
+    mkdir -p /home/ciuser/.cache/ccache && \
     chown -R ciuser:ciuser /home/ciuser
 
-# Add ~/.local/bin to PATH for cltcache and other pip-installed tools
+# Add ~/.local/bin to PATH for pip-installed tools
 ENV PATH="/home/ciuser/.local/bin:${PATH}"
 
-# Enable CLTCACHE by default for CI speed
-ENV CLTCACHE_DIR="/home/ciuser/.cache/cltcache"
+# Enable CCACHE by default for CI speed
+ENV CCACHE_DIR="/home/ciuser/.cache/ccache"
 
 WORKDIR /workspace
 RUN chown ciuser:ciuser /workspace

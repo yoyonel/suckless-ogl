@@ -108,7 +108,9 @@ void platform_setup_working_dir(const char* exec_path)
 		return;
 	}
 
-	char path_buf[4096];
+	enum { PATH_BUF_SIZE = 4096, PARENT_SEARCH_LIMIT = 4 };
+
+	char path_buf[PATH_BUF_SIZE];
 	safe_strncpy(path_buf, sizeof(path_buf), exec_path, strlen(exec_path));
 
 	char* last_backslash = strrchr(path_buf, '\\');
@@ -127,7 +129,7 @@ void platform_setup_working_dir(const char* exec_path)
 	// Trouver le dossier contenant 'shaders' et 'assets' en remontant
 	// les parents (utile pour le développement où le binaire est dans
 	// build/)
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < PARENT_SEARCH_LIMIT; ++i) {
 		if (platform_dir_exists("shaders") &&
 		    platform_dir_exists("assets")) {
 			break;

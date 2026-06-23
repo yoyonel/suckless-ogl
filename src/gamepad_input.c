@@ -1,6 +1,7 @@
 #include "gamepad_input.h"
 
 #include "bool_utils.h"
+#include "gamepad_context.h"
 #include "log.h"
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE

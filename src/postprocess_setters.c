@@ -1,6 +1,10 @@
+#include "effects/fx_lut3d.h"
 #include "gl_common.h"
 #include "log.h"
-#include "postprocess_internal.h"
+#include "postprocess.h"
+#include "postprocess_internal.h"  // IWYU pragma: keep
+#include "pp_params.h"
+#include <stdint.h>
 
 static void postprocess_on_state_change(PostProcess* post_processing)
 {

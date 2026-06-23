@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #ifdef __linux__
+#include <stdint.h>
 #include <sys/syscall.h>
 #include <unistd.h>
 #elif defined(_WIN32)

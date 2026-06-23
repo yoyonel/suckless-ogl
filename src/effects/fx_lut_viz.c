@@ -1,12 +1,15 @@
 #include "effects/fx_lut_viz.h"
 
 #include "effects/effect_context.h"
+#include "gl_common.h"
 #include "log.h"
 #include "shader.h"
 #include <cglm/affine.h>  // IWYU pragma: keep
-#include <cglm/cam.h>     // IWYU pragma: keep
+#include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
+#include <cglm/util.h>
+#include <cglm/vec3.h>  // IWYU pragma: keep
 #include <stdbool.h>
 #include <stdlib.h>
 

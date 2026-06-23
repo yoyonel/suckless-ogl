@@ -15,6 +15,8 @@
 #include "shader.h"
 #include "texture.h"
 #include "utils.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 static const int MAX_PATH_LENGTH = 256;
 

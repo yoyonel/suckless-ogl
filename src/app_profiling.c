@@ -5,6 +5,7 @@
 #include "app.h"
 #include "app_settings.h"
 #include "platform/platform_utils.h"
+#include <stddef.h>
 
 void app_profiling_init(AppProfiling* prof, int width, int height)
 {
