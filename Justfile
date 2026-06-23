@@ -4,8 +4,11 @@
 set shell := ["bash", "-c"]
 
 # Build variables
+
 build_dir := "build"
+
 # Job count: nproc - 2 locally (min 1), all cores in CI
+
 nprocs := `
     if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ]; then
         nproc
@@ -27,6 +30,7 @@ distrobox := `
 # So we must duplicate the check or use a simpler approach.
 # We'll use a shell script snippet that mimics the makefile logic, checking for the container existence again or relying on a convention.
 # Actually, we can rely on `command -v distrobox` again.
+
 py_run := `
     if command -v distrobox >/dev/null 2>&1 && distrobox list --no-color 2>/dev/null | grep -w "clang-dev" >/dev/null; then
         echo "distrobox enter clang-dev -- python3"
@@ -38,7 +42,6 @@ py_run := `
         echo "python3"
     fi
 `
-
 xvfb_wrapper := ".github/workflows/scripts/run_test_with_xvfb.sh"
 extra_cmake_flags := ""
 
@@ -47,6 +50,7 @@ apitrace_dir := env_var("HOME") / ".local/apitrace-latest-Linux"
 apitrace_bin := `if [ -f "{{apitrace_dir}}/bin/apitrace" ]; then echo "{{apitrace_dir}}/bin/apitrace"; else echo "apitrace"; fi`
 
 # Container engine detection
+
 container_engine := `command -v docker >/dev/null 2>&1 && echo docker || echo podman`
 image_name := "suckless-ogl"
 ci_image_name := "suckless-ogl-ci:local"
@@ -64,6 +68,7 @@ ktx_viewer_asset := "assets/textures/hdr/axis_test.ktx2"
 
 # Configure le build autonome du viewer KTX2 (CMake minimal, sans FetchContent)
 # Pré-requis : just build doit avoir été exécuté au moins une fois pour que
+
 # build/_deps/glad-build/ soit disponible.
 configure-ktx-viewer:
     @{{ distrobox }} cmake -G "Unix Makefiles" \
@@ -78,6 +83,7 @@ build-ktx-viewer:
 
 # Exécute le viewer sur l'asset par défaut (ou un asset fourni en argument)
 # Usage :  just run-ktx-viewer
+
 # just run-ktx-viewer assets/textures/hdr/axis_test_uastc.ktx2
 run-ktx-viewer asset="assets/textures/hdr/axis_test.ktx2": build-ktx-viewer
     @{{ ktx_viewer_build_dir }}/ktx_viewer {{ asset }}
@@ -90,6 +96,7 @@ clean-ktx-viewer:
 # Lance clang-tidy sur ktx_viewer.c uniquement, en utilisant le compile_commands
 # du build isolé (build-ktx-viewer/). Le flag --warnings-as-errors='*' est
 # déjà dans .clang-tidy (WarningsAsErrors: '*').
+
 # Pré-requis : configure-ktx-viewer doit avoir été lancé avec EXPORT_COMPILE_COMMANDS=ON.
 lint-ktx-viewer:
     @if [ ! -f {{ ktx_viewer_build_dir }}/compile_commands.json ]; then \
@@ -390,6 +397,7 @@ coverage:
 
 # Generate visual regression report and serve it locally via HTTP (avoids file:// image loading issues)
 # Uses tests/references/ref_*.png (and tests/references/failed_*.png if present) as input
+
 # Press Ctrl+C to stop the server
 visual-report port="8765":
     @echo "Generating visual regression report..."
@@ -646,6 +654,7 @@ clean:
 # =============================================================================
 
 tracy_legacy := `if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then echo OFF; else echo ON; fi`
+
 # Auto-detects the first free port in the 8086-8100 range
 tracy_port := env_var_or_default("TRACY_PORT", `for p in $(seq 8086 8100); do if ! ss -tlnH sport = :$p 2>/dev/null | grep -q .; then echo $p; exit 0; fi; done; echo "NONE"`)
 
@@ -746,3 +755,45 @@ test-win: build-win
 # Run unit tests for Windows via Wine (parity with CI)
 test-win-unit: build-win
     @{{ distrobox }} env WINEPREFIX=$HOME/.wine WINEDEBUG=-all TEST_RUNNER_PREFIX="wine64" ctest --test-dir {{ build_win_dir }} --output-on-failure
+
+# =============================================================================
+# Steam Proton Integration (Flatpak - Natif)
+# =============================================================================
+
+steam_root := env_var("HOME") + "/.var/app/com.valvesoftware.Steam/.local/share/Steam"
+proton_path := steam_root + "/steamapps/common/Proton - Experimental/proton"
+proton_prefix := steam_root + "/steamapps/compatdata/suckless-ogl"
+
+run-proton: build-win
+    @echo "Création du préfixe Proton..."
+    @mkdir -p "{{ proton_prefix }}"
+    @echo "Lancement via Steam Flatpak..."
+    @flatpak run \
+        --filesystem="{{ justfile_directory() }}" \
+        --env=STEAM_COMPAT_CLIENT_INSTALL_PATH="{{ steam_root }}" \
+        --env=STEAM_COMPAT_DATA_PATH="{{ proton_prefix }}" \
+        --command=python3 \
+        com.valvesoftware.Steam \
+        "{{ proton_path }}" run "{{ justfile_directory() }}/{{ build_win_dir }}/app.exe"
+
+# =============================================================================
+# Release & Packaging
+# =============================================================================
+
+version := "v0.1.0"
+zstd_level := "3"
+release_name := "suckless-ogl-windows-" + version
+release_dir := justfile_directory() + "/build-release/" + release_name
+test_dist_dir := justfile_directory() + "/test-dist"
+
+package-win: build-win
+    @echo "Lancement du packaging Windows..."
+    @scripts/package_win.sh "{{ version }}" "{{ build_win_dir }}" "{{ zstd_level }}"
+
+# =============================================================================
+# Validation Automatisée (Agnostique)
+
+# =============================================================================
+run-package-win: package-win
+    @echo "Lancement de l'environnement de test automatisé..."
+    @scripts/run_proton.sh "{{ release_dir }}" "{{ release_name }}" "{{ test_dist_dir }}" "{{ justfile_directory() }}"

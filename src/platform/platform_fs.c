@@ -3,11 +3,14 @@
 #include "utils.h"
 
 #ifdef _WIN32
+#include <direct.h>
 #include <windows.h>
+#define chdir _chdir
 #else
 #include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 bool platform_dir_list(const char* path, PlatformDirCallback callback,
@@ -78,4 +81,59 @@ bool platform_dir_list(const char* path, PlatformDirCallback callback,
 	closedir(dir_handle);
 	return true;
 #endif
+}
+
+bool platform_dir_exists(const char* path)
+{
+	if (!path) {
+		return false;
+	}
+
+#ifdef _WIN32
+	DWORD dwAttrib = GetFileAttributesA(path);
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+	        (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0);
+#else
+	struct stat stat_buf;
+	if (stat(path, &stat_buf) == 0) {
+		return S_ISDIR(stat_buf.st_mode);
+	}
+	return false;
+#endif
+}
+
+void platform_setup_working_dir(const char* exec_path)
+{
+	if (!exec_path) {
+		return;
+	}
+
+	char path_buf[4096];
+	safe_strncpy(path_buf, sizeof(path_buf), exec_path, strlen(exec_path));
+
+	char* last_backslash = strrchr(path_buf, '\\');
+	char* last_slash = strrchr(path_buf, '/');
+	char* last_sep =
+	    (last_backslash > last_slash) ? last_backslash : last_slash;
+
+	if (last_sep) {
+		*last_sep =
+		    '\0';  // On coupe la chaîne juste avant l'exécutable
+		if (chdir(path_buf) != 0) {
+			// Ignoré silencieusement en cas d'erreur
+		}
+	}
+
+	// Trouver le dossier contenant 'shaders' et 'assets' en remontant
+	// les parents (utile pour le développement où le binaire est dans
+	// build/)
+	for (int i = 0; i < 4; ++i) {
+		if (platform_dir_exists("shaders") &&
+		    platform_dir_exists("assets")) {
+			break;
+		}
+		if (chdir("..") != 0) {
+			break;
+		}
+	}
 }

@@ -32,6 +32,7 @@ static const int COORD_DEC = 1;
 static const float CAMERA_DIST = 25.0F;
 static const float ANGLE_DISPLACEMENT = 2.0F;
 #define PATH_BUF_SIZE 256
+#define PATH_SUFFIX_HEADROOM 64
 #define ERR_BUF_SIZE 512
 #define DEFAULT_SYNC_TIMEOUT 1000000000ULL
 
@@ -123,7 +124,7 @@ static void preload_reference(const char* test_name)
 		return;
 	}
 
-	char ref_path[PATH_BUF_SIZE];
+	char ref_path[PATH_BUF_SIZE + PATH_SUFFIX_HEADROOM];
 	(void)snprintf(ref_path, sizeof(ref_path), "tests/ref_%s.png",
 	               test_name);
 
@@ -283,7 +284,7 @@ static void verify_reference_image(int width, int height,
 		is_cached = true;
 	} else {
 		// Fallback to disk
-		char ref_path[PATH_BUF_SIZE];
+		char ref_path[PATH_BUF_SIZE + PATH_SUFFIX_HEADROOM];
 		(void)snprintf(ref_path, sizeof(ref_path),
 		               "tests/references/ref_%s.png", face_name);
 		int ref_channels = 0;
@@ -338,7 +339,7 @@ static void verify_reference_image(int width, int height,
 				                  : 0;
 			}
 
-			char diff_path[PATH_BUF_SIZE];
+			char diff_path[PATH_BUF_SIZE + PATH_SUFFIX_HEADROOM];
 			(void)snprintf(diff_path, sizeof(diff_path),
 			               "tests/references/failed_diff_%s.png",
 			               face_name);
@@ -348,7 +349,7 @@ static void verify_reference_image(int width, int height,
 			free(diff_map);
 		}
 
-		char actual_path[PATH_BUF_SIZE];
+		char actual_path[PATH_BUF_SIZE + PATH_SUFFIX_HEADROOM];
 		(void)snprintf(actual_path, sizeof(actual_path),
 		               "tests/references/failed_actual_%s.png",
 		               face_name);
@@ -463,7 +464,8 @@ static void pipeline_run_test_loop(const char* test_tag,
 			}
 
 			if (getenv("GEN_REFS") != NULL) {
-				char ref_path[PATH_BUF_SIZE];
+				char ref_path[PATH_BUF_SIZE +
+				              PATH_SUFFIX_HEADROOM];
 				(void)snprintf(ref_path, sizeof(ref_path),
 				               "tests/references/ref_%s.png",
 				               test_name);

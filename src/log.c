@@ -4,13 +4,29 @@
 #include "platform/platform_utils.h"
 #include "tracy_log.h"
 #include "utils.h"
-#include <pthread.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
 #include <time.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+#define LOG_PLATFORM_WINDOWS
+#include <windows.h>
+// SRWLOCK est l'équivalent moderne, léger et à initialisation statique !
+#define LOG_MUTEX_TYPE SRWLOCK
+#define LOG_MUTEX_INIT SRWLOCK_INIT
+#define LOG_MUTEX_LOCK(m) AcquireSRWLockExclusive(m)
+#define LOG_MUTEX_UNLOCK(m) ReleaseSRWLockExclusive(m)
+#else
+#define LOG_PLATFORM_POSIX
+#include <pthread.h>
+#define LOG_MUTEX_TYPE pthread_mutex_t
+#define LOG_MUTEX_INIT PTHREAD_MUTEX_INITIALIZER
+#define LOG_MUTEX_LOCK(m) pthread_mutex_lock(m)
+#define LOG_MUTEX_UNLOCK(m) pthread_mutex_unlock(m)
+#endif
 
 enum {
 	MILLI_DIVISOR = 1000000,
@@ -112,14 +128,19 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 		return;
 	}
 
-	static pthread_mutex_t g_log_mutex = PTHREAD_MUTEX_INITIALIZER;
+	static LOG_MUTEX_TYPE s_log_mutex = LOG_MUTEX_INIT;
 
 	int64_t sec = 0;
 	int64_t nsec = 0;
 	platform_get_time_precise(&sec, &nsec);
 
 	struct tm tm_info;
-	localtime_r((const time_t*)&sec, &tm_info);
+	time_t _timer = (time_t)sec;
+#ifdef LOG_PLATFORM_WINDOWS
+	localtime_s(&tm_info, &_timer);
+#else
+	localtime_r(&_timer, &tm_info);
+#endif
 
 	char time_buf[TIME_BUFFER_SIZE];
 	(void)strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S",
@@ -143,7 +164,7 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	va_end(args);
 
 	// Section critique pour garantir l'ordre d'affichage
-	pthread_mutex_lock(&g_log_mutex);
+	LOG_MUTEX_LOCK(&s_log_mutex);
 
 	FILE* out = (level >= LOG_LEVEL_ERROR) ? stderr : stdout;
 	(void)fputs(prefix, out);
@@ -157,5 +178,5 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	(void)fputs(msg_buf, out);
 	(void)fputs("\n", out);
 
-	pthread_mutex_unlock(&g_log_mutex);
+	LOG_MUTEX_UNLOCK(&s_log_mutex);
 }
