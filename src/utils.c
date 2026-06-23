@@ -82,9 +82,12 @@ void safe_strncpy(char* dest, size_t dest_size, const char* src,
 		copy_len = dest_size - 1;
 	}
 
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)strncpy(dest, src, copy_len);
-	dest[copy_len] = '\0';
+	size_t len = 0;
+	while (len < copy_len && src[len] != '\0') {
+		len++;
+	}
+	memcpy(dest, src, len);
+	dest[len] = '\0'; /* Garantie absolue de la terminaison nulle */
 }
 
 void safe_strncat(char* dest, size_t dest_size, const char* src)
