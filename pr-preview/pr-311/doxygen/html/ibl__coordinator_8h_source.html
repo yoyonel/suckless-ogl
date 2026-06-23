@@ -1,0 +1,378 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/ibl_coordinator.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('ibl__coordinator_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">ibl_coordinator.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ibl__coordinator_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#ifndef IBL_COORDINATOR_H</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define IBL_COORDINATOR_H</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="pbr_8h.html">pbr.h</a>&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="perf__timer_8h.html">perf_timer.h</a>&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">   21</a></span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">   22</a></span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">IBL_STATE_IDLE</a> = 0,  </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">   23</a></span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">IBL_STATE_LUMINANCE</a>, </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79">   24</a></span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79">IBL_STATE_LUMINANCE_WAIT</a>, </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">   25</a></span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">IBL_STATE_SPECULAR_INIT</a>,  </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">IBL_STATE_SPECULAR_MIPS</a>,  </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">   28</a></span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">IBL_STATE_IRRADIANCE</a>,     </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <a class="code hl_enumvalue" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">IBL_STATE_DONE</a> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">   30</a></span>} <a class="code hl_enumeration" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>;</div>
+</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="foldopen" id="foldopen00036" data-start="{" data-end="};">
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html">   36</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="comment">/* --- State Machine --- */</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0">   38</a></span>    <a class="code hl_enumeration" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> <a class="code hl_variable" href="structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0">state</a>;    </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f">   39</a></span>    GLsync <a class="code hl_variable" href="structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f">lum_sync</a>;   </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def">   40</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def">current_mip</a>;   </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de">   41</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de">total_mips</a>;    </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1">   42</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1">width</a>;         </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe">   43</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe">height</a>;        </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a25c66e920fe5480ac2c0daad7e22e3a7">   44</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structIBLCoordinator.html#a25c66e920fe5480ac2c0daad7e22e3a7">threshold</a>;   </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193">   45</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193">current_slice</a>; </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76">   46</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76">total_slices</a>;  </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="comment">/* --- Resources (Owned/Managed during process) --- */</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02">   49</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02">pending_hdr_tex</a>;  </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a14287ac19c5a9cfc3fc8825c51036669">   50</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#a14287ac19c5a9cfc3fc8825c51036669">pending_spec_tex</a>; </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c">   51</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c">pending_irr_tex</a>;  </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="comment">/* --- Dependencies (Injected) --- */</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1">   54</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1">spmap_program</a>;     </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a4a58c3eb0c5e578b55dc23a3b16becde">   55</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#a4a58c3eb0c5e578b55dc23a3b16becde">irmap_program</a>;     </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#acca6b2979c075f85a0c43079a887d952">   56</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#acca6b2979c075f85a0c43079a887d952">lum_pass1_program</a>; </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a08f663ef2c3ea59070786bd9f1534ddb">   57</a></span>    GLuint <a class="code hl_variable" href="structIBLCoordinator.html#a08f663ef2c3ea59070786bd9f1534ddb">lum_pass2_program</a>; </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70">   58</a></span>    GLuint lum_ssbo[2];       </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <a class="code hl_struct" href="structPBRSpecUniforms.html">PBRSpecUniforms</a></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">   61</a></span>        <a class="code hl_variable" href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">spec_uniforms</a>; </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <a class="code hl_struct" href="structPBRIrrUniforms.html">PBRIrrUniforms</a></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e">   63</a></span>        <a class="code hl_variable" href="structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e">irr_uniforms</a>; </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <a class="code hl_struct" href="structPBRLumUniforms.html">PBRLumUniforms</a></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2">   65</a></span>        <a class="code hl_variable" href="structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2">lum_uniforms</a>; </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="comment">/* --- Performance Metrics --- */</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76">   68</a></span>    <a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a> <a class="code hl_variable" href="structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76">global_timer</a>; </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3">   69</a></span>    <a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a> <a class="code hl_variable" href="structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3">stage_timer</a>;  </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#ac2d6543725765afb9881d93ec893401e">   70</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structIBLCoordinator.html#ac2d6543725765afb9881d93ec893401e">stage_gpu_min</a>;   </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a">   71</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a">stage_gpu_max</a>;   </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0">   72</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0">stage_gpu_sum</a>;   </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4">   73</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4">stage_slice_count</a>;  </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>} <a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>;</div>
+</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="keywordtype">void</span> <a class="code hl_function" href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">ibl_coordinator_init</a>(<a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>* coord, GLuint spmap_program,</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                          GLuint irmap_program, GLuint lum_pass1_program,</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                          GLuint lum_pass2_program);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="keywordtype">void</span> <a class="code hl_function" href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">ibl_coordinator_cleanup</a>(<a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>* coord);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="keywordtype">void</span> <a class="code hl_function" href="ibl__coordinator_8h.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3">ibl_coordinator_start</a>(<a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>* coord, GLuint hdr_tex, <span class="keywordtype">int</span> width,</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                           <span class="keywordtype">int</span> height);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><a class="code hl_enumeration" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> <a class="code hl_function" href="ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8">ibl_coordinator_update</a>(<a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>* coord, uint64_t frame_count);</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="keywordtype">int</span> <a class="code hl_function" href="ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82">ibl_coordinator_get_results</a>(<a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>* coord, GLuint* out_hdr_tex,</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>                                GLuint* out_spec_tex, GLuint* out_irr_tex,</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>                                <span class="keywordtype">float</span>* out_threshold);</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span><span class="keywordtype">void</span> <a class="code hl_function" href="ibl__coordinator_8h.html#a0bff11f3337e1e69179225a25757bcc0">ibl_coordinator_reset</a>(<a class="code hl_struct" href="structIBLCoordinator.html">IBLCoordinator</a>* coord);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="preprocessor">#endif </span><span class="comment">/* IBL_COORDINATOR_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a076ded1b24635b548a16e161d45735c3"><div class="ttname"><a href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">ibl_coordinator_init</a></div><div class="ttdeci">void ibl_coordinator_init(IBLCoordinator *coord, GLuint spmap_program, GLuint irmap_program, GLuint lum_pass1_program, GLuint lum_pass2_program)</div><div class="ttdoc">Initializes the IBL coordinator with necessary shader resources.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.c:131</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a0bff11f3337e1e69179225a25757bcc0"><div class="ttname"><a href="ibl__coordinator_8h.html#a0bff11f3337e1e69179225a25757bcc0">ibl_coordinator_reset</a></div><div class="ttdeci">void ibl_coordinator_reset(IBLCoordinator *coord)</div><div class="ttdoc">Resets the coordinator to IDLE state.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.c:158</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0ea"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a></div><div class="ttdeci">IBLState</div><div class="ttdoc">States for the IBL generation state machine.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:21</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">IBL_STATE_SPECULAR_INIT</a></div><div class="ttdeci">@ IBL_STATE_SPECULAR_INIT</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:25</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">IBL_STATE_SPECULAR_MIPS</a></div><div class="ttdeci">@ IBL_STATE_SPECULAR_MIPS</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:26</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">IBL_STATE_IDLE</a></div><div class="ttdeci">@ IBL_STATE_IDLE</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:22</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">IBL_STATE_DONE</a></div><div class="ttdeci">@ IBL_STATE_DONE</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:29</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">IBL_STATE_IRRADIANCE</a></div><div class="ttdeci">@ IBL_STATE_IRRADIANCE</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:28</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">IBL_STATE_LUMINANCE</a></div><div class="ttdeci">@ IBL_STATE_LUMINANCE</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:23</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79"><div class="ttname"><a href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79">IBL_STATE_LUMINANCE_WAIT</a></div><div class="ttdeci">@ IBL_STATE_LUMINANCE_WAIT</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:24</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a5d1af54d0b28b93dd3f10c5cf2a9efe3"><div class="ttname"><a href="ibl__coordinator_8h.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3">ibl_coordinator_start</a></div><div class="ttdeci">void ibl_coordinator_start(IBLCoordinator *coord, GLuint hdr_tex, int width, int height)</div><div class="ttdoc">Starts the IBL generation process for a new HDR texture.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.c:179</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a7af04c7b19cdf6fd658af855351f19ad"><div class="ttname"><a href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">ibl_coordinator_cleanup</a></div><div class="ttdeci">void ibl_coordinator_cleanup(IBLCoordinator *coord)</div><div class="ttdoc">Cleanups any pending resources held by the coordinator.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.c:148</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_a897ce59e5e3e582ff1385f4c9e2c7f82"><div class="ttname"><a href="ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82">ibl_coordinator_get_results</a></div><div class="ttdeci">int ibl_coordinator_get_results(IBLCoordinator *coord, GLuint *out_hdr_tex, GLuint *out_spec_tex, GLuint *out_irr_tex, float *out_threshold)</div><div class="ttdoc">Retrieves the results of the IBL generation.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.c:416</div></div>
+<div class="ttc" id="aibl__coordinator_8h_html_ac4e66403e82cf9193c1eeb0a534b90d8"><div class="ttname"><a href="ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8">ibl_coordinator_update</a></div><div class="ttdeci">IBLState ibl_coordinator_update(IBLCoordinator *coord, uint64_t frame_count)</div><div class="ttdoc">Advances the state machine by one step (slice or pass).</div><div class="ttdef"><b>Definition</b> ibl_coordinator.c:374</div></div>
+<div class="ttc" id="apbr_8h_html"><div class="ttname"><a href="pbr_8h.html">pbr.h</a></div><div class="ttdoc">Physically-Based Rendering (PBR) and Image-Based Lighting (IBL) utilities.</div></div>
+<div class="ttc" id="aperf__timer_8h_html"><div class="ttname"><a href="perf__timer_8h.html">perf_timer.h</a></div><div class="ttdoc">High-precision performance measurement (CPU and GPU).</div></div>
+<div class="ttc" id="astructIBLCoordinator_html"><div class="ttname"><a href="structIBLCoordinator.html">IBLCoordinator</a></div><div class="ttdoc">Manages the progressive IBL generation process.</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:36</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a08f663ef2c3ea59070786bd9f1534ddb"><div class="ttname"><a href="structIBLCoordinator.html#a08f663ef2c3ea59070786bd9f1534ddb">IBLCoordinator::lum_pass2_program</a></div><div class="ttdeci">GLuint lum_pass2_program</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:57</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a10da02b0b88ef2d95100507a4fd04193"><div class="ttname"><a href="structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193">IBLCoordinator::current_slice</a></div><div class="ttdeci">int current_slice</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:45</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a14287ac19c5a9cfc3fc8825c51036669"><div class="ttname"><a href="structIBLCoordinator.html#a14287ac19c5a9cfc3fc8825c51036669">IBLCoordinator::pending_spec_tex</a></div><div class="ttdeci">GLuint pending_spec_tex</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:50</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a25c66e920fe5480ac2c0daad7e22e3a7"><div class="ttname"><a href="structIBLCoordinator.html#a25c66e920fe5480ac2c0daad7e22e3a7">IBLCoordinator::threshold</a></div><div class="ttdeci">float threshold</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:44</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a37cf9dd1cf7fdda6b709b93b9ba4b89e"><div class="ttname"><a href="structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e">IBLCoordinator::irr_uniforms</a></div><div class="ttdeci">PBRIrrUniforms irr_uniforms</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:63</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a43a141b4082137f347576387dbc495f2"><div class="ttname"><a href="structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2">IBLCoordinator::lum_uniforms</a></div><div class="ttdeci">PBRLumUniforms lum_uniforms</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:65</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a4a58c3eb0c5e578b55dc23a3b16becde"><div class="ttname"><a href="structIBLCoordinator.html#a4a58c3eb0c5e578b55dc23a3b16becde">IBLCoordinator::irmap_program</a></div><div class="ttdeci">GLuint irmap_program</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:55</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a589d1a49358ad375dd97b3f4488c91f1"><div class="ttname"><a href="structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1">IBLCoordinator::width</a></div><div class="ttdeci">int width</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:42</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a6fb478126bc6cbe108879f1877780c7a"><div class="ttname"><a href="structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a">IBLCoordinator::stage_gpu_max</a></div><div class="ttdeci">double stage_gpu_max</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:71</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a77e6ebb9a8546c2aa95937090ce5fe76"><div class="ttname"><a href="structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76">IBLCoordinator::total_slices</a></div><div class="ttdeci">int total_slices</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:46</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a7bd55a2b0bcadc87485a5f9193df26de"><div class="ttname"><a href="structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de">IBLCoordinator::total_mips</a></div><div class="ttdeci">int total_mips</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:41</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a818d7b51bbb57fb8ebbc5d80a8740def"><div class="ttname"><a href="structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def">IBLCoordinator::current_mip</a></div><div class="ttdeci">int current_mip</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:40</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a864f974c3d91fdd67ce7475b91f74de0"><div class="ttname"><a href="structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0">IBLCoordinator::stage_gpu_sum</a></div><div class="ttdeci">double stage_gpu_sum</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:72</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_a943239b7bca0a0799ce9f1138625421f"><div class="ttname"><a href="structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f">IBLCoordinator::lum_sync</a></div><div class="ttdeci">GLsync lum_sync</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:39</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_aa91b497d73f575bc292be18acaffdc76"><div class="ttname"><a href="structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76">IBLCoordinator::global_timer</a></div><div class="ttdeci">PerfTimer global_timer</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:68</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_aaac58f28cd2f8fed9653758a8b9931f4"><div class="ttname"><a href="structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4">IBLCoordinator::stage_slice_count</a></div><div class="ttdeci">int stage_slice_count</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:73</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_aade18713ee8f17933fc0a05c5c6da12c"><div class="ttname"><a href="structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c">IBLCoordinator::pending_irr_tex</a></div><div class="ttdeci">GLuint pending_irr_tex</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:51</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_ab8a3c6a002c92639218e6c394ea2998d"><div class="ttname"><a href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">IBLCoordinator::spec_uniforms</a></div><div class="ttdeci">PBRSpecUniforms spec_uniforms</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:61</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_ac2d6543725765afb9881d93ec893401e"><div class="ttname"><a href="structIBLCoordinator.html#ac2d6543725765afb9881d93ec893401e">IBLCoordinator::stage_gpu_min</a></div><div class="ttdeci">double stage_gpu_min</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:70</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_ac80feec6db7c68ff02c0ee21d741f0c3"><div class="ttname"><a href="structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3">IBLCoordinator::stage_timer</a></div><div class="ttdeci">PerfTimer stage_timer</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:69</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_acca6b2979c075f85a0c43079a887d952"><div class="ttname"><a href="structIBLCoordinator.html#acca6b2979c075f85a0c43079a887d952">IBLCoordinator::lum_pass1_program</a></div><div class="ttdeci">GLuint lum_pass1_program</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:56</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_ad1f25c18ba792980024cb1198cac93fe"><div class="ttname"><a href="structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe">IBLCoordinator::height</a></div><div class="ttdeci">int height</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:43</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_ad86d6a415c26a59e240146dc5adb03b0"><div class="ttname"><a href="structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0">IBLCoordinator::state</a></div><div class="ttdeci">IBLState state</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:38</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_ae9fc947f4086bd1f6148282bebfe63d1"><div class="ttname"><a href="structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1">IBLCoordinator::spmap_program</a></div><div class="ttdeci">GLuint spmap_program</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:54</div></div>
+<div class="ttc" id="astructIBLCoordinator_html_afddb06c4d125ddd47cf5ee7107c55f02"><div class="ttname"><a href="structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02">IBLCoordinator::pending_hdr_tex</a></div><div class="ttdeci">GLuint pending_hdr_tex</div><div class="ttdef"><b>Definition</b> ibl_coordinator.h:49</div></div>
+<div class="ttc" id="astructPBRIrrUniforms_html"><div class="ttname"><a href="structPBRIrrUniforms.html">PBRIrrUniforms</a></div><div class="ttdoc">Cached uniform locations for radiance convolution shader.</div><div class="ttdef"><b>Definition</b> pbr.h:30</div></div>
+<div class="ttc" id="astructPBRLumUniforms_html"><div class="ttname"><a href="structPBRLumUniforms.html">PBRLumUniforms</a></div><div class="ttdoc">Cached uniform locations for luminance reduction shader.</div><div class="ttdef"><b>Definition</b> pbr.h:39</div></div>
+<div class="ttc" id="astructPBRSpecUniforms_html"><div class="ttname"><a href="structPBRSpecUniforms.html">PBRSpecUniforms</a></div><div class="ttdoc">Cached uniform locations for specular prefiltering shader.</div><div class="ttdef"><b>Definition</b> pbr.h:18</div></div>
+<div class="ttc" id="astructPerfTimer_html"><div class="ttname"><a href="structPerfTimer.html">PerfTimer</a></div><div class="ttdoc">CPU high-precision timer.</div><div class="ttdef"><b>Definition</b> perf_timer.h:24</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="ibl__coordinator_8h.html">ibl_coordinator.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

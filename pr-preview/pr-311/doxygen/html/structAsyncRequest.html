@@ -1,0 +1,513 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: AsyncRequest Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('structAsyncRequest.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle"><div class="title">AsyncRequest Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Données de la requête asynchrone transférées entre les threads.  
+ <a href="structAsyncRequest.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:a790bd417ab046e08aa8a4bdb945aa995" id="r_a790bd417ab046e08aa8a4bdb945aa995"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995">path</a> [256]</td></tr>
+<tr class="separator:a790bd417ab046e08aa8a4bdb945aa995"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2baa28c7f91fd3143433a224875187a" id="r_af2baa28c7f91fd3143433a224875187a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="asset__manager_8h.html#a72d924d1cb8e1544b6d5198e98d52ca9">AssetType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#af2baa28c7f91fd3143433a224875187a">resource_type</a></td></tr>
+<tr class="separator:af2baa28c7f91fd3143433a224875187a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7afa8809d54c6fc680858a57ba29c1e" id="r_ac7afa8809d54c6fc680858a57ba29c1e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ac7afa8809d54c6fc680858a57ba29c1e">backend_data</a></td></tr>
+<tr class="separator:ac7afa8809d54c6fc680858a57ba29c1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3050b10d8e5b74f241183ab01eec97b5" id="r_a3050b10d8e5b74f241183ab01eec97b5"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a3050b10d8e5b74f241183ab01eec97b5">pbo_mapped_ptr</a></td></tr>
+<tr class="separator:a3050b10d8e5b74f241183ab01eec97b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5954290e1bec60ae5bb883574d3c8ad" id="r_af5954290e1bec60ae5bb883574d3c8ad"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#af5954290e1bec60ae5bb883574d3c8ad">pbo_id</a></td></tr>
+<tr class="separator:af5954290e1bec60ae5bb883574d3c8ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e3b0d386eb88fbeb7f187f9de964376" id="r_a6e3b0d386eb88fbeb7f187f9de964376"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a6e3b0d386eb88fbeb7f187f9de964376">required_pbo_size</a></td></tr>
+<tr class="separator:a6e3b0d386eb88fbeb7f187f9de964376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4afdf0552ccb72bacdd3f7710374b51" id="r_ad4afdf0552ccb72bacdd3f7710374b51"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51">width</a></td></tr>
+<tr class="separator:ad4afdf0552ccb72bacdd3f7710374b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4e953655035ef73bf310187cdb1091f" id="r_af4e953655035ef73bf310187cdb1091f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f">height</a></td></tr>
+<tr class="separator:af4e953655035ef73bf310187cdb1091f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d9cb4509d43875ece9e7a5142b37e15" id="r_a0d9cb4509d43875ece9e7a5142b37e15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15">channels</a></td></tr>
+<tr class="separator:a0d9cb4509d43875ece9e7a5142b37e15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21b6f76ab00ac6b37e4cd45acba5225e" id="r_a21b6f76ab00ac6b37e4cd45acba5225e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a21b6f76ab00ac6b37e4cd45acba5225e">is_compressed</a></td></tr>
+<tr class="separator:a21b6f76ab00ac6b37e4cd45acba5225e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dd7955cf29312ed208b259ce91f4d51" id="r_a1dd7955cf29312ed208b259ce91f4d51"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a1dd7955cf29312ed208b259ce91f4d51">gl_internal_format</a></td></tr>
+<tr class="separator:a1dd7955cf29312ed208b259ce91f4d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77510eb6e6dba67316f278ad55da34f9" id="r_a77510eb6e6dba67316f278ad55da34f9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a77510eb6e6dba67316f278ad55da34f9">gl_format</a></td></tr>
+<tr class="separator:a77510eb6e6dba67316f278ad55da34f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e6f37c2e6ae2a5320ed081ae6e6479b" id="r_a9e6f37c2e6ae2a5320ed081ae6e6479b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a9e6f37c2e6ae2a5320ed081ae6e6479b">gl_type</a></td></tr>
+<tr class="separator:a9e6f37c2e6ae2a5320ed081ae6e6479b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3905494d911571b697b852533107e8f" id="r_ab3905494d911571b697b852533107e8f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ab3905494d911571b697b852533107e8f">submission_time</a></td></tr>
+<tr class="separator:ab3905494d911571b697b852533107e8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4cd174106cd4357e69f05d238c753ae" id="r_ac4cd174106cd4357e69f05d238c753ae"><td class="memItemLeft" align="right" valign="top">volatile <a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae">state</a></td></tr>
+<tr class="separator:ac4cd174106cd4357e69f05d238c753ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Données de la requête asynchrone transférées entre les threads. </p>
+<dl class="section note"><dt>Note</dt><dd>Totalement indépendante des formats d'images concrets. </dd></dl>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="ac7afa8809d54c6fc680858a57ba29c1e" name="ac7afa8809d54c6fc680858a57ba29c1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7afa8809d54c6fc680858a57ba29c1e">&#9670;&#160;</a></span>backend_data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* AsyncRequest::backend_data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Payload opaque géré exclusivement par le module de format. </p>
+
+</div>
+</div>
+<a id="a0d9cb4509d43875ece9e7a5142b37e15" name="a0d9cb4509d43875ece9e7a5142b37e15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d9cb4509d43875ece9e7a5142b37e15">&#9670;&#160;</a></span>channels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AsyncRequest::channels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77510eb6e6dba67316f278ad55da34f9" name="a77510eb6e6dba67316f278ad55da34f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77510eb6e6dba67316f278ad55da34f9">&#9670;&#160;</a></span>gl_format</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t AsyncRequest::gl_format</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1dd7955cf29312ed208b259ce91f4d51" name="a1dd7955cf29312ed208b259ce91f4d51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dd7955cf29312ed208b259ce91f4d51">&#9670;&#160;</a></span>gl_internal_format</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t AsyncRequest::gl_internal_format</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e6f37c2e6ae2a5320ed081ae6e6479b" name="a9e6f37c2e6ae2a5320ed081ae6e6479b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e6f37c2e6ae2a5320ed081ae6e6479b">&#9670;&#160;</a></span>gl_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t AsyncRequest::gl_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af4e953655035ef73bf310187cdb1091f" name="af4e953655035ef73bf310187cdb1091f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4e953655035ef73bf310187cdb1091f">&#9670;&#160;</a></span>height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AsyncRequest::height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a21b6f76ab00ac6b37e4cd45acba5225e" name="a21b6f76ab00ac6b37e4cd45acba5225e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21b6f76ab00ac6b37e4cd45acba5225e">&#9670;&#160;</a></span>is_compressed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool AsyncRequest::is_compressed</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a790bd417ab046e08aa8a4bdb945aa995" name="a790bd417ab046e08aa8a4bdb945aa995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a790bd417ab046e08aa8a4bdb945aa995">&#9670;&#160;</a></span>path</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char AsyncRequest::path[256]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af5954290e1bec60ae5bb883574d3c8ad" name="af5954290e1bec60ae5bb883574d3c8ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5954290e1bec60ae5bb883574d3c8ad">&#9670;&#160;</a></span>pbo_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint AsyncRequest::pbo_id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>ID du Pixel Buffer Object OpenGL cible. </p>
+
+</div>
+</div>
+<a id="a3050b10d8e5b74f241183ab01eec97b5" name="a3050b10d8e5b74f241183ab01eec97b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3050b10d8e5b74f241183ab01eec97b5">&#9670;&#160;</a></span>pbo_mapped_ptr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* AsyncRequest::pbo_mapped_ptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pointeur vers la mémoire PBO mappée par le thread principal. </p>
+
+</div>
+</div>
+<a id="a6e3b0d386eb88fbeb7f187f9de964376" name="a6e3b0d386eb88fbeb7f187f9de964376"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e3b0d386eb88fbeb7f187f9de964376">&#9670;&#160;</a></span>required_pbo_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t AsyncRequest::required_pbo_size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Taille totale requise pour le transfert en VRAM. </p>
+
+</div>
+</div>
+<a id="af2baa28c7f91fd3143433a224875187a" name="af2baa28c7f91fd3143433a224875187a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2baa28c7f91fd3143433a224875187a">&#9670;&#160;</a></span>resource_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="asset__manager_8h.html#a72d924d1cb8e1544b6d5198e98d52ca9">AssetType</a> AsyncRequest::resource_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac4cd174106cd4357e69f05d238c753ae" name="ac4cd174106cd4357e69f05d238c753ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4cd174106cd4357e69f05d238c753ae">&#9670;&#160;</a></span>state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">volatile <a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a> AsyncRequest::state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab3905494d911571b697b852533107e8f" name="ab3905494d911571b697b852533107e8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3905494d911571b697b852533107e8f">&#9670;&#160;</a></span>submission_time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double AsyncRequest::submission_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad4afdf0552ccb72bacdd3f7710374b51" name="ad4afdf0552ccb72bacdd3f7710374b51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4afdf0552ccb72bacdd3f7710374b51">&#9670;&#160;</a></span>width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AsyncRequest::width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="async__loader_8h_source.html">async_loader.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structAsyncRequest.html">AsyncRequest</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

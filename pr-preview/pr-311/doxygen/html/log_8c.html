@@ -1,0 +1,618 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/log.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('log_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">log.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;platform/platform_time.h&quot;</code><br />
+<code>#include &quot;platform/platform_utils.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="tracy__log_8h_source.html">tracy_log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
+<code>#include &lt;stdarg.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;strings.h&gt;</code><br />
+<code>#include &lt;time.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for log.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="log_8c__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:afccd240f973cf154952fb917c9209719" id="r_afccd240f973cf154952fb917c9209719"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="log_8c.html#afccd240f973cf154952fb917c9209719a490d7b93a43f9c7422bb90f9fdb1556f">MILLI_DIVISOR</a> = 1000000
+, <a class="el" href="log_8c.html#afccd240f973cf154952fb917c9209719a3ff11c2ebc27e50d70960f12741444fb">PREFIX_BUFFER_SIZE</a> = 128
+, <a class="el" href="log_8c.html#afccd240f973cf154952fb917c9209719aa9180b3f0d8722645ebcd8c9ab60fa70">TIME_BUFFER_SIZE</a> = 24
+, <a class="el" href="log_8c.html#afccd240f973cf154952fb917c9209719a6a5dd49e581491233eb9ddb60aca3b2d">MSG_BUFFER_SIZE</a> = 1024
+ }</td></tr>
+<tr class="separator:afccd240f973cf154952fb917c9209719"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:abe911ea0f3b04836734f53c02bce31f3" id="r_abe911ea0f3b04836734f53c02bce31f3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#abe911ea0f3b04836734f53c02bce31f3">string_to_level</a> (const char *str)</td></tr>
+<tr class="separator:abe911ea0f3b04836734f53c02bce31f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cbf849de9da0b561bc201d34343e63b" id="r_a8cbf849de9da0b561bc201d34343e63b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a8cbf849de9da0b561bc201d34343e63b">log_init</a> (void)</td></tr>
+<tr class="separator:a8cbf849de9da0b561bc201d34343e63b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008707c8596c7f48969d541cf5a6fa30" id="r_a008707c8596c7f48969d541cf5a6fa30"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a008707c8596c7f48969d541cf5a6fa30">level_to_string</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level)</td></tr>
+<tr class="separator:a008707c8596c7f48969d541cf5a6fa30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20d53fe4929c9f90f83a10c739b02dfa" id="r_a20d53fe4929c9f90f83a10c739b02dfa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a20d53fe4929c9f90f83a10c739b02dfa">log_set_level</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level)</td></tr>
+<tr class="memdesc:a20d53fe4929c9f90f83a10c739b02dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global minimum log level.  <br /></td></tr>
+<tr class="separator:a20d53fe4929c9f90f83a10c739b02dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a204bd0fe448c6083705de7232cea8102" id="r_a204bd0fe448c6083705de7232cea8102"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a204bd0fe448c6083705de7232cea8102">log_set_callback</a> (<a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a> callback)</td></tr>
+<tr class="memdesc:a204bd0fe448c6083705de7232cea8102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a custom callback for log messages.  <br /></td></tr>
+<tr class="separator:a204bd0fe448c6083705de7232cea8102"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5099953981ab6c18721857fd2f8d6fc" id="r_ae5099953981ab6c18721857fd2f8d6fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#ae5099953981ab6c18721857fd2f8d6fc">log_get_level</a> (void)</td></tr>
+<tr class="memdesc:ae5099953981ab6c18721857fd2f8d6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current global log level.  <br /></td></tr>
+<tr class="separator:ae5099953981ab6c18721857fd2f8d6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71580585dbb8388e03440751eb26bae7" id="r_a71580585dbb8388e03440751eb26bae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a71580585dbb8388e03440751eb26bae7">log_message</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, const char *tag, const char *format,...)</td></tr>
+<tr class="memdesc:a71580585dbb8388e03440751eb26bae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a formatted message.  <br /></td></tr>
+<tr class="separator:a71580585dbb8388e03440751eb26bae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:af9d04d44ddd24cd181c91561df230cee" id="r_af9d04d44ddd24cd181c91561df230cee"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#af9d04d44ddd24cd181c91561df230cee">g_log_level</a> = <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">LOG_LEVEL_INFO</a></td></tr>
+<tr class="separator:af9d04d44ddd24cd181c91561df230cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85e0d2f0365db22b9b91ccf8ee95889b" id="r_a85e0d2f0365db22b9b91ccf8ee95889b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a85e0d2f0365db22b9b91ccf8ee95889b">g_log_initialized</a> = false</td></tr>
+<tr class="separator:a85e0d2f0365db22b9b91ccf8ee95889b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3614ab5bdd1c64935cb35097746a5338" id="r_a3614ab5bdd1c64935cb35097746a5338"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a3614ab5bdd1c64935cb35097746a5338">g_log_callback</a> = NULL</td></tr>
+<tr class="separator:a3614ab5bdd1c64935cb35097746a5338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="afccd240f973cf154952fb917c9209719" name="afccd240f973cf154952fb917c9209719"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afccd240f973cf154952fb917c9209719">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afccd240f973cf154952fb917c9209719a490d7b93a43f9c7422bb90f9fdb1556f" name="afccd240f973cf154952fb917c9209719a490d7b93a43f9c7422bb90f9fdb1556f"></a>MILLI_DIVISOR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afccd240f973cf154952fb917c9209719a3ff11c2ebc27e50d70960f12741444fb" name="afccd240f973cf154952fb917c9209719a3ff11c2ebc27e50d70960f12741444fb"></a>PREFIX_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afccd240f973cf154952fb917c9209719aa9180b3f0d8722645ebcd8c9ab60fa70" name="afccd240f973cf154952fb917c9209719aa9180b3f0d8722645ebcd8c9ab60fa70"></a>TIME_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afccd240f973cf154952fb917c9209719a6a5dd49e581491233eb9ddb60aca3b2d" name="afccd240f973cf154952fb917c9209719a6a5dd49e581491233eb9ddb60aca3b2d"></a>MSG_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a008707c8596c7f48969d541cf5a6fa30" name="a008707c8596c7f48969d541cf5a6fa30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a008707c8596c7f48969d541cf5a6fa30">&#9670;&#160;</a></span>level_to_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const char * level_to_string </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5099953981ab6c18721857fd2f8d6fc" name="ae5099953981ab6c18721857fd2f8d6fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5099953981ab6c18721857fd2f8d6fc">&#9670;&#160;</a></span>log_get_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> log_get_level </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves the current global log level. </p>
+<dl class="section return"><dt>Returns</dt><dd>Active LogLevel. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="log_8c_ae5099953981ab6c18721857fd2f8d6fc_cgraph.svg" width="406" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a8cbf849de9da0b561bc201d34343e63b" name="a8cbf849de9da0b561bc201d34343e63b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cbf849de9da0b561bc201d34343e63b">&#9670;&#160;</a></span>log_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void log_init </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="log_8c_a8cbf849de9da0b561bc201d34343e63b_cgraph.svg" width="248" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a71580585dbb8388e03440751eb26bae7" name="a71580585dbb8388e03440751eb26bae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71580585dbb8388e03440751eb26bae7">&#9670;&#160;</a></span>log_message()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_message </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Logs a formatted message. </p>
+<p>Format: <code>YYYY-MM-DD HH:MM:SS,mmm - tag - LEVEL - message</code></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>Severity level. </td></tr>
+    <tr><td class="paramname">tag</td><td>Category label (e.g., "RENDER", "INPUT"). </td></tr>
+    <tr><td class="paramname">format</td><td>Printf-style format string. </td></tr>
+    <tr><td class="paramname">...</td><td>Arguments for the format string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="log_8c_a71580585dbb8388e03440751eb26bae7_cgraph.svg" width="482" height="184"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a204bd0fe448c6083705de7232cea8102" name="a204bd0fe448c6083705de7232cea8102"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a204bd0fe448c6083705de7232cea8102">&#9670;&#160;</a></span>log_set_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_set_callback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a custom callback for log messages. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Function to call for each log message, or NULL to disable. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a20d53fe4929c9f90f83a10c739b02dfa" name="a20d53fe4929c9f90f83a10c739b02dfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20d53fe4929c9f90f83a10c739b02dfa">&#9670;&#160;</a></span>log_set_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_set_level </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the global minimum log level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>Levels below this will be ignored. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abe911ea0f3b04836734f53c02bce31f3" name="abe911ea0f3b04836734f53c02bce31f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe911ea0f3b04836734f53c02bce31f3">&#9670;&#160;</a></span>string_to_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> string_to_level </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a3614ab5bdd1c64935cb35097746a5338" name="a3614ab5bdd1c64935cb35097746a5338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3614ab5bdd1c64935cb35097746a5338">&#9670;&#160;</a></span>g_log_callback</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a> g_log_callback = NULL</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a85e0d2f0365db22b9b91ccf8ee95889b" name="a85e0d2f0365db22b9b91ccf8ee95889b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85e0d2f0365db22b9b91ccf8ee95889b">&#9670;&#160;</a></span>g_log_initialized</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool g_log_initialized = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af9d04d44ddd24cd181c91561df230cee" name="af9d04d44ddd24cd181c91561df230cee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9d04d44ddd24cd181c91561df230cee">&#9670;&#160;</a></span>g_log_level</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> g_log_level = <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">LOG_LEVEL_INFO</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="log_8c.html">log.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="globals.html#index_a"><span>a</span></a></li>
+      <li><a href="globals_b.html#index_b"><span>b</span></a></li>
+      <li><a href="globals_c.html#index_c"><span>c</span></a></li>
+      <li><a href="globals_d.html#index_d"><span>d</span></a></li>
+      <li><a href="globals_e.html#index_e"><span>e</span></a></li>
+      <li><a href="globals_f.html#index_f"><span>f</span></a></li>
+      <li><a href="globals_g.html#index_g"><span>g</span></a></li>
+      <li><a href="globals_h.html#index_h"><span>h</span></a></li>
+      <li><a href="globals_i.html#index_i"><span>i</span></a></li>
+      <li><a href="globals_k.html#index_k"><span>k</span></a></li>
+      <li><a href="globals_l.html#index_l"><span>l</span></a></li>
+      <li><a href="globals_m.html#index_m"><span>m</span></a></li>
+      <li><a href="globals_n.html#index_n"><span>n</span></a></li>
+      <li><a href="globals_o.html#index_o"><span>o</span></a></li>
+      <li class="current"><a href="globals_p.html#index_p"><span>p</span></a></li>
+      <li><a href="globals_q.html#index_q"><span>q</span></a></li>
+      <li><a href="globals_r.html#index_r"><span>r</span></a></li>
+      <li><a href="globals_s.html#index_s"><span>s</span></a></li>
+      <li><a href="globals_t.html#index_t"><span>t</span></a></li>
+      <li><a href="globals_u.html#index_u"><span>u</span></a></li>
+      <li><a href="globals_v.html#index_v"><span>v</span></a></li>
+      <li><a href="globals_w.html#index_w"><span>w</span></a></li>
+      <li><a href="globals_x.html#index_x"><span>x</span></a></li>
+      <li><a href="globals_y.html#index_y"><span>y</span></a></li>
+      <li><a href="globals_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_p.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all functions, variables, defines, enums, and typedefs with links to the files they belong to:</div>
+
+<h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
+<li>PAD_SIDE&#160;:&#160;<a class="el" href="gpu__profiler__ui__layout_8h.html#a34df31e8ecf9f924a8f31fffd643620c">gpu_profiler_ui_layout.h</a></li>
+<li>pair_softening_sq()&#160;:&#160;<a class="el" href="nbody__internal_8h.html#a90ad4f2cde85500e0405e89275bf426c">nbody_internal.h</a></li>
+<li>PANEL_FRAME_ALPHA&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#aebecb4aca5518dc86b7ba096ed227049">app_ui_layout.h</a></li>
+<li>parse_albedo_array()&#160;:&#160;<a class="el" href="material_8c.html#aef3a2c69f116490ba40deda62991392d">material.c</a></li>
+<li>parse_include_path()&#160;:&#160;<a class="el" href="shader_8c.html#adec70256cc2e6f4382eae7f1cd03cfec">shader.c</a></li>
+<li>parse_material_name()&#160;:&#160;<a class="el" href="material_8c.html#a4c9ce1d8ed49f869fa54e5d74f743610">material.c</a></li>
+<li>parse_material_properties()&#160;:&#160;<a class="el" href="material_8c.html#ad1fb3541d5c2228e4792bce21c582b19">material.c</a></li>
+<li>parse_materials_from_json()&#160;:&#160;<a class="el" href="material_8c.html#ab29b44b2deb74423e0b2836b77e0b040">material.c</a></li>
+<li>PATH_BUFFER_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#a9334a5b9057f32da96db9b5c6a045d67ae3e56668acad6b8aed4f818040a24567">shader.c</a></li>
+<li>PBR_DEBUG_MODE_COUNT&#160;:&#160;<a class="el" href="app__input_8c.html#a458e651af6690959efa2afb96be7d609a46099f3e33a2bfa5892c3e7bffae3321">app_input.c</a></li>
+<li>pbr_get_irr_uniforms()&#160;:&#160;<a class="el" href="pbr_8h.html#afe447daec33b49a4068deabf4f2cd96c">pbr.h</a>, <a class="el" href="pbr_8c.html#afe447daec33b49a4068deabf4f2cd96c">pbr.c</a></li>
+<li>pbr_get_lum_uniforms()&#160;:&#160;<a class="el" href="pbr_8h.html#a519c59fa558fb2c7776e78be5944464e">pbr.h</a>, <a class="el" href="pbr_8c.html#a519c59fa558fb2c7776e78be5944464e">pbr.c</a></li>
+<li>pbr_get_spec_uniforms()&#160;:&#160;<a class="el" href="pbr_8h.html#a01b429d5a8f495e2e01428fc05cb7610">pbr.h</a>, <a class="el" href="pbr_8c.html#a01b429d5a8f495e2e01428fc05cb7610">pbr.c</a></li>
+<li>pbr_irradiance_init()&#160;:&#160;<a class="el" href="pbr_8h.html#aae7b31749ecdf5e4a064b8bd0d4f74c7">pbr.h</a>, <a class="el" href="pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7">pbr.c</a></li>
+<li>pbr_irradiance_slice_compute()&#160;:&#160;<a class="el" href="pbr_8h.html#a719d0f0fa9fdb9a743885fc82c617162">pbr.h</a>, <a class="el" href="pbr_8c.html#a719d0f0fa9fdb9a743885fc82c617162">pbr.c</a></li>
+<li>pbr_prefilter_init()&#160;:&#160;<a class="el" href="pbr_8c.html#a71941da15aee302848216a21ec1cc846">pbr.c</a>, <a class="el" href="pbr_8h.html#a71941da15aee302848216a21ec1cc846">pbr.h</a></li>
+<li>pbr_prefilter_mip()&#160;:&#160;<a class="el" href="pbr_8h.html#a2e45982e37b3d9cbcaa5454ddbb5a660">pbr.h</a>, <a class="el" href="pbr_8c.html#a2e45982e37b3d9cbcaa5454ddbb5a660">pbr.c</a></li>
+<li>pcg32_random()&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a606b326df87936035ed9485849b43486">adaptive_sampler.c</a></li>
+<li>pcg32_random_float()&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a5c9150292b8d042d1211dcf1c9be03f1">adaptive_sampler.c</a></li>
+<li>pcg32_seed()&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a2660fb6f3b2980637738bab0d618978f">adaptive_sampler.c</a></li>
+<li>PCG_IS_3&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a9b593157303bc36e072573948e65957c">adaptive_sampler.c</a></li>
+<li>PCG_IS_4&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a2975ce69994e59c085f969eda4acfdaa">adaptive_sampler.c</a></li>
+<li>PCG_MULTIPLIER&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a84ae985372316da8c3f40a6a60d5e215">adaptive_sampler.c</a></li>
+<li>PCG_SHIFT_1&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a912d74c93aef842a5214a425191ff0b5">adaptive_sampler.c</a></li>
+<li>PCG_SHIFT_2&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a8777c4f2b3891aeb61e15dd959ee6734">adaptive_sampler.c</a></li>
+<li>PERF_BACKEND_GAMEMODE&#160;:&#160;<a class="el" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a5de51ac27cd0cb45294b2d2fe5310a0d">perf_mode.h</a></li>
+<li>PERF_BACKEND_NATIVE&#160;:&#160;<a class="el" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a902630e1bd21cbe7d6a850af4a8b1b35">perf_mode.h</a></li>
+<li>PERF_BACKEND_NONE&#160;:&#160;<a class="el" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a93462a72c1ecb7be68154e3a9b56566c">perf_mode.h</a></li>
+<li>perf_hybrid_start()&#160;:&#160;<a class="el" href="perf__timer_8c.html#a59a73414ace7b1c18599fb7ea34b376b">perf_timer.c</a>, <a class="el" href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_timer.h</a></li>
+<li>perf_hybrid_stop()&#160;:&#160;<a class="el" href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#a144c7bd743c4e27d7738669d549e59ae">perf_timer.c</a></li>
+<li>perf_hybrid_stop_debug()&#160;:&#160;<a class="el" href="perf__timer_8h.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_timer.c</a></li>
+<li>PERF_MEASURE_LOG&#160;:&#160;<a class="el" href="perf__timer_8h.html#a4f737311402592e9e4f485894f1fb0f3">perf_timer.h</a></li>
+<li>PERF_MEASURE_MS&#160;:&#160;<a class="el" href="perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f">perf_timer.h</a></li>
+<li>perf_mode_cleanup()&#160;:&#160;<a class="el" href="perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#a93ee859004a75de69605d3984f7ea2f2">perf_mode.c</a></li>
+<li>PERF_MODE_ERROR&#160;:&#160;<a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a5f6fddc2bb2d88ee2127d38f0c2a3d87">perf_mode.h</a></li>
+<li>PERF_MODE_GAMEMODE&#160;:&#160;<a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a8e0e1bebf4fb203100ccea067f82a766">perf_mode.h</a></li>
+<li>perf_mode_get_backend()&#160;:&#160;<a class="el" href="perf__mode_8h.html#aa667cf6303e7347a152fe91b1f67bbf6">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#aa667cf6303e7347a152fe91b1f67bbf6">perf_mode.c</a></li>
+<li>perf_mode_get_state()&#160;:&#160;<a class="el" href="perf__mode_8h.html#a4ff3e4dc53bde11bc737a5286afb02e1">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#a4ff3e4dc53bde11bc737a5286afb02e1">perf_mode.c</a></li>
+<li>perf_mode_get_state_string()&#160;:&#160;<a class="el" href="perf__mode_8c.html#aa6e7d34f198b807e5319bd33ed97aaa2">perf_mode.c</a>, <a class="el" href="perf__mode_8h.html#aa6e7d34f198b807e5319bd33ed97aaa2">perf_mode.h</a></li>
+<li>perf_mode_init()&#160;:&#160;<a class="el" href="perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#a154025c04a9fa8a639eeb948e58e2505">perf_mode.c</a></li>
+<li>perf_mode_is_active()&#160;:&#160;<a class="el" href="perf__mode_8h.html#af6fe4848ea239fdecd15d6c3056f7b78">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#af6fe4848ea239fdecd15d6c3056f7b78">perf_mode.c</a></li>
+<li>PERF_MODE_NATIVE_NICE&#160;:&#160;<a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a0e0b87a68bf94127a214871f08b1fe61">perf_mode.h</a></li>
+<li>PERF_MODE_NATIVE_SCHED&#160;:&#160;<a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a52ea4c7af9b2b3ea758361ebc3bc4e88">perf_mode.h</a></li>
+<li>PERF_MODE_OFF&#160;:&#160;<a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492adfec5c3140e9017a2794a8fb01ca6b3a">perf_mode.h</a></li>
+<li>perf_mode_request_end()&#160;:&#160;<a class="el" href="perf__mode_8h.html#a8a498514effcc3a3fa67efdcd6530a8a">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#a8a498514effcc3a3fa67efdcd6530a8a">perf_mode.c</a></li>
+<li>perf_mode_request_start()&#160;:&#160;<a class="el" href="perf__mode_8h.html#a24bb58cfa7928d93310def4391d3394e">perf_mode.h</a>, <a class="el" href="perf__mode_8c.html#a24bb58cfa7928d93310def4391d3394e">perf_mode.c</a></li>
+<li>PERF_NICE_VALUE&#160;:&#160;<a class="el" href="perf__mode_8c.html#a1be3860693af99a6c1da72580097294ca977eba3d475617fd9921e404d36b1f93">perf_mode.c</a></li>
+<li>PERF_RT_PRIORITY&#160;:&#160;<a class="el" href="perf__mode_8c.html#a900dca9b26de42491763226e12dcd47ba687519edbd732d77000feab85aa93696">perf_mode.c</a></li>
+<li>perf_timer_elapsed_ms()&#160;:&#160;<a class="el" href="perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer.c</a></li>
+<li>perf_timer_elapsed_s()&#160;:&#160;<a class="el" href="perf__timer_8c.html#a17f019ead24431cfe5e5646df73af5d6">perf_timer.c</a>, <a class="el" href="perf__timer_8h.html#a17f019ead24431cfe5e5646df73af5d6">perf_timer.h</a></li>
+<li>perf_timer_elapsed_us()&#160;:&#160;<a class="el" href="perf__timer_8h.html#a1e8b0fc011f63d1416ab37899a7dd0c3">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#a1e8b0fc011f63d1416ab37899a7dd0c3">perf_timer.c</a></li>
+<li>perf_timer_start()&#160;:&#160;<a class="el" href="perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#a2fe19c18f13ab8077e83373abd1a00f5">perf_timer.c</a></li>
+<li>PerfModeBackend&#160;:&#160;<a class="el" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">perf_mode.h</a></li>
+<li>PerfModeState&#160;:&#160;<a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">perf_mode.h</a></li>
+<li>PI&#160;:&#160;<a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">pbr_functions.glsl</a></li>
+<li>POSTFX_AUTO_EXPOSURE&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">pp_params.h</a></li>
+<li>POSTFX_BANDING&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">pp_params.h</a></li>
+<li>POSTFX_BLOOM&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">pp_params.h</a></li>
+<li>POSTFX_BLOOM_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba0ec22d0e12d93f34e7839e9c03264f25">pp_params.h</a></li>
+<li>POSTFX_CHROM_ABBR&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">pp_params.h</a></li>
+<li>POSTFX_COLOR_GRADING&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">pp_params.h</a></li>
+<li>POSTFX_DOF&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">pp_params.h</a></li>
+<li>POSTFX_DOF_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">pp_params.h</a></li>
+<li>POSTFX_EXPOSURE&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">pp_params.h</a></li>
+<li>POSTFX_EXPOSURE_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">pp_params.h</a></li>
+<li>POSTFX_FOG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baf4f60aab45ed0c2134fca65191575ff3">pp_params.h</a></li>
+<li>POSTFX_FOG_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7badc7695b4005569d6621edb888bb52d7b">pp_params.h</a></li>
+<li>POSTFX_FXAA&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">pp_params.h</a></li>
+<li>POSTFX_FXAA_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">pp_params.h</a></li>
+<li>POSTFX_GRAIN&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">pp_params.h</a></li>
+<li>POSTFX_LUT3D&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7bad8b0078238cabfb8885a95c79157ed25">pp_params.h</a></li>
+<li>POSTFX_LUT_VIZ&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba4cd3faee9d2199483e99ee606ac02a6b">pp_params.h</a></li>
+<li>POSTFX_MOTION_BLUR&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">pp_params.h</a></li>
+<li>POSTFX_MOTION_BLUR_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">pp_params.h</a></li>
+<li>POSTFX_STENCIL_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69">pp_params.h</a></li>
+<li>POSTFX_VECTOR_FIELD_DEBUG&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122">pp_params.h</a></li>
+<li>POSTFX_VIGNETTE&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">pp_params.h</a></li>
+<li>postprocess_apply_preset()&#160;:&#160;<a class="el" href="postprocess_8h.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409">postprocess.h</a>, <a class="el" href="postprocess__setters_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409">postprocess_setters.c</a></li>
+<li>postprocess_begin()&#160;:&#160;<a class="el" href="postprocess__apply_8c.html#a8fdad312e138cf7080b4596e127584e5">postprocess_apply.c</a>, <a class="el" href="postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5">postprocess.h</a></li>
+<li>postprocess_cleanup()&#160;:&#160;<a class="el" href="postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0">postprocess.h</a>, <a class="el" href="postprocess__cleanup_8c.html#a9ad5053871c219c0dd7585fab39c18b0">postprocess_cleanup.c</a></li>
+<li>postprocess_compile_optimized()&#160;:&#160;<a class="el" href="postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c">postprocess.h</a>, <a class="el" href="postprocess__shader_8c.html#aefd09528f2a616bdde219a7f5683847c">postprocess_shader.c</a></li>
+<li>postprocess_compute_luminance_histogram()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#a64b64ebb4ca6f29eeacf2c9fbea97423">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#a64b64ebb4ca6f29eeacf2c9fbea97423">postprocess_readback.c</a></li>
+<li>postprocess_disable()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#aa46668e6882df082d99ef8735eadc8af">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#aa46668e6882df082d99ef8735eadc8af">postprocess_setters.c</a></li>
+<li>postprocess_enable()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a881dafb2be086301f57008f8c73f545b">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a881dafb2be086301f57008f8c73f545b">postprocess_setters.c</a></li>
+<li>postprocess_end()&#160;:&#160;<a class="el" href="postprocess_8h.html#aa84256eef04459c5acf3b67987da736b">postprocess.h</a>, <a class="el" href="postprocess__apply_8c.html#aa84256eef04459c5acf3b67987da736b">postprocess_apply.c</a></li>
+<li>postprocess_get_exposure()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#abc341dd9baaf0c15b099d5ad9c076f2b">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#abc341dd9baaf0c15b099d5ad9c076f2b">postprocess_setters.c</a></li>
+<li>postprocess_get_exposure_pbo()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#aa1dcf193be9d7f15c27cffd3ff0db611">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#aa1dcf193be9d7f15c27cffd3ff0db611">postprocess_readback.c</a></li>
+<li>postprocess_get_exposure_sync()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#aaac7681f1f0ded622ce21a46004eeb2c">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#aaac7681f1f0ded622ce21a46004eeb2c">postprocess_readback.c</a></li>
+<li>postprocess_get_histogram_pbo()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#a0e8b6b0e9bf0223724fc753271afe815">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#a0e8b6b0e9bf0223724fc753271afe815">postprocess_readback.c</a></li>
+<li>postprocess_get_histogram_sync()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#a660027e7d28669260ff0bff0b4a7306b">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#a660027e7d28669260ff0bff0b4a7306b">postprocess_readback.c</a></li>
+<li>POSTPROCESS_HISTOGRAM_BUCKETS&#160;:&#160;<a class="el" href="pp__exposure__readback_8h.html#a7d38280252925a54dc81b01fc5c11032">pp_exposure_readback.h</a></li>
+<li>postprocess_init()&#160;:&#160;<a class="el" href="postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b">postprocess.h</a>, <a class="el" href="postprocess__init_8c.html#a2bc2aa1dea945700e2e0ce539fffd53b">postprocess_init.c</a></li>
+<li>postprocess_input_handle_key()&#160;:&#160;<a class="el" href="postprocess__input_8h.html#ac314e0acb97710d2d9177593506123a4">postprocess_input.h</a>, <a class="el" href="postprocess__input_8c.html#ac314e0acb97710d2d9177593506123a4">postprocess_input.c</a></li>
+<li>postprocess_is_enabled()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#af9163a0102d9d7b05ae4c091b9358f9f">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#af9163a0102d9d7b05ae4c091b9358f9f">postprocess_setters.c</a></li>
+<li>postprocess_load_lut3d()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#aaf82157a553e11616a59e0b37ab6318e">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#aaf82157a553e11616a59e0b37ab6318e">postprocess_setters.c</a></li>
+<li>postprocess_on_state_change()&#160;:&#160;<a class="el" href="postprocess__setters_8c.html#aa747a4eb6f575c9d9fc7e97df5c8e847">postprocess_setters.c</a></li>
+<li>postprocess_resize()&#160;:&#160;<a class="el" href="postprocess__init_8c.html#aeba49bd333ab21356706ac98f5b180b5">postprocess_init.c</a>, <a class="el" href="postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5">postprocess.h</a></li>
+<li>postprocess_set_auto_exposure()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a6ce07fd263254dd72c5afc8c199f3913">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a6ce07fd263254dd72c5afc8c199f3913">postprocess_setters.c</a></li>
+<li>postprocess_set_banding()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_setters.c</a></li>
+<li>postprocess_set_banding_channels()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a4a5f36a8b51d36d743840c7acc4a9e55">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a4a5f36a8b51d36d743840c7acc4a9e55">postprocess_setters.c</a></li>
+<li>postprocess_set_banding_dither()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a4459034743ba0085c3687dd0a6c89133">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a4459034743ba0085c3687dd0a6c89133">postprocess_setters.c</a></li>
+<li>postprocess_set_banding_perceptual()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a3a30e58d88bfa2568ada6fc829dd83b6">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a3a30e58d88bfa2568ada6fc829dd83b6">postprocess_setters.c</a></li>
+<li>postprocess_set_bloom()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a8a48d84f2ba23d4a1a5d678618d29e7b">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a8a48d84f2ba23d4a1a5d678618d29e7b">postprocess_setters.c</a></li>
+<li>postprocess_set_chrom_abbr()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a5066d2f5e623ccd15daa08b67596d555">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a5066d2f5e623ccd15daa08b67596d555">postprocess_setters.c</a></li>
+<li>postprocess_set_color_grading()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a165620c3d499ce76f904f684dd7a4c99">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a165620c3d499ce76f904f684dd7a4c99">postprocess_setters.c</a></li>
+<li>postprocess_set_dof()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#aace03323c05270449d59a40291940736">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#aace03323c05270449d59a40291940736">postprocess_setters.c</a></li>
+<li>postprocess_set_dof_anamorphic()&#160;:&#160;<a class="el" href="postprocess__setters_8c.html#ac39bb0e2a4deb34497384fb628161e1d">postprocess_setters.c</a>, <a class="el" href="postprocess__setters_8h.html#ac39bb0e2a4deb34497384fb628161e1d">postprocess_setters.h</a></li>
+<li>postprocess_set_dummy_textures()&#160;:&#160;<a class="el" href="postprocess_8h.html#a47114280aafaff716053e0b12be92dca">postprocess.h</a>, <a class="el" href="postprocess__init_8c.html#a47114280aafaff716053e0b12be92dca">postprocess_init.c</a></li>
+<li>postprocess_set_exposure()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a791edfadb846c4f16be12dad6e4c2a6a">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a791edfadb846c4f16be12dad6e4c2a6a">postprocess_setters.c</a></li>
+<li>postprocess_set_exposure_sync()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#a77ce2b60d9546666ff36ee12c97091a0">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#a77ce2b60d9546666ff36ee12c97091a0">postprocess_readback.c</a></li>
+<li>postprocess_set_exposure_target()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#aecbf3590a5f6119f5093284c9319ead3">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#aecbf3590a5f6119f5093284c9319ead3">postprocess_readback.c</a></li>
+<li>postprocess_set_fog()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#aa05f15141eaea413a19e1155ee7406bd">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#aa05f15141eaea413a19e1155ee7406bd">postprocess_setters.c</a></li>
+<li>postprocess_set_fxaa()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_setters.c</a></li>
+<li>postprocess_set_grading_ue_default()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#aa3a420879557bc5bfc4a57cab113f1dd">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#aa3a420879557bc5bfc4a57cab113f1dd">postprocess_setters.c</a></li>
+<li>postprocess_set_grain()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a3f062fb8af9a8119ae2702e3237bfebf">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a3f062fb8af9a8119ae2702e3237bfebf">postprocess_setters.c</a></li>
+<li>postprocess_set_histogram_sync()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#aa8295f28676867d00e43d1378968bd0b">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#aa8295f28676867d00e43d1378968bd0b">postprocess_readback.c</a></li>
+<li>postprocess_set_lut3d()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a5cd72937cb98646d0ad08640bb17a6c7">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a5cd72937cb98646d0ad08640bb17a6c7">postprocess_setters.c</a></li>
+<li>postprocess_set_tonemapper()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a7dfdbd52fd26553208453d418e3ecca4">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a7dfdbd52fd26553208453d418e3ecca4">postprocess_setters.c</a></li>
+<li>postprocess_set_vignette()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#adcef69ea56c03cb233d5e3a9abaeea56">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#adcef69ea56c03cb233d5e3a9abaeea56">postprocess_setters.c</a></li>
+<li>postprocess_set_white_balance()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a311dcc7f7b99bb8af261b080d3bfd3ec">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a311dcc7f7b99bb8af261b080d3bfd3ec">postprocess_setters.c</a></li>
+<li>postprocess_subsys_cleanup()&#160;:&#160;<a class="el" href="postprocess_8h.html#a0a1b0f4b914baf9f5788f5261d43208d">postprocess.h</a>, <a class="el" href="postprocess__init_8c.html#ad9d88f299475db256bd6fc8ddb526898">postprocess_init.c</a></li>
+<li>postprocess_subsys_init()&#160;:&#160;<a class="el" href="postprocess_8h.html#a12f68374afb1f4ee5496ac4c2baf086e">postprocess.h</a>, <a class="el" href="postprocess__init_8c.html#a881fa6b8d62e4f836a89f7a5a0df6c26">postprocess_init.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_BLOOM&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167bab6618e9fdfdf7789a88005e92bb84dc2">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_DEPTH&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167ba57215ee1830aba58fb6da7f967c6b2bb">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_DOF_BLUR&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167ba52208723fe78be596e51122ff09e11e1">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_EXPOSURE&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167baf0b77e7be4c1e923a25968ee4c7467f3">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_LUT3D&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167bab86b269f3f9bd7fbab9260119664325c">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167ba7863dbb9a8b92cd5e52d432ec6e37e22">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_SCENE&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167baf0ee1ef93d8f949e7b1de75a547fc375">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_STENCIL&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167ba0770bd525edea8e093a584f6dca5f753">postprocess_internal.h</a></li>
+<li>POSTPROCESS_TEX_UNIT_VELOCITY&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a7ff5f2dff38e7639981794c43dc9167ba8de6ad4fd3743301ea00af66f439290b">postprocess_internal.h</a></li>
+<li>postprocess_toggle()&#160;:&#160;<a class="el" href="postprocess__setters_8h.html#a90e1be83610a9debc59503b380a0bcd1">postprocess_setters.h</a>, <a class="el" href="postprocess__setters_8c.html#a90e1be83610a9debc59503b380a0bcd1">postprocess_setters.c</a></li>
+<li>postprocess_update_matrices()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#a86ca4160d60435cb54320bbcc68d0d95">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#a86ca4160d60435cb54320bbcc68d0d95">postprocess_readback.c</a></li>
+<li>postprocess_update_readbacks()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#a4e499403ff87148f7455391b3ee508be">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#a4e499403ff87148f7455391b3ee508be">postprocess_readback.c</a></li>
+<li>postprocess_update_time()&#160;:&#160;<a class="el" href="postprocess__readback_8h.html#ae22c24f5c64568dcf1908a579312ed60">postprocess_readback.h</a>, <a class="el" href="postprocess__readback_8c.html#ae22c24f5c64568dcf1908a579312ed60">postprocess_readback.c</a></li>
+<li>postprocess_use_dynamic()&#160;:&#160;<a class="el" href="postprocess_8h.html#a3b10285ebc588a80b81be601659260d5">postprocess.h</a>, <a class="el" href="postprocess__shader_8c.html#a3b10285ebc588a80b81be601659260d5">postprocess_shader.c</a></li>
+<li>PostProcessEffect&#160;:&#160;<a class="el" href="pp__params_8h.html#a01df437b0efb1a48be039d241c9baf7b">pp_params.h</a></li>
+<li>pp_create_framebuffer()&#160;:&#160;<a class="el" href="postprocess__init_8c.html#a6d14382f9f74ec6f92b07099e05350f3">postprocess_init.c</a>, <a class="el" href="postprocess__internal_8h.html#a6d14382f9f74ec6f92b07099e05350f3">postprocess_internal.h</a></li>
+<li>pp_destroy_cached_shaders()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a740fcd0d08d450e6ee0256d6f5763b0d">postprocess_internal.h</a>, <a class="el" href="postprocess__cleanup_8c.html#a740fcd0d08d450e6ee0256d6f5763b0d">postprocess_cleanup.c</a></li>
+<li>pp_destroy_framebuffer()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#aff62c837ec8fdb56fb854ea33a87e30f">postprocess_internal.h</a>, <a class="el" href="postprocess__cleanup_8c.html#aff62c837ec8fdb56fb854ea33a87e30f">postprocess_cleanup.c</a></li>
+<li>pp_destroy_readback_buffers()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a87bedfc4aa29245ba136d153697a09df">postprocess_internal.h</a>, <a class="el" href="postprocess__cleanup_8c.html#a87bedfc4aa29245ba136d153697a09df">postprocess_cleanup.c</a></li>
+<li>pp_destroy_screen_quad()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a21415636eae1a5f68907613bb54e467b">postprocess_internal.h</a>, <a class="el" href="postprocess__cleanup_8c.html#a21415636eae1a5f68907613bb54e467b">postprocess_cleanup.c</a></li>
+<li>pp_is_shader_in_cache()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#abc47308c6fbeae221ab3c4b8fccfd47f">postprocess_internal.h</a>, <a class="el" href="postprocess__shader_8c.html#abc47308c6fbeae221ab3c4b8fccfd47f">postprocess_shader.c</a></li>
+<li>pp_setup_sampler_uniforms()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#ad729a6bd46b45e8b85070f02a3195031">postprocess_internal.h</a>, <a class="el" href="postprocess__shader_8c.html#ad729a6bd46b45e8b85070f02a3195031">postprocess_shader.c</a></li>
+<li>pp_update_current_shader()&#160;:&#160;<a class="el" href="postprocess__internal_8h.html#a255fa49cbe02cfc65e5289793c60fea2">postprocess_internal.h</a>, <a class="el" href="postprocess__shader_8c.html#a255fa49cbe02cfc65e5289793c60fea2">postprocess_shader.c</a></li>
+<li>precompute_cached_spheres()&#160;:&#160;<a class="el" href="light__probes_8c.html#aa084be4e5a8048861388958381a6c4f9">light_probes.c</a></li>
+<li>PREFILTERED_SPECULAR_MAP_SIZE&#160;:&#160;<a class="el" href="group__Environment.html#gac0ba165d3405de365ee4b6af426db7ac">app_settings.h</a></li>
+<li>PREFIX_BUFFER_SIZE&#160;:&#160;<a class="el" href="log_8c.html#afccd240f973cf154952fb917c9209719a3ff11c2ebc27e50d70960f12741444fb">log.c</a></li>
+<li>prepare_batch()&#160;:&#160;<a class="el" href="ui_8c.html#a2542a31c87c66c322c255f6110d7b273">ui.c</a></li>
+<li>PRESET_ANALOG&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a60fe8e6a1bb6ba06e48ec0b2e86fdc9a">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a60fe8e6a1bb6ba06e48ec0b2e86fdc9a">postprocess_presets.c</a></li>
+<li>PRESET_BLUEPRINT&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a3abfc57b5f619bc3146c177011303082">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a3abfc57b5f619bc3146c177011303082">postprocess_presets.c</a></li>
+<li>PRESET_BW_CONTRAST&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#ac9cc116db2f7808142c2f582f5642098">postprocess_presets.c</a></li>
+<li>PRESET_CHANNEL_GFX&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a9a03660d046a5e7929fdcfd9dc3b4ed3">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a9a03660d046a5e7929fdcfd9dc3b4ed3">postprocess_presets.c</a></li>
+<li>PRESET_CINEMATIC&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a6867da5e153c31da923bfd57b2563313">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a6867da5e153c31da923bfd57b2563313">postprocess_presets.c</a></li>
+<li>PRESET_DEFAULT&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a4b57a0184cd61b5335951aa0e6b30495">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a4b57a0184cd61b5335951aa0e6b30495">postprocess_presets.c</a></li>
+<li>PRESET_MATRIX&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a3e3533df1a8aace5ebd66546165be922">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a3e3533df1a8aace5ebd66546165be922">postprocess_presets.c</a></li>
+<li>PRESET_NORDIC_NOIR&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#ae8c416f5c4672f246b43fa3085d99981">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#ae8c416f5c4672f246b43fa3085d99981">postprocess_presets.c</a></li>
+<li>PRESET_POSTERIZED&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a632215d24b2cc5d2e1b1a9ad1a8875e2">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a632215d24b2cc5d2e1b1a9ad1a8875e2">postprocess_presets.c</a></li>
+<li>PRESET_RETRO&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#afb1c2f382c8e33458959764eaad5e2cf">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#afb1c2f382c8e33458959764eaad5e2cf">postprocess_presets.c</a></li>
+<li>PRESET_SONY_A7SIII&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#ae93e0af46470e5be23c9dc17d39b16a2">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#ae93e0af46470e5be23c9dc17d39b16a2">postprocess_presets.c</a></li>
+<li>PRESET_SUBTLE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a9e68acd97f1db2a2eefc2d3cdd9e9af4">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a9e68acd97f1db2a2eefc2d3cdd9e9af4">postprocess_presets.c</a></li>
+<li>PRESET_VINTAGE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a18fd433e53469b575aacb8dfc72b1334">postprocess_presets.h</a>, <a class="el" href="postprocess__presets_8c.html#a18fd433e53469b575aacb8dfc72b1334">postprocess_presets.c</a></li>
+<li>print_help()&#160;:&#160;<a class="el" href="cli_8c.html#ac834d46f6713123c5798578457691016">cli.c</a></li>
+<li>process_irradiance()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#aa548dc7694895fdd9c9f75c4e95482cb">ibl_coordinator.c</a></li>
+<li>process_ktx_compression()&#160;:&#160;<a class="el" href="async__backend__ktx_8c.html#a454464e1e65a2183f06c83c163ea4950">async_backend_ktx.c</a></li>
+<li>process_luminance()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2">ibl_coordinator.c</a></li>
+<li>process_luminance_wait()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a60e618f4adff2efc497ca8e74e6c88ce">ibl_coordinator.c</a></li>
+<li>process_source()&#160;:&#160;<a class="el" href="shader_8c.html#a3aeeed571399ca7ff98bc7dc73ca8d05">shader.c</a></li>
+<li>process_specular_init()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#aeca35c868d46274d0d55fc83628a3cce">ibl_coordinator.c</a></li>
+<li>process_specular_mips()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a54892dd4ffc15e478031926ea1cdc068">ibl_coordinator.c</a></li>
+<li>PROFILE_FIBER_ENTER&#160;:&#160;<a class="el" href="profiler_8h.html#ae71d1f1907f3753a6dc82b4dce3b5bfa">profiler.h</a></li>
+<li>PROFILE_FIBER_LEAVE&#160;:&#160;<a class="el" href="profiler_8h.html#a9c1814fda5752080ba3e6cf84d6da87a">profiler.h</a></li>
+<li>PROFILE_FRAME_MARK&#160;:&#160;<a class="el" href="profiler_8h.html#ab9fca9f5f2fdcab4a6f5e01df77d4447">profiler.h</a></li>
+<li>PROFILE_MESSAGE&#160;:&#160;<a class="el" href="profiler_8h.html#a2fe425db14ead24864df278c3de34398">profiler.h</a></li>
+<li>PROFILE_MESSAGE_C&#160;:&#160;<a class="el" href="profiler_8h.html#a02e5f6ba30455bb2498056432fcbd2a2">profiler.h</a></li>
+<li>PROFILE_MESSAGE_L&#160;:&#160;<a class="el" href="profiler_8h.html#ad447ad60e3368d590e1e00eaaf7b3b26">profiler.h</a></li>
+<li>PROFILE_THREAD_NAME&#160;:&#160;<a class="el" href="profiler_8h.html#a54646d658e6badad80239d653e55b754">profiler.h</a></li>
+<li>PROFILE_ZONE&#160;:&#160;<a class="el" href="profiler_8h.html#a112dc416eb8d587bca286937a7503010">profiler.h</a></li>
+<li>PROFILE_ZONE_END&#160;:&#160;<a class="el" href="profiler_8h.html#a46997d39034fb02d50a70dbf8a15d7de">profiler.h</a></li>
+<li>PROFILE_ZONE_I&#160;:&#160;<a class="el" href="profiler_8h.html#ae7dac9c859ba75607250c9e785953004">profiler.h</a></li>
+<li>PROFILE_ZONE_TEXT&#160;:&#160;<a class="el" href="profiler_8h.html#a0c67bcdda1b69cdadf6a350b998d1b6e">profiler.h</a></li>
+<li>push_batch_quad()&#160;:&#160;<a class="el" href="ui_8c.html#a288a4c20fc565627f3c5d04024dfe73e">ui.c</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

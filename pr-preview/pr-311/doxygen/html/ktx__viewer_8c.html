@@ -1,0 +1,1036 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/ktx_viewer.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('ktx__viewer_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">ktx_viewer.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Viewer minimal KTX2 — Affiche une texture PBR/HDR compressée avec tone-mapping.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;glad/glad.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<code>#include &lt;ktx.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for ktx_viewer.c:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ktx__viewer_8c__incl.svg" width="560" height="183"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGlContext.html">GlContext</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsule la fenêtre système et le contexte de rendu.  <a href="structGlContext.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKtxAsset.html">KtxAsset</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsule une ressource KTX2 en RAM. Contient la taille originale du fichier pour les métriques de compression.  <a href="structKtxAsset.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGlTexture.html">GlTexture</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsule l'objet texture OpenGL résidant en VRAM.  <a href="structGlTexture.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structShaderProg.html">ShaderProg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsule le programme GPU lié.  <a href="structShaderProg.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:af715e26dfffd1f8de1c18449e2770cff" id="r_af715e26dfffd1f8de1c18449e2770cff"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="ktx__viewer_8c.html#af715e26dfffd1f8de1c18449e2770cffaa6a9b7d55267ae2c2aa407fc86ac27e7">WINDOW_W</a> = 1280
+, <a class="el" href="ktx__viewer_8c.html#af715e26dfffd1f8de1c18449e2770cffa6ae6330f312a8c7281e569857f67a7cb">WINDOW_H</a> = 720
+, <a class="el" href="ktx__viewer_8c.html#af715e26dfffd1f8de1c18449e2770cffaaf6bf873b6bd957cd8042636ff9abfe1">LOG_BUF</a> = 512
+, <a class="el" href="ktx__viewer_8c.html#af715e26dfffd1f8de1c18449e2770cffad527bd60bce9f396bf6346c07c7df379">MSG_BUF</a> = 1024
+ }</td></tr>
+<tr class="separator:af715e26dfffd1f8de1c18449e2770cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a4238621542edf21fe8351077a6897a62" id="r_a4238621542edf21fe8351077a6897a62"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a4238621542edf21fe8351077a6897a62">gl_context_init</a> (<a class="el" href="structGlContext.html">GlContext</a> *ctx, const char *title)</td></tr>
+<tr class="memdesc:a4238621542edf21fe8351077a6897a62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialise GLFW et GLAD pour fournir un contexte OpenGL 3.3 Core.  <br /></td></tr>
+<tr class="separator:a4238621542edf21fe8351077a6897a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdc909ef56ef5e879d5d4399de010f49" id="r_afdc909ef56ef5e879d5d4399de010f49"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#afdc909ef56ef5e879d5d4399de010f49">gl_context_destroy</a> (<a class="el" href="structGlContext.html">GlContext</a> *ctx)</td></tr>
+<tr class="separator:afdc909ef56ef5e879d5d4399de010f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2bdbdd333fe809d30bd494641f1351e" id="r_ad2bdbdd333fe809d30bd494641f1351e"><td class="memItemLeft" align="right" valign="top">static GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#ad2bdbdd333fe809d30bd494641f1351e">shader_compile</a> (GLenum type, const char *src)</td></tr>
+<tr class="memdesc:ad2bdbdd333fe809d30bd494641f1351e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile un shader GLSL individuel et vérifie les erreurs.  <br /></td></tr>
+<tr class="separator:ad2bdbdd333fe809d30bd494641f1351e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71d41c9e3cc2b5269eb3a4390bfe83f0" id="r_a71d41c9e3cc2b5269eb3a4390bfe83f0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a71d41c9e3cc2b5269eb3a4390bfe83f0">shader_program_create</a> (<a class="el" href="structShaderProg.html">ShaderProg</a> *prog, const char *vs_src, const char *fs_src)</td></tr>
+<tr class="memdesc:a71d41c9e3cc2b5269eb3a4390bfe83f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lie le Vertex et le Fragment shader dans un programme GPU.  <br /></td></tr>
+<tr class="separator:a71d41c9e3cc2b5269eb3a4390bfe83f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0ae19c7c0b8efc462643c7fa6407b7c" id="r_ae0ae19c7c0b8efc462643c7fa6407b7c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#ae0ae19c7c0b8efc462643c7fa6407b7c">shader_program_destroy</a> (<a class="el" href="structShaderProg.html">ShaderProg</a> *prog)</td></tr>
+<tr class="separator:ae0ae19c7c0b8efc462643c7fa6407b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2425fbca2cd261f8e820cec01381d5c0" id="r_a2425fbca2cd261f8e820cec01381d5c0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a2425fbca2cd261f8e820cec01381d5c0">ktx_asset_load</a> (<a class="el" href="structKtxAsset.html">KtxAsset</a> *asset, const char *filepath)</td></tr>
+<tr class="memdesc:a2425fbca2cd261f8e820cec01381d5c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Charge le fichier KTX2 depuis le disque et le rend exploitable pour OpenGL.  <br /></td></tr>
+<tr class="separator:a2425fbca2cd261f8e820cec01381d5c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85494cf6d76ca70518aeebe9ffbd48f3" id="r_a85494cf6d76ca70518aeebe9ffbd48f3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a85494cf6d76ca70518aeebe9ffbd48f3">ktx_asset_print_info</a> (const <a class="el" href="structKtxAsset.html">KtxAsset</a> *asset, const char *path)</td></tr>
+<tr class="memdesc:a85494cf6d76ca70518aeebe9ffbd48f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Affiche un rapport complet sur les métadonnées et l'efficacité de la compression.  <br /></td></tr>
+<tr class="separator:a85494cf6d76ca70518aeebe9ffbd48f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78dd5acaee2de444c6057d19ef03c420" id="r_a78dd5acaee2de444c6057d19ef03c420"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a78dd5acaee2de444c6057d19ef03c420">ktx_asset_destroy</a> (<a class="el" href="structKtxAsset.html">KtxAsset</a> *asset)</td></tr>
+<tr class="separator:a78dd5acaee2de444c6057d19ef03c420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42ec3008fbc941fd3a81232ae12b382f" id="r_a42ec3008fbc941fd3a81232ae12b382f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a42ec3008fbc941fd3a81232ae12b382f">ktx_resolve_gl_format</a> (const <a class="el" href="structKtxAsset.html">KtxAsset</a> *asset, GLint *internal_fmt, GLenum *base_fmt, GLenum *gl_type)</td></tr>
+<tr class="memdesc:a42ec3008fbc941fd3a81232ae12b382f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lit le DFD (Data Format Descriptor) pour attribuer les formats OpenGL exacts.  <br /></td></tr>
+<tr class="separator:a42ec3008fbc941fd3a81232ae12b382f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a507c2e8e7676c3e34832e2aeb6ea62f6" id="r_a507c2e8e7676c3e34832e2aeb6ea62f6"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a507c2e8e7676c3e34832e2aeb6ea62f6">gl_texture_upload_from_ktx</a> (<a class="el" href="structGlTexture.html">GlTexture</a> *tex, const <a class="el" href="structKtxAsset.html">KtxAsset</a> *asset)</td></tr>
+<tr class="memdesc:a507c2e8e7676c3e34832e2aeb6ea62f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Envoie les données CPU (décodées) vers la mémoire de la carte graphique (VRAM).  <br /></td></tr>
+<tr class="separator:a507c2e8e7676c3e34832e2aeb6ea62f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e9ef64f64fbf87b1b0bc9dc6ebb7849" id="r_a9e9ef64f64fbf87b1b0bc9dc6ebb7849"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a9e9ef64f64fbf87b1b0bc9dc6ebb7849">gl_texture_destroy</a> (<a class="el" href="structGlTexture.html">GlTexture</a> *tex)</td></tr>
+<tr class="separator:a9e9ef64f64fbf87b1b0bc9dc6ebb7849"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a212b5b450793524f295645a7b8e90f5b" id="r_a212b5b450793524f295645a7b8e90f5b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a212b5b450793524f295645a7b8e90f5b">render_loop</a> (<a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *window, const <a class="el" href="structShaderProg.html">ShaderProg</a> *prog, const <a class="el" href="structGlTexture.html">GlTexture</a> *tex)</td></tr>
+<tr class="separator:a212b5b450793524f295645a7b8e90f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c04138a5bfe5d72780bb7e82a18e627" id="r_a3c04138a5bfe5d72780bb7e82a18e627"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a> (int argc, char **argv)</td></tr>
+<tr class="separator:a3c04138a5bfe5d72780bb7e82a18e627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a2c300359f8f6855e7c7337762050dac1" id="r_a2c300359f8f6855e7c7337762050dac1"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a2c300359f8f6855e7c7337762050dac1">CLEAR_R</a> = 0.07F</td></tr>
+<tr class="separator:a2c300359f8f6855e7c7337762050dac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25b7b819967febf8b285421ab338c673" id="r_a25b7b819967febf8b285421ab338c673"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a25b7b819967febf8b285421ab338c673">CLEAR_G</a> = 0.07F</td></tr>
+<tr class="separator:a25b7b819967febf8b285421ab338c673"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cc56a3b4e0b307fe3f4bcb05dce7433" id="r_a9cc56a3b4e0b307fe3f4bcb05dce7433"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a9cc56a3b4e0b307fe3f4bcb05dce7433">CLEAR_B</a> = 0.10F</td></tr>
+<tr class="separator:a9cc56a3b4e0b307fe3f4bcb05dce7433"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76e70f0bceded56137764796d042de8f" id="r_a76e70f0bceded56137764796d042de8f"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a76e70f0bceded56137764796d042de8f">CLEAR_A</a> = 1.00F</td></tr>
+<tr class="separator:a76e70f0bceded56137764796d042de8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86203fb06af78b17131b233709103d07" id="r_a86203fb06af78b17131b233709103d07"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a86203fb06af78b17131b233709103d07">VS_SRC</a></td></tr>
+<tr class="memdesc:a86203fb06af78b17131b233709103d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vertex <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> : "Fullscreen Triangle".  <br /></td></tr>
+<tr class="separator:a86203fb06af78b17131b233709103d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0152a29576b8f12ce4c56ce4ba555fc1" id="r_a0152a29576b8f12ce4c56ce4ba555fc1"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ktx__viewer_8c.html#a0152a29576b8f12ce4c56ce4ba555fc1">FS_SRC</a></td></tr>
+<tr class="memdesc:a0152a29576b8f12ce4c56ce4ba555fc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> : Échantillonnage HDR et Tone-Mapping.  <br /></td></tr>
+<tr class="separator:a0152a29576b8f12ce4c56ce4ba555fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Viewer minimal KTX2 — Affiche une texture PBR/HDR compressée avec tone-mapping. </p>
+<p>Architecture &amp; Pipeline :</p><ol type="1">
+<li>Chargement (Disque -&gt; RAM) : Lecture du fichier .ktx2 via l'API libktx. Si le fichier utilise une supercompression (ex: Zstandard), il est déflaté à la volée.</li>
+<li>Décompression (Blocs -&gt; Pixels) : Les GPU Desktop (Intel/Nvidia/AMD) ne supportent pas le format ASTC HDR matériellement. Le CPU transcode donc les blocs (Basis/UASTC/ASTC) vers un format SFLOAT brut (Half-Float 16-bit).</li>
+<li>Upload (RAM -&gt; VRAM) : Envoi manuel vers GL_TEXTURE_2D. Un soin particulier est apporté à l'alignement mémoire (Row Pitch) car le RGB16F n'est pas un multiple de 4 octets.</li>
+<li>Rendu (GPU) : Un shader "Fullscreen Triangle" (sans VBO) lit la texture, applique un tone-mapping de Reinhard (pour ramener le HDR sur un écran LDR) et une correction Gamma. </li>
+</ol>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="af715e26dfffd1f8de1c18449e2770cff" name="af715e26dfffd1f8de1c18449e2770cff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af715e26dfffd1f8de1c18449e2770cff">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<hr  />
+ <h1><a class="anchor" id="autotoc_md1"></a>
+PIPELINE DE GÉNÉRATION DES ASSETS GRAPHIQUES (HDR -&gt; KTX2 UASTC + ZSTD)</h1>
+<ul>
+<li>Ce visualiseur est conçu pour exploiter des textures HDR/PBR hautement compressées. Les GPU de bureau (ex: Intel Iris Xe, AMD/Nvidia standards) ne gèrent pas le décodage matériel du format ASTC HDR. La stratégie consiste donc à utiliser le codec UASTC-HDR compressé au format Zstandard sur le disque, puis à transcoder sur le CPU vers du Float 16-bit (SFLOAT) avant l'envoi en VRAM.</li>
+</ul>
+<p>&mdash; PERFORMANCES ATTENDUES &mdash; Source (.hdr) : ~ 40 Ko (Format Radiance classique) Uncompressed (.ktx2): ~ 4.0 Mo (R16G16B16A16_SFLOAT) UASTC-HDR 4x4 : ~ 512 Ko (Format de blocs universel) UASTC-HDR + Zstd 18 : ~ 3 Ko (Taille finale sur le disque)</p><ul>
+<li>&mdash; COMMANDES DE GÉNÉRATION &mdash; Outils requis : OpenImageIO (<code>oiiotool</code>) et KTX-Software (<code>ktx</code>).</li>
+<li>ÉTAPE 1 : Conversion stricte du format Radiance (.hdr) vers OpenEXR linéaire (.exr) (Préserve la plage dynamique et évite le clamping). $ oiiotool assets/textures/hdr/axis_test.hdr -o /tmp/axis_test.exr</li>
+<li>ÉTAPE 2 : Génération de l'image KTX2 cible (UASTC-HDR-4x4 + Zstd 18) On peut le faire en une seule commande 'create' depuis l'EXR : $ ktx create &ndash;format R16G16B16A16_SFLOAT \ &ndash;encode uastc-hdr-4x4 \ &ndash;zstd 18 \ /tmp/axis_test.exr assets/textures/hdr/axis_test_uastc_hdr4x4_zstd18.ktx2</li>
+<li>ALTERNATIVE (Utilisée dans les tests) : Via 'ktx encode' depuis un KTX2 non-compressé : $ ktx encode &ndash;codec uastc-hdr-4x4 &ndash;zstd 18 \ assets/textures/hdr/axis_test_uncompressed.ktx2 \ assets/textures/hdr/axis_test_uastc_hdr4x4_zstd18.ktx2</li>
+<li>========================================================================================= Constantes définissant la géométrie de la fenêtre et les buffers textes. </li>
+</ul>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffaa6a9b7d55267ae2c2aa407fc86ac27e7" name="af715e26dfffd1f8de1c18449e2770cffaa6a9b7d55267ae2c2aa407fc86ac27e7"></a>WINDOW_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffa6ae6330f312a8c7281e569857f67a7cb" name="af715e26dfffd1f8de1c18449e2770cffa6ae6330f312a8c7281e569857f67a7cb"></a>WINDOW_H&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffaaf6bf873b6bd957cd8042636ff9abfe1" name="af715e26dfffd1f8de1c18449e2770cffaaf6bf873b6bd957cd8042636ff9abfe1"></a>LOG_BUF&#160;</td><td class="fielddoc"><p>Taille du buffer pour l'extraction des logs de shaders GLSL. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffad527bd60bce9f396bf6346c07c7df379" name="af715e26dfffd1f8de1c18449e2770cffad527bd60bce9f396bf6346c07c7df379"></a>MSG_BUF&#160;</td><td class="fielddoc"><p>Taille du buffer pour le formatage des impressions console. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="afdc909ef56ef5e879d5d4399de010f49" name="afdc909ef56ef5e879d5d4399de010f49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdc909ef56ef5e879d5d4399de010f49">&#9670;&#160;</a></span>gl_context_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gl_context_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGlContext.html">GlContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4238621542edf21fe8351077a6897a62" name="a4238621542edf21fe8351077a6897a62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4238621542edf21fe8351077a6897a62">&#9670;&#160;</a></span>gl_context_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool gl_context_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGlContext.html">GlContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>title</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initialise GLFW et GLAD pour fournir un contexte OpenGL 3.3 Core. </p>
+
+</div>
+</div>
+<a id="a9e9ef64f64fbf87b1b0bc9dc6ebb7849" name="a9e9ef64f64fbf87b1b0bc9dc6ebb7849"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e9ef64f64fbf87b1b0bc9dc6ebb7849">&#9670;&#160;</a></span>gl_texture_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gl_texture_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGlTexture.html">GlTexture</a> *&#160;</td>
+          <td class="paramname"><em>tex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a507c2e8e7676c3e34832e2aeb6ea62f6" name="a507c2e8e7676c3e34832e2aeb6ea62f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a507c2e8e7676c3e34832e2aeb6ea62f6">&#9670;&#160;</a></span>gl_texture_upload_from_ktx()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool gl_texture_upload_from_ktx </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGlTexture.html">GlTexture</a> *&#160;</td>
+          <td class="paramname"><em>tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structKtxAsset.html">KtxAsset</a> *&#160;</td>
+          <td class="paramname"><em>asset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Envoie les données CPU (décodées) vers la mémoire de la carte graphique (VRAM). </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ktx__viewer_8c_a507c2e8e7676c3e34832e2aeb6ea62f6_cgraph.svg" width="432" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a78dd5acaee2de444c6057d19ef03c420" name="a78dd5acaee2de444c6057d19ef03c420"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78dd5acaee2de444c6057d19ef03c420">&#9670;&#160;</a></span>ktx_asset_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ktx_asset_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structKtxAsset.html">KtxAsset</a> *&#160;</td>
+          <td class="paramname"><em>asset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2425fbca2cd261f8e820cec01381d5c0" name="a2425fbca2cd261f8e820cec01381d5c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2425fbca2cd261f8e820cec01381d5c0">&#9670;&#160;</a></span>ktx_asset_load()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool ktx_asset_load </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structKtxAsset.html">KtxAsset</a> *&#160;</td>
+          <td class="paramname"><em>asset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filepath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Charge le fichier KTX2 depuis le disque et le rend exploitable pour OpenGL. </p>
+<ul>
+<li>MOTIVATION DE L'ARCHITECTURE : Le format KTX2 supporte l'encodage universel (BasisLZ / UASTC). Normalement, ces blocs sont envoyés tels quels à la VRAM. CEPENDANT, les drivers OpenGL "Desktop" (notamment les puces Intel Iris Xe ou AMD basiques) ne contiennent pas de décodeur matériel pour l'ASTC HDR. Si on envoie les blocs natifs, on obtient un plantage (Segfault du driver) ou une bouillie violette/magenta.</li>
+<li>SOLUTION : On intercepte toute texture qui est "isCompressed". Si elle est transcodable, on force sa décompression sur le CPU vers de la RAM non compressée (RGBA_HALF), que n'importe quelle carte graphique standard sait avaler et afficher. </li>
+</ul>
+
+</div>
+</div>
+<a id="a85494cf6d76ca70518aeebe9ffbd48f3" name="a85494cf6d76ca70518aeebe9ffbd48f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85494cf6d76ca70518aeebe9ffbd48f3">&#9670;&#160;</a></span>ktx_asset_print_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ktx_asset_print_info </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structKtxAsset.html">KtxAsset</a> *&#160;</td>
+          <td class="paramname"><em>asset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Affiche un rapport complet sur les métadonnées et l'efficacité de la compression. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ktx__viewer_8c_a85494cf6d76ca70518aeebe9ffbd48f3_cgraph.svg" width="320" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a42ec3008fbc941fd3a81232ae12b382f" name="a42ec3008fbc941fd3a81232ae12b382f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42ec3008fbc941fd3a81232ae12b382f">&#9670;&#160;</a></span>ktx_resolve_gl_format()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ktx_resolve_gl_format </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structKtxAsset.html">KtxAsset</a> *&#160;</td>
+          <td class="paramname"><em>asset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLint *&#160;</td>
+          <td class="paramname"><em>internal_fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLenum *&#160;</td>
+          <td class="paramname"><em>base_fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLenum *&#160;</td>
+          <td class="paramname"><em>gl_type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Lit le DFD (Data Format Descriptor) pour attribuer les formats OpenGL exacts. </p>
+
+</div>
+</div>
+<a id="a3c04138a5bfe5d72780bb7e82a18e627" name="a3c04138a5bfe5d72780bb7e82a18e627"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c04138a5bfe5d72780bb7e82a18e627">&#9670;&#160;</a></span>main()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int main </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>argv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ktx__viewer_8c_a3c04138a5bfe5d72780bb7e82a18e627_cgraph.svg" width="535" height="480"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a212b5b450793524f295645a7b8e90f5b" name="a212b5b450793524f295645a7b8e90f5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a212b5b450793524f295645a7b8e90f5b">&#9670;&#160;</a></span>render_loop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void render_loop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structShaderProg.html">ShaderProg</a> *&#160;</td>
+          <td class="paramname"><em>prog</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structGlTexture.html">GlTexture</a> *&#160;</td>
+          <td class="paramname"><em>tex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad2bdbdd333fe809d30bd494641f1351e" name="ad2bdbdd333fe809d30bd494641f1351e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2bdbdd333fe809d30bd494641f1351e">&#9670;&#160;</a></span>shader_compile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static GLuint shader_compile </td>
+          <td>(</td>
+          <td class="paramtype">GLenum&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compile un shader GLSL individuel et vérifie les erreurs. </p>
+
+</div>
+</div>
+<a id="a71d41c9e3cc2b5269eb3a4390bfe83f0" name="a71d41c9e3cc2b5269eb3a4390bfe83f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71d41c9e3cc2b5269eb3a4390bfe83f0">&#9670;&#160;</a></span>shader_program_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool shader_program_create </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShaderProg.html">ShaderProg</a> *&#160;</td>
+          <td class="paramname"><em>prog</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>vs_src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fs_src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Lie le Vertex et le Fragment shader dans un programme GPU. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ktx__viewer_8c_a71d41c9e3cc2b5269eb3a4390bfe83f0_cgraph.svg" width="360" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ae0ae19c7c0b8efc462643c7fa6407b7c" name="ae0ae19c7c0b8efc462643c7fa6407b7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0ae19c7c0b8efc462643c7fa6407b7c">&#9670;&#160;</a></span>shader_program_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void shader_program_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShaderProg.html">ShaderProg</a> *&#160;</td>
+          <td class="paramname"><em>prog</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a76e70f0bceded56137764796d042de8f" name="a76e70f0bceded56137764796d042de8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76e70f0bceded56137764796d042de8f">&#9670;&#160;</a></span>CLEAR_A</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float CLEAR_A = 1.00F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9cc56a3b4e0b307fe3f4bcb05dce7433" name="a9cc56a3b4e0b307fe3f4bcb05dce7433"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cc56a3b4e0b307fe3f4bcb05dce7433">&#9670;&#160;</a></span>CLEAR_B</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float CLEAR_B = 0.10F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a25b7b819967febf8b285421ab338c673" name="a25b7b819967febf8b285421ab338c673"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25b7b819967febf8b285421ab338c673">&#9670;&#160;</a></span>CLEAR_G</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float CLEAR_G = 0.07F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c300359f8f6855e7c7337762050dac1" name="a2c300359f8f6855e7c7337762050dac1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c300359f8f6855e7c7337762050dac1">&#9670;&#160;</a></span>CLEAR_R</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float CLEAR_R = 0.07F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Couleur de fond (Clear Color) très sombre pour faire ressortir les textures HDR. </p>
+
+</div>
+</div>
+<a id="a0152a29576b8f12ce4c56ce4ba555fc1" name="a0152a29576b8f12ce4c56ce4ba555fc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0152a29576b8f12ce4c56ce4ba555fc1">&#9670;&#160;</a></span>FS_SRC</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* const FS_SRC</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    <span class="stringliteral">&quot;#version 330 core\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;in  vec2      uv;\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;out vec4      frag_color;\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;uniform sampler2D u_tex;\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;void main() {\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;    vec3 hdr    = texture(u_tex, uv).rgb;\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;    vec3 mapped = hdr / (hdr + vec3(1.0));\n&quot;</span> </div>
+<div class="line">    <span class="stringliteral">&quot;    frag_color  = vec4(pow(mapped, vec3(1.0/2.2)), 1.0);\n&quot;</span> </div>
+<div class="line">    <span class="stringliteral">&quot;}\n&quot;</span></div>
+</div><!-- fragment -->
+<p>Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> : Échantillonnage HDR et Tone-Mapping. </p>
+<ul>
+<li>MOTIVATION : Une image HDR contient des valeurs lumineuses supérieures à 1.0 (ex: un soleil à 50.0). Si on affiche ça directement sur un écran (qui plafonne à 1.0), l'image sera "brûlée" (blanche). L'opérateur de Reinhard <code>hdr / (hdr + 1.0)</code> compresse la plage [0, +infini] vers [0, 1]. </li>
+</ul>
+
+</div>
+</div>
+<a id="a86203fb06af78b17131b233709103d07" name="a86203fb06af78b17131b233709103d07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86203fb06af78b17131b233709103d07">&#9670;&#160;</a></span>VS_SRC</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* const VS_SRC</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    <span class="stringliteral">&quot;#version 330 core\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;out vec2 uv;\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;void main() {\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;    uv = vec2((gl_VertexID &lt;&lt; 1) &amp; 2, gl_VertexID &amp; 2);\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;    gl_Position = vec4(uv * 2.0 - 1.0, 0.0, 1.0);\n&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;}\n&quot;</span></div>
+</div><!-- fragment -->
+<p>Vertex <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> : "Fullscreen Triangle". </p>
+<ul>
+<li>ASTUCE D'OPTIMISATION : Au lieu de créer un VBO/EBO avec 4 sommets pour un quad, on utilise <code>gl_VertexID</code> pour générer un unique triangle gigantesque qui couvre tout l'écran. C'est la méthode standard de l'industrie pour les passes de post-processing. </li>
+</ul>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="ktx__viewer_8c.html">ktx_viewer.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

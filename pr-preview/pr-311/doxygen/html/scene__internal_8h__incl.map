@@ -1,0 +1,73 @@
+<map id="include/scene_internal.h" name="include/scene_internal.h">
+<area shape="rect" id="Node000001" title="Internal declarations shared across scene_*.c translation units." alt="" coords="742,5,922,31"/>
+<area shape="rect" id="Node000002" href="$scene_8h.html" title=" " alt="" coords="796,79,868,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="834,31,834,65,829,65,829,31"/>
+<area shape="rect" id="Node000003" href="$app__settings_8h.html" title="Global application constants, configuration macros, and default values." alt="" coords="16,152,133,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="796,99,147,159,146,154,795,93"/>
+<area shape="rect" id="Node000006" href="$billboard__rendering_8h.html" title="View&#45;aligned quad rendering (billboarding) for optimized sphere drawing." alt="" coords="442,225,602,251"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="808,107,560,222,558,217,806,102"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1055,372,1158,397"/>
+<area shape="poly" id="edge43_Node000002_Node000013" title=" " alt="" coords="868,92,935,101,1017,122,1059,139,1099,162,1135,189,1164,224,1173,242,1175,260,1167,298,1149,334,1128,363,1124,360,1144,331,1162,297,1170,260,1168,243,1160,227,1131,193,1096,166,1057,144,1016,127,934,106,868,97"/>
+<area shape="rect" id="Node000014" href="$billboard__sorting_8h.html" title="Back&#45;to&#45;front sorting for transparent geometry." alt="" coords="1008,225,1151,251"/>
+<area shape="poly" id="edge14_Node000002_Node000014" title=" " alt="" coords="853,102,1049,216,1047,221,850,107"/>
+<area shape="rect" id="Node000015" href="$icosphere_8h.html" title="Procedural icosphere geometry generation." alt="" coords="1246,299,1343,324"/>
+<area shape="poly" id="edge17_Node000002_Node000015" title=" " alt="" coords="868,91,953,95,1059,105,1160,123,1199,135,1228,150,1256,180,1275,217,1287,253,1294,285,1288,286,1282,255,1270,219,1251,183,1225,154,1197,140,1158,128,1059,111,953,101,868,96"/>
+<area shape="rect" id="Node000016" href="$instanced__rendering_8h.html" title="Mesh&#45;based instanced rendering for spheres." alt="" coords="627,225,794,251"/>
+<area shape="poly" id="edge20_Node000002_Node000016" title=" " alt="" coords="814,106,786,127,758,154,737,183,723,213,718,211,733,181,754,150,783,123,811,102"/>
+<area shape="rect" id="Node000017" href="$scene__config_8h.html" title="Render configuration flags extracted from Scene." alt="" coords="271,152,390,177"/>
+<area shape="poly" id="edge23_Node000002_Node000017" title=" " alt="" coords="796,100,403,156,403,150,795,95"/>
+<area shape="rect" id="Node000018" href="$scene__lighting_8h.html" title="IBL, probes, and materials sub&#45;struct extracted from Scene." alt="" coords="768,152,896,177"/>
+<area shape="poly" id="edge25_Node000002_Node000018" title=" " alt="" coords="834,104,834,138,829,138,829,104"/>
+<area shape="rect" id="Node000027" href="$app__subsystem_8h.html" title="Subsystem descriptor pattern for structured init/cleanup." alt="" coords="1296,152,1432,177"/>
+<area shape="poly" id="edge44_Node000002_Node000027" title=" " alt="" coords="868,95,1282,150,1282,155,867,100"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="21,225,128,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="77,178,77,212,72,212,72,178"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="145,372,228,397"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="56,180,37,193,19,210,9,230,8,240,11,250,38,288,73,320,111,345,146,364,144,368,108,350,70,324,34,291,7,252,3,240,4,228,15,207,33,189,53,175"/>
+<area shape="rect" id="Node000007" href="$gl__common_8h.html" title="Common OpenGL definitions, RAII helpers, and utilities." alt="" coords="492,372,603,397"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="527,251,546,358,541,359,522,252"/>
+<area shape="rect" id="Node000012" href="$sphere__types_8h.html" title="Pure&#45;data type for per&#45;instance sphere attributes." alt="" coords="611,299,732,324"/>
+<area shape="poly" id="edge11_Node000006_Node000012" title=" " alt="" coords="547,248,636,290,634,295,545,253"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="374,445,468,471"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="529,400,455,441,452,436,526,395"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="492,445,603,471"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="550,398,550,432,545,432,545,398"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="977,445,1052,471"/>
+<area shape="poly" id="edge9_Node000007_Node000010" title=" " alt="" coords="603,392,963,446,963,452,603,397"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="627,445,698,471"/>
+<area shape="poly" id="edge10_Node000007_Node000011" title=" " alt="" coords="567,395,633,436,631,440,565,400"/>
+<area shape="poly" id="edge12_Node000012_Node000007" title=" " alt="" coords="653,326,581,367,578,363,650,322"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="733,320,1042,370,1041,375,732,325"/>
+<area shape="poly" id="edge15_Node000014_Node000012" title=" " alt="" coords="1014,253,746,300,745,295,1014,248"/>
+<area shape="poly" id="edge16_Node000014_Node000013" title=" " alt="" coords="1094,249,1113,270,1127,298,1130,314,1129,331,1121,360,1116,359,1124,330,1125,314,1122,300,1108,273,1090,253"/>
+<area shape="poly" id="edge19_Node000015_Node000010" title=" " alt="" coords="1281,326,1233,361,1170,400,1116,424,1064,443,1063,438,1114,419,1168,395,1230,357,1278,322"/>
+<area shape="poly" id="edge18_Node000015_Node000013" title=" " alt="" coords="1265,327,1151,369,1149,364,1263,322"/>
+<area shape="poly" id="edge21_Node000016_Node000007" title=" " alt="" coords="680,253,639,272,600,301,577,330,560,360,555,358,572,327,596,297,637,268,677,248"/>
+<area shape="poly" id="edge22_Node000016_Node000012" title=" " alt="" coords="706,252,687,288,682,285,702,250"/>
+<area shape="poly" id="edge24_Node000017_Node000005" title=" " alt="" coords="318,180,266,229,237,263,213,300,200,330,193,359,188,358,195,328,208,297,233,259,262,225,314,176"/>
+<area shape="rect" id="Node000019" href="$ibl__coordinator_8h.html" title="Coordinator for progressive Image&#45;Based Lighting (IBL) generation." alt="" coords="288,225,418,251"/>
+<area shape="poly" id="edge26_Node000018_Node000019" title=" " alt="" coords="768,178,432,228,432,222,767,173"/>
+<area shape="rect" id="Node000023" href="$light__probes_8h.html" title=" " alt="" coords="869,225,984,251"/>
+<area shape="poly" id="edge34_Node000018_Node000023" title=" " alt="" coords="848,175,901,215,898,219,845,179"/>
+<area shape="rect" id="Node000026" href="$material_8h.html" title="PBR material definitions and management." alt="" coords="756,299,846,324"/>
+<area shape="poly" id="edge40_Node000018_Node000026" title=" " alt="" coords="832,178,809,286,804,285,826,177"/>
+<area shape="poly" id="edge27_Node000019_Node000007" title=" " alt="" coords="373,249,446,297,526,361,523,365,443,301,371,253"/>
+<area shape="rect" id="Node000020" href="$pbr_8h.html" title="Physically&#45;Based Rendering (PBR) and Image&#45;Based Lighting (IBL) utilities." alt="" coords="379,299,434,324"/>
+<area shape="poly" id="edge28_Node000019_Node000020" title=" " alt="" coords="364,249,392,286,387,289,360,253"/>
+<area shape="rect" id="Node000021" href="$perf__timer_8h.html" title="High&#45;precision performance measurement (CPU and GPU)." alt="" coords="253,299,354,324"/>
+<area shape="poly" id="edge30_Node000019_Node000021" title=" " alt="" coords="347,253,322,289,317,286,343,249"/>
+<area shape="poly" id="edge29_Node000020_Node000007" title=" " alt="" coords="430,322,514,363,511,368,428,326"/>
+<area shape="poly" id="edge32_Node000021_Node000005" title=" " alt="" coords="286,326,219,367,216,362,283,322"/>
+<area shape="poly" id="edge31_Node000021_Node000007" title=" " alt="" coords="344,321,496,366,494,371,342,327"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="272,372,336,397"/>
+<area shape="poly" id="edge33_Node000021_Node000022" title=" " alt="" coords="306,324,306,358,301,358,301,324"/>
+<area shape="poly" id="edge39_Node000023_Node000005" title=" " alt="" coords="869,247,805,253,679,256,516,257,434,261,357,268,292,281,242,301,227,313,215,328,197,360,193,357,211,325,224,309,240,296,290,276,357,263,434,255,516,252,679,251,805,248,869,242"/>
+<area shape="poly" id="edge37_Node000023_Node000013" title=" " alt="" coords="985,246,1036,264,1061,278,1083,297,1100,327,1107,357,1102,359,1095,328,1079,300,1058,283,1034,269,983,251"/>
+<area shape="rect" id="Node000024" href="$sh__math_8h.html" title=" " alt="" coords="978,299,1069,324"/>
+<area shape="poly" id="edge35_Node000023_Node000024" title=" " alt="" coords="943,249,998,288,995,292,940,253"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="870,299,954,324"/>
+<area shape="poly" id="edge38_Node000023_Node000025" title=" " alt="" coords="926,252,919,286,914,285,921,250"/>
+<area shape="poly" id="edge36_Node000024_Node000013" title=" " alt="" coords="1039,322,1084,361,1081,365,1035,326"/>
+<area shape="poly" id="edge41_Node000026_Node000007" title=" " alt="" coords="761,327,603,371,601,366,759,321"/>
+<area shape="poly" id="edge42_Node000026_Node000013" title=" " alt="" coords="847,320,1044,366,1043,371,845,326"/>
+</map>

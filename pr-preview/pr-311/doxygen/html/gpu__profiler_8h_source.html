@@ -1,0 +1,472 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/gpu_profiler.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('gpu__profiler_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">gpu_profiler.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="gpu__profiler_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef GPU_PROFILER_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define GPU_PROFILER_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="adaptive__sampler_8h.html">adaptive_sampler.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="metric__stack_8h.html">metric_stack.h</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="perf__timer_8h.html">perf_timer.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;../deps/tracy/public/tracy/TracyC.h&quot;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="tracy__gpu_8h.html">tracy_gpu.h</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b">   15</a></span>    <a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b">MAX_GPU_STAGES</a> = 32,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa8904315164a499e90a0eebcf569691ef">   16</a></span>    <a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa8904315164a499e90a0eebcf569691ef">MAX_GPU_STAGE_NAME</a> = 32,</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa253a489f6b3470ff87bbe17d5f5e589d">GPU_QUERY_BUFFER_COUNT</a> = 2</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa253a489f6b3470ff87bbe17d5f5e589d">   18</a></span>};</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">/* --- Profiler Colors (Nord Theme) --- */</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261">   21</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261">GPU_PROFILER_TOTAL_FRAME_COLOR</a> = 0xECEFF4;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3">   22</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3">GPU_PROFILER_ENV_COLOR</a> = 0x88C0D0;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d">   23</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d">GPU_PROFILER_SCENE_COLOR</a> = 0xD08770;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b">   24</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b">GPU_PROFILER_AUTO_EXPOSURE_COLOR</a> = 0xEBCB8B;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a689e67a9ac7c9833cea0e441ab41a482">   25</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a689e67a9ac7c9833cea0e441ab41a482">GPU_PROFILER_BLOOM_COLOR</a> = 0x5E81AC;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#ac8514b41b0bfb22f696feac256ac0607">   26</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#ac8514b41b0bfb22f696feac256ac0607">GPU_PROFILER_DOF_COLOR</a> = 0xA3BE8C;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816">   27</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816">GPU_PROFILER_MOTION_BLUR_COLOR</a> = 0xBF616A;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#aefa79da2c8228eec514a28467923a07d">   28</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#aefa79da2c8228eec514a28467923a07d">GPU_PROFILER_COMPOSITE_COLOR</a> = 0x81A1C1;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f">   29</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f">GPU_PROFILER_POSTPROCESS_COLOR</a> = 0xB48EAD;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178">   30</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178">GPU_PROFILER_UI_COLOR</a> = 0x4C566A;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a49240777a1bd99a5c407b803d454e768">   31</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a49240777a1bd99a5c407b803d454e768">GPU_PROFILER_GI_SYNC_COLOR</a> = 0x8FBCBB;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a623ee165a10838fc9e485ff1b11e3aeb">   32</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a623ee165a10838fc9e485ff1b11e3aeb">GPU_PROFILER_GI_DEBUG_COLOR</a> = 0xB48EAD;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#aeb224a4d8f9ce3af64219e94ee4e55a8">   33</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#aeb224a4d8f9ce3af64219e94ee4e55a8">GPU_PROFILER_NBODY_COLOR</a> = 0xD8DEE9;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#ad987218ea719efa5980a816a8f97a6a4">   34</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="gpu__profiler_8h.html#ad987218ea719efa5980a816a8f97a6a4">GPU_PROFILER_SHOCKWAVE_COLOR</a> = 0xE5A3C9;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment">/* --- Capture Settings --- */</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92">   37</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92">GPU_PROFILER_WINDOW_DURATION_S</a> = 0.5F;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a6c552f4e4a7d22fa4c0fed9fa5e83ad9">   38</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a6c552f4e4a7d22fa4c0fed9fa5e83ad9">GPU_PROFILER_WINDOW_TRANSITION_S</a> = 0.2F;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4">   39</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4">GPU_PROFILER_ROW_HEIGHT</a> = 28.0F;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="};">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structGPUStage.html">   45</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structGPUStage.html#a2de1e5fda6f1272093bbbf71a412455a">   46</a></span>    <span class="keywordtype">char</span> name[<a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa8904315164a499e90a0eebcf569691ef">MAX_GPU_STAGE_NAME</a>];</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structGPUStage.html#a7facb6586a35af14e24ced91138cd55f">   47</a></span>    uint32_t <a class="code hl_variable" href="structGPUStage.html#a7facb6586a35af14e24ced91138cd55f">color</a>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342">   48</a></span>    <a class="code hl_struct" href="structAdaptiveSampler.html">AdaptiveSampler</a> <a class="code hl_variable" href="structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342">duration_sampler</a>; </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d">   49</a></span>    <a class="code hl_struct" href="structAdaptiveSampler.html">AdaptiveSampler</a> <a class="code hl_variable" href="structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d">offset_sampler</a>;   </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structGPUStage.html#a6d3a71fa172a28744673e9cc0a1331a7">   50</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUStage.html#a6d3a71fa172a28744673e9cc0a1331a7">start_offset_ms</a>;            </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61">   51</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61">duration_ms</a>;                </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structGPUStage.html#a154d5b6a8c83327fed0f932ceb96893f">   52</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUStage.html#a154d5b6a8c83327fed0f932ceb96893f">prev_start_offset_ms</a>; </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structGPUStage.html#ad40b46bffa680f6d33b90c578ed2bf7d">   53</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUStage.html#ad40b46bffa680f6d33b90c578ed2bf7d">prev_duration_ms</a>;     </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="structGPUStage.html#af3691e1203e39115a62eb17e1f58d594">   54</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUStage.html#af3691e1203e39115a62eb17e1f58d594">alpha</a>;      </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="structGPUStage.html#acf997b2d5dffa4e9011d2acb9d822e60">   55</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUStage.html#acf997b2d5dffa4e9011d2acb9d822e60">prev_alpha</a>; </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structGPUStage.html#a38657e9f22b67f1096addca91bd5a5e2">   56</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUStage.html#a38657e9f22b67f1096addca91bd5a5e2">depth</a>;        </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021">   57</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021">parent_index</a>; </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>} <a class="code hl_struct" href="structGPUStage.html">GPUStage</a>;</div>
+</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="foldopen" id="foldopen00064" data-start="{" data-end="};">
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="structGPUStageInfo.html">   64</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="structGPUStageInfo.html#ae92767f48a0622028fb91be036eb7548">   65</a></span>    <span class="keywordtype">char</span> name[<a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa8904315164a499e90a0eebcf569691ef">MAX_GPU_STAGE_NAME</a>];</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structGPUStageInfo.html#aa26aba38fa9e9f16179733e92c4db696">   66</a></span>    uint32_t <a class="code hl_variable" href="structGPUStageInfo.html#aa26aba38fa9e9f16179733e92c4db696">color</a>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="structGPUStageInfo.html#a713c400721e047edae10646a1c39ecd0">   67</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUStageInfo.html#a713c400721e047edae10646a1c39ecd0">depth</a>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da">   68</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da">parent_index</a>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>} <a class="code hl_struct" href="structGPUStageInfo.html">GPUStageInfo</a>;</div>
+</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="foldopen" id="foldopen00075" data-start="{" data-end="};">
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="structGPUQueryBuffer.html">   75</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="structGPUQueryBuffer.html#aea6a383906220fa489488797a55296b8">   76</a></span>    <a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a> queries[<a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b">MAX_GPU_STAGES</a>];</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="structGPUQueryBuffer.html#a0cc788bc5b9334b1e0639e33bd4f2a66">   77</a></span>    <a class="code hl_struct" href="structGPUStageInfo.html">GPUStageInfo</a> stage_info[<a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b">MAX_GPU_STAGES</a>];</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="structGPUQueryBuffer.html#a11e51c88a688b83cfb4d3e42aeb50f54">   78</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUQueryBuffer.html#a11e51c88a688b83cfb4d3e42aeb50f54">stage_count</a>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="structGPUQueryBuffer.html#a421e7674f08d4177ce6abe89c9b1cb70">   79</a></span>    uint64_t <a class="code hl_variable" href="structGPUQueryBuffer.html#a421e7674f08d4177ce6abe89c9b1cb70">frame_index</a>;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>} <a class="code hl_struct" href="structGPUQueryBuffer.html">GPUQueryBuffer</a>;</div>
+</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="foldopen" id="foldopen00086" data-start="{" data-end="};">
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="structGPUProfiler.html">   86</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a> {</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#aa37b69615626569fb9356bcfc9cc7d3a">   87</a></span>    <a class="code hl_struct" href="structGPUStage.html">GPUStage</a> <a class="code hl_variable" href="structGPUProfiler.html#aa37b69615626569fb9356bcfc9cc7d3a">stages</a>[<a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b">MAX_GPU_STAGES</a>];</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#a120420e2f3b927e34e1694b16dec4a7a">   88</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUProfiler.html#a120420e2f3b927e34e1694b16dec4a7a">stage_count</a>; </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d">   91</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d">recording_count</a>; </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="comment">// Double buffering for queries</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#aaa8d623ed515dd6d83dd378e87aefc64">   95</a></span>    <a class="code hl_struct" href="structGPUQueryBuffer.html">GPUQueryBuffer</a> <a class="code hl_variable" href="structGPUProfiler.html#aaa8d623ed515dd6d83dd378e87aefc64">buffers</a>[<a class="code hl_enumvalue" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa253a489f6b3470ff87bbe17d5f5e589d">GPU_QUERY_BUFFER_COUNT</a>];</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a">   96</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a">write_index</a>; </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#a16c180a6bf8f3f47dcbf02deeeea6c5e">   98</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUProfiler.html#a16c180a6bf8f3f47dcbf02deeeea6c5e">read_index</a>; </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="comment">// State tracking for the current frame</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be">  101</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be">current_stage_index</a>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#acde8b71047ac0475cf647cb5206d488a">  102</a></span>    <a class="code hl_struct" href="structMetricStack.html">MetricStack</a> <a class="code hl_variable" href="structGPUProfiler.html#acde8b71047ac0475cf647cb5206d488a">hierarchy_stack</a>; </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#a56882ff9250097d7543563e49c2db015">  104</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGPUProfiler.html#a56882ff9250097d7543563e49c2db015">transition_progress</a>; </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="structGPUProfiler.html#a9688da7d8807aa34438338fc92140896">  105</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structGPUProfiler.html#a9688da7d8807aa34438338fc92140896">enabled</a>; </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>} <a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>;</div>
+</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler_init</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler);</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler_cleanup</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler);</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler_begin_frame</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler, uint64_t frame_index);</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler_set_enabled</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler, <span class="keywordtype">bool</span> enabled);</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler_start_stage</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler, <span class="keyword">const</span> <span class="keywordtype">char</span>* name,</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>                              uint32_t color);</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler_end_stage</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face">gpu_profiler_reset_samplers</a>(<a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* profiler, <span class="keywordtype">double</span> current_time);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
+<div class="foldopen" id="foldopen00159" data-start="{" data-end="};">
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="structGPUStageRAII.html">  159</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65">  160</a></span>    <a class="code hl_struct" href="structGPUProfiler.html">GPUProfiler</a>* <a class="code hl_variable" href="structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65">profiler</a>;</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    TracyCZoneCtx tracy_ctx;</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="keywordtype">void</span>* tracy_gpu_ctx;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>} <a class="code hl_struct" href="structGPUStageRAII.html">GPUStageRAII</a>;</div>
+</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span> </div>
+<div class="foldopen" id="foldopen00168" data-start="{" data-end="}">
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">  168</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a>(<a class="code hl_struct" href="structGPUStageRAII.html">GPUStageRAII</a>* stage_raii)</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>{</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    <a class="code hl_function" href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler_end_stage</a>(stage_raii-&gt;<a class="code hl_variable" href="structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65">profiler</a>);</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    TracyCZoneEnd(stage_raii-&gt;tracy_ctx);</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    <a class="code hl_define" href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">tracy_gpu_zone_end</a>(stage_raii-&gt;tracy_gpu_ctx);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>}</div>
+</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="preprocessor">#define GPU_STAGE_PROFILER(profiler_ptr, name, color)                        \</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="preprocessor">    TracyCZoneN(_tracy_ctx##__LINE__, name, 1);                          \</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="preprocessor">    void* _tracy_gpu_ctx##__LINE__ =                                     \</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="preprocessor">        tracy_gpu_zone_begin(name, __func__, __FILE__, __LINE__, color); \</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">    GPUStageRAII _stage_raii##__LINE__                                   \</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">        __attribute__((cleanup(gpu_stage_cleanup_raii)))                 \</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">        __attribute__((unused)) = {profiler_ptr, _tracy_ctx##__LINE__,   \</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="preprocessor">                                   _tracy_gpu_ctx##__LINE__};            \</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">    gpu_profiler_start_stage(profiler_ptr, name, color)</span></div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="preprocessor">#else</span></div>
+<div class="foldopen" id="foldopen00191" data-start="" data-end="">
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno"><a class="line" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">  191</a></span><span class="preprocessor">#define GPU_STAGE_PROFILER(profiler_ptr, name, color)        \</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">    GPUStageRAII _stage_raii##__LINE__                   \</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">        __attribute__((cleanup(gpu_stage_cleanup_raii))) \</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">        __attribute__((unused)) = {profiler_ptr};        \</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">    gpu_profiler_start_stage(profiler_ptr, name, color)</span></div>
+</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="preprocessor">#endif  </span><span class="comment">// GPU_PROFILER_H</span></div>
+<div class="ttc" id="aadaptive__sampler_8h_html"><div class="ttname"><a href="adaptive__sampler_8h.html">adaptive_sampler.h</a></div><div class="ttdoc">Adaptive sampling utility for performance metrics.</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a077b530bc1be19ecc056d48a6d4793f3"><div class="ttname"><a href="gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3">GPU_PROFILER_ENV_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_ENV_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:22</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a1b02eae0daab556a5ceadace03aad5e4"><div class="ttname"><a href="gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler_begin_frame</a></div><div class="ttdeci">void gpu_profiler_begin_frame(GPUProfiler *profiler, uint64_t frame_index)</div><div class="ttdoc">Marks the beginning of a frame. Swaps buffers and processes previous results.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:98</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a2bc152ef4d2da90b79cdaebf10581816"><div class="ttname"><a href="gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816">GPU_PROFILER_MOTION_BLUR_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_MOTION_BLUR_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:27</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a388547b561eddbdc99ff020cf0563178"><div class="ttname"><a href="gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178">GPU_PROFILER_UI_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_UI_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:30</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a38fa5cee53311a3ed73706c471efced4"><div class="ttname"><a href="gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4">GPU_PROFILER_ROW_HEIGHT</a></div><div class="ttdeci">static const float GPU_PROFILER_ROW_HEIGHT</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:39</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a44de4cea7056033e6c03683013cbcc02"><div class="ttname"><a href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler_set_enabled</a></div><div class="ttdeci">void gpu_profiler_set_enabled(GPUProfiler *profiler, bool enabled)</div><div class="ttdoc">Enables or disables the profiler.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:91</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a49240777a1bd99a5c407b803d454e768"><div class="ttname"><a href="gpu__profiler_8h.html#a49240777a1bd99a5c407b803d454e768">GPU_PROFILER_GI_SYNC_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_GI_SYNC_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:31</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a5fc6d9431cf5e2dd0075cc15774b6d0d"><div class="ttname"><a href="gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d">GPU_PROFILER_SCENE_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_SCENE_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:23</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a623ee165a10838fc9e485ff1b11e3aeb"><div class="ttname"><a href="gpu__profiler_8h.html#a623ee165a10838fc9e485ff1b11e3aeb">GPU_PROFILER_GI_DEBUG_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_GI_DEBUG_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:32</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a689e67a9ac7c9833cea0e441ab41a482"><div class="ttname"><a href="gpu__profiler_8h.html#a689e67a9ac7c9833cea0e441ab41a482">GPU_PROFILER_BLOOM_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_BLOOM_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:25</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a6b7b47dd702d9e331586d485013fd1eaa253a489f6b3470ff87bbe17d5f5e589d"><div class="ttname"><a href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa253a489f6b3470ff87bbe17d5f5e589d">GPU_QUERY_BUFFER_COUNT</a></div><div class="ttdeci">@ GPU_QUERY_BUFFER_COUNT</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:17</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a6b7b47dd702d9e331586d485013fd1eaa8904315164a499e90a0eebcf569691ef"><div class="ttname"><a href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa8904315164a499e90a0eebcf569691ef">MAX_GPU_STAGE_NAME</a></div><div class="ttdeci">@ MAX_GPU_STAGE_NAME</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:16</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b"><div class="ttname"><a href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaaa73413f46202d6fd3b0703d1603b037b">MAX_GPU_STAGES</a></div><div class="ttdeci">@ MAX_GPU_STAGES</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:15</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a6c552f4e4a7d22fa4c0fed9fa5e83ad9"><div class="ttname"><a href="gpu__profiler_8h.html#a6c552f4e4a7d22fa4c0fed9fa5e83ad9">GPU_PROFILER_WINDOW_TRANSITION_S</a></div><div class="ttdeci">static const float GPU_PROFILER_WINDOW_TRANSITION_S</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:38</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a80772be366a911115ff01dc5d9bcd4f0"><div class="ttname"><a href="gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler_init</a></div><div class="ttdeci">void gpu_profiler_init(GPUProfiler *profiler)</div><div class="ttdoc">Initializes the GPU profiler.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:19</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_a99aa06bd6e69115f881711abc461984e"><div class="ttname"><a href="gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler_cleanup</a></div><div class="ttdeci">void gpu_profiler_cleanup(GPUProfiler *profiler)</div><div class="ttdoc">Cleans up GPU resources.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:63</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_aaa59b1c944badb2c3f31ae476850cb92"><div class="ttname"><a href="gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92">GPU_PROFILER_WINDOW_DURATION_S</a></div><div class="ttdeci">static const float GPU_PROFILER_WINDOW_DURATION_S</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:37</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_aab4caa95e9c5f77266939ae13806b530"><div class="ttname"><a href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler_start_stage</a></div><div class="ttdeci">void gpu_profiler_start_stage(GPUProfiler *profiler, const char *name, uint32_t color)</div><div class="ttdoc">Starts a new profiling stage.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:203</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_aaca3fdb25b304688a5aedf1a57d276d9"><div class="ttname"><a href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a></div><div class="ttdeci">static void gpu_stage_cleanup_raii(GPUStageRAII *stage_raii)</div><div class="ttdoc">Internal cleanup function for GPUStageRAII.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:168</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_abb09d067ee2fcb5f5d5ed2d6c0ac4261"><div class="ttname"><a href="gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261">GPU_PROFILER_TOTAL_FRAME_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_TOTAL_FRAME_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:21</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_abb8eabbef66554b6e1646f398037face"><div class="ttname"><a href="gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face">gpu_profiler_reset_samplers</a></div><div class="ttdeci">void gpu_profiler_reset_samplers(GPUProfiler *profiler, double current_time)</div><div class="ttdoc">Resets all samplers for a new capture window.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:252</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_abd0c592d103323ccce000e5d19984d4f"><div class="ttname"><a href="gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f">GPU_PROFILER_POSTPROCESS_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_POSTPROCESS_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:29</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_ac8514b41b0bfb22f696feac256ac0607"><div class="ttname"><a href="gpu__profiler_8h.html#ac8514b41b0bfb22f696feac256ac0607">GPU_PROFILER_DOF_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_DOF_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:26</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_ad987218ea719efa5980a816a8f97a6a4"><div class="ttname"><a href="gpu__profiler_8h.html#ad987218ea719efa5980a816a8f97a6a4">GPU_PROFILER_SHOCKWAVE_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_SHOCKWAVE_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:34</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_ae819b47b90af9fa7965f5fc44331ac1d"><div class="ttname"><a href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler_end_stage</a></div><div class="ttdeci">void gpu_profiler_end_stage(GPUProfiler *profiler)</div><div class="ttdoc">Ends the current profiling stage.</div><div class="ttdef"><b>Definition</b> gpu_profiler.c:236</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_aeb224a4d8f9ce3af64219e94ee4e55a8"><div class="ttname"><a href="gpu__profiler_8h.html#aeb224a4d8f9ce3af64219e94ee4e55a8">GPU_PROFILER_NBODY_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_NBODY_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:33</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_aefa79da2c8228eec514a28467923a07d"><div class="ttname"><a href="gpu__profiler_8h.html#aefa79da2c8228eec514a28467923a07d">GPU_PROFILER_COMPOSITE_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_COMPOSITE_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:28</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_af1f8369d455a6e5d2c482050201fcd1b"><div class="ttname"><a href="gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b">GPU_PROFILER_AUTO_EXPOSURE_COLOR</a></div><div class="ttdeci">static const int GPU_PROFILER_AUTO_EXPOSURE_COLOR</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:24</div></div>
+<div class="ttc" id="ametric__stack_8h_html"><div class="ttname"><a href="metric__stack_8h.html">metric_stack.h</a></div></div>
+<div class="ttc" id="aperf__timer_8h_html"><div class="ttname"><a href="perf__timer_8h.html">perf_timer.h</a></div><div class="ttdoc">High-precision performance measurement (CPU and GPU).</div></div>
+<div class="ttc" id="astructAdaptiveSampler_html"><div class="ttname"><a href="structAdaptiveSampler.html">AdaptiveSampler</a></div><div class="ttdoc">Collector for performance samples within a rolling or fixed window.</div><div class="ttdef"><b>Definition</b> adaptive_sampler.h:38</div></div>
+<div class="ttc" id="astructGPUProfiler_html"><div class="ttname"><a href="structGPUProfiler.html">GPUProfiler</a></div><div class="ttdoc">Manages GPU timing using double-buffered queries to avoid stalls.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:86</div></div>
+<div class="ttc" id="astructGPUProfiler_html_a120420e2f3b927e34e1694b16dec4a7a"><div class="ttname"><a href="structGPUProfiler.html#a120420e2f3b927e34e1694b16dec4a7a">GPUProfiler::stage_count</a></div><div class="ttdeci">int stage_count</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:88</div></div>
+<div class="ttc" id="astructGPUProfiler_html_a16c180a6bf8f3f47dcbf02deeeea6c5e"><div class="ttname"><a href="structGPUProfiler.html#a16c180a6bf8f3f47dcbf02deeeea6c5e">GPUProfiler::read_index</a></div><div class="ttdeci">int read_index</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:98</div></div>
+<div class="ttc" id="astructGPUProfiler_html_a56882ff9250097d7543563e49c2db015"><div class="ttname"><a href="structGPUProfiler.html#a56882ff9250097d7543563e49c2db015">GPUProfiler::transition_progress</a></div><div class="ttdeci">float transition_progress</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:104</div></div>
+<div class="ttc" id="astructGPUProfiler_html_a6fe4616fb811074d7d8b3150d1a7c7be"><div class="ttname"><a href="structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be">GPUProfiler::current_stage_index</a></div><div class="ttdeci">int current_stage_index</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:101</div></div>
+<div class="ttc" id="astructGPUProfiler_html_a9688da7d8807aa34438338fc92140896"><div class="ttname"><a href="structGPUProfiler.html#a9688da7d8807aa34438338fc92140896">GPUProfiler::enabled</a></div><div class="ttdeci">bool enabled</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:105</div></div>
+<div class="ttc" id="astructGPUProfiler_html_aa37b69615626569fb9356bcfc9cc7d3a"><div class="ttname"><a href="structGPUProfiler.html#aa37b69615626569fb9356bcfc9cc7d3a">GPUProfiler::stages</a></div><div class="ttdeci">GPUStage stages[MAX_GPU_STAGES]</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:87</div></div>
+<div class="ttc" id="astructGPUProfiler_html_aaa8d623ed515dd6d83dd378e87aefc64"><div class="ttname"><a href="structGPUProfiler.html#aaa8d623ed515dd6d83dd378e87aefc64">GPUProfiler::buffers</a></div><div class="ttdeci">GPUQueryBuffer buffers[GPU_QUERY_BUFFER_COUNT]</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:95</div></div>
+<div class="ttc" id="astructGPUProfiler_html_aba148eeb7478acf3579882681d91cb7a"><div class="ttname"><a href="structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a">GPUProfiler::write_index</a></div><div class="ttdeci">int write_index</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:96</div></div>
+<div class="ttc" id="astructGPUProfiler_html_ac69c2515dc2237041fc9ca26e367fb0d"><div class="ttname"><a href="structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d">GPUProfiler::recording_count</a></div><div class="ttdeci">int recording_count</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:91</div></div>
+<div class="ttc" id="astructGPUProfiler_html_acde8b71047ac0475cf647cb5206d488a"><div class="ttname"><a href="structGPUProfiler.html#acde8b71047ac0475cf647cb5206d488a">GPUProfiler::hierarchy_stack</a></div><div class="ttdeci">MetricStack hierarchy_stack</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:102</div></div>
+<div class="ttc" id="astructGPUQueryBuffer_html"><div class="ttname"><a href="structGPUQueryBuffer.html">GPUQueryBuffer</a></div><div class="ttdoc">Set of GL queries for one frame, with stage metadata.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:75</div></div>
+<div class="ttc" id="astructGPUQueryBuffer_html_a11e51c88a688b83cfb4d3e42aeb50f54"><div class="ttname"><a href="structGPUQueryBuffer.html#a11e51c88a688b83cfb4d3e42aeb50f54">GPUQueryBuffer::stage_count</a></div><div class="ttdeci">int stage_count</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:78</div></div>
+<div class="ttc" id="astructGPUQueryBuffer_html_a421e7674f08d4177ce6abe89c9b1cb70"><div class="ttname"><a href="structGPUQueryBuffer.html#a421e7674f08d4177ce6abe89c9b1cb70">GPUQueryBuffer::frame_index</a></div><div class="ttdeci">uint64_t frame_index</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:79</div></div>
+<div class="ttc" id="astructGPUStageInfo_html"><div class="ttname"><a href="structGPUStageInfo.html">GPUStageInfo</a></div><div class="ttdoc">Per-frame stage metadata stored alongside queries.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:64</div></div>
+<div class="ttc" id="astructGPUStageInfo_html_a713c400721e047edae10646a1c39ecd0"><div class="ttname"><a href="structGPUStageInfo.html#a713c400721e047edae10646a1c39ecd0">GPUStageInfo::depth</a></div><div class="ttdeci">int depth</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:67</div></div>
+<div class="ttc" id="astructGPUStageInfo_html_aa26aba38fa9e9f16179733e92c4db696"><div class="ttname"><a href="structGPUStageInfo.html#aa26aba38fa9e9f16179733e92c4db696">GPUStageInfo::color</a></div><div class="ttdeci">uint32_t color</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:66</div></div>
+<div class="ttc" id="astructGPUStageInfo_html_af2e86ce838419e80b22d8087a397c6da"><div class="ttname"><a href="structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da">GPUStageInfo::parent_index</a></div><div class="ttdeci">int parent_index</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:68</div></div>
+<div class="ttc" id="astructGPUStageRAII_html"><div class="ttname"><a href="structGPUStageRAII.html">GPUStageRAII</a></div><div class="ttdoc">RAII container for automatic GPU stage management and Tracy zones.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:159</div></div>
+<div class="ttc" id="astructGPUStageRAII_html_ae03ebf3cd4e205eb74ae352b29ee0c65"><div class="ttname"><a href="structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65">GPUStageRAII::profiler</a></div><div class="ttdeci">GPUProfiler * profiler</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:160</div></div>
+<div class="ttc" id="astructGPUStage_html"><div class="ttname"><a href="structGPUStage.html">GPUStage</a></div><div class="ttdoc">Represents a single profiling stage (e.g., &quot;Shadow Map&quot;, &quot;G-Buffer&quot;).</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:45</div></div>
+<div class="ttc" id="astructGPUStage_html_a04b7e19c041f12d71a8c8c46190f9021"><div class="ttname"><a href="structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021">GPUStage::parent_index</a></div><div class="ttdeci">int parent_index</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:57</div></div>
+<div class="ttc" id="astructGPUStage_html_a154d5b6a8c83327fed0f932ceb96893f"><div class="ttname"><a href="structGPUStage.html#a154d5b6a8c83327fed0f932ceb96893f">GPUStage::prev_start_offset_ms</a></div><div class="ttdeci">float prev_start_offset_ms</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:52</div></div>
+<div class="ttc" id="astructGPUStage_html_a26b8409ed5dc093e414b72ee9a62df61"><div class="ttname"><a href="structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61">GPUStage::duration_ms</a></div><div class="ttdeci">float duration_ms</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:51</div></div>
+<div class="ttc" id="astructGPUStage_html_a38657e9f22b67f1096addca91bd5a5e2"><div class="ttname"><a href="structGPUStage.html#a38657e9f22b67f1096addca91bd5a5e2">GPUStage::depth</a></div><div class="ttdeci">int depth</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:56</div></div>
+<div class="ttc" id="astructGPUStage_html_a50ea37f2d46f129e3d9ced9179078342"><div class="ttname"><a href="structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342">GPUStage::duration_sampler</a></div><div class="ttdeci">AdaptiveSampler duration_sampler</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:48</div></div>
+<div class="ttc" id="astructGPUStage_html_a6d3a71fa172a28744673e9cc0a1331a7"><div class="ttname"><a href="structGPUStage.html#a6d3a71fa172a28744673e9cc0a1331a7">GPUStage::start_offset_ms</a></div><div class="ttdeci">float start_offset_ms</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:50</div></div>
+<div class="ttc" id="astructGPUStage_html_a7facb6586a35af14e24ced91138cd55f"><div class="ttname"><a href="structGPUStage.html#a7facb6586a35af14e24ced91138cd55f">GPUStage::color</a></div><div class="ttdeci">uint32_t color</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:47</div></div>
+<div class="ttc" id="astructGPUStage_html_a8aa9bdd6a39aef84f93e4a749187349d"><div class="ttname"><a href="structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d">GPUStage::offset_sampler</a></div><div class="ttdeci">AdaptiveSampler offset_sampler</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:49</div></div>
+<div class="ttc" id="astructGPUStage_html_acf997b2d5dffa4e9011d2acb9d822e60"><div class="ttname"><a href="structGPUStage.html#acf997b2d5dffa4e9011d2acb9d822e60">GPUStage::prev_alpha</a></div><div class="ttdeci">float prev_alpha</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:55</div></div>
+<div class="ttc" id="astructGPUStage_html_ad40b46bffa680f6d33b90c578ed2bf7d"><div class="ttname"><a href="structGPUStage.html#ad40b46bffa680f6d33b90c578ed2bf7d">GPUStage::prev_duration_ms</a></div><div class="ttdeci">float prev_duration_ms</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:53</div></div>
+<div class="ttc" id="astructGPUStage_html_af3691e1203e39115a62eb17e1f58d594"><div class="ttname"><a href="structGPUStage.html#af3691e1203e39115a62eb17e1f58d594">GPUStage::alpha</a></div><div class="ttdeci">float alpha</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:54</div></div>
+<div class="ttc" id="astructGPUTimer_html"><div class="ttname"><a href="structGPUTimer.html">GPUTimer</a></div><div class="ttdoc">GPU performance timer using OpenGL Query Objects.</div><div class="ttdef"><b>Definition</b> perf_timer.h:35</div></div>
+<div class="ttc" id="astructMetricStack_html"><div class="ttname"><a href="structMetricStack.html">MetricStack</a></div><div class="ttdef"><b>Definition</b> metric_stack.h:8</div></div>
+<div class="ttc" id="atracy__gpu_8h_html"><div class="ttname"><a href="tracy__gpu_8h.html">tracy_gpu.h</a></div></div>
+<div class="ttc" id="atracy__gpu_8h_html_a5aa3f109f7e6661a515cb3cc8c9a495c"><div class="ttname"><a href="tracy__gpu_8h.html#a5aa3f109f7e6661a515cb3cc8c9a495c">tracy_gpu_zone_end</a></div><div class="ttdeci">#define tracy_gpu_zone_end(ctx)</div><div class="ttdef"><b>Definition</b> tracy_gpu.h:35</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="gpu__profiler_8h.html">gpu_profiler.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
