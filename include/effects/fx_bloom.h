@@ -24,6 +24,16 @@ typedef struct {
 	int height;
 } BloomMip;
 
+typedef enum {
+	BLOOM_FINAL = 0,
+	BLOOM_PREFILTER,
+	BLOOM_DOWNSAMPLE,
+	BLOOM_UPSAMPLE,
+} BloomState;
+
+static char* const bloom_stages[] = {"Final Map", "Prefilter", "Downsample",
+                                     "Upsample"};
+
 /* Structure regroupant les ressources graphiques du Bloom */
 typedef struct BloomFX {
 	Shader* prefilter_shader;
@@ -31,8 +41,8 @@ typedef struct BloomFX {
 	Shader* upsample_shader;
 	GLuint fbo;
 	BloomMip mips[BLOOM_MIP_LEVELS];
-	int debug_step; /* 0: Final, 1: Prefilter, 2: Downsample, 3: Upsample */
-	int debug_mip;  /* Sub-level for Downsample/Upsample debug */
+	BloomState bloom_step;
+	int debug_mip; /* Sub-level for Downsample/Upsample debug */
 } BloomFX;
 
 /* Initialisation des ressources Bloom */

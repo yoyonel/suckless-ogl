@@ -116,7 +116,7 @@ void fx_bloom_render(BloomFX* bloom, const BloomParams* params,
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
-	if (bloom->debug_step == 1) { /* Prefilter only */
+	if (bloom->bloom_step == BLOOM_PREFILTER) { /* Prefilter only */
 		goto end_bloom;
 	}
 
@@ -145,7 +145,7 @@ void fx_bloom_render(BloomFX* bloom, const BloomParams* params,
 		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 	}
 
-	if (bloom->debug_step == 2) { /* Downsample only */
+	if (bloom->bloom_step == BLOOM_DOWNSAMPLE) { /* Downsample only */
 		goto end_bloom;
 	}
 
