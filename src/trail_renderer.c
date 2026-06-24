@@ -80,11 +80,12 @@ bool trail_renderer_init(TrailRenderer* trail, int body_count)
 	/* Create VAO + dynamic VBO */
 	glGenVertexArrays(1, &trail->vao);
 	glGenBuffers(1, &trail->vbo);
-	glObjectLabel(GL_VERTEX_ARRAY, trail->vao, -1, "Trail_VAO");
-	glObjectLabel(GL_BUFFER, trail->vbo, -1, "Trail_VBO");
 
 	glBindVertexArray(trail->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, trail->vbo);
+
+	glObjectLabel(GL_VERTEX_ARRAY, trail->vao, -1, "Trail_VAO");
+	glObjectLabel(GL_BUFFER, trail->vbo, -1, "Trail_VBO");
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(MAX_TRAIL_VERTICES * sizeof(TrailVertex)),
 	             NULL, GL_STREAM_DRAW);

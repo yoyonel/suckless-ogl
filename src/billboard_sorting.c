@@ -149,6 +149,23 @@ void billboard_sorter_init(BillboardSorter* sorter, int initial_capacity)
 	glGenBuffers(1, &sorter->instance_ssbo);
 	glGenBuffers(1, &sorter->index_ssbo);
 	glGenBuffers(1, &sorter->sorted_instance_ssbo);
+
+	/* Bind buffers once to instantiate them in the driver before labeling
+	 */
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->index_ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->sorted_instance_ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	/* --- AJOUT DES LABELS POUR RENDERDOC --- */
+	glObjectLabel(GL_BUFFER, sorter->instance_ssbo, -1,
+	              "SSBO_Instances_Unsorted");
+	glObjectLabel(GL_BUFFER, sorter->index_ssbo, -1,
+	              "SSBO_Sort_Entries_Keys");
+	glObjectLabel(GL_BUFFER, sorter->sorted_instance_ssbo, -1,
+	              "SSBO_Instances_Sorted");
+	/* --------------------------------------- */
+
 	sorter->ssbo_capacity = 0;
 	sorter->min_capacity =
 	    initial_capacity > 0 ? initial_capacity : DEFAULT_MIN_CAPACITY;

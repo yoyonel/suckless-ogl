@@ -38,11 +38,12 @@ bool shockwave_renderer_init(ShockwaveRenderer* renderer)
 	/* Create VAO + static quad VBO */
 	glGenVertexArrays(1, &renderer->vao);
 	glGenBuffers(1, &renderer->vbo);
-	glObjectLabel(GL_VERTEX_ARRAY, renderer->vao, -1, "Shockwave_VAO");
-	glObjectLabel(GL_BUFFER, renderer->vbo, -1, "Shockwave_VBO");
 
 	glBindVertexArray(renderer->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
+
+	glObjectLabel(GL_VERTEX_ARRAY, renderer->vao, -1, "Shockwave_VAO");
+	glObjectLabel(GL_BUFFER, renderer->vbo, -1, "Shockwave_VBO");
 	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(QUAD_FLOATS * sizeof(float)),
 	             QUAD_VERTICES, GL_STATIC_DRAW);
 

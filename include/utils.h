@@ -12,14 +12,6 @@
 #include <stdlib.h>
 
 /**
- * @brief Helper to securely cast an integer offset to a pointer, often used for
- * VBO/EBO byte offsets.
- * @param offset The byte offset to cast.
- * @return A void pointer representing the offset.
- */
-void* utils_buffer_offset(size_t offset);
-
-/**
  * @brief Safe wrapper around vsnprintf to format strings with bounds checking.
  * @param buf Destination buffer.
  * @param buf_size Buffer capacity.

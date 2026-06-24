@@ -152,10 +152,6 @@ bool is_safe_relative_path(const char* path)
 	return true;
 }
 
-void* utils_buffer_offset(size_t offset)
-{
-	return (void*)(uintptr_t)offset;  // NOLINT(performance-no-int-to-ptr)
-}
 
 #ifdef __clang_analyzer__
 void raii_satisfy_analyzer_file(FILE* file_ptr)
