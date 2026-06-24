@@ -396,19 +396,19 @@ void test_key_b_shift_cycles_bloom_debug(void)
 	/* First press: Off -> Debug Final */
 	postprocess_input_handle_key(&g_ctx, GLFW_KEY_B, GLFW_MOD_SHIFT);
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&g_pp, POSTFX_BLOOM_DEBUG));
-	TEST_ASSERT_EQUAL_INT(0, g_pp.bloom_fx.debug_step);
+	TEST_ASSERT_EQUAL_INT(0, g_pp.bloom_fx.bloom_step);
 
 	/* Second press: Final -> Prefilter */
 	postprocess_input_handle_key(&g_ctx, GLFW_KEY_B, GLFW_MOD_SHIFT);
-	TEST_ASSERT_EQUAL_INT(1, g_pp.bloom_fx.debug_step);
+	TEST_ASSERT_EQUAL_INT(1, g_pp.bloom_fx.bloom_step);
 
 	/* Third press: Prefilter -> Downsample */
 	postprocess_input_handle_key(&g_ctx, GLFW_KEY_B, GLFW_MOD_SHIFT);
-	TEST_ASSERT_EQUAL_INT(2, g_pp.bloom_fx.debug_step);
+	TEST_ASSERT_EQUAL_INT(2, g_pp.bloom_fx.bloom_step);
 
 	/* Fourth press: Downsample -> Upsample */
 	postprocess_input_handle_key(&g_ctx, GLFW_KEY_B, GLFW_MOD_SHIFT);
-	TEST_ASSERT_EQUAL_INT(3, g_pp.bloom_fx.debug_step);
+	TEST_ASSERT_EQUAL_INT(3, g_pp.bloom_fx.bloom_step);
 
 	/* Fifth press: Upsample -> Off */
 	postprocess_input_handle_key(&g_ctx, GLFW_KEY_B, GLFW_MOD_SHIFT);

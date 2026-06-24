@@ -2,6 +2,7 @@
 
 #include "app_settings.h"
 #include "effects/fx_auto_exposure.h"
+#include "effects/fx_bloom.h"
 #include "log.h"
 #include "postprocess_internal.h"
 #include "postprocess_presets.h"
@@ -318,6 +319,35 @@ static void handle_auto_exposure_key(const PostProcessInputContext* ctx,
 	}
 }
 
+static const char* postprocess_cycle_bloom_debug(PostProcess* post_processing)
+{
+	/* Si le debug est inactif, on l'allume et on force le Bloom */
+	if (!postprocess_is_enabled(post_processing, POSTFX_BLOOM_DEBUG)) {
+		postprocess_enable(post_processing, POSTFX_BLOOM_DEBUG);
+		postprocess_enable(post_processing, POSTFX_BLOOM);
+		post_processing->bloom_fx.bloom_step = BLOOM_FINAL;
+		return "Bloom Debug: Final Map";
+	}
+
+	/* Machine à états circulaire */
+	switch (post_processing->bloom_fx.bloom_step) {
+		case BLOOM_FINAL:
+			post_processing->bloom_fx.bloom_step = BLOOM_PREFILTER;
+			return "Bloom Debug: Prefilter";
+		case BLOOM_PREFILTER:
+			post_processing->bloom_fx.bloom_step = BLOOM_DOWNSAMPLE;
+			return "Bloom Debug: Downsample";
+		case BLOOM_DOWNSAMPLE:
+			post_processing->bloom_fx.bloom_step = BLOOM_UPSAMPLE;
+			return "Bloom Debug: Upsample";
+		case BLOOM_UPSAMPLE:
+		default:
+			postprocess_disable(post_processing,
+			                    POSTFX_BLOOM_DEBUG);
+			return "Bloom Debug: OFF";
+	}
+}
+
 void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
                                   int mods)
 {
@@ -335,51 +365,11 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			break;
 		case GLFW_KEY_B:
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
-				/* SHIFT+B: Cycle Bloom Debug Mode:
-				   Off -> Final -> Prefilter -> Downsample ->
-				   Upsample -> Off */
-				int debug_enabled = postprocess_is_enabled(
-				    ctx->postprocess, POSTFX_BLOOM_DEBUG);
-				int current_step =
-				    ctx->postprocess->bloom_fx.debug_step;
+				/* SHIFT+B: Cycle Bloom Debug Mode */
+				const char* mode_name =
+				    postprocess_cycle_bloom_debug(
+				        ctx->postprocess);
 
-				const char* mode_name = NULL;
-				if (!debug_enabled) {
-					/* Off -> Final */
-					postprocess_enable(ctx->postprocess,
-					                   POSTFX_BLOOM_DEBUG);
-					/* Ensure bloom is on for debug */
-					postprocess_enable(ctx->postprocess,
-					                   POSTFX_BLOOM);
-					ctx->postprocess->bloom_fx.debug_step =
-					    0;
-					mode_name = "Bloom Debug: Final Map";
-				} else if (current_step == 0) {
-					/* Final -> Prefilter */
-					ctx->postprocess->bloom_fx.debug_step =
-					    1;
-					mode_name = "Bloom Debug: Prefilter";
-				} else if (current_step == 1) {
-					/* Prefilter -> Downsample */
-					ctx->postprocess->bloom_fx.debug_step =
-					    2;
-					mode_name = "Bloom Debug: Downsample";
-				} else if (current_step == 2) {
-					/* Downsample -> Upsample (is actually
-					 * final map in our impl, let's keep it
-					 * for completeness or intermediate if
-					 * we want) */
-					/* For now let's just use it as
-					 * "Upsample/Final" */
-					ctx->postprocess->bloom_fx.debug_step =
-					    3;
-					mode_name = "Bloom Debug: Upsample";
-				} else {
-					/* Upsample -> Off */
-					postprocess_disable(ctx->postprocess,
-					                    POSTFX_BLOOM_DEBUG);
-					mode_name = "Bloom Debug: OFF";
-				}
 				LOG_INFO("suckless-ogl.postprocess", "%s",
 				         mode_name);
 				action_notifier_push(ctx->notifier, mode_name,

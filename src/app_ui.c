@@ -1034,14 +1034,12 @@ static void draw_bloom_debug_status(const App* app, UILayout* layout)
 {
 	if (postprocess_is_enabled(app->postprocess, POSTFX_BLOOM_DEBUG)) {
 		char buf[DEBUG_TEXT_BUFFER_SIZE];
-		int step = app->postprocess->bloom_fx.debug_step;
-		int mip = app->postprocess->bloom_fx.debug_mip;
-		const char* stages[] = {"Final Map", "Prefilter", "Downsample",
-		                        "Upsample"};
-
+		// FIXME: Do better here !
+		const int step = (int)(app->postprocess->bloom_fx.bloom_step);
+		const int mip = app->postprocess->bloom_fx.debug_mip;
 		(void)safe_snprintf(buf, sizeof(buf),
 		                    "Bloom Debug: %s | Mip: %d",
-		                    stages[step % 4], mip);
+		                    bloom_stages[step], mip);
 		ui_layout_text(layout, buf, (float*)DEBUG_ORANGE_COLOR);
 	}
 }
