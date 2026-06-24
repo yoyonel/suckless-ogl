@@ -6,10 +6,10 @@
 <area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="33,1284,174,397,179,398,39,1284"/>
 <area shape="rect" id="Node000063" href="$app_8c.html#a1d3b9d4294ec4a01762c962902b9063d" title="Enters the main application rendering and event loop." alt="" coords="145,1284,219,1309"/>
 <area shape="poly" id="edge17_Node000001_Node000063" title=" " alt="" coords="60,1294,131,1294,131,1299,60,1299"/>
-<area shape="rect" id="Node000307" href="$cli_8c.html#ade80bb1e3d8493bc52be073640a39288" title="Parses command&#45;line arguments and determines the next action." alt="" coords="121,1333,243,1359"/>
-<area shape="poly" id="edge51_Node000001_Node000307" title=" " alt="" coords="61,1303,130,1326,128,1331,59,1308"/>
-<area shape="rect" id="Node000309" href="$tracy__manager_8c.html#a9a2c28d0ab2a805063e8c7abaa79869a" title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main()." alt="" coords="108,1383,256,1423"/>
-<area shape="poly" id="edge53_Node000001_Node000309" title=" " alt="" coords="46,1308,73,1337,110,1368,120,1374,117,1379,106,1372,70,1341,42,1311"/>
+<area shape="rect" id="Node000314" href="$cli_8c.html#ade80bb1e3d8493bc52be073640a39288" title="Parses command&#45;line arguments and determines the next action." alt="" coords="121,1333,243,1359"/>
+<area shape="poly" id="edge51_Node000001_Node000314" title=" " alt="" coords="61,1303,130,1326,128,1331,59,1308"/>
+<area shape="rect" id="Node000316" href="$tracy__manager_8c.html#a9a2c28d0ab2a805063e8c7abaa79869a" title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main()." alt="" coords="108,1383,256,1423"/>
+<area shape="poly" id="edge53_Node000001_Node000316" title=" " alt="" coords="46,1308,73,1337,110,1368,120,1374,117,1379,106,1372,70,1341,42,1311"/>
 <area shape="rect" id="Node000003" href="$app__subsystem_8c.html#aeb199b1d5abb36adf5272a8a8757d182" title="Walk table in reverse, calling cleanup() for each entry." alt="" coords="313,55,502,80"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="234,65,298,65,298,70,234,70"/>
 <area shape="rect" id="Node000004" href="$app__ui_8c.html#ae291b4eb13641176e0232509ddc0ccf0" title=" " alt="" coords="346,5,469,31"/>
@@ -88,18 +88,18 @@
 <area shape="poly" id="edge43_Node000063_Node000226" title=" " alt="" coords="181,1284,184,1220,200,1124,215,1071,237,1018,265,969,302,927,307,923,310,927,306,931,270,972,241,1020,220,1072,205,1125,190,1221,186,1284"/>
 <area shape="rect" id="Node000227" href="$renderer_8c.html#ab9630b52d9b0cfd1ddda7c833c8e5f67" title="Orchestrates the entire frame render (scene, postprocess, ui)." alt="" coords="326,1484,489,1509"/>
 <area shape="poly" id="edge44_Node000063_Node000227" title=" " alt="" coords="220,1299,240,1306,258,1319,272,1338,280,1358,282,1397,284,1434,292,1452,306,1469,315,1477,312,1481,302,1473,287,1454,279,1435,277,1397,275,1359,268,1341,254,1323,238,1311,219,1304"/>
-<area shape="rect" id="Node000294" href="$scene__nbody_8c.html#aa64367048d138627fede2551e1c9d1e3" title="Advances the N&#45;body simulation by one frame." alt="" coords="328,991,487,1016"/>
-<area shape="poly" id="edge47_Node000063_Node000294" title=" " alt="" coords="182,1283,192,1234,213,1164,228,1127,248,1089,273,1055,302,1025,314,1017,317,1022,306,1029,277,1058,253,1092,233,1129,218,1166,197,1236,188,1284"/>
-<area shape="rect" id="Node000304" href="$scene__render_8c.html#a97b3fbf4a92687b0b76a08b452daa63e" title="Updates GPU buffers for dynamic geometry (e.g. LOD changes)." alt="" coords="310,1040,505,1065"/>
-<area shape="poly" id="edge48_Node000063_Node000304" title=" " alt="" coords="184,1283,196,1242,219,1186,254,1126,276,1098,302,1075,310,1069,313,1074,306,1079,280,1102,258,1129,224,1188,201,1244,189,1285"/>
-<area shape="rect" id="Node000305" href="$ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b" title="Binds a mesh (VBO/EBO) to the SSBO VAO." alt="" coords="320,1089,495,1115"/>
-<area shape="poly" id="edge49_Node000063_Node000305" title=" " alt="" coords="186,1283,202,1250,227,1208,260,1163,302,1125,315,1118,318,1123,306,1129,264,1167,231,1211,206,1253,191,1285"/>
-<area shape="rect" id="Node000306" href="$tracy__manager_8c.html#a15f341fbf0f0311899c1103b2ef05bc0" title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame." alt="" coords="321,1139,493,1179"/>
-<area shape="poly" id="edge50_Node000063_Node000306" title=" " alt="" coords="195,1282,240,1240,303,1196,329,1182,332,1187,305,1200,244,1244,198,1286"/>
+<area shape="rect" id="Node000301" href="$scene__nbody_8c.html#aa64367048d138627fede2551e1c9d1e3" title="Advances the N&#45;body simulation by one frame." alt="" coords="328,991,487,1016"/>
+<area shape="poly" id="edge47_Node000063_Node000301" title=" " alt="" coords="182,1283,192,1234,213,1164,228,1127,248,1089,273,1055,302,1025,314,1017,317,1022,306,1029,277,1058,253,1092,233,1129,218,1166,197,1236,188,1284"/>
+<area shape="rect" id="Node000311" href="$scene__render_8c.html#a97b3fbf4a92687b0b76a08b452daa63e" title="Updates GPU buffers for dynamic geometry (e.g. LOD changes)." alt="" coords="310,1040,505,1065"/>
+<area shape="poly" id="edge48_Node000063_Node000311" title=" " alt="" coords="184,1283,196,1242,219,1186,254,1126,276,1098,302,1075,310,1069,313,1074,306,1079,280,1102,258,1129,224,1188,201,1244,189,1285"/>
+<area shape="rect" id="Node000312" href="$ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b" title="Binds a mesh (VBO/EBO) to the SSBO VAO." alt="" coords="320,1089,495,1115"/>
+<area shape="poly" id="edge49_Node000063_Node000312" title=" " alt="" coords="186,1283,202,1250,227,1208,260,1163,302,1125,315,1118,318,1123,306,1129,264,1167,231,1211,206,1253,191,1285"/>
+<area shape="rect" id="Node000313" href="$tracy__manager_8c.html#a15f341fbf0f0311899c1103b2ef05bc0" title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame." alt="" coords="321,1139,493,1179"/>
+<area shape="poly" id="edge50_Node000063_Node000313" title=" " alt="" coords="195,1282,240,1240,303,1196,329,1182,332,1187,305,1200,244,1244,198,1286"/>
 <area shape="poly" id="edge24_Node000072_Node000064" title=" " alt="" coords="492,964,512,976,539,999,562,1026,599,1085,626,1143,642,1190,637,1191,621,1145,595,1088,558,1029,535,1003,509,980,489,969"/>
 <area shape="poly" id="edge32_Node000190_Node000191" title=" " alt="" coords="456,1951,549,1937,550,1942,457,1956"/>
 <area shape="poly" id="edge45_Node000227_Node000064" title=" " alt="" coords="487,1482,509,1469,536,1445,559,1416,597,1353,623,1291,638,1242,643,1244,628,1293,602,1355,564,1419,540,1448,512,1473,490,1486"/>
 <area shape="poly" id="edge46_Node000227_Node000192" title=" " alt="" coords="490,1505,512,1519,544,1551,571,1588,592,1628,610,1670,633,1749,645,1812,640,1813,628,1750,605,1671,587,1630,566,1591,540,1554,509,1523,488,1510"/>
-<area shape="rect" id="Node000308" href="$cli_8c.html#ac834d46f6713123c5798578457691016" title=" " alt="" coords="364,2096,451,2121"/>
-<area shape="poly" id="edge52_Node000307_Node000308" title=" " alt="" coords="243,1357,258,1370,274,1398,284,1433,290,1473,292,1519,289,1621,280,1730,272,1839,269,1940,272,1984,279,2024,290,2057,306,2083,326,2098,351,2105,349,2111,324,2103,302,2086,285,2059,274,2025,267,1985,264,1940,266,1839,275,1730,284,1620,287,1519,285,1474,279,1434,269,1400,254,1373,240,1361"/>
+<area shape="rect" id="Node000315" href="$cli_8c.html#ac834d46f6713123c5798578457691016" title=" " alt="" coords="364,2096,451,2121"/>
+<area shape="poly" id="edge52_Node000314_Node000315" title=" " alt="" coords="243,1357,258,1370,274,1398,284,1433,290,1473,292,1519,289,1621,280,1730,272,1839,269,1940,272,1984,279,2024,290,2057,306,2083,326,2098,351,2105,349,2111,324,2103,302,2086,285,2059,274,2025,267,1985,264,1940,266,1839,275,1730,284,1620,287,1519,285,1474,279,1434,269,1400,254,1373,240,1361"/>
 </map>

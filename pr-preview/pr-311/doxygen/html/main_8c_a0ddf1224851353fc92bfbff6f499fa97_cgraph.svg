@@ -117,38 +117,38 @@ var sectionId = 'dynsection-1';
 </a>
 </g>
 </g>
-<!-- Node307 -->
-<g id="Node000307" class="node">
-<title>Node307</title>
-<g id="a_Node000307"><a xlink:href="cli_8c.html#ade80bb1e3d8493bc52be073640a39288" target="_top" xlink:title="Parses command&#45;line arguments and determines the next action.">
+<!-- Node314 -->
+<g id="Node000314" class="node">
+<title>Node314</title>
+<g id="a_Node000314"><a xlink:href="cli_8c.html#ade80bb1e3d8493bc52be073640a39288" target="_top" xlink:title="Parses command&#45;line arguments and determines the next action.">
 <polygon fill="white" stroke="#666666" points="178.5,-591 86.5,-591 86.5,-572 178.5,-572 178.5,-591"/>
 <text text-anchor="middle" x="132.5" y="-579" font-family="Helvetica,sans-Serif" font-size="10.00">cli_handle_args</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node307 -->
-<g id="edge51_Node000001_Node000307" class="edge">
-<title>Node1&#45;&gt;Node307</title>
-<g id="a_edge51_Node000001_Node000307"><a xlink:title=" ">
+<!-- Node1&#45;&gt;Node314 -->
+<g id="edge51_Node000001_Node000314" class="edge">
+<title>Node1&#45;&gt;Node314</title>
+<g id="a_edge51_Node000001_Node000314"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M41.17,-611.89C55.53,-607.05 75.46,-600.35 92.95,-594.47"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="94.54,-597.62 102.91,-591.12 92.31,-590.99 94.54,-597.62"/>
 </a>
 </g>
 </g>
-<!-- Node309 -->
-<g id="Node000309" class="node">
-<title>Node309</title>
-<g id="a_Node000309"><a xlink:href="tracy__manager_8c.html#a9a2c28d0ab2a805063e8c7abaa79869a" target="_top" xlink:title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main().">
+<!-- Node316 -->
+<g id="Node000316" class="node">
+<title>Node316</title>
+<g id="a_Node000316"><a xlink:href="tracy__manager_8c.html#a9a2c28d0ab2a805063e8c7abaa79869a" target="_top" xlink:title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main().">
 <polygon fill="white" stroke="#666666" points="188,-553.5 77,-553.5 77,-523.5 188,-523.5 188,-553.5"/>
 <text text-anchor="start" x="85" y="-541.5" font-family="Helvetica,sans-Serif" font-size="10.00">tracy_manager_init</text>
 <text text-anchor="middle" x="132.5" y="-530.5" font-family="Helvetica,sans-Serif" font-size="10.00">_global</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node309 -->
-<g id="edge53_Node000001_Node000309" class="edge">
-<title>Node1&#45;&gt;Node309</title>
-<g id="a_edge53_Node000001_Node000309"><a xlink:title=" ">
+<!-- Node1&#45;&gt;Node316 -->
+<g id="edge53_Node000001_Node000316" class="edge">
+<title>Node1&#45;&gt;Node316</title>
+<g id="a_edge53_Node000001_Node000316"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M29.31,-608.91C39.36,-597.04 57.82,-576.78 77,-563.5 79.53,-561.75 82.2,-560.07 84.95,-558.47"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="86.77,-561.46 93.9,-553.63 83.44,-555.31 86.77,-561.46"/>
 </a>
@@ -863,74 +863,74 @@ var sectionId = 'dynsection-1';
 </a>
 </g>
 </g>
-<!-- Node294 -->
-<g id="Node000294" class="node">
-<title>Node294</title>
-<g id="a_Node000294"><a xlink:href="scene__nbody_8c.html#aa64367048d138627fede2551e1c9d1e3" target="_top" xlink:title="Advances the N&#45;body simulation by one frame.">
+<!-- Node301 -->
+<g id="Node000301" class="node">
+<title>Node301</title>
+<g id="a_Node000301"><a xlink:href="scene__nbody_8c.html#aa64367048d138627fede2551e1c9d1e3" target="_top" xlink:title="Advances the N&#45;body simulation by one frame.">
 <polygon fill="#fff0f0" stroke="red" points="361,-848 242,-848 242,-829 361,-829 361,-848"/>
 <text text-anchor="middle" x="301.5" y="-836" font-family="Helvetica,sans-Serif" font-size="10.00">scene_nbody_update</text>
 </a>
 </g>
 </g>
-<!-- Node63&#45;&gt;Node294 -->
-<g id="edge47_Node000063_Node000294" class="edge">
-<title>Node63&#45;&gt;Node294</title>
-<g id="a_edge47_Node000063_Node000294"><a xlink:title=" ">
+<!-- Node63&#45;&gt;Node301 -->
+<g id="edge47_Node000063_Node000301" class="edge">
+<title>Node63&#45;&gt;Node301</title>
+<g id="a_edge47_Node000063_Node000301"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M134.82,-628.34C139.76,-661.17 160.3,-767.89 224,-820.5 226.71,-822.74 229.65,-824.71 232.75,-826.45"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="231.3,-829.63 241.83,-830.73 234.28,-823.3 231.3,-829.63"/>
 </a>
 </g>
 </g>
-<!-- Node304 -->
-<g id="Node000304" class="node">
-<title>Node304</title>
-<g id="a_Node000304"><a xlink:href="scene__render_8c.html#a97b3fbf4a92687b0b76a08b452daa63e" target="_top" xlink:title="Updates GPU buffers for dynamic geometry (e.g. LOD changes).">
+<!-- Node311 -->
+<g id="Node000311" class="node">
+<title>Node311</title>
+<g id="a_Node000311"><a xlink:href="scene__render_8c.html#a97b3fbf4a92687b0b76a08b452daa63e" target="_top" xlink:title="Updates GPU buffers for dynamic geometry (e.g. LOD changes).">
 <polygon fill="white" stroke="#666666" points="374.5,-811 228.5,-811 228.5,-792 374.5,-792 374.5,-811"/>
 <text text-anchor="middle" x="301.5" y="-799" font-family="Helvetica,sans-Serif" font-size="10.00">scene_update_gpu_buffers</text>
 </a>
 </g>
 </g>
-<!-- Node63&#45;&gt;Node304 -->
-<g id="edge48_Node000063_Node000304" class="edge">
-<title>Node63&#45;&gt;Node304</title>
-<g id="a_edge48_Node000063_Node000304"><a xlink:title=" ">
+<!-- Node63&#45;&gt;Node311 -->
+<g id="edge48_Node000063_Node000311" class="edge">
+<title>Node63&#45;&gt;Node311</title>
+<g id="a_edge48_Node000063_Node000311"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M135.82,-628.13C143.23,-656.74 169.12,-741.77 224,-783.5 225.81,-784.88 227.71,-786.15 229.67,-787.33"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="228.18,-790.49 238.68,-791.9 231.35,-784.25 228.18,-790.49"/>
 </a>
 </g>
 </g>
-<!-- Node305 -->
-<g id="Node000305" class="node">
-<title>Node305</title>
-<g id="a_Node000305"><a xlink:href="ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b" target="_top" xlink:title="Binds a mesh (VBO/EBO) to the SSBO VAO.">
+<!-- Node312 -->
+<g id="Node000312" class="node">
+<title>Node312</title>
+<g id="a_Node000312"><a xlink:href="ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b" target="_top" xlink:title="Binds a mesh (VBO/EBO) to the SSBO VAO.">
 <polygon fill="white" stroke="#666666" points="367,-774 236,-774 236,-755 367,-755 367,-774"/>
 <text text-anchor="middle" x="301.5" y="-762" font-family="Helvetica,sans-Serif" font-size="10.00">ssbo_group_bind_mesh</text>
 </a>
 </g>
 </g>
-<!-- Node63&#45;&gt;Node305 -->
-<g id="edge49_Node000063_Node000305" class="edge">
-<title>Node63&#45;&gt;Node305</title>
-<g id="a_edge49_Node000063_Node000305"><a xlink:title=" ">
+<!-- Node63&#45;&gt;Node312 -->
+<g id="edge49_Node000063_Node000312" class="edge">
+<title>Node63&#45;&gt;Node312</title>
+<g id="a_edge49_Node000063_Node000312"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M137.53,-628.24C147.98,-652.23 178.34,-714.43 224,-745.5 226.92,-747.48 230.02,-749.26 233.25,-750.86"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="232.03,-754.14 242.6,-754.87 234.79,-747.71 232.03,-754.14"/>
 </a>
 </g>
 </g>
-<!-- Node306 -->
-<g id="Node000306" class="node">
-<title>Node306</title>
-<g id="a_Node000306"><a xlink:href="tracy__manager_8c.html#a15f341fbf0f0311899c1103b2ef05bc0" target="_top" xlink:title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame.">
+<!-- Node313 -->
+<g id="Node000313" class="node">
+<title>Node313</title>
+<g id="a_Node000313"><a xlink:href="tracy__manager_8c.html#a15f341fbf0f0311899c1103b2ef05bc0" target="_top" xlink:title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame.">
 <polygon fill="white" stroke="#666666" points="366,-736.5 237,-736.5 237,-706.5 366,-706.5 366,-736.5"/>
 <text text-anchor="start" x="245" y="-724.5" font-family="Helvetica,sans-Serif" font-size="10.00">tracy_manager_update</text>
 <text text-anchor="middle" x="301.5" y="-713.5" font-family="Helvetica,sans-Serif" font-size="10.00">_screenshots</text>
 </a>
 </g>
 </g>
-<!-- Node63&#45;&gt;Node306 -->
-<g id="edge50_Node000063_Node000306" class="edge">
-<title>Node63&#45;&gt;Node306</title>
-<g id="a_edge50_Node000063_Node000306"><a xlink:title=" ">
+<!-- Node63&#45;&gt;Node313 -->
+<g id="edge50_Node000063_Node000313" class="edge">
+<title>Node63&#45;&gt;Node313</title>
+<g id="a_edge50_Node000063_Node000313"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M143.28,-628.33C159.06,-643.76 191.66,-673.82 224,-692.5 230.26,-696.11 237.05,-699.44 243.91,-702.44"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="242.7,-705.73 253.28,-706.34 245.39,-699.27 242.7,-705.73"/>
 </a>
@@ -972,19 +972,19 @@ var sectionId = 'dynsection-1';
 </a>
 </g>
 </g>
-<!-- Node308 -->
-<g id="Node000308" class="node">
-<title>Node308</title>
-<g id="a_Node000308"><a xlink:href="cli_8c.html#ac834d46f6713123c5798578457691016" target="_top" xlink:title=" ">
+<!-- Node315 -->
+<g id="Node000315" class="node">
+<title>Node315</title>
+<g id="a_Node000315"><a xlink:href="cli_8c.html#ac834d46f6713123c5798578457691016" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="334,-19 269,-19 269,0 334,0 334,-19"/>
 <text text-anchor="middle" x="301.5" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">print_help</text>
 </a>
 </g>
 </g>
-<!-- Node307&#45;&gt;Node308 -->
-<g id="edge52_Node000307_Node000308" class="edge">
-<title>Node307&#45;&gt;Node308</title>
-<g id="a_edge52_Node000307_Node000308"><a xlink:title=" ">
+<!-- Node314&#45;&gt;Node315 -->
+<g id="edge52_Node000314_Node000315" class="edge">
+<title>Node314&#45;&gt;Node315</title>
+<g id="a_edge52_Node000314_Node000315"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M176.94,-571.98C181.19,-569.51 185.02,-566.4 188,-562.5 260.23,-467.73 146.92,-118.37 224,-27.5 232.57,-17.4 245.63,-12.37 258.56,-10.02"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="259.35,-13.45 268.8,-8.66 258.43,-6.51 259.35,-13.45"/>
 </a>

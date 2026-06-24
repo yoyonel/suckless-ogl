@@ -247,6 +247,7 @@ $(document).ready(function(){initNavTree('postprocess__apply_8c.html',''); initR
 <code>#include &quot;effects/fx_lut_viz.h&quot;</code><br />
 <code>#include &quot;effects/fx_motion_blur.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__debug_8h_source.html">gl_debug.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__internal_8h_source.html">postprocess_internal.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
@@ -260,10 +261,179 @@ Include dependency graph for postprocess_apply.c:</div>
 Functions</h2></td></tr>
 <tr class="memitem:a8fdad312e138cf7080b4596e127584e5" id="r_a8fdad312e138cf7080b4596e127584e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#a8fdad312e138cf7080b4596e127584e5">postprocess_begin</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="separator:a8fdad312e138cf7080b4596e127584e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72936e216b21bf69e0bba999e76867f1" id="r_a72936e216b21bf69e0bba999e76867f1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#a72936e216b21bf69e0bba999e76867f1">postfx_bloom</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:a72936e216b21bf69e0bba999e76867f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a297065c5bfa20ec27ef43c970a40a1b7" id="r_a297065c5bfa20ec27ef43c970a40a1b7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#a297065c5bfa20ec27ef43c970a40a1b7">postfx_dof</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:a297065c5bfa20ec27ef43c970a40a1b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eaf8197503efd0633054737e725ea6a" id="r_a1eaf8197503efd0633054737e725ea6a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#a1eaf8197503efd0633054737e725ea6a">postfx_ae_and_debug_histogram</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:a1eaf8197503efd0633054737e725ea6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab6cd3be4669e4f326dbdac78338f890" id="r_aab6cd3be4669e4f326dbdac78338f890"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#aab6cd3be4669e4f326dbdac78338f890">postfx_mb_debug</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:aab6cd3be4669e4f326dbdac78338f890"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6398069906d74d502d7cb6906574e87" id="r_aa6398069906d74d502d7cb6906574e87"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#aa6398069906d74d502d7cb6906574e87">ubo_full_rebuild</a> (const <a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:aa6398069906d74d502d7cb6906574e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbe1edd9260cd241d757d381a85d6b40" id="r_adbe1edd9260cd241d757d381a85d6b40"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#adbe1edd9260cd241d757d381a85d6b40">upload_ubo</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:adbe1edd9260cd241d757d381a85d6b40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53a22a7926165f22b29c4005abfec6a0" id="r_a53a22a7926165f22b29c4005abfec6a0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#a53a22a7926165f22b29c4005abfec6a0">postfx_final_composite</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:a53a22a7926165f22b29c4005abfec6a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa84256eef04459c5acf3b67987da736b" id="r_aa84256eef04459c5acf3b67987da736b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__apply_8c.html#aa84256eef04459c5acf3b67987da736b">postprocess_end</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="separator:aa84256eef04459c5acf3b67987da736b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a1eaf8197503efd0633054737e725ea6a" name="a1eaf8197503efd0633054737e725ea6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eaf8197503efd0633054737e725ea6a">&#9670;&#160;</a></span>postfx_ae_and_debug_histogram()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void postfx_ae_and_debug_histogram </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_a1eaf8197503efd0633054737e725ea6a_cgraph.svg" width="400" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a72936e216b21bf69e0bba999e76867f1" name="a72936e216b21bf69e0bba999e76867f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72936e216b21bf69e0bba999e76867f1">&#9670;&#160;</a></span>postfx_bloom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void postfx_bloom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_a72936e216b21bf69e0bba999e76867f1_cgraph.svg" width="347" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a297065c5bfa20ec27ef43c970a40a1b7" name="a297065c5bfa20ec27ef43c970a40a1b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a297065c5bfa20ec27ef43c970a40a1b7">&#9670;&#160;</a></span>postfx_dof()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void postfx_dof </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_a297065c5bfa20ec27ef43c970a40a1b7_cgraph.svg" width="327" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a53a22a7926165f22b29c4005abfec6a0" name="a53a22a7926165f22b29c4005abfec6a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53a22a7926165f22b29c4005abfec6a0">&#9670;&#160;</a></span>postfx_final_composite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void postfx_final_composite </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_a53a22a7926165f22b29c4005abfec6a0_cgraph.svg" width="630" height="348"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aab6cd3be4669e4f326dbdac78338f890" name="aab6cd3be4669e4f326dbdac78338f890"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab6cd3be4669e4f326dbdac78338f890">&#9670;&#160;</a></span>postfx_mb_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void postfx_mb_debug </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_aab6cd3be4669e4f326dbdac78338f890_cgraph.svg" width="375" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
 <a id="a8fdad312e138cf7080b4596e127584e5" name="a8fdad312e138cf7080b4596e127584e5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8fdad312e138cf7080b4596e127584e5">&#9670;&#160;</a></span>postprocess_begin()</h2>
 
@@ -300,7 +470,64 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="412" height="299"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="aa6398069906d74d502d7cb6906574e87" name="aa6398069906d74d502d7cb6906574e87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6398069906d74d502d7cb6906574e87">&#9670;&#160;</a></span>ubo_full_rebuild()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ubo_full_rebuild </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adbe1edd9260cd241d757d381a85d6b40" name="adbe1edd9260cd241d757d381a85d6b40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbe1edd9260cd241d757d381a85d6b40">&#9670;&#160;</a></span>upload_ubo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void upload_ubo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__apply_8c_adbe1edd9260cd241d757d381a85d6b40_cgraph.svg" width="283" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>

@@ -81,17 +81,17 @@ var NAVTREEINDEX =
 "../../index.html",
 "app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17",
 "camera_8h.html#aa47646370ef1804643d987edb53fe2f7",
-"gl__common_8h.html#ad734625837606032212a5f0706243b60",
-"group__Environment.html#ga9ae155b103e5528d5cb4530cf6ec8d28",
-"lum__histogram_8h.html#aa64fd9d992cb9bde3f01e1acca71b659",
-"postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5",
-"profiler_8h.html#a46997d39034fb02d50a70dbf8a15d7de",
-"shockwave_8frag.html#a2302819624057372b0a63d2e2c8312c7",
-"structAsyncRequest.html",
-"structGPUStageInfo.html#ae92767f48a0622028fb91be036eb7548",
-"structPPExposureReadback.html#a71c8c331311e9fafcc0334bd37cc8ae6",
-"structSceneVisuals.html",
-"trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03"
+"gl__common_8h.html#ab8ccf88806834695c45f7f30d868020a",
+"group__Environment.html#ga24f192aad05183c640849a649a49e70e",
+"lum__histogram_8c.html#a04448c0c7f44be55a7e8dffb7144eecf",
+"postprocess_8h.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409",
+"pp__params_8h.html#af950c3b89015622c6f11daef618bef2d",
+"shader_8h_source.html",
+"structAsyncBackendInterface.html",
+"structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61",
+"structPBRSpecUniforms.html",
+"structSceneLighting.html#afacc999031ba4422a6faeb789ef3128a",
+"trail__renderer_8h.html#a45701e1c31aa42e037c5c2921949b441"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
