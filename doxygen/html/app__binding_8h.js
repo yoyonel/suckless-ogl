@@ -15,8 +15,8 @@ var app__binding_8h =
       [ "BINDING_TYPE_CYCLE", "app__binding_8h.html#a554a113804f131b2b470ba86548c3f21a8bbe4709cfea08f3b03408fc079f47f8", null ],
       [ "BINDING_TYPE_COUNT", "app__binding_8h.html#a554a113804f131b2b470ba86548c3f21a77b0acbe2c0c802b1174d820c55d756b", null ]
     ] ],
-    [ "app_binding_registry_at", "app__binding_8h.html#aa4f7f362341980ad1193ada9cc8bfcee", null ],
-    [ "app_binding_registry_get", "app__binding_8h.html#aa67c3cc1ef5aab08f424fb198159dc0d", null ],
+    [ "app_binding_registry_at", "app__binding_8h.html#aefd12872f273ac533d114c700c3d7b85", null ],
+    [ "app_binding_registry_get", "app__binding_8h.html#a85cf870d0ecaddbadedef50a7b137a1d", null ],
     [ "app_binding_registry_get_count", "app__binding_8h.html#aff9d6443f47d3676fe98693765d9a4ad", null ],
     [ "app_binding_registry_init", "app__binding_8h.html#a40a6dff5b785b25e4e4e3ab13254ee28", null ]
 ];

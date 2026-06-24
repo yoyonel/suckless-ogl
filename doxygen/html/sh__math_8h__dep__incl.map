@@ -1,19 +1,45 @@
 <map id="include/sh_math.h" name="include/sh_math.h">
-<area shape="rect" id="node1" title=" " alt="" coords="402,5,544,32"/>
-<area shape="rect" id="node2" href="$light__probes_8h.html" title=" " alt="" coords="309,80,474,107"/>
-<area shape="rect" id="node17" href="$sh__math_8c.html" title=" " alt="" coords="498,80,610,107"/>
-<area shape="rect" id="node3" href="$scene__gpu__resources_8h.html" title="GPU resource handles extracted from Scene to reduce fan&#45;out." alt="" coords="168,229,392,256"/>
-<area shape="rect" id="node6" href="$scene__cleanup_8c.html" title=" " alt="" coords="54,304,206,331"/>
-<area shape="rect" id="node7" href="$scene__init_8c.html" title=" " alt="" coords="340,379,462,405"/>
-<area shape="rect" id="node8" href="$scene__render_8c.html" title=" " alt="" coords="231,304,374,331"/>
-<area shape="rect" id="node9" href="$scene__lighting_8h.html" title="IBL, probes, and materials sub&#45;struct extracted from Scene." alt="" coords="466,155,645,181"/>
-<area shape="rect" id="node16" href="$light__probes_8c.html" title=" " alt="" coords="669,155,805,181"/>
-<area shape="rect" id="node4" href="$app_8c.html" title=" " alt="" coords="398,304,478,331"/>
-<area shape="rect" id="node5" href="$env__manager_8c.html" title=" " alt="" coords="502,304,646,331"/>
-<area shape="rect" id="node10" href="$scene_8h.html" title=" " alt="" coords="622,229,745,256"/>
-<area shape="rect" id="node11" href="$scene__internal_8h.html" title="Internal declarations shared across scene_*.c translation units." alt="" coords="722,304,902,331"/>
-<area shape="rect" id="node12" href="$scene__nbody_8c.html" title=" " alt="" coords="806,379,945,405"/>
-<area shape="rect" id="node13" href="$app__input_8c.html" title=" " alt="" coords="977,304,1097,331"/>
-<area shape="rect" id="node14" href="$app__ui_8c.html" title=" " alt="" coords="1121,304,1220,331"/>
-<area shape="rect" id="node15" href="$renderer_8c.html" title=" " alt="" coords="1244,304,1355,331"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="402,5,543,31"/>
+<area shape="rect" id="Node000002" href="$light__probes_8h.html" title=" " alt="" coords="309,79,474,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="451,42,406,80,403,76,448,38"/>
+<area shape="rect" id="Node000017" href="$sh__math_8c.html" title=" " alt="" coords="498,79,610,104"/>
+<area shape="poly" id="edge26_Node000001_Node000017" title=" " alt="" coords="498,38,542,76,539,80,494,42"/>
+<area shape="rect" id="Node000003" href="$scene__gpu__resources_8h.html" title="GPU resource handles extracted from Scene to reduce fan&#45;out." alt="" coords="167,225,391,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="376,117,290,227,286,223,372,113"/>
+<area shape="rect" id="Node000006" href="$scene__cleanup_8c.html" title=" " alt="" coords="54,299,206,324"/>
+<area shape="poly" id="edge23_Node000002_Node000006" title=" " alt="" coords="341,111,297,129,247,154,199,186,157,227,147,245,140,264,133,299,128,298,135,263,142,242,153,224,195,182,245,149,295,124,340,106"/>
+<area shape="rect" id="Node000007" href="$scene__init_8c.html" title=" " alt="" coords="339,372,462,397"/>
+<area shape="poly" id="edge24_Node000002_Node000007" title=" " alt="" coords="323,110,208,141,147,162,91,187,45,217,28,232,16,249,10,266,9,284,15,302,28,322,48,337,79,350,162,367,256,377,339,380,339,386,255,382,161,373,77,355,46,342,24,326,10,305,4,284,4,265,12,246,24,229,42,212,88,183,145,157,207,135,321,104"/>
+<area shape="rect" id="Node000008" href="$scene__render_8c.html" title=" " alt="" coords="231,299,373,324"/>
+<area shape="poly" id="edge25_Node000002_Node000008" title=" " alt="" coords="404,116,412,145,418,180,417,217,406,252,393,269,377,282,341,301,339,296,374,278,389,265,401,249,412,216,413,181,407,146,399,118"/>
+<area shape="rect" id="Node000009" href="$scene__lighting_8h.html" title="IBL, probes, and materials sub&#45;struct extracted from Scene." alt="" coords="466,152,645,177"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="431,107,530,149,528,154,429,112"/>
+<area shape="rect" id="Node000016" href="$light__probes_8c.html" title=" " alt="" coords="669,152,805,177"/>
+<area shape="poly" id="edge22_Node000002_Node000016" title=" " alt="" coords="461,104,681,149,680,155,460,109"/>
+<area shape="rect" id="Node000004" href="$app_8c.html" title=" " alt="" coords="398,299,478,324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="318,254,413,296,411,301,316,259"/>
+<area shape="rect" id="Node000005" href="$env__manager_8c.html" title=" " alt="" coords="502,299,646,324"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="340,251,527,296,526,301,339,256"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="244,259,156,301,153,296,242,254"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="154,250,99,259,56,274,42,283,35,294,35,307,44,322,63,337,92,349,171,366,259,376,339,380,339,385,259,381,170,371,91,354,60,341,40,326,30,308,29,293,38,280,53,269,98,254,153,244"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="290,263,301,298,296,299,285,265"/>
+<area shape="rect" id="Node000010" href="$scene_8h.html" title=" " alt="" coords="622,225,745,251"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="589,182,664,223,661,227,587,186"/>
+<area shape="poly" id="edge13_Node000010_Node000004" title=" " alt="" coords="632,257,479,301,477,296,630,252"/>
+<area shape="poly" id="edge16_Node000010_Node000005" title=" " alt="" coords="656,260,593,301,590,296,653,256"/>
+<area shape="poly" id="edge18_Node000010_Node000006" title=" " alt="" coords="609,252,218,301,207,303,206,298,218,296,608,246"/>
+<area shape="poly" id="edge19_Node000010_Node000007" title=" " alt="" coords="685,265,678,297,671,312,660,326,626,344,575,359,463,379,462,374,574,354,624,340,656,322,666,310,673,295,680,264"/>
+<area shape="poly" id="edge21_Node000010_Node000008" title=" " alt="" coords="609,256,364,301,363,296,608,251"/>
+<area shape="rect" id="Node000011" href="$scene__internal_8h.html" title="Internal declarations shared across scene_*.c translation units." alt="" coords="721,299,901,324"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="717,255,792,296,789,301,715,260"/>
+<area shape="rect" id="Node000012" href="$scene__nbody_8c.html" title=" " alt="" coords="806,372,945,397"/>
+<area shape="poly" id="edge20_Node000010_Node000012" title=" " alt="" coords="759,246,852,265,891,279,916,297,923,317,917,338,904,358,890,373,886,370,900,354,912,336,917,317,912,300,889,284,851,270,758,251"/>
+<area shape="rect" id="Node000013" href="$app__input_8c.html" title=" " alt="" coords="977,299,1097,324"/>
+<area shape="poly" id="edge14_Node000010_Node000013" title=" " alt="" coords="754,251,980,296,979,301,753,256"/>
+<area shape="rect" id="Node000014" href="$app__ui_8c.html" title=" " alt="" coords="1121,299,1219,324"/>
+<area shape="poly" id="edge15_Node000010_Node000014" title=" " alt="" coords="759,246,1109,296,1121,298,1120,303,1108,301,758,251"/>
+<area shape="rect" id="Node000015" href="$renderer_8c.html" title=" " alt="" coords="1244,299,1355,324"/>
+<area shape="poly" id="edge17_Node000010_Node000015" title=" " alt="" coords="759,243,972,265,1232,296,1244,298,1243,303,1231,301,971,270,758,249"/>
+<area shape="poly" id="edge11_Node000011_Node000007" title=" " alt="" coords="733,329,463,375,462,370,732,324"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="833,333,867,370,863,374,829,336"/>
 </map>

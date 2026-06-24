@@ -24,7 +24,7 @@ var light__probes_8c =
     [ "light_probe_grid_set_scene", "light__probes_8c.html#a7257874abc46a1df3d4a0780083e7a39", null ],
     [ "light_probe_grid_sync", "light__probes_8c.html#a7c6afc74398af12423f7175864b6128a", null ],
     [ "light_probe_grid_update_async", "light__probes_8c.html#a97344a57a3a68fb6c2e832f1fb3086cd", null ],
-    [ "light_probe_worker", "light__probes_8c.html#a717fb0537d37b3a34cc1321510dabcb5", null ],
+    [ "light_probe_worker", "light__probes_8c.html#a42fe11f71d4d970a36f06df85fb263c4", null ],
     [ "light_probe_worker_compute_probe", "light__probes_8c.html#a1e903f61e016f1bb69fc006c5b73ad12", null ],
-    [ "precompute_cached_spheres", "light__probes_8c.html#ae681f0db1ed1b55c737edb5d5ff861e0", null ]
+    [ "precompute_cached_spheres", "light__probes_8c.html#aa084be4e5a8048861388958381a6c4f9", null ]
 ];

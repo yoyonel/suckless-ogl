@@ -1,24 +1,47 @@
 <map id="draw_nbody_overlay" name="draw_nbody_overlay">
-<area shape="rect" id="node1" title=" " alt="" coords="5,125,163,151"/>
-<area shape="rect" id="node2" href="$background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e" title=" " alt="" coords="446,95,509,122"/>
-<area shape="rect" id="node3" href="$nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17" title="Returns the relative energy drift |E(t) &#45; E₀| / |E₀|." alt="" coords="220,37,367,63"/>
-<area shape="rect" id="node4" href="$nbody_8h.html#a41041d18672c901e03f26b9c9e6fced8" title="Signed energy drift." alt="" coords="220,88,367,129"/>
-<area shape="rect" id="node5" href="$nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c" title="Computes kinetic energy only: Σ ½ m v²." alt="" coords="211,154,376,181"/>
-<area shape="rect" id="node6" href="$utils_8h.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="240,205,347,231"/>
-<area shape="rect" id="node7" href="$ui_8h.html#a741fab59d05880f3bf5362d101833451" title="Draws text and advances the layout cursor." alt="" coords="236,255,351,282"/>
-<area shape="rect" id="node8" href="$ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac" title="Draws a single text string at a specific coordinate." alt="" coords="424,255,531,282"/>
-<area shape="rect" id="node9" href="$ui_8c.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="579,255,708,282"/>
-<area shape="rect" id="node10" href="$ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b" title="Draws text with custom alpha transparency and a scale factor." alt="" coords="756,255,911,282"/>
-<area shape="rect" id="node11" href="$ui_8c.html#a6f543873f648c1c65a3cce1db844d95a" title=" " alt="" coords="959,179,1099,206"/>
-<area shape="rect" id="node12" href="$ui_8c.html#a2542a31c87c66c322c255f6110d7b273" title=" " alt="" coords="971,281,1086,307"/>
-<area shape="rect" id="node18" href="$ui_8c.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="990,230,1067,257"/>
-<area shape="rect" id="node21" href="$ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="996,331,1061,358"/>
-<area shape="rect" id="node13" href="$ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd" title="Flushes the current UI batch to the GPU." alt="" coords="1199,281,1271,307"/>
-<area shape="rect" id="node14" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="1372,255,1507,282"/>
-<area shape="rect" id="node17" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="1391,306,1487,333"/>
-<area shape="rect" id="node15" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="1555,248,1707,289"/>
-<area shape="rect" id="node16" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1755,255,1904,282"/>
-<area shape="rect" id="node19" href="$render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="1147,230,1324,257"/>
-<area shape="rect" id="node20" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="1152,179,1319,206"/>
-<area shape="rect" id="node22" href="$render__utils_8h.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="1159,332,1311,373"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,124,163,149"/>
+<area shape="rect" id="Node000002" href="$background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e" title=" " alt="" coords="446,95,509,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,122,138,70,171,43,210,22,255,7,293,3,331,8,377,22,401,34,423,49,458,82,455,86,420,53,398,38,375,27,330,13,293,8,256,13,212,27,174,47,142,74,97,125"/>
+<area shape="rect" id="Node000003" href="$nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17" title="Returns the relative energy drift |E(t) &#45; E₀| / |E₀|." alt="" coords="220,37,367,63"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="108,121,210,73,233,64,235,69,212,78,110,126"/>
+<area shape="rect" id="Node000004" href="$nbody_8h.html#a41041d18672c901e03f26b9c9e6fced8" title="Signed energy drift." alt="" coords="220,87,367,127"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="163,123,206,117,207,122,163,128"/>
+<area shape="rect" id="Node000005" href="$nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c" title="Computes kinetic energy only: Σ ½ m v²." alt="" coords="211,152,376,177"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="163,144,198,149,197,154,163,150"/>
+<area shape="rect" id="Node000006" href="$utils_8c.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="240,201,347,227"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="115,147,212,186,237,195,235,200,210,191,113,152"/>
+<area shape="rect" id="Node000007" href="$ui_8c.html#a741fab59d05880f3bf5362d101833451" title="Draws text and advances the layout cursor." alt="" coords="236,251,351,276"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="99,147,147,190,178,214,212,236,229,244,227,248,209,240,175,219,143,194,96,151"/>
+<area shape="poly" id="edge7_Node000007_Node000002" title=" " alt="" coords="350,248,375,236,402,212,426,184,461,131,465,134,431,187,406,216,377,240,352,253"/>
+<area shape="rect" id="Node000008" href="$ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac" title="Draws a single text string at a specific coordinate." alt="" coords="424,251,531,276"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="351,261,410,261,410,266,351,266"/>
+<area shape="rect" id="Node000009" href="$ui_8c.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="579,251,708,276"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="531,261,565,261,565,266,531,266"/>
+<area shape="rect" id="Node000010" href="$ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b" title="Draws text with custom alpha transparency and a scale factor." alt="" coords="756,251,911,276"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="708,261,742,261,742,266,708,266"/>
+<area shape="rect" id="Node000011" href="$ui_8c.html#a6f543873f648c1c65a3cce1db844d95a" title=" " alt="" coords="959,176,1099,201"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="864,248,958,210,976,203,978,208,960,215,866,253"/>
+<area shape="rect" id="Node000012" href="$ui_8c.html#a2542a31c87c66c322c255f6110d7b273" title=" " alt="" coords="971,275,1086,300"/>
+<area shape="poly" id="edge12_Node000010_Node000012" title=" " alt="" coords="911,270,958,276,957,281,910,275"/>
+<area shape="rect" id="Node000018" href="$ui_8c.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="990,225,1067,251"/>
+<area shape="poly" id="edge18_Node000010_Node000018" title=" " alt="" coords="910,251,976,242,977,247,911,256"/>
+<area shape="rect" id="Node000021" href="$ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="996,324,1061,349"/>
+<area shape="poly" id="edge21_Node000010_Node000021" title=" " alt="" coords="867,273,960,310,984,319,982,324,958,315,865,278"/>
+<area shape="rect" id="Node000013" href="$ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd" title="Flushes the current UI batch to the GPU." alt="" coords="1199,275,1271,300"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="1086,285,1186,285,1186,290,1086,290"/>
+<area shape="rect" id="Node000014" href="$shader_8c.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="1372,251,1507,276"/>
+<area shape="poly" id="edge14_Node000013_Node000014" title=" " alt="" coords="1271,280,1358,270,1358,275,1272,286"/>
+<area shape="rect" id="Node000017" href="$shader_8c.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="1391,300,1487,325"/>
+<area shape="poly" id="edge17_Node000013_Node000017" title=" " alt="" coords="1272,289,1378,302,1378,308,1271,294"/>
+<area shape="rect" id="Node000015" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="1555,243,1707,283"/>
+<area shape="poly" id="edge15_Node000014_Node000015" title=" " alt="" coords="1507,261,1541,261,1541,266,1507,266"/>
+<area shape="rect" id="Node000016" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1755,251,1904,276"/>
+<area shape="poly" id="edge16_Node000015_Node000016" title=" " alt="" coords="1707,261,1741,261,1741,266,1707,266"/>
+<area shape="rect" id="Node000019" href="$render__utils_8c.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="1147,225,1324,251"/>
+<area shape="poly" id="edge19_Node000018_Node000019" title=" " alt="" coords="1067,235,1133,235,1133,241,1067,241"/>
+<area shape="rect" id="Node000020" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="1152,176,1319,201"/>
+<area shape="poly" id="edge20_Node000018_Node000020" title=" " alt="" coords="1067,226,1167,202,1169,207,1068,231"/>
+<area shape="poly" id="edge23_Node000021_Node000013" title=" " alt="" coords="1061,326,1185,296,1186,302,1062,332"/>
+<area shape="rect" id="Node000022" href="$render__utils_8c.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="1159,325,1311,365"/>
+<area shape="poly" id="edge22_Node000021_Node000022" title=" " alt="" coords="1062,335,1146,338,1146,344,1061,340"/>
 </map>

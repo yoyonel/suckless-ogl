@@ -1,29 +1,69 @@
 <map id="include/ui.h" name="include/ui.h">
-<area shape="rect" id="node1" title="Minimal immediate&#45;mode User Interface (UI) library." alt="" coords="2214,5,2311,32"/>
-<area shape="rect" id="node2" href="$action__notifier_8h.html" title="Temporary on&#45;screen notification system for user actions." alt="" coords="2047,80,2225,107"/>
-<area shape="rect" id="node8" href="$app__ui_8c.html" title=" " alt="" coords="5,244,104,271"/>
-<area shape="rect" id="node21" href="$action__notifier_8c.html" title=" " alt="" coords="2182,162,2330,189"/>
-<area shape="rect" id="node23" href="$app__ui_8h.html" title="UI rendering module for the application." alt="" coords="1855,80,1983,107"/>
-<area shape="rect" id="node24" href="$gpu__profiler__ui_8h.html" title=" " alt="" coords="2312,80,2493,107"/>
-<area shape="rect" id="node26" href="$gpu__profiler__ui_8c.html" title=" " alt="" coords="2540,162,2692,189"/>
-<area shape="rect" id="node27" href="$ui_8c.html" title=" " alt="" coords="2569,80,2637,107"/>
-<area shape="rect" id="node3" href="$app_8h.html" title=" " alt="" coords="1209,162,1319,189"/>
-<area shape="rect" id="node18" href="$postprocess__input_8h.html" title=" " alt="" coords="2007,155,2158,196"/>
-<area shape="rect" id="node22" href="$renderer_8c.html" title=" " alt="" coords="2354,162,2465,189"/>
-<area shape="rect" id="node4" href="$app_8c.html" title=" " alt="" coords="2160,244,2240,271"/>
-<area shape="rect" id="node5" href="$app__input__state_8c.html" title=" " alt="" coords="915,244,1075,271"/>
-<area shape="rect" id="node6" href="$app__profiling_8c.html" title=" " alt="" coords="1809,244,1949,271"/>
-<area shape="rect" id="node7" href="$app__subsystem_8c.html" title=" " alt="" coords="1099,244,1258,271"/>
-<area shape="rect" id="node9" href="$app__window_8c.html" title=" " alt="" coords="1283,244,1419,271"/>
-<area shape="rect" id="node10" href="$async__coordinator_8c.html" title=" " alt="" coords="1443,244,1618,271"/>
-<area shape="rect" id="node11" href="$async__loader_8c.html" title=" " alt="" coords="1643,244,1784,271"/>
-<area shape="rect" id="node12" href="$env__manager_8c.html" title=" " alt="" coords="128,244,272,271"/>
-<area shape="rect" id="node13" href="$lum__histogram_8c.html" title=" " alt="" coords="296,244,451,271"/>
-<area shape="rect" id="node14" href="$main_8c.html" title=" " alt="" coords="475,244,565,271"/>
-<area shape="rect" id="node15" href="$postprocess__init_8c.html" title=" " alt="" coords="1973,244,2136,271"/>
-<area shape="rect" id="node16" href="$scene__init_8c.html" title=" " alt="" coords="589,244,712,271"/>
-<area shape="rect" id="node17" href="$tracy__manager_8c.html" title=" " alt="" coords="737,244,890,271"/>
-<area shape="rect" id="node19" href="$app__input_8c.html" title=" " alt="" coords="2264,244,2384,271"/>
-<area shape="rect" id="node20" href="$postprocess__input_8c.html" title=" " alt="" coords="2409,244,2583,271"/>
-<area shape="rect" id="node25" href="$app__profiling_8h.html" title="Profiling, metrics, and performance monitoring sub&#45;struct." alt="" coords="1711,162,1881,189"/>
+<area shape="rect" id="Node000001" title="Minimal immediate&#45;mode User Interface (UI) library." alt="" coords="2214,5,2311,31"/>
+<area shape="rect" id="Node000002" href="$action__notifier_8h.html" title="Temporary on&#45;screen notification system for user actions." alt="" coords="2047,79,2225,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2232,40,2158,81,2155,76,2229,35"/>
+<area shape="rect" id="Node000008" href="$app__ui_8c.html" title=" " alt="" coords="5,240,104,265"/>
+<area shape="poly" id="edge38_Node000001_Node000008" title=" " alt="" coords="2200,24,1939,36,1533,60,1050,98,800,124,555,155,426,175,299,199,102,243,101,237,298,194,425,170,554,149,799,119,1050,93,1533,54,1938,30,2200,19"/>
+<area shape="rect" id="Node000021" href="$action__notifier_8c.html" title=" " alt="" coords="2182,159,2330,185"/>
+<area shape="poly" id="edge37_Node000001_Node000021" title=" " alt="" coords="2264,45,2259,159,2254,159,2259,44"/>
+<area shape="rect" id="Node000023" href="$app__ui_8h.html" title="UI rendering module for the application." alt="" coords="1855,79,1983,104"/>
+<area shape="poly" id="edge22_Node000001_Node000023" title=" " alt="" coords="2201,35,1975,81,1974,76,2200,29"/>
+<area shape="rect" id="Node000024" href="$gpu__profiler__ui_8h.html" title=" " alt="" coords="2312,79,2493,104"/>
+<area shape="poly" id="edge27_Node000001_Node000024" title=" " alt="" coords="2299,34,2381,76,2379,81,2296,39"/>
+<area shape="rect" id="Node000026" href="$gpu__profiler__ui_8c.html" title=" " alt="" coords="2540,159,2692,185"/>
+<area shape="poly" id="edge39_Node000001_Node000026" title=" " alt="" coords="2326,24,2413,42,2461,57,2507,76,2538,95,2566,117,2607,157,2604,161,2563,121,2535,100,2504,81,2459,62,2412,47,2325,29"/>
+<area shape="rect" id="Node000027" href="$ui_8c.html" title=" " alt="" coords="2569,79,2637,104"/>
+<area shape="poly" id="edge40_Node000001_Node000027" title=" " alt="" coords="2325,29,2550,76,2569,80,2568,85,2549,81,2324,35"/>
+<area shape="rect" id="Node000003" href="$app_8h.html" title=" " alt="" coords="1209,159,1319,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="2034,104,1319,168,1319,163,2033,99"/>
+<area shape="rect" id="Node000018" href="$postprocess__input_8h.html" title=" " alt="" coords="2007,152,2158,192"/>
+<area shape="poly" id="edge17_Node000002_Node000018" title=" " alt="" coords="2123,117,2098,153,2093,150,2118,114"/>
+<area shape="poly" id="edge20_Node000002_Node000021" title=" " alt="" coords="2167,110,2240,157,2237,161,2164,114"/>
+<area shape="rect" id="Node000022" href="$renderer_8c.html" title=" " alt="" coords="2354,159,2465,185"/>
+<area shape="poly" id="edge21_Node000002_Node000022" title=" " alt="" coords="2190,105,2370,157,2369,162,2188,110"/>
+<area shape="rect" id="Node000004" href="$app_8c.html" title=" " alt="" coords="2160,240,2240,265"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1333,173,1683,190,1915,209,2148,237,2160,239,2159,245,2148,243,1914,215,1683,196,1333,178"/>
+<area shape="rect" id="Node000005" href="$app__input__state_8c.html" title=" " alt="" coords="915,240,1075,265"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="1212,191,1035,243,1033,237,1211,186"/>
+<area shape="rect" id="Node000006" href="$app__profiling_8c.html" title=" " alt="" coords="1809,240,1949,265"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="1333,179,1796,237,1809,239,1808,244,1796,243,1332,184"/>
+<area shape="rect" id="Node000007" href="$app__subsystem_8c.html" title=" " alt="" coords="1099,240,1258,265"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="1243,196,1193,242,1190,238,1239,192"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="1196,180,945,195,712,205,530,210,349,219,116,243,104,244,104,239,116,237,348,214,530,205,712,200,945,189,1196,175"/>
+<area shape="rect" id="Node000009" href="$app__window_8c.html" title=" " alt="" coords="1283,240,1419,265"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="1289,192,1340,238,1336,242,1285,196"/>
+<area shape="rect" id="Node000010" href="$async__coordinator_8c.html" title=" " alt="" coords="1443,240,1618,265"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="1317,186,1493,237,1491,243,1315,191"/>
+<area shape="rect" id="Node000011" href="$async__loader_8c.html" title=" " alt="" coords="1643,240,1784,265"/>
+<area shape="poly" id="edge10_Node000003_Node000011" title=" " alt="" coords="1333,183,1648,237,1647,243,1332,188"/>
+<area shape="rect" id="Node000012" href="$env__manager_8c.html" title=" " alt="" coords="128,240,272,265"/>
+<area shape="poly" id="edge11_Node000003_Node000012" title=" " alt="" coords="1195,180,734,209,284,243,273,244,272,239,284,237,734,204,1195,175"/>
+<area shape="rect" id="Node000013" href="$lum__histogram_8c.html" title=" " alt="" coords="296,240,451,265"/>
+<area shape="poly" id="edge12_Node000003_Node000013" title=" " alt="" coords="1196,181,879,205,463,243,451,244,450,239,462,237,878,199,1195,175"/>
+<area shape="rect" id="Node000014" href="$main_8c.html" title=" " alt="" coords="475,240,565,265"/>
+<area shape="poly" id="edge13_Node000003_Node000014" title=" " alt="" coords="1196,180,925,202,752,220,578,243,565,245,565,239,577,237,751,215,924,197,1195,175"/>
+<area shape="rect" id="Node000015" href="$postprocess__init_8c.html" title=" " alt="" coords="1973,240,2136,265"/>
+<area shape="poly" id="edge14_Node000003_Node000015" title=" " alt="" coords="1333,177,1960,237,1973,239,1973,244,1960,243,1332,182"/>
+<area shape="rect" id="Node000016" href="$scene__init_8c.html" title=" " alt="" coords="589,240,712,265"/>
+<area shape="poly" id="edge15_Node000003_Node000016" title=" " alt="" coords="1196,184,724,243,713,244,712,239,724,237,1195,178"/>
+<area shape="rect" id="Node000017" href="$tracy__manager_8c.html" title=" " alt="" coords="737,240,890,265"/>
+<area shape="poly" id="edge16_Node000003_Node000017" title=" " alt="" coords="1196,188,880,243,879,237,1196,182"/>
+<area shape="rect" id="Node000019" href="$app__input_8c.html" title=" " alt="" coords="2264,240,2384,265"/>
+<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="2154,194,2290,237,2288,242,2152,199"/>
+<area shape="rect" id="Node000020" href="$postprocess__input_8c.html" title=" " alt="" coords="2409,240,2583,265"/>
+<area shape="poly" id="edge19_Node000018_Node000020" title=" " alt="" coords="2172,190,2430,237,2429,243,2171,195"/>
+<area shape="poly" id="edge23_Node000023_Node000003" title=" " alt="" coords="1841,105,1319,167,1318,161,1840,99"/>
+<area shape="poly" id="edge24_Node000023_Node000004" title=" " alt="" coords="1923,118,1931,156,1940,174,1952,190,2160,240,2159,245,1949,194,1935,177,1926,157,1917,119"/>
+<area shape="poly" id="edge26_Node000023_Node000008" title=" " alt="" coords="1841,99,1559,114,1134,142,631,185,371,212,116,243,105,244,104,239,116,237,370,206,630,179,1133,137,1559,109,1841,94"/>
+<area shape="poly" id="edge25_Node000023_Node000019" title=" " alt="" coords="1932,115,1958,154,1976,174,1996,190,2100,211,2264,239,2264,244,2099,216,1994,194,1972,178,1954,158,1928,118"/>
+<area shape="poly" id="edge34_Node000024_Node000019" title=" " alt="" coords="2439,109,2461,127,2478,151,2485,173,2478,194,2461,208,2434,221,2369,242,2368,237,2432,216,2458,203,2474,190,2480,172,2474,153,2457,131,2436,113"/>
+<area shape="poly" id="edge36_Node000024_Node000022" title=" " alt="" coords="2407,118,2411,159,2406,159,2402,118"/>
+<area shape="rect" id="Node000025" href="$app__profiling_8h.html" title="Profiling, metrics, and performance monitoring sub&#45;struct." alt="" coords="1711,159,1881,185"/>
+<area shape="poly" id="edge28_Node000024_Node000025" title=" " alt="" coords="2302,108,1881,162,1881,157,2301,103"/>
+<area shape="poly" id="edge35_Node000024_Node000026" title=" " alt="" coords="2447,106,2586,157,2584,162,2445,111"/>
+<area shape="poly" id="edge29_Node000025_Node000004" title=" " alt="" coords="1873,185,2149,237,2160,240,2159,245,2147,243,1872,190"/>
+<area shape="poly" id="edge30_Node000025_Node000006" title=" " alt="" coords="1820,192,1868,238,1865,242,1816,196"/>
+<area shape="poly" id="edge31_Node000025_Node000008" title=" " alt="" coords="1698,180,1331,195,989,203,722,204,457,213,300,224,116,243,104,244,104,239,116,237,300,219,456,208,722,199,989,197,1331,189,1697,175"/>
+<area shape="poly" id="edge32_Node000025_Node000011" title=" " alt="" coords="1776,196,1727,242,1724,238,1772,192"/>
+<area shape="poly" id="edge33_Node000025_Node000015" title=" " alt="" coords="1848,186,2018,237,2016,243,1846,191"/>
 </map>

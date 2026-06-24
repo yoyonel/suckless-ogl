@@ -1,6 +1,5 @@
 var billboard__sorting_8c =
 [
-    [ "_Static_assert", "billboard__sorting_8c.html#afb01139cbc167de435d4e49cc3e293ec", null ],
     [ "billboard_sorter_cleanup", "billboard__sorting_8c.html#ad7a360778f7d79b99618da36773fb1fd", null ],
     [ "billboard_sorter_init", "billboard__sorting_8c.html#a8e7ee0aa8c5ef73be74bfe3f9bba3205", null ],
     [ "billboard_sorter_sort_cpu", "billboard__sorting_8c.html#aec701145359c500f4af067ef11e050e6", null ],

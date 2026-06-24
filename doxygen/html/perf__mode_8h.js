@@ -16,7 +16,7 @@ var perf__mode_8h =
     [ "perf_mode_cleanup", "perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2", null ],
     [ "perf_mode_get_backend", "perf__mode_8h.html#aa667cf6303e7347a152fe91b1f67bbf6", null ],
     [ "perf_mode_get_state", "perf__mode_8h.html#a4ff3e4dc53bde11bc737a5286afb02e1", null ],
-    [ "perf_mode_get_state_string", "perf__mode_8h.html#ae029b70111d8d8dc5e4ed4f907e67b9c", null ],
+    [ "perf_mode_get_state_string", "perf__mode_8h.html#aa6e7d34f198b807e5319bd33ed97aaa2", null ],
     [ "perf_mode_init", "perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505", null ],
     [ "perf_mode_is_active", "perf__mode_8h.html#af6fe4848ea239fdecd15d6c3056f7b78", null ],
     [ "perf_mode_request_end", "perf__mode_8h.html#a8a498514effcc3a3fa67efdcd6530a8a", null ],

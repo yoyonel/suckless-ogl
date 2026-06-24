@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['environment_20_26_20lighting_4736',['Environment &amp; Lighting',['../group__Environment.html',1,'']]]
+  ['camera_20configuration_0',['Camera Configuration',['../group__Camera.html',1,'']]],
+  ['configuration_1',['configuration',['../group__Camera.html',1,'Camera Configuration'],['../group__Renderer.html',1,'Renderer Configuration']]]
 ];

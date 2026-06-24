@@ -1,52 +1,148 @@
 <map id="src/app_input.c" name="src/app_input.c">
-<area shape="rect" id="node1" title=" " alt="" coords="2433,5,2553,32"/>
-<area shape="rect" id="node2" href="$app__input_8h.html" title="User input orchestration and application state toggles." alt="" coords="1963,229,2062,256"/>
-<area shape="rect" id="node9" href="$app__ui_8h.html" title="UI rendering module for the application." alt="" coords="2235,155,2313,181"/>
-<area shape="rect" id="node12" href="$bool__utils_8h.html" title="Portable bool↔int conversion macros for clang&#45;tidy compliance." alt="" coords="2936,80,3033,107"/>
-<area shape="rect" id="node13" href="$camera_8h.html" title="First&#45;person camera module with realistic physics and head&#45;bobbing." alt="" coords="2259,229,2342,256"/>
-<area shape="rect" id="node14" href="$camera__input_8h.html" title="Input handling adapter for the Camera system." alt="" coords="3058,80,3181,107"/>
-<area shape="rect" id="node15" href="$env__manager_8h.html" title="Environment and IBL management module." alt="" coords="838,155,961,181"/>
-<area shape="rect" id="node21" href="$gamepad__input_8h.html" title="Gamepad/controller input adapter for camera control." alt="" coords="2509,80,2644,107"/>
-<area shape="rect" id="node23" href="$gpu__profiler__ui_8h.html" title=" " alt="" coords="1878,155,2009,181"/>
-<area shape="rect" id="node25" href="$log_8h.html" title="Thread&#45;safe logging utility with timestamps and severity levels." alt="" coords="3205,80,3260,107"/>
-<area shape="rect" id="node26" href="$perf__mode_8h.html" title="Runtime performance optimization module." alt="" coords="2669,80,2773,107"/>
-<area shape="rect" id="node28" href="$postprocess__input_8h.html" title=" " alt="" coords="2333,80,2485,107"/>
-<area shape="rect" id="node31" href="$profiler_8h.html" title=" " alt="" coords="1188,155,1267,181"/>
-<area shape="rect" id="node32" href="$scene_8h.html" title=" " alt="" coords="1485,80,1557,107"/>
-<area shape="rect" id="node39" href="$scene__simulation_8h.html" title="N&#45;body simulation sub&#45;struct extracted from Scene." alt="" coords="5,229,153,256"/>
-<area shape="rect" id="node41" href="$scene__visuals_8h.html" title="Visual effects sub&#45;struct extracted from Scene." alt="" coords="279,155,405,181"/>
-<area shape="rect" id="node45" href="$utils_8h.html" title="Zero&#45;overhead utility functions and RAII cleanup helpers." alt="" coords="2797,80,2860,107"/>
-<area shape="rect" id="node47" title=" " alt="" coords="3129,155,3200,181"/>
-<area shape="rect" id="node48" title=" " alt="" coords="3284,80,3352,107"/>
-<area shape="rect" id="node49" title=" " alt="" coords="3376,80,3519,107"/>
-<area shape="rect" id="node50" title=" " alt="" coords="3543,80,3613,107"/>
-<area shape="rect" id="node3" href="$gl__common_8h.html" title="Common OpenGL definitions, RAII helpers, and utilities." alt="" coords="1185,304,1296,331"/>
-<area shape="rect" id="node8" title=" " alt="" coords="2150,304,2233,331"/>
-<area shape="rect" id="node4" title=" " alt="" coords="1340,379,1435,405"/>
-<area shape="rect" id="node5" title=" " alt="" coords="1485,379,1596,405"/>
-<area shape="rect" id="node6" title=" " alt="" coords="1634,379,1709,405"/>
-<area shape="rect" id="node7" title=" " alt="" coords="1205,379,1276,405"/>
-<area shape="rect" id="node10" href="$ui_8h.html" title="Minimal immediate&#45;mode User Interface (UI) library." alt="" coords="2137,229,2184,256"/>
-<area shape="rect" id="node11" title=" " alt="" coords="1816,304,1919,331"/>
-<area shape="rect" id="node16" href="$app__settings_8h.html" title="Global application constants, configuration macros, and default values." alt="" coords="855,229,973,256"/>
-<area shape="rect" id="node18" href="$async__loader_8h.html" title="Threaded asynchronous file loader for heavy assets (HDR, textures)." alt="" coords="661,229,780,256"/>
-<area shape="rect" id="node19" href="$app__subsystem_8h.html" title="Subsystem descriptor pattern for structured init/cleanup." alt="" coords="555,304,691,331"/>
-<area shape="rect" id="node20" href="$ibl__coordinator_8h.html" title="Coordinator for progressive Image&#45;Based Lighting (IBL) generation." alt="" coords="997,229,1127,256"/>
-<area shape="rect" id="node17" title=" " alt="" coords="357,304,463,331"/>
-<area shape="rect" id="node22" href="$gamepad__context_8h.html" title="Decoupling seam between gamepad input and camera internals." alt="" coords="2615,155,2765,181"/>
-<area shape="rect" id="node24" href="$gpu__profiler_8h.html" title=" " alt="" coords="1488,229,1599,256"/>
-<area shape="rect" id="node27" title=" " alt="" coords="2841,155,2913,181"/>
-<area shape="rect" id="node29" href="$action__notifier_8h.html" title="Temporary on&#45;screen notification system for user actions." alt="" coords="2084,155,2211,181"/>
-<area shape="rect" id="node30" href="$effect__benchmark_8h.html" title="Automated A/B GPU cost measurement for individual postprocess effects." alt="" coords="2337,155,2488,181"/>
-<area shape="rect" id="node33" href="$billboard__rendering_8h.html" title="View&#45;aligned quad rendering (billboarding) for optimized sphere drawing." alt="" coords="1303,229,1463,256"/>
-<area shape="rect" id="node34" href="$billboard__sorting_8h.html" title="Back&#45;to&#45;front sorting for transparent geometry." alt="" coords="1796,229,1939,256"/>
-<area shape="rect" id="node35" href="$icosphere_8h.html" title="Procedural icosphere geometry generation." alt="" coords="1623,229,1720,256"/>
-<area shape="rect" id="node36" href="$instanced__rendering_8h.html" title="Mesh&#45;based instanced rendering for spheres." alt="" coords="1291,155,1457,181"/>
-<area shape="rect" id="node37" href="$scene__config_8h.html" title="Render configuration flags extracted from Scene." alt="" coords="1736,155,1855,181"/>
-<area shape="rect" id="node38" href="$scene__lighting_8h.html" title="IBL, probes, and materials sub&#45;struct extracted from Scene." alt="" coords="1035,155,1163,181"/>
-<area shape="rect" id="node40" href="$nbody_8h.html" title="N&#45;body gravitational simulation (Velocity Verlet + Plummer softening)." alt="" coords="186,304,258,331"/>
-<area shape="rect" id="node42" href="$shockwave_8h.html" title="Visual shockwave effect for N&#45;body confinement boundary impacts." alt="" coords="479,229,586,256"/>
-<area shape="rect" id="node43" href="$skybox_8h.html" title="Infinite&#45;distance background rendering (fullscreen quad approach)." alt="" coords="178,229,258,256"/>
-<area shape="rect" id="node44" href="$trail__renderer_8h.html" title="GPU&#45;accelerated ribbon trail renderer for N&#45;body simulation." alt="" coords="283,229,404,256"/>
-<area shape="rect" id="node46" title=" " alt="" coords="2987,155,3054,181"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="2433,5,2553,31"/>
+<area shape="rect" id="Node000002" href="$app__input_8h.html" title="User input orchestration and application state toggles." alt="" coords="1963,225,2062,251"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2433,22,2264,28,2158,36,2048,47,1942,64,1848,87,1807,101,1773,116,1745,134,1726,153,1721,165,1725,175,1807,194,1950,222,1949,227,1806,199,1722,179,1715,165,1721,151,1742,130,1770,112,1805,96,1846,82,1941,59,2047,42,2158,30,2264,23,2432,17"/>
+<area shape="rect" id="Node000009" href="$app__ui_8h.html" title="UI rendering module for the application." alt="" coords="2235,152,2313,177"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="2433,31,2376,49,2348,63,2322,81,2299,109,2284,140,2280,138,2295,106,2319,77,2345,59,2374,44,2432,26"/>
+<area shape="rect" id="Node000012" href="$bool__utils_8h.html" title="Portable bool↔int conversion macros for clang&#45;tidy compliance." alt="" coords="2936,79,3033,104"/>
+<area shape="poly" id="edge15_Node000001_Node000012" title=" " alt="" coords="2553,25,2917,76,2922,77,2922,82,2916,81,2552,30"/>
+<area shape="rect" id="Node000013" href="$camera_8h.html" title="First&#45;person camera module with realistic physics and head&#45;bobbing." alt="" coords="2259,225,2342,251"/>
+<area shape="poly" id="edge16_Node000001_Node000013" title=" " alt="" coords="2433,32,2338,51,2229,78,2177,95,2132,113,2096,133,2074,154,2069,165,2073,176,2095,187,2139,200,2247,224,2245,229,2138,205,2093,192,2069,179,2064,165,2069,150,2093,128,2130,108,2176,90,2228,73,2337,46,2432,27"/>
+<area shape="rect" id="Node000014" href="$camera__input_8h.html" title="Input handling adapter for the Camera system." alt="" coords="3058,79,3181,104"/>
+<area shape="poly" id="edge19_Node000001_Node000014" title=" " alt="" coords="2553,22,2766,43,3045,76,3044,81,2765,49,2553,28"/>
+<area shape="rect" id="Node000015" href="$env__manager_8h.html" title="Environment and IBL management module." alt="" coords="838,152,961,177"/>
+<area shape="poly" id="edge20_Node000001_Node000015" title=" " alt="" coords="2433,23,2254,26,1993,36,1689,53,1378,81,1151,116,965,152,964,146,1150,110,1378,76,1688,48,1993,30,2254,21,2433,17"/>
+<area shape="rect" id="Node000024" href="$gamepad__input_8h.html" title="Gamepad/controller input adapter for camera control." alt="" coords="2509,79,2644,104"/>
+<area shape="poly" id="edge34_Node000001_Node000024" title=" " alt="" coords="2508,29,2554,67,2551,72,2504,33"/>
+<area shape="rect" id="Node000026" href="$gpu__profiler__ui_8h.html" title=" " alt="" coords="1878,152,2009,177"/>
+<area shape="poly" id="edge37_Node000001_Node000026" title=" " alt="" coords="2432,25,2333,31,2215,42,2105,59,2061,69,2029,81,2008,94,1990,109,1961,142,1957,139,1986,105,2005,89,2026,76,2060,64,2104,54,2215,37,2333,26,2432,20"/>
+<area shape="rect" id="Node000030" href="$log_8h.html" title="Thread&#45;safe logging utility with timestamps and severity levels." alt="" coords="3205,79,3260,104"/>
+<area shape="poly" id="edge42_Node000001_Node000030" title=" " alt="" coords="2553,18,2669,22,2826,32,3007,49,3192,76,3192,82,3006,55,2826,37,2669,28,2553,23"/>
+<area shape="rect" id="Node000031" href="$perf__mode_8h.html" title="Runtime performance optimization module." alt="" coords="2669,79,2773,104"/>
+<area shape="poly" id="edge43_Node000001_Node000031" title=" " alt="" coords="2530,28,2671,72,2670,77,2529,33"/>
+<area shape="rect" id="Node000033" href="$postprocess__input_8h.html" title=" " alt="" coords="2333,79,2485,104"/>
+<area shape="poly" id="edge46_Node000001_Node000033" title=" " alt="" coords="2481,33,2435,72,2431,67,2477,29"/>
+<area shape="rect" id="Node000036" href="$profiler_8h.html" title=" " alt="" coords="1188,152,1267,177"/>
+<area shape="poly" id="edge53_Node000001_Node000036" title=" " alt="" coords="2432,23,1951,40,1674,57,1560,68,1473,81,1416,95,1359,113,1266,149,1264,144,1357,108,1414,90,1472,76,1559,63,1674,52,1951,35,2432,18"/>
+<area shape="rect" id="Node000037" href="$scene_8h.html" title=" " alt="" coords="1485,79,1557,104"/>
+<area shape="poly" id="edge56_Node000001_Node000037" title=" " alt="" coords="2433,26,1570,89,1570,84,2432,21"/>
+<area shape="rect" id="Node000049" href="$scene__simulation_8h.html" title="N&#45;body simulation sub&#45;struct extracted from Scene." alt="" coords="5,225,153,251"/>
+<area shape="poly" id="edge73_Node000001_Node000049" title=" " alt="" coords="2433,22,2185,26,1801,35,1343,52,873,81,701,92,567,99,434,115,358,131,268,155,183,186,112,221,110,216,180,181,267,149,357,126,434,110,566,93,701,86,873,76,1343,47,1801,29,2184,20,2433,17"/>
+<area shape="rect" id="Node000052" href="$scene__visuals_8h.html" title="Visual effects sub&#45;struct extracted from Scene." alt="" coords="279,152,405,177"/>
+<area shape="poly" id="edge75_Node000001_Node000052" title=" " alt="" coords="2432,24,1925,42,1568,59,1202,81,812,112,424,155,419,155,418,150,423,149,812,107,1202,76,1568,54,1925,37,2432,18"/>
+<area shape="rect" id="Node000056" href="$utils_8h.html" title="Zero&#45;overhead utility functions and RAII cleanup helpers." alt="" coords="2797,79,2860,104"/>
+<area shape="poly" id="edge88_Node000001_Node000056" title=" " alt="" coords="2553,28,2784,76,2783,81,2552,33"/>
+<area shape="rect" id="Node000058" title=" " alt="" coords="3129,152,3200,177"/>
+<area shape="poly" id="edge95_Node000001_Node000058" title=" " alt="" coords="2553,21,2701,38,2788,54,2874,76,2900,89,2926,102,3012,125,3116,150,3115,155,3010,131,2924,106,2898,93,2872,81,2787,59,2700,43,2553,26"/>
+<area shape="rect" id="Node000059" title=" " alt="" coords="3284,79,3352,104"/>
+<area shape="poly" id="edge93_Node000001_Node000059" title=" " alt="" coords="2553,18,2681,22,2857,32,3061,49,3271,76,3270,81,3061,54,2857,37,2681,27,2553,23"/>
+<area shape="rect" id="Node000060" title=" " alt="" coords="3376,79,3519,104"/>
+<area shape="poly" id="edge94_Node000001_Node000060" title=" " alt="" coords="2553,19,2893,38,3124,55,3362,76,3362,81,3124,60,2893,44,2553,25"/>
+<area shape="rect" id="Node000061" title=" " alt="" coords="3543,79,3613,104"/>
+<area shape="poly" id="edge96_Node000001_Node000061" title=" " alt="" coords="2553,16,2719,18,2959,25,3240,43,3386,58,3529,76,3529,81,3385,63,3239,49,2959,31,2719,23,2553,22"/>
+<area shape="rect" id="Node000003" href="$gl__common_8h.html" title="Common OpenGL definitions, RAII helpers, and utilities." alt="" coords="1185,299,1296,324"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1964,251,1950,253,1769,274,1590,290,1310,309,1310,304,1590,285,1769,269,1950,248,1963,246"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="2150,299,2233,324"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="2042,248,2151,291,2149,296,2040,253"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="1340,372,1435,397"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1265,322,1352,364,1350,368,1263,326"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="1485,372,1596,397"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="1289,321,1480,366,1478,371,1288,327"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="1634,372,1709,397"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="1297,319,1608,369,1621,372,1620,377,1607,375,1296,324"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1205,372,1276,397"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="1243,324,1243,358,1238,358,1238,324"/>
+<area shape="poly" id="edge9_Node000009_Node000004" title=" " alt="" coords="2314,172,2350,184,2384,201,2397,211,2405,223,2407,237,2402,252,2375,289,2347,318,2317,340,2284,355,2247,365,2207,371,2114,373,1856,361,1682,361,1473,375,1449,377,1448,372,1472,369,1682,356,1856,356,2114,368,2207,366,2246,360,2282,350,2314,335,2343,314,2371,285,2397,249,2402,237,2400,225,2393,215,2381,205,2348,189,2312,177"/>
+<area shape="poly" id="edge14_Node000009_Node000008" title=" " alt="" coords="2310,175,2340,188,2367,206,2384,227,2385,239,2379,252,2351,278,2318,296,2281,306,2247,311,2246,306,2280,301,2316,291,2348,274,2374,249,2379,239,2379,229,2364,209,2337,193,2307,180"/>
+<area shape="rect" id="Node000010" href="$ui_8h.html" title="Minimal immediate&#45;mode User Interface (UI) library." alt="" coords="2137,225,2184,251"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="2257,180,2192,220,2189,216,2254,175"/>
+<area shape="poly" id="edge11_Node000010_Node000003" title=" " alt="" coords="2137,245,2074,253,1640,289,1310,309,1310,304,1639,284,2074,248,2137,240"/>
+<area shape="poly" id="edge13_Node000010_Node000008" title=" " alt="" coords="2168,250,2183,285,2179,287,2163,252"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1816,299,1919,324"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="2138,248,1929,298,1927,293,2137,242"/>
+<area shape="poly" id="edge18_Node000013_Node000008" title=" " alt="" coords="2285,253,2222,293,2219,289,2282,248"/>
+<area shape="poly" id="edge17_Node000013_Node000011" title=" " alt="" coords="2260,249,1932,302,1932,297,2259,243"/>
+<area shape="poly" id="edge29_Node000015_Node000003" title=" " alt="" coords="884,180,865,195,848,213,840,232,841,241,845,249,866,265,898,278,985,295,1083,304,1171,307,1171,313,1083,310,984,300,897,283,864,269,841,252,836,242,835,231,844,210,861,191,880,176"/>
+<area shape="poly" id="edge32_Node000015_Node000008" title=" " alt="" coords="943,175,1096,212,1193,232,1292,248,1469,265,1713,282,2137,305,2136,310,1712,287,1469,271,1291,253,1192,237,1095,217,941,180"/>
+<area shape="rect" id="Node000016" href="$app__settings_8h.html" title="Global application constants, configuration macros, and default values." alt="" coords="855,225,973,251"/>
+<area shape="poly" id="edge21_Node000015_Node000016" title=" " alt="" coords="904,177,911,211,906,212,899,178"/>
+<area shape="rect" id="Node000018" href="$async__loader_8h.html" title="Threaded asynchronous file loader for heavy assets (HDR, textures)." alt="" coords="661,225,780,251"/>
+<area shape="poly" id="edge24_Node000015_Node000018" title=" " alt="" coords="872,180,763,223,761,218,870,175"/>
+<area shape="rect" id="Node000019" href="$app__subsystem_8h.html" title="Subsystem descriptor pattern for structured init/cleanup." alt="" coords="555,299,691,324"/>
+<area shape="poly" id="edge33_Node000015_Node000019" title=" " alt="" coords="838,176,729,196,681,210,650,227,641,240,634,255,627,285,622,284,629,253,636,237,647,223,679,205,728,191,837,171"/>
+<area shape="rect" id="Node000020" href="$ibl__coordinator_8h.html" title="Coordinator for progressive Image&#45;Based Lighting (IBL) generation." alt="" coords="997,225,1127,251"/>
+<area shape="poly" id="edge30_Node000015_Node000020" title=" " alt="" coords="927,175,1024,217,1022,222,924,180"/>
+<area shape="poly" id="edge23_Node000016_Node000008" title=" " alt="" coords="973,247,985,248,1497,275,2137,305,2136,310,1497,280,984,253,973,252"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="357,299,463,324"/>
+<area shape="poly" id="edge22_Node000016_Node000017" title=" " alt="" coords="856,250,477,303,477,298,855,245"/>
+<area shape="poly" id="edge25_Node000018_Node000003" title=" " alt="" coords="781,245,800,248,1172,298,1172,304,799,253,780,251"/>
+<area shape="poly" id="edge27_Node000018_Node000007" title=" " alt="" coords="763,248,1193,367,1191,372,761,253"/>
+<area shape="poly" id="edge26_Node000018_Node000008" title=" " alt="" coords="781,243,844,248,2136,305,2136,310,843,253,780,248"/>
+<area shape="poly" id="edge28_Node000018_Node000019" title=" " alt="" coords="707,253,652,292,649,288,703,249"/>
+<area shape="poly" id="edge31_Node000020_Node000003" title=" " alt="" coords="1092,248,1200,291,1198,296,1090,253"/>
+<area shape="poly" id="edge36_Node000024_Node000008" title=" " alt="" coords="2571,106,2550,136,2517,176,2475,218,2426,253,2381,274,2334,289,2247,307,2246,302,2332,284,2379,269,2423,248,2471,214,2513,173,2546,133,2567,103"/>
+<area shape="rect" id="Node000025" href="$gamepad__context_8h.html" title="Decoupling seam between gamepad input and camera internals." alt="" coords="2615,152,2765,177"/>
+<area shape="poly" id="edge35_Node000024_Node000025" title=" " alt="" coords="2596,102,2662,142,2659,147,2593,106"/>
+<area shape="poly" id="edge41_Node000026_Node000008" title=" " alt="" coords="2009,174,2125,198,2172,211,2197,223,2205,238,2207,254,2203,285,2198,285,2202,254,2200,240,2193,227,2170,216,2124,203,2008,180"/>
+<area shape="poly" id="edge40_Node000026_Node000010" title=" " alt="" coords="1979,175,2125,222,2124,227,1977,180"/>
+<area shape="rect" id="Node000027" href="$gpu__profiler_8h.html" title=" " alt="" coords="1488,225,1599,251"/>
+<area shape="poly" id="edge38_Node000026_Node000027" title=" " alt="" coords="1880,180,1613,227,1612,222,1879,175"/>
+<area shape="poly" id="edge39_Node000027_Node000007" title=" " alt="" coords="1520,253,1278,368,1276,364,1518,248"/>
+<area shape="poly" id="edge45_Node000031_Node000008" title=" " alt="" coords="2740,102,2759,117,2776,136,2786,157,2786,168,2780,179,2764,194,2743,209,2687,234,2616,254,2538,272,2376,296,2247,309,2246,303,2376,291,2537,266,2615,249,2685,229,2740,204,2761,190,2776,176,2780,167,2781,158,2772,139,2755,121,2736,106"/>
+<area shape="rect" id="Node000032" title=" " alt="" coords="2841,152,2913,177"/>
+<area shape="poly" id="edge44_Node000031_Node000032" title=" " alt="" coords="2747,102,2840,144,2838,149,2745,106"/>
+<area shape="poly" id="edge52_Node000033_Node000005" title=" " alt="" coords="2442,102,2475,121,2490,134,2502,151,2506,164,2502,178,2479,231,2452,269,2417,299,2367,326,2336,339,2298,349,2210,362,2109,369,2000,371,1787,370,1695,371,1622,375,1610,376,1609,371,1622,369,1695,365,1787,365,2000,366,2108,364,2210,357,2297,343,2334,334,2365,322,2414,294,2449,265,2474,228,2497,176,2500,164,2497,153,2486,138,2471,125,2439,106"/>
+<area shape="rect" id="Node000034" href="$action__notifier_8h.html" title="Temporary on&#45;screen notification system for user actions." alt="" coords="2084,152,2211,177"/>
+<area shape="poly" id="edge47_Node000033_Node000034" title=" " alt="" coords="2367,107,2204,151,2202,146,2366,101"/>
+<area shape="rect" id="Node000035" href="$effect__benchmark_8h.html" title="Automated A/B GPU cost measurement for individual postprocess effects." alt="" coords="2337,152,2488,177"/>
+<area shape="poly" id="edge50_Node000033_Node000035" title=" " alt="" coords="2412,104,2414,138,2409,139,2407,104"/>
+<area shape="poly" id="edge49_Node000034_Node000008" title=" " alt="" coords="2211,173,2297,193,2333,207,2356,224,2364,240,2362,255,2351,268,2336,278,2293,294,2247,305,2246,300,2292,289,2333,273,2348,264,2357,253,2358,241,2352,227,2331,212,2295,198,2210,178"/>
+<area shape="poly" id="edge48_Node000034_Node000010" title=" " alt="" coords="2152,177,2159,211,2153,212,2147,178"/>
+<area shape="poly" id="edge51_Node000035_Node000008" title=" " alt="" coords="2417,177,2417,213,2412,234,2401,252,2367,280,2327,298,2286,308,2247,312,2246,307,2285,303,2326,293,2365,275,2397,249,2407,232,2412,213,2412,177"/>
+<area shape="poly" id="edge54_Node000036_Node000003" title=" " alt="" coords="1231,178,1241,285,1236,285,1226,178"/>
+<area shape="poly" id="edge55_Node000036_Node000027" title=" " alt="" coords="1267,172,1480,220,1479,225,1266,177"/>
+<area shape="poly" id="edge71_Node000037_Node000011" title=" " alt="" coords="1534,102,1572,137,1622,175,1652,191,1676,200,1733,223,1791,257,1841,289,1838,293,1788,261,1730,228,1674,205,1649,196,1619,180,1568,141,1530,106"/>
+<area shape="poly" id="edge57_Node000037_Node000016" title=" " alt="" coords="1485,97,1248,115,1117,132,1064,142,1024,154,999,167,975,184,936,217,932,213,972,179,996,163,1022,150,1062,137,1116,127,1248,110,1484,92"/>
+<area shape="poly" id="edge72_Node000037_Node000019" title=" " alt="" coords="1485,97,1260,110,934,135,772,153,630,175,524,199,489,213,469,227,463,238,463,248,468,258,477,266,508,281,545,293,544,298,506,286,474,271,464,261,458,250,458,237,465,224,486,208,522,194,629,169,771,148,934,130,1260,104,1484,92"/>
+<area shape="rect" id="Node000038" href="$billboard__rendering_8h.html" title="View&#45;aligned quad rendering (billboarding) for optimized sphere drawing." alt="" coords="1303,225,1463,251"/>
+<area shape="poly" id="edge58_Node000037_Node000038" title=" " alt="" coords="1518,105,1499,140,1471,179,1445,202,1418,221,1415,216,1441,198,1467,176,1495,137,1513,103"/>
+<area shape="rect" id="Node000040" href="$billboard__sorting_8h.html" title="Back&#45;to&#45;front sorting for transparent geometry." alt="" coords="1796,225,1939,251"/>
+<area shape="poly" id="edge60_Node000037_Node000040" title=" " alt="" coords="1541,102,1602,137,1680,175,1748,200,1811,219,1809,224,1746,205,1678,180,1600,141,1538,107"/>
+<area shape="rect" id="Node000041" href="$icosphere_8h.html" title="Procedural icosphere geometry generation." alt="" coords="1623,225,1720,251"/>
+<area shape="poly" id="edge62_Node000037_Node000041" title=" " alt="" coords="1529,103,1549,137,1580,175,1608,198,1637,216,1634,221,1605,202,1576,179,1545,140,1524,106"/>
+<area shape="rect" id="Node000042" href="$instanced__rendering_8h.html" title="Mesh&#45;based instanced rendering for spheres." alt="" coords="1291,152,1457,177"/>
+<area shape="poly" id="edge65_Node000037_Node000042" title=" " alt="" coords="1498,106,1411,148,1409,144,1496,102"/>
+<area shape="rect" id="Node000043" href="$scene__config_8h.html" title="Render configuration flags extracted from Scene." alt="" coords="1736,152,1855,177"/>
+<area shape="poly" id="edge67_Node000037_Node000043" title=" " alt="" coords="1558,99,1738,146,1737,151,1556,105"/>
+<area shape="rect" id="Node000044" href="$scene__lighting_8h.html" title="IBL, probes, and materials sub&#45;struct extracted from Scene." alt="" coords="1035,152,1163,177"/>
+<area shape="poly" id="edge69_Node000037_Node000044" title=" " alt="" coords="1485,101,1178,153,1177,148,1484,96"/>
+<area shape="poly" id="edge59_Node000038_Node000003" title=" " alt="" coords="1362,253,1277,295,1275,290,1359,248"/>
+<area shape="poly" id="edge61_Node000040_Node000011" title=" " alt="" coords="1870,251,1870,285,1865,285,1865,251"/>
+<area shape="poly" id="edge64_Node000041_Node000006" title=" " alt="" coords="1674,251,1674,358,1669,358,1669,251"/>
+<area shape="poly" id="edge63_Node000041_Node000011" title=" " alt="" coords="1704,248,1823,291,1822,296,1702,253"/>
+<area shape="poly" id="edge66_Node000042_Node000003" title=" " alt="" coords="1355,180,1324,200,1293,227,1271,257,1254,288,1249,285,1266,255,1289,224,1321,196,1352,175"/>
+<area shape="poly" id="edge68_Node000043_Node000008" title=" " alt="" coords="1855,173,1977,196,2034,209,2075,223,2128,254,2170,287,2167,291,2125,258,2073,228,2033,215,1976,201,1854,178"/>
+<area shape="poly" id="edge70_Node000044_Node000020" title=" " alt="" coords="1096,179,1077,215,1072,212,1091,176"/>
+<area shape="rect" id="Node000050" href="$nbody_8h.html" title="N&#45;body gravitational simulation (Velocity Verlet + Plummer softening)." alt="" coords="186,299,258,324"/>
+<area shape="poly" id="edge74_Node000049_Node000050" title=" " alt="" coords="103,248,188,290,185,295,101,253"/>
+<area shape="rect" id="Node000053" href="$shockwave_8h.html" title="Visual shockwave effect for N&#45;body confinement boundary impacts." alt="" coords="479,225,586,251"/>
+<area shape="poly" id="edge76_Node000052_Node000053" title=" " alt="" coords="374,175,490,218,488,223,372,180"/>
+<area shape="rect" id="Node000054" href="$skybox_8h.html" title="Infinite&#45;distance background rendering (fullscreen quad approach)." alt="" coords="178,225,258,251"/>
+<area shape="poly" id="edge80_Node000052_Node000054" title=" " alt="" coords="323,180,251,221,249,216,321,175"/>
+<area shape="rect" id="Node000055" href="$trail__renderer_8h.html" title="GPU&#45;accelerated ribbon trail renderer for N&#45;body simulation." alt="" coords="283,225,404,251"/>
+<area shape="poly" id="edge83_Node000052_Node000055" title=" " alt="" coords="345,178,346,212,340,212,340,178"/>
+<area shape="poly" id="edge77_Node000053_Node000003" title=" " alt="" coords="587,242,1172,300,1171,306,586,247"/>
+<area shape="poly" id="edge79_Node000053_Node000008" title=" " alt="" coords="587,243,649,248,1009,268,1289,278,1570,284,1930,296,2136,305,2136,310,1930,301,1569,290,1289,283,1009,274,648,253,586,248"/>
+<area shape="poly" id="edge78_Node000053_Node000017" title=" " alt="" coords="514,253,443,294,440,289,512,248"/>
+<area shape="poly" id="edge81_Node000054_Node000003" title=" " alt="" coords="259,246,270,248,530,277,787,294,1010,303,1171,307,1171,312,1010,309,786,299,530,282,270,253,258,251"/>
+<area shape="poly" id="edge82_Node000054_Node000017" title=" " alt="" coords="250,248,367,291,365,296,248,253"/>
+<area shape="poly" id="edge84_Node000055_Node000003" title=" " alt="" coords="405,242,468,248,1172,302,1171,308,467,253,404,248"/>
+<area shape="poly" id="edge87_Node000055_Node000008" title=" " alt="" coords="405,243,468,248,878,269,1198,278,1519,284,1930,296,2136,305,2136,310,1930,301,1518,289,1198,283,878,274,467,253,404,248"/>
+<area shape="poly" id="edge86_Node000055_Node000017" title=" " alt="" coords="356,249,392,287,388,290,352,253"/>
+<area shape="poly" id="edge85_Node000055_Node000050" title=" " alt="" coords="325,253,255,294,252,289,322,248"/>
+<area shape="poly" id="edge90_Node000056_Node000006" title=" " alt="" coords="2861,99,2868,101,2905,108,2945,113,3023,120,3054,126,3074,136,3080,144,3081,155,3068,179,3033,219,2998,251,2962,276,2927,295,2891,309,2854,317,2778,324,2696,322,2609,318,2513,317,2408,327,2210,351,2014,368,1723,384,1722,379,2014,363,2209,346,2407,321,2513,312,2609,312,2697,317,2777,319,2853,312,2889,303,2925,290,2960,272,2994,247,3029,215,3064,176,3075,154,3075,146,3071,140,3052,131,3022,125,2945,118,2904,114,2867,107,2860,105"/>
+<area shape="poly" id="edge89_Node000056_Node000008" title=" " alt="" coords="2861,102,2890,115,2916,133,2932,154,2933,166,2927,179,2907,199,2880,216,2807,246,2716,269,2614,285,2508,297,2407,305,2246,312,2246,307,2407,300,2508,292,2613,280,2715,263,2806,241,2877,212,2904,195,2922,176,2927,165,2927,156,2913,137,2887,120,2859,107"/>
+<area shape="rect" id="Node000057" title=" " alt="" coords="2987,152,3054,177"/>
+<area shape="poly" id="edge91_Node000056_Node000057" title=" " alt="" coords="2860,102,2977,144,2975,149,2859,107"/>
+<area shape="poly" id="edge92_Node000056_Node000058" title=" " alt="" coords="2861,97,2880,101,3116,151,3115,156,2879,107,2860,102"/>
 </map>

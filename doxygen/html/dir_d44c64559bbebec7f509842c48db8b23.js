@@ -24,9 +24,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "effect_benchmark.h", "effect__benchmark_8h.html", "effect__benchmark_8h" ],
     [ "env_manager.h", "env__manager_8h.html", "env__manager_8h" ],
     [ "fps.h", "fps_8h.html", "fps_8h" ],
-    [ "gamepad_context.h", "gamepad__context_8h.html", [
-      [ "GamepadContext", "structGamepadContext.html", "structGamepadContext" ]
-    ] ],
+    [ "gamepad_context.h", "gamepad__context_8h.html", "gamepad__context_8h" ],
     [ "gamepad_input.h", "gamepad__input_8h.html", "gamepad__input_8h" ],
     [ "gl_common.h", "gl__common_8h.html", "gl__common_8h" ],
     [ "gl_debug.h", "gl__debug_8h.html", "gl__debug_8h" ],
@@ -58,9 +56,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "postprocess_readback.h", "postprocess__readback_8h.html", "postprocess__readback_8h" ],
     [ "postprocess_setters.h", "postprocess__setters_8h.html", "postprocess__setters_8h" ],
     [ "pp_exposure_readback.h", "pp__exposure__readback_8h.html", "pp__exposure__readback_8h" ],
-    [ "pp_gpu_resources.h", "pp__gpu__resources_8h.html", [
-      [ "PPGPUResources", "structPPGPUResources.html", "structPPGPUResources" ]
-    ] ],
+    [ "pp_gpu_resources.h", "pp__gpu__resources_8h.html", "pp__gpu__resources_8h" ],
     [ "pp_params.h", "pp__params_8h.html", "pp__params_8h" ],
     [ "pp_shader_state.h", "pp__shader__state_8h.html", "pp__shader__state_8h" ],
     [ "pp_ubo.h", "pp__ubo_8h.html", "pp__ubo_8h" ],
@@ -71,27 +67,17 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "scene_config.h", "scene__config_8h.html", "scene__config_8h" ],
     [ "scene_gpu_resources.h", "scene__gpu__resources_8h.html", "scene__gpu__resources_8h" ],
     [ "scene_internal.h", "scene__internal_8h.html", "scene__internal_8h" ],
-    [ "scene_lighting.h", "scene__lighting_8h.html", [
-      [ "SceneLighting", "structSceneLighting.html", "structSceneLighting" ]
-    ] ],
-    [ "scene_shaders.h", "scene__shaders_8h.html", [
-      [ "SceneShaders", "structSceneShaders.html", "structSceneShaders" ]
-    ] ],
-    [ "scene_simulation.h", "scene__simulation_8h.html", [
-      [ "SceneSimulation", "structSceneSimulation.html", "structSceneSimulation" ]
-    ] ],
+    [ "scene_lighting.h", "scene__lighting_8h.html", "scene__lighting_8h" ],
+    [ "scene_shaders.h", "scene__shaders_8h.html", "scene__shaders_8h" ],
+    [ "scene_simulation.h", "scene__simulation_8h.html", "scene__simulation_8h" ],
     [ "scene_uniforms.h", "scene__uniforms_8h.html", "scene__uniforms_8h" ],
-    [ "scene_visuals.h", "scene__visuals_8h.html", [
-      [ "SceneVisuals", "structSceneVisuals.html", "structSceneVisuals" ]
-    ] ],
+    [ "scene_visuals.h", "scene__visuals_8h.html", "scene__visuals_8h" ],
     [ "sh_math.h", "sh__math_8h.html", "sh__math_8h" ],
     [ "shader.h", "shader_8h.html", "shader_8h" ],
     [ "shockwave.h", "shockwave_8h.html", "shockwave_8h" ],
     [ "simd_utils.h", "simd__utils_8h.html", "simd__utils_8h" ],
     [ "skybox.h", "skybox_8h.html", "skybox_8h" ],
-    [ "sphere_types.h", "sphere__types_8h.html", [
-      [ "SphereInstance", "structSphereInstance.html", "structSphereInstance" ]
-    ] ],
+    [ "sphere_types.h", "sphere__types_8h.html", "sphere__types_8h" ],
     [ "ssbo_rendering.h", "ssbo__rendering_8h.html", "ssbo__rendering_8h" ],
     [ "texture.h", "texture_8h.html", "texture_8h" ],
     [ "tracy_gpu.h", "tracy__gpu_8h.html", "tracy__gpu_8h" ],
