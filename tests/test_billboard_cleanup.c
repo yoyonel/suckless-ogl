@@ -15,11 +15,13 @@
 /* We need to mock functions called by billboard_rendering.c that are not in
  * GLAD and not covered by mock_gl_standalone.c */
 
-void render_utils_setup_sphere_instance_attributes(GLsizei stride,
+void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
+                                                   GLsizei stride,
                                                    size_t offset_albedo,
                                                    size_t offset_metallic,
                                                    size_t offset_prev_center)
 {
+	(void)binding_point;
 	(void)stride;
 	(void)offset_albedo;
 	(void)offset_metallic;

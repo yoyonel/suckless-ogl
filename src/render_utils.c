@@ -144,18 +144,20 @@ void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(screen_quad_vertices),
 	             screen_quad_vertices, GL_STATIC_DRAW);
 
+	const GLsizei stride = 4 * sizeof(float);
+
 	/* Position */
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      (void*)0);
-	glVertexAttribDivisor(0, 0);
+	glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
 
 	/* TexCoords */
 	glEnableVertexAttribArray(1);
-	const void* tex_offset = utils_buffer_offset(TEX_COORD_OFFSET);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      tex_offset);
-	glVertexAttribDivisor(1, 0);
+	glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE,
+	                     (GLuint)TEX_COORD_OFFSET);
+	glVertexAttribBinding(1, 0);
+
+	glBindVertexBuffer(0, *vbo, 0, stride);
 
 	glBindVertexArray(0);
 
@@ -271,44 +273,46 @@ GLuint render_utils_create_texture_2d(int width, int height,
 	return tex;
 }
 
-void render_utils_setup_sphere_instance_attributes(GLsizei stride,
+void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
+                                                   GLsizei stride,
                                                    size_t offset_albedo,
                                                    size_t offset_metallic,
                                                    size_t offset_prev_center)
 {
+	(void)stride;
 	GLuint index_vattrib = 2; /* Start at 2 (0=Pos, 1=Norm usually) */
 
 	/* mat4 model (Locations 2, 3, 4, 5) */
 	for (int i = 0; i < 4; i++) {
-		const void* m_offset =
-		    utils_buffer_offset(i * 4 * sizeof(float));
+		GLuint offset = (GLuint)(i * 4 * sizeof(float));
 		glEnableVertexAttribArray(index_vattrib);
-		glVertexAttribPointer(index_vattrib, 4, GL_FLOAT, GL_FALSE,
-		                      stride, m_offset);
-		glVertexAttribDivisor(index_vattrib, 1);
+		glVertexAttribFormat(index_vattrib, 4, GL_FLOAT, GL_FALSE,
+		                     offset);
+		glVertexAttribBinding(index_vattrib, binding_point);
 		index_vattrib++;
 	}
 
 	/* Albedo (6) */
 	glEnableVertexAttribArray(index_vattrib);
-	const void* a_offset = utils_buffer_offset(offset_albedo);
-	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
-	                      a_offset);
-	glVertexAttribDivisor(index_vattrib, 1);
+	glVertexAttribFormat(index_vattrib, 3, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offset_albedo);
+	glVertexAttribBinding(index_vattrib, binding_point);
 	index_vattrib++;
 
 	/* PBR (7) */
 	glEnableVertexAttribArray(index_vattrib);
-	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
-	                      utils_buffer_offset(offset_metallic));
-	glVertexAttribDivisor(index_vattrib, 1);
+	glVertexAttribFormat(index_vattrib, 3, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offset_metallic);
+	glVertexAttribBinding(index_vattrib, binding_point);
 	index_vattrib++;
 
 	/* prev_center (8) — previous frame center for per-object motion blur */
 	glEnableVertexAttribArray(index_vattrib);
-	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
-	                      utils_buffer_offset(offset_prev_center));
-	glVertexAttribDivisor(index_vattrib, 1);
+	glVertexAttribFormat(index_vattrib, 3, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offset_prev_center);
+	glVertexAttribBinding(index_vattrib, binding_point);
+
+	glVertexBindingDivisor(binding_point, 1);
 }
 
 // -----------------------------------------------------------------------------

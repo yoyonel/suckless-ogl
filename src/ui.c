@@ -12,6 +12,7 @@
 #include <cglm/types.h>   // IWYU pragma: keep
 #include <cglm/vec3.h>    // IWYU pragma: keep
 #include <stb_truetype.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -181,29 +182,35 @@ static int setup_vertex_buffers(UIContext* ui_context)
 
 	// Position (x, y)
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride,
-	                      (void*)offsetof(UIVertex, x));
+	glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(UIVertex, x));
+	glVertexAttribBinding(0, 0);
 
 	// TexCoords (u, v)
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
-	                      utils_buffer_offset(offsetof(UIVertex, u)));
+	glVertexAttribFormat(1, 2, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(UIVertex, u));
+	glVertexAttribBinding(1, 0);
 
 	// Color (r, g, b, a)
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride,
-	                      utils_buffer_offset(offsetof(UIVertex, r)));
+	glVertexAttribFormat(2, 4, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(UIVertex, r));
+	glVertexAttribBinding(2, 0);
 
 	// Mode (1 float)
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, stride,
-	                      utils_buffer_offset(offsetof(UIVertex, mode)));
+	glVertexAttribFormat(3, 1, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(UIVertex, mode));
+	glVertexAttribBinding(3, 0);
 
 	// Rounded params (w, h, radius)
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(
-	    4, 3, GL_FLOAT, GL_FALSE, stride,
-	    utils_buffer_offset(offsetof(UIVertex, rect_size_x)));
+	glVertexAttribFormat(4, 3, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(UIVertex, rect_size_x));
+	glVertexAttribBinding(4, 0);
+
+	glBindVertexBuffer(0, ui_context->vbo, 0, stride);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -603,11 +610,8 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	/* Model Matrix Construction (GPU Rotation) */
 	mat4 model;
 	glm_mat4_identity(model);
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	glm_translate(model, (vec3){center_x, center_y, 0.0F});
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	glm_rotate(model, angle, (vec3){0.0F, 0.0F, 1.0F});
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	glm_scale(model, (vec3){size, size, 1.0F});
 	shader_set_mat4(ui_context->spinner_shader, "model", (float*)model);
 

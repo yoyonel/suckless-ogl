@@ -7,11 +7,13 @@
 #include <stdlib.h>
 
 /* Mock render_utils function */
-void render_utils_setup_sphere_instance_attributes(GLsizei stride,
+void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
+                                                   GLsizei stride,
                                                    size_t offset_albedo,
                                                    size_t offset_metallic,
                                                    size_t offset_prev_center)
 {
+	(void)binding_point;
 	(void)stride;
 	(void)offset_albedo;
 	(void)offset_metallic;

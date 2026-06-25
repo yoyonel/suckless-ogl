@@ -43,15 +43,17 @@ void ssbo_group_bind_mesh(SSBOGroup* group, GLuint vbo, GLuint nbo, GLuint ebo)
 	glGenVertexArrays(1, &group->vao);
 	glBindVertexArray(group->vao);
 
-	/* Géométrie de base (positions) */
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	/* Attribut 0: Positions */
 	glEnableVertexAttribArray(0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+	glBindVertexBuffer(0, vbo, 0, 3 * (GLsizei)sizeof(float));
 
-	/* Normales */
-	glBindBuffer(GL_ARRAY_BUFFER, nbo);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	/* Attribut 1: Normales */
 	glEnableVertexAttribArray(1);
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+	glBindVertexBuffer(1, nbo, 0, 3 * (GLsizei)sizeof(float));
 
 	/* Indices */
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

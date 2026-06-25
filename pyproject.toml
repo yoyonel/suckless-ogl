@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pyautogui>=0.9.54",
+    "pygments<2.20.0",
     "typer[all]>=0.26.7",
 ]
 

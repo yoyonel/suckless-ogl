@@ -378,7 +378,7 @@ end
 </div>
 
 <div class="diagram-item">
-  <a href="../application_lifecycle/#91-high-level-frame-architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.1 — High-Level Frame Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">`rendererdrawframe()` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestrates the full rendering pipeline for each frame.</span>
+  <a href="../application_lifecycle/#91-high-level-frame-architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.1 — High-Level Frame Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">`rendererdrawframe(const RenderContext ctx)` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestrates the full rendering pipeline for each frame. It receives a single `RenderContext` struct containing all per-frame state (scene, camera, postprocess, profiler, dimensions, etc.) instead of individual parameters, decoupling the renderer from the `App` God Object.</span>
   <div class="mermaid-preview">
 
 ```mermaid
@@ -553,6 +553,137 @@ SORT --> FBO
 SPHERES --> BLOOM
 COMP --> UI
 UI --> SWAP["glfwSwapBuffers()"]
+```
+
+  </div>
+</div>
+
+
+## [Architecture Documentation - Refactoring Core](../architecture/)
+
+<div class="diagram-item">
+  <a href="../architecture/#subsystem-descriptor-pattern" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Subsystem Descriptor Pattern</a> : <span style="opacity: 0.6; font-size: 0.85em;">The descriptor table order satisfies these init-time dependencies:</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+classDef first fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+classDef gl fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+classDef nogl fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+WIN[WINDOW]:::first
+INP[INPUT]:::nogl
+PROF[PROFILING]:::gl
+AC[ASYNC_COORD]:::gl
+LH[LUM_HISTOGRAM]:::nogl
+AL[ASYNC_LOADER]:::gl
+SC[SCENE]:::gl
+ENV[ENV_MGR]:::nogl
+PP[POSTPROCESS]:::gl
+WIN -->|"GL context"| PROF
+WIN -->|"GL context"| AC
+WIN -->|"GL context"| SC
+WIN -->|"GL context"| PP
+PROF -->|"tracy_mgr"| AL
+PROF -->|"gpu_profiler"| PP
+SC -->|"gpu resources"| PP
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../architecture/#postprocess-translation-unit-split" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">PostProcess Translation-Unit Split</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `postprocesscleanup.c` | 97 | Resource teardown (FBOs, quad, readback buffers, shader cache) |</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+PP_H[postprocess.h<br/><i>public API</i>]
+PP_INT[postprocess_internal.h<br/><i>shared enums + pp_ decls</i>]
+PP_INT --> PP_H
+INIT[postprocess_init.c] --> PP_INT
+APPLY[postprocess_apply.c] --> PP_INT
+SHADER[postprocess_shader.c] --> PP_INT
+CLEANUP[postprocess_cleanup.c] --> PP_INT
+SETTERS[postprocess_setters.c] --> PP_H
+READBACK[postprocess_readback.c] --> PP_H
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../architecture/#include-dependency-graph" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Include-Dependency Graph</a> : <span style="opacity: 0.6; font-size: 0.85em;">Top-level module dependencies (project headers only, excludes system and vendor headers):</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+classDef aggregate fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+classDef substruct fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+classDef leaf fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+classDef effect fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+APP[app.h]:::aggregate
+SCENE[scene.h]:::aggregate
+PP[postprocess.h]:::aggregate
+REND[renderer.h]:::leaf
+%% App sub-structs
+APP_PROF[app_profiling.h]:::substruct
+APP_INP[app_input_state.h]:::substruct
+APP_WIN[app_window.h]:::substruct
+APP_UI[app_ui.h]:::substruct
+%% Scene sub-structs
+SC_GPU[scene_gpu_resources.h]:::substruct
+SC_SH[scene_shaders.h]:::substruct
+SC_CFG[scene_config.h]:::substruct
+SC_VIS[scene_visuals.h]:::substruct
+SC_SIM[scene_simulation.h]:::substruct
+SC_LIT[scene_lighting.h]:::substruct
+%% PostProcess sub-headers
+PP_PAR[pp_params.h]:::substruct
+PP_GPU[pp_gpu_resources.h]:::substruct
+PP_SHD[pp_shader_state.h]:::substruct
+PP_RDB[pp_exposure_readback.h]:::substruct
+%% Effects
+FX_BL[fx_bloom.h]:::effect
+FX_DOF[fx_dof.h]:::effect
+FX_AE[fx_auto_exposure.h]:::effect
+FX_MB[fx_motion_blur.h]:::effect
+FX_LUT[fx_lut3d.h]:::effect
+EC[effect_context.h]:::effect
+%% App -> direct deps
+APP --> SCENE
+APP --> PP
+APP --> APP_UI
+APP --> APP_WIN
+%% App sub-structs (owned, not included by app.h)
+APP -.->|"owned"| APP_PROF
+APP -.->|"owned"| APP_INP
+%% Scene -> sub-structs
+SCENE --> SC_GPU
+SCENE --> SC_SH
+SCENE --> SC_CFG
+SCENE --> SC_VIS
+SCENE --> SC_SIM
+SCENE --> SC_LIT
+%% PostProcess -> sub-headers + effects
+PP --> PP_PAR
+PP --> PP_GPU
+PP --> PP_SHD
+PP --> PP_RDB
+PP --> FX_BL
+PP --> FX_DOF
+PP --> FX_AE
+PP --> FX_MB
+PP --> FX_LUT
+%% Effect decoupling
+FX_BL -.->|"runtime"| EC
+FX_DOF -.->|"runtime"| EC
+FX_AE -.->|"runtime"| EC
+FX_MB -.->|"runtime"| EC
+FX_LUT -.->|"runtime"| EC
+%% Renderer uses forward-decls only
+REND -.->|"fwd-decl"| APP
+REND -.->|"fwd-decl"| SCENE
+REND -.->|"fwd-decl"| PP
 ```
 
   </div>
@@ -958,6 +1089,42 @@ end
 </div>
 
 
+## [ASAN reports error, then GDB catches the abort](../gdb_debugging_tutorial/)
+
+<div class="diagram-item">
+  <a href="../gdb_debugging_tutorial/#8-debugging-workflow-summary" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">8. Debugging Workflow Summary</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+```mermaid
+flowchart TD
+A[Application crashes] --> B{Debug symbols available?}
+B -->|Yes| C["gdb -batch -ex run -ex 'bt full' ./app"]
+B -->|No| D[Build RelWithDebInfo]
+D --> E{Crash reproduces?}
+E -->|Yes| C
+E -->|No| F[Use objdump -d on Release binary]
+C --> G{Backtrace clear?}
+G -->|Yes| H[Inspect source code at crash line]
+G -->|No| I[Disassemble around $pc]
+F --> I
+I --> J[Identify faulting instruction]
+J --> K[Inspect registers: info registers]
+K --> L[Compute effective address]
+L --> M{Alignment issue?}
+M -->|Yes| N[Write offset helper program]
+N --> O[Map offset to struct field]
+O --> P[Fix: use aligned allocation]
+M -->|No| Q[Check pointer validity, bounds, etc.]
+H --> R[Fix bug]
+P --> R
+Q --> R
+R --> S["Validate: build Release + run + test-all"]
+```
+
+  </div>
+</div>
+
+
 ## [Global Illumination (1-Bounce)](../global_illumination/)
 
 <div class="diagram-item">
@@ -1326,6 +1493,28 @@ Note right of GPU: Single flush before sampling
 </div>
 
 
+## [Shockwave Lensing Effect](../shockwave_lensing/)
+
+<div class="diagram-item">
+  <a href="../shockwave_lensing/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">3. Additive HDR glow — ring edge emits body-colored light that drives bloom</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+A[Scene Geometry] --> B[Scene FBO - RGBA16F]
+B --> C{Any active shockwaves?}
+C -->|No| E[Post-Processing]
+C -->|Yes| D[Grab Pass: glCopyImageSubData]
+D --> F[Billboard Draw]
+F --> G[Fragment Shader: sample grab_tex + distort]
+G --> B
+B --> E
+```
+
+  </div>
+</div>
+
+
 ## [Synchronization & Asynchrony Overview](../synchronization_overview/)
 
 <div class="diagram-item">
@@ -1387,6 +1576,37 @@ B --> C{Mouse leaves?}
 C -- Yes --> D[Wait 150ms]
 D -- Still Empty --> E[Target Dim: 1.0]
 D -- Enters New Key --> B
+```
+
+  </div>
+</div>
+
+
+## [Modern Vertex Attribute Binding](../vertex_attrib_binding/)
+
+<div class="diagram-item">
+  <a href="../vertex_attrib_binding/#the-modern-opengl-43-approach" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">The Modern OpenGL 4.3+ Approach</a> : <span style="opacity: 0.6; font-size: 0.85em;">3. Buffer Binding: `glBindVertexBuffer` binds a physical GPU buffer (VBO) to a logical binding point, providing the start offset and the stride.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+classDef buffer fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7,stroke-width:2
+classDef slot fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+classDef bindpoint fill:#1a1b26,stroke:#e0af68,color:#e0af68
+VBO_Geom[Geometry VBO]:::buffer
+VBO_Inst[Instance VBO]:::buffer
+BP_0[Binding Point 0<br/>Stride: 3*sizeof(float)]:::bindpoint
+BP_1[Binding Point 1<br/>Stride: sizeof(SphereInstance)]:::bindpoint
+Attr_0[Attribute 0: Position]:::slot
+Attr_1[Attribute 1: Normals]:::slot
+Attr_2[Attribute 2: Albedo]:::slot
+Attr_3[Attribute 3: Metallic]:::slot
+VBO_Geom -->|glBindVertexBuffer| BP_0
+VBO_Inst -->|glBindVertexBuffer| BP_1
+Attr_0 -->|glVertexAttribBinding| BP_0
+Attr_1 -->|glVertexAttribBinding| BP_0
+Attr_2 -->|glVertexAttribBinding| BP_1
+Attr_3 -->|glVertexAttribBinding| BP_1
 ```
 
   </div>

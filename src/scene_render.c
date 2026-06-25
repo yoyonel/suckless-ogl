@@ -37,24 +37,36 @@ const char* aa_mode_to_string(AAMode mode)
 void scene_update_gpu_buffers(Scene* scene)
 {
 	glBindVertexArray(scene->gpu->icosphere_vao);
+
 	glBindBuffer(GL_ARRAY_BUFFER, scene->gpu->icosphere_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.vertices.size * sizeof(vec3)),
 	             scene->geometry.vertices.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
-	glEnableVertexAttribArray(0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, scene->gpu->icosphere_nbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.normals.size * sizeof(vec3)),
 	             scene->geometry.normals.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+	glBindVertexBuffer(0, scene->gpu->icosphere_vbo, 0,
+	                   (GLsizei)sizeof(vec3));
+
 	glEnableVertexAttribArray(1);
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+	glBindVertexBuffer(1, scene->gpu->icosphere_nbo, 0,
+	                   (GLsizei)sizeof(vec3));
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->gpu->icosphere_ebo);
 	glBufferData(
 	    GL_ELEMENT_ARRAY_BUFFER,
 	    (GLsizeiptr)(scene->geometry.indices.size * sizeof(unsigned int)),
 	    scene->geometry.indices.data, GL_STATIC_DRAW);
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 /**
