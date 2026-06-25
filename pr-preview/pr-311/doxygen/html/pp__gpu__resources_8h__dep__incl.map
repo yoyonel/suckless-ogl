@@ -1,32 +1,31 @@
 <map id="include/pp_gpu_resources.h" name="include/pp_gpu_resources.h">
-<area shape="rect" id="Node000001" title="GPU resource handles for the post&#45;processing pipeline." alt="" coords="821,5,1023,31"/>
-<area shape="rect" id="Node000002" href="$postprocess__internal_8h.html" title="PostProcess struct definition and internal helpers." alt="" coords="847,79,997,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="925,44,925,79,919,79,919,44"/>
-<area shape="rect" id="Node000003" href="$postprocess__presets_8h.html" title="Extern declarations for predefined post&#45;processing pipeline presets." alt="" coords="131,167,281,207"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="833,109,589,132,442,149,294,169,282,171,281,166,294,164,441,143,589,126,832,104"/>
+<area shape="rect" id="Node000001" title="GPU resource handles for the post&#45;processing pipeline." alt="" coords="914,5,1117,31"/>
+<area shape="rect" id="Node000002" href="$postprocess__internal_8h.html" title="PostProcess struct definition and internal helpers." alt="" coords="940,79,1091,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1018,44,1018,79,1013,79,1013,44"/>
+<area shape="rect" id="Node000003" href="$postprocess__presets_8h.html" title="Extern declarations for predefined post&#45;processing pipeline presets." alt="" coords="120,167,271,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="926,107,640,128,462,146,284,169,272,171,271,166,283,164,461,141,639,123,926,102"/>
+<area shape="rect" id="Node000006" href="$app_8c.html" title=" " alt="" coords="295,174,375,199"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="927,105,817,112,682,123,535,142,388,169,364,176,363,171,387,164,534,137,682,118,817,106,926,100"/>
+<area shape="rect" id="Node000007" href="$app__ui_8c.html" title=" " alt="" coords="399,174,498,199"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="926,110,734,131,622,148,511,169,483,176,482,171,509,164,621,143,733,126,926,105"/>
+<area shape="rect" id="Node000008" href="$effect__benchmark_8c.html" title="Automated A/B GPU cost measurement for postprocess effects." alt="" coords="522,174,695,199"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="927,121,664,177,662,171,926,116"/>
+<area shape="rect" id="Node000009" href="$postprocess__apply_8c.html" title=" " alt="" coords="720,174,895,199"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="958,126,836,176,834,172,956,121"/>
+<area shape="rect" id="Node000010" href="$postprocess__cleanup_8c.html" title=" " alt="" coords="919,174,1111,199"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="1018,133,1018,174,1013,174,1013,133"/>
+<area shape="rect" id="Node000011" href="$postprocess__init_8c.html" title=" " alt="" coords="1135,174,1298,199"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1073,122,1191,172,1189,176,1071,127"/>
+<area shape="rect" id="Node000012" href="$postprocess__readback_8c.html" title=" " alt="" coords="1323,174,1524,199"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="1105,116,1369,171,1368,177,1104,121"/>
+<area shape="rect" id="Node000013" href="$postprocess__setters_8c.html" title=" " alt="" coords="1549,174,1735,199"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="1105,107,1303,132,1537,164,1581,171,1580,177,1536,169,1303,137,1104,113"/>
+<area shape="rect" id="Node000014" href="$postprocess__shader_8c.html" title=" " alt="" coords="1759,174,1943,199"/>
+<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="1104,103,1391,125,1569,143,1748,164,1794,171,1793,177,1747,169,1569,148,1391,131,1104,108"/>
+<area shape="rect" id="Node000015" href="$renderer_8c.html" title=" " alt="" coords="1968,174,2079,199"/>
+<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="1105,98,1265,102,1477,112,1716,132,1837,146,1956,164,1988,171,1986,177,1955,169,1836,151,1715,137,1477,117,1265,107,1104,103"/>
 <area shape="rect" id="Node000004" href="$postprocess__input_8c.html" title=" " alt="" coords="5,255,180,280"/>
-<area shape="poly" id="edge11_Node000002_Node000004" title=" " alt="" coords="833,104,645,110,421,121,225,141,157,154,134,161,120,169,105,188,97,212,94,255,89,254,92,211,100,186,116,165,132,156,155,148,224,135,421,116,645,105,833,99"/>
-<area shape="rect" id="Node000006" href="$app_8c.html" title=" " alt="" coords="306,174,386,199"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="833,108,633,128,515,146,399,169,375,176,373,171,397,164,514,140,632,123,832,103"/>
-<area shape="rect" id="Node000007" href="$app__ui_8c.html" title=" " alt="" coords="410,174,509,199"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="833,114,687,137,521,169,495,176,493,171,520,164,686,131,833,109"/>
-<area shape="rect" id="Node000008" href="$effect__benchmark_8c.html" title="Automated A/B GPU cost measurement for postprocess effects." alt="" coords="533,174,706,199"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="843,125,660,177,659,171,842,120"/>
-<area shape="rect" id="Node000009" href="$postprocess__apply_8c.html" title=" " alt="" coords="731,174,905,199"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="890,130,834,176,831,171,887,126"/>
-<area shape="rect" id="Node000010" href="$postprocess__cleanup_8c.html" title=" " alt="" coords="930,174,1122,199"/>
-<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="957,126,1013,171,1010,176,954,130"/>
-<area shape="rect" id="Node000011" href="$postprocess__init_8c.html" title=" " alt="" coords="1146,174,1309,199"/>
-<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1003,120,1187,171,1186,177,1001,125"/>
-<area shape="rect" id="Node000012" href="$postprocess__readback_8c.html" title=" " alt="" coords="1333,174,1535,199"/>
-<area shape="poly" id="edge12_Node000002_Node000012" title=" " alt="" coords="1011,112,1366,171,1365,177,1010,117"/>
-<area shape="rect" id="Node000013" href="$postprocess__setters_8c.html" title=" " alt="" coords="1559,174,1746,199"/>
-<area shape="poly" id="edge13_Node000002_Node000013" title=" " alt="" coords="1012,105,1254,128,1548,164,1593,171,1592,177,1547,169,1253,134,1011,110"/>
-<area shape="rect" id="Node000014" href="$postprocess__shader_8c.html" title=" " alt="" coords="1770,174,1954,199"/>
-<area shape="poly" id="edge14_Node000002_Node000014" title=" " alt="" coords="1011,102,1341,123,1549,141,1758,164,1805,171,1804,177,1758,169,1548,146,1340,128,1011,107"/>
-<area shape="rect" id="Node000015" href="$renderer_8c.html" title=" " alt="" coords="1979,174,2089,199"/>
-<area shape="poly" id="edge15_Node000002_Node000015" title=" " alt="" coords="1012,97,1188,99,1426,109,1695,129,1832,144,1966,164,1999,171,1997,177,1966,169,1832,150,1695,134,1426,114,1188,105,1012,102"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="169,217,111,257,108,252,166,212"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="161,217,110,256,106,252,158,213"/>
 <area shape="rect" id="Node000005" href="$postprocess__presets_8c.html" title="Definitions of predefined post&#45;processing pipeline configurations." alt="" coords="205,255,394,280"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="241,214,287,252,284,256,237,218"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="233,213,285,252,282,256,230,217"/>
 </map>
