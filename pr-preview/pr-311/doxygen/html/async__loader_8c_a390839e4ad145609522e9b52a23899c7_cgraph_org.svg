@@ -11,7 +11,7 @@
 <!-- Node1 -->
 <g id="Node000001" class="node">
 <title>Node1</title>
-<g id="a_Node000001"><a xlink:title=" ">
+<g id="a_Node000001"><a xlink:title="Thread entry point for the background worker.">
 <polygon fill="#999999" stroke="#666666" points="110,-56 0,-56 0,-37 110,-37 110,-56"/>
 <text text-anchor="middle" x="55" y="-44" font-family="Helvetica,sans-Serif" font-size="10.00">async_worker_func</text>
 </a>
@@ -20,7 +20,7 @@
 <!-- Node2 -->
 <g id="Node000002" class="node">
 <title>Node2</title>
-<g id="a_Node000002"><a xlink:href="async__loader_8c.html#ac5b6766430a194fa9f2c45d037729200" target="_top" xlink:title=" ">
+<g id="a_Node000002"><a xlink:href="async__loader_8c.html#ac5b6766430a194fa9f2c45d037729200" target="_top" xlink:title="Heavy&#45;lifting disk IO loading phase.">
 <polygon fill="white" stroke="#666666" points="260.5,-93 162.5,-93 162.5,-74 260.5,-74 260.5,-93"/>
 <text text-anchor="middle" x="211.5" y="-81" font-family="Helvetica,sans-Serif" font-size="10.00">async_handle_io</text>
 </a>
@@ -92,7 +92,7 @@
 <!-- Node6 -->
 <g id="Node000006" class="node">
 <title>Node6</title>
-<g id="a_Node000006"><a xlink:href="async__loader_8c.html#a1086f10126d93ec8b7d4f325cde9003c" target="_top" xlink:title=" ">
+<g id="a_Node000006"><a xlink:href="async__loader_8c.html#a1086f10126d93ec8b7d4f325cde9003c" target="_top" xlink:title="Worker thread wait loop for PBO allocation from the main thread.">
 <polygon fill="white" stroke="#666666" points="450,-74 313,-74 313,-55 450,-55 450,-74"/>
 <text text-anchor="middle" x="381.5" y="-62" font-family="Helvetica,sans-Serif" font-size="10.00">async_wait_and_convert</text>
 </a>
@@ -146,7 +146,7 @@
 <!-- Node7 -->
 <g id="Node000007" class="node">
 <title>Node7</title>
-<g id="a_Node000007"><a xlink:href="async__loader_8c.html#a3daf084e0a84b2d72110a4391c98f229" target="_top" xlink:title=" ">
+<g id="a_Node000007"><a xlink:href="async__loader_8c.html#a3daf084e0a84b2d72110a4391c98f229" target="_top" xlink:title="Destroys backend&#45;specific payload allocations.">
 <polygon fill="white" stroke="#666666" points="626.5,-74 493.5,-74 493.5,-55 626.5,-55 626.5,-74"/>
 <text text-anchor="middle" x="560" y="-62" font-family="Helvetica,sans-Serif" font-size="10.00">async_cleanup_payload</text>
 </a>
@@ -164,7 +164,7 @@
 <!-- Node8 -->
 <g id="Node000008" class="node">
 <title>Node8</title>
-<g id="a_Node000008"><a xlink:href="async__loader_8c.html#a176d1e0504916b9fa61b60d9411f0704" target="_top" xlink:title=" ">
+<g id="a_Node000008"><a xlink:href="async__loader_8c.html#a176d1e0504916b9fa61b60d9411f0704" target="_top" xlink:title="Performs the actual format conversion (e.g., float &#45;&gt; half float) into the PBO.">
 <polygon fill="white" stroke="#666666" points="634,-37 486,-37 486,-18 634,-18 634,-37"/>
 <text text-anchor="middle" x="560" y="-25" font-family="Helvetica,sans-Serif" font-size="10.00">async_perform_conversion</text>
 </a>
