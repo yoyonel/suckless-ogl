@@ -279,5 +279,11 @@ void glPolygonOffset(GLfloat factor, GLfloat units);
 void glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass);
 void glStencilFunc(GLenum func, GLint ref, GLuint mask);
 void glStencilMask(GLuint mask);
+void glVertexAttribFormat(GLuint attribindex, GLint size, GLenum type,
+                          GLboolean normalized, GLuint relativeoffset);
+void glVertexAttribBinding(GLuint attribindex, GLuint bindingindex);
+void glBindVertexBuffer(GLuint bindingindex, GLuint buffer, GLintptr offset,
+                        GLsizei stride);
+void glVertexBindingDivisor(GLuint bindingindex, GLuint divisor);
 
 #endif

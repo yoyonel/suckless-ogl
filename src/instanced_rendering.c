@@ -2,6 +2,7 @@
 
 #include "gl_common.h"
 #include "render_utils.h"
+#include "sphere_types.h"
 #include <stddef.h>
 
 void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
@@ -17,15 +18,6 @@ void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
 	             GL_DYNAMIC_DRAW);
 }
 
-// Helper interne pour configurer les attributs d'instance
-static void setup_instance_attributes(void)
-{
-	render_utils_setup_sphere_instance_attributes(
-	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic),
-	    offsetof(SphereInstance, prev_center));
-}
-
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
                                GLuint ebo)
 {
@@ -39,21 +31,27 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
 	glBindVertexArray(group->vao);
 
 	// -- GÉOMÉTRIE (Empruntée à l'App) --
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribDivisor(0, 0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, nbo);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribDivisor(1, 0);
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+
+	glBindVertexBuffer(0, vbo, 0, 3 * sizeof(float));
+	glBindVertexBuffer(1, nbo, 0, 3 * sizeof(float));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
 	/* -- INSTANCES (VBO Interne) -- */
-	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
-	setup_instance_attributes();
+	render_utils_setup_sphere_instance_attributes(
+	    2, (GLsizei)sizeof(SphereInstance),
+	    offsetof(SphereInstance, albedo),
+	    offsetof(SphereInstance, metallic),
+	    offsetof(SphereInstance, prev_center));
+	glBindVertexBuffer(2, group->instance_vbo, 0,
+	                   (GLsizei)sizeof(SphereInstance));
 
 	/* CRITICAL: Explicitly disable and reset all higher slots (8-15)
 	 * to ensure a stable global attribute signature on NVIDIA. */

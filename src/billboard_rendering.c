@@ -88,14 +88,6 @@ void billboard_group_update_from_buffer(BillboardGroup* group,
 	                    size);
 }
 
-static void setup_billboard_instance_attributes(void)
-{
-	render_utils_setup_sphere_instance_attributes(
-	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic),
-	    offsetof(SphereInstance, prev_center));
-}
-
 static void create_billboard_vao(GLuint* vao, GLuint geometry_vbo,
                                  GLuint instance_vbo)
 {
@@ -108,21 +100,24 @@ static void create_billboard_vao(GLuint* vao, GLuint geometry_vbo,
 	glBindVertexArray(*vao);
 
 	/* -- GEOMETRY -- */
-	glBindBuffer(GL_ARRAY_BUFFER, geometry_vbo);
-
-	/* Layout 0: Position (vec3) */
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glVertexAttribDivisor(0, 0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
 
-	/* Layout 1: Normals (unused but consistently defined) */
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glVertexAttribDivisor(1, 0);
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+
+	glBindVertexBuffer(0, geometry_vbo, 0, 3 * sizeof(float));
+	glBindVertexBuffer(1, geometry_vbo, 0, 3 * sizeof(float));
 
 	/* -- INSTANCES -- */
-	glBindBuffer(GL_ARRAY_BUFFER, instance_vbo);
-	setup_billboard_instance_attributes();
+	render_utils_setup_sphere_instance_attributes(
+	    2, (GLsizei)sizeof(SphereInstance),
+	    offsetof(SphereInstance, albedo),
+	    offsetof(SphereInstance, metallic),
+	    offsetof(SphereInstance, prev_center));
+	glBindVertexBuffer(2, instance_vbo, 0, (GLsizei)sizeof(SphereInstance));
 
 	/* Explicitly disable higher slots */
 	for (GLuint i = SYNC_ATTR_START; i < MAX_VERTEX_ATTRIBS_BASELINE; i++) {

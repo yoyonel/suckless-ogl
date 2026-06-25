@@ -92,14 +92,18 @@ bool trail_renderer_init(TrailRenderer* trail, int body_count)
 
 	/* Attribute 0: position (vec3) + u (float) — packed as vec4 */
 	const GLsizei stride = (GLsizei)sizeof(TrailVertex);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, stride, NULL);
 	glEnableVertexAttribArray(0);
+	glVertexAttribFormat(0, 4, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(TrailVertex, position));
+	glVertexAttribBinding(0, 0);
 
 	/* Attribute 1: color (vec3) + v (float) — packed as vec4 */
-	const size_t color_offset = offsetof(TrailVertex, color);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride,
-	                      utils_buffer_offset(color_offset));
 	glEnableVertexAttribArray(1);
+	glVertexAttribFormat(1, 4, GL_FLOAT, GL_FALSE,
+	                     (GLuint)offsetof(TrailVertex, color));
+	glVertexAttribBinding(1, 0);
+
+	glBindVertexBuffer(0, trail->vbo, 0, stride);
 
 	glBindVertexArray(0);
 

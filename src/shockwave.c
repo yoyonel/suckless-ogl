@@ -48,11 +48,13 @@ bool shockwave_renderer_init(ShockwaveRenderer* renderer)
 	             QUAD_VERTICES, GL_STATIC_DRAW);
 
 	/* Attribute 0: position (vec3) */
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-	                      3 * (GLsizei)sizeof(float), NULL);
 	glEnableVertexAttribArray(0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+	glBindVertexBuffer(0, renderer->vbo, 0, 3 * (GLsizei)sizeof(float));
 
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return true;
 }

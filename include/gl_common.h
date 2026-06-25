@@ -114,6 +114,12 @@ void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
                       const GLchar* message);
 void glColorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b,
                   GLboolean a);
+void glVertexAttribFormat(GLuint attribindex, GLint size, GLenum type,
+                          GLboolean normalized, GLuint relativeoffset);
+void glVertexAttribBinding(GLuint attribindex, GLuint bindingindex);
+void glBindVertexBuffer(GLuint bindingindex, GLuint buffer, GLintptr offset,
+                        GLsizei stride);
+void glVertexBindingDivisor(GLuint bindingindex, GLuint divisor);
 #endif
 
 #ifndef GL_COMMON_NO_GLFW

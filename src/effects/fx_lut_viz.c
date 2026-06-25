@@ -48,10 +48,12 @@ int fx_lut_viz_init(LUTVizFX* viz)
 	             points, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-	                      (void*)0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+	glBindVertexBuffer(0, viz->vbo, 0, 3 * (GLsizei)sizeof(float));
 
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	free(points);
 
 	/* Compile debug shaders */

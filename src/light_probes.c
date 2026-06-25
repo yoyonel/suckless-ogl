@@ -439,10 +439,10 @@ void light_probe_grid_init(LightProbeGrid* grid, int dim_x, int dim_y,
 	render_utils_create_wire_cube_vbo(&grid->aabb_vbo);
 	glGenVertexArrays(1, &grid->aabb_vao);
 	glBindVertexArray(grid->aabb_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, grid->aabb_vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-	                      (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+	glBindVertexBuffer(0, grid->aabb_vbo, 0, 3 * (GLsizei)sizeof(float));
 	glBindVertexArray(0);
 
 	/* Create 3D Textures for SH Coefficients */

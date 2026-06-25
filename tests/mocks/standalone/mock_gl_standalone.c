@@ -377,6 +377,37 @@ void glVertexAttribDivisor(GLuint index, GLuint divisor)
 	(void)divisor;
 }
 
+void glVertexAttribFormat(GLuint attribindex, GLint size, GLenum type,
+                          GLboolean normalized, GLuint relativeoffset)
+{
+	(void)attribindex;
+	(void)size;
+	(void)type;
+	(void)normalized;
+	(void)relativeoffset;
+}
+
+void glVertexAttribBinding(GLuint attribindex, GLuint bindingindex)
+{
+	(void)attribindex;
+	(void)bindingindex;
+}
+
+void glBindVertexBuffer(GLuint bindingindex, GLuint buffer, GLintptr offset,
+                        GLsizei stride)
+{
+	(void)bindingindex;
+	(void)buffer;
+	(void)offset;
+	(void)stride;
+}
+
+void glVertexBindingDivisor(GLuint bindingindex, GLuint divisor)
+{
+	(void)bindingindex;
+	(void)divisor;
+}
+
 void glDrawArrays(GLenum mode, GLint first, GLsizei count)
 {
 	(void)mode;
