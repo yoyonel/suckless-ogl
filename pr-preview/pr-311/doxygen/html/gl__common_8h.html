@@ -371,7 +371,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">_Static_assert</span>(_Alignof(type) &gt;= <a class="code hl_enumvalue" href="gl__common_8h.html#a80155586fa275b28773c9b203f52cabaa0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a>, \</div>
 <div class="line"><span class="preprocessor">                   #type &quot; must be &gt;= 32-byte aligned for AVX (cglm)&quot;)</span></div>
-<div class="ttc" id="agl__common_8h_html_a80155586fa275b28773c9b203f52cabaa0178e01bb43e84986ca3cf7d7cdbb660"><div class="ttname"><a href="gl__common_8h.html#a80155586fa275b28773c9b203f52cabaa0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a></div><div class="ttdeci">@ GL_UBO_ALIGNMENT</div><div class="ttdef"><b>Definition</b> gl_common.h:153</div></div>
+<div class="ttc" id="agl__common_8h_html_a80155586fa275b28773c9b203f52cabaa0178e01bb43e84986ca3cf7d7cdbb660"><div class="ttname"><a href="gl__common_8h.html#a80155586fa275b28773c9b203f52cabaa0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a></div><div class="ttdeci">@ GL_UBO_ALIGNMENT</div><div class="ttdef"><b>Definition</b> gl_common.h:159</div></div>
 </div><!-- fragment -->
 <p>Compile-time assertion that a UBO struct meets AVX alignment. Place after the typedef to catch misconfigurations at build time. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -641,7 +641,7 @@ Functions</h2></td></tr>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* _gl_dbg_##__LINE__                              \</div>
 <div class="line">        __attribute__((cleanup(<a class="code hl_function" href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a>)))        \</div>
 <div class="line">        __attribute__((unused)) = name</div>
-<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition</b> gl_common.h:183</div></div>
+<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition</b> gl_common.h:189</div></div>
 </div><!-- fragment -->
 <p>Scoped OpenGL debug group. Automatically pops when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -672,7 +672,7 @@ Functions</h2></td></tr>
 <div class="line">    GLuint _gl_prog_##__LINE__                           \</div>
 <div class="line">        __attribute__((cleanup(<a class="code hl_function" href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a>))) \</div>
 <div class="line">        __attribute__((unused)) = prog</div>
-<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition</b> gl_common.h:202</div></div>
+<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition</b> gl_common.h:208</div></div>
 </div><!-- fragment -->
 <p>Scoped shader program binding. Unbinds (glUseProgram(0)) when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>

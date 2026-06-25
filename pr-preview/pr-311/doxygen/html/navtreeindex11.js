@@ -1,7 +1,5 @@
 var NAVTREEINDEX11 =
 {
-"structPBRSpecUniforms.html#a093dd76c96c1eee1ee2bafd4189d5932":[5,0,83,1],
-"structPBRSpecUniforms.html#a0a8721216be4beb02eeb47a53593f2ac":[5,0,83,0],
 "structPBRSpecUniforms.html#a306cd0ac8f5fe3b4841bd73beda16e13":[5,0,83,2],
 "structPBRSpecUniforms.html#abff7287a12825c2860925695bca88116":[5,0,83,5],
 "structPBRSpecUniforms.html#ac9b999a5f4c966adde15e30ef8fa6dd8":[5,0,83,4],
@@ -249,5 +247,7 @@ var NAVTREEINDEX11 =
 "structSceneLighting.html":[5,0,98],
 "structSceneLighting.html#a236eb3c46ee65975aae8d8bccf7a4ca2":[5,0,98,0],
 "structSceneLighting.html#a3640c904473fe205a8cf6da0a0776fc4":[5,0,98,1],
-"structSceneLighting.html#afacc999031ba4422a6faeb789ef3128a":[5,0,98,2]
+"structSceneLighting.html#afacc999031ba4422a6faeb789ef3128a":[5,0,98,2],
+"structSceneShaders.html":[5,0,99],
+"structSceneShaders.html#a0246acaf41fe0371aad5cd3a59fdfe6a":[5,0,99,1]
 };

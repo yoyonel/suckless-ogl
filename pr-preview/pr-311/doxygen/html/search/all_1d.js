@@ -99,6 +99,5 @@ var searchData=
   ['use_5ftransparent_5fbillboards_96',['USE_TRANSPARENT_BILLBOARDS',['../group__Renderer.html#ga488c62fb8eb8169482e08d0daf83320d',1,'app_settings.h']]],
   ['user_20interface_20base_97',['User Interface Base',['../group__UI.html',1,'']]],
   ['utils_2ec_98',['utils.c',['../utils_8c.html',1,'']]],
-  ['utils_2eh_99',['utils.h',['../utils_8h.html',1,'']]],
-  ['utils_5fbuffer_5foffset_100',['utils_buffer_offset',['../utils_8h.html#aa5345e02a1dff1e859ff556bcf670b2d',1,'utils_buffer_offset(size_t offset):&#160;utils.c'],['../utils_8c.html#aa5345e02a1dff1e859ff556bcf670b2d',1,'utils_buffer_offset(size_t offset):&#160;utils.c']]]
+  ['utils_2eh_99',['utils.h',['../utils_8h.html',1,'']]]
 ];

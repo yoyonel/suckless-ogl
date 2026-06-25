@@ -1,7 +1,5 @@
 var NAVTREEINDEX8 =
 {
-"shockwave_8c.html":[6,0,4,60],
-"shockwave_8c.html#a09ec2ed179d54eaa2c607f25877243da":[6,0,4,60,0],
 "shockwave_8c.html#a11c9519d13e6bc82854ece26481eaf62":[6,0,4,60,2],
 "shockwave_8c.html#a2ff1ffa4e5b2602fece876905edc4f07":[6,0,4,60,8],
 "shockwave_8c.html#a44ca0f165a8e2f0832296cb3ffb4f591":[6,0,4,60,6],
@@ -249,5 +247,7 @@ var NAVTREEINDEX8 =
 "structAssetRegistryEntry.html#a6854a668285f35bd992df14667b8afee":[5,0,13,2],
 "structAssetRegistryEntry.html#a6f2839a7d3a2a7080ce144f0670fd6bd":[5,0,13,1],
 "structAssetRegistryEntry.html#a9526b364dfdb214afaa22a41b30cfc40":[5,0,13,0],
-"structAsyncBackendInterface.html":[5,0,14]
+"structAsyncBackendInterface.html":[5,0,14],
+"structAsyncBackendInterface.html#a0bed37b93f74a9a7e39333b46350f3c1":[5,0,14,0],
+"structAsyncBackendInterface.html#a8172a7856228e26fbf45bbe180c1b859":[5,0,14,1]
 };

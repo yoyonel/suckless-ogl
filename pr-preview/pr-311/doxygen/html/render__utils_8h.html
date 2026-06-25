@@ -308,9 +308,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a90d078a815893bfeb3fab9a551942916" id="r_a90d078a815893bfeb3fab9a551942916"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a90d078a815893bfeb3fab9a551942916">render_utils_create_texture_2d</a> (int width, int height, GLenum internal_format, GLint levels, const char *label)</td></tr>
 <tr class="memdesc:a90d078a815893bfeb3fab9a551942916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a 2D texture with specified parameters.  <br /></td></tr>
 <tr class="separator:a90d078a815893bfeb3fab9a551942916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0ded121a4c02159475f95ac96ccef8b" id="r_ad0ded121a4c02159475f95ac96ccef8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#ad0ded121a4c02159475f95ac96ccef8b">render_utils_setup_sphere_instance_attributes</a> (GLsizei stride, size_t offset_albedo, size_t offset_metallic, size_t offset_prev_center)</td></tr>
-<tr class="memdesc:ad0ded121a4c02159475f95ac96ccef8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up instance attributes for sphere rendering (Model, Albedo, PBR).  <br /></td></tr>
-<tr class="separator:ad0ded121a4c02159475f95ac96ccef8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b1f04f09bb2443dfa2f91257b621ec4" id="r_a2b1f04f09bb2443dfa2f91257b621ec4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a2b1f04f09bb2443dfa2f91257b621ec4">render_utils_setup_sphere_instance_attributes</a> (GLuint binding_point, GLsizei stride, size_t offset_albedo, size_t offset_metallic, size_t offset_prev_center)</td></tr>
+<tr class="memdesc:a2b1f04f09bb2443dfa2f91257b621ec4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up instance attributes for sphere rendering (Model, Albedo, PBR).  <br /></td></tr>
+<tr class="separator:a2b1f04f09bb2443dfa2f91257b621ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6f98bd6406323d50aa3beb34f2bd8a9" id="r_aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGLStateBackup.html">GLStateBackup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9">render_utils_save_state</a> (void)</td></tr>
 <tr class="memdesc:aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves current OpenGL state to a backup struct.  <br /></td></tr>
 <tr class="separator:aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -527,11 +527,6 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="render__utils_8h_a7c76878a56fc26dedd3af3595f12626e_cgraph.svg" width="344" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
@@ -890,8 +885,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="ad0ded121a4c02159475f95ac96ccef8b" name="ad0ded121a4c02159475f95ac96ccef8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0ded121a4c02159475f95ac96ccef8b">&#9670;&#160;</a></span>render_utils_setup_sphere_instance_attributes()</h2>
+<a id="a2b1f04f09bb2443dfa2f91257b621ec4" name="a2b1f04f09bb2443dfa2f91257b621ec4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b1f04f09bb2443dfa2f91257b621ec4">&#9670;&#160;</a></span>render_utils_setup_sphere_instance_attributes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -899,6 +894,12 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void render_utils_setup_sphere_instance_attributes </td>
           <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>binding_point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">GLsizei&#160;</td>
           <td class="paramname"><em>stride</em>, </td>
         </tr>
@@ -939,11 +940,6 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="render__utils_8h_ad0ded121a4c02159475f95ac96ccef8b_cgraph.svg" width="403" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>

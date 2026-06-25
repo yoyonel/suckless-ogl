@@ -15,6 +15,5 @@ var utils_8h =
     [ "safe_memset", "utils_8h.html#aa0d7c61e364406aa652f12a630642256", null ],
     [ "safe_snprintf", "utils_8h.html#a6d506638d7043eb273a2a357591d3086", null ],
     [ "safe_strncat", "utils_8h.html#a7da5d8902e26bfe1fcb9e660e1677ea3", null ],
-    [ "safe_strncpy", "utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075", null ],
-    [ "utils_buffer_offset", "utils_8h.html#aa5345e02a1dff1e859ff556bcf670b2d", null ]
+    [ "safe_strncpy", "utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075", null ]
 ];
