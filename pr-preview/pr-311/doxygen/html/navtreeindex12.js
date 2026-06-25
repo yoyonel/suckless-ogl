@@ -1,7 +1,5 @@
 var NAVTREEINDEX12 =
 {
-"structSceneLighting.html#a236eb3c46ee65975aae8d8bccf7a4ca2":[5,0,98,0],
-"structSceneLighting.html#a3640c904473fe205a8cf6da0a0776fc4":[5,0,98,1],
 "structSceneLighting.html#afacc999031ba4422a6faeb789ef3128a":[5,0,98,2],
 "structSceneShaders.html":[5,0,99],
 "structSceneShaders.html#a0246acaf41fe0371aad5cd3a59fdfe6a":[5,0,99,1],
@@ -249,5 +247,7 @@ var NAVTREEINDEX12 =
 "trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e":[6,0,2,85,24],
 "trail__renderer_8h.html#a10f80d37b2756126f0989e21f24c1417":[6,0,2,85,8],
 "trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6":[6,0,2,85,21],
-"trail__renderer_8h.html#a3d4573c823d99094e05ef8813cfe95b4":[6,0,2,85,17]
+"trail__renderer_8h.html#a3d4573c823d99094e05ef8813cfe95b4":[6,0,2,85,17],
+"trail__renderer_8h.html#a410780d43ed6c5f3ea3f046f81343e9b":[6,0,2,85,14],
+"trail__renderer_8h.html#a451af5322713fbd9e4b339f4afc86e69":[6,0,2,85,19]
 };

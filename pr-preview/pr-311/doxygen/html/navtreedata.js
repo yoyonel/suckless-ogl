@@ -85,13 +85,13 @@ var NAVTREEINDEX =
 "group__Environment.html#ga24f192aad05183c640849a649a49e70e",
 "lum__histogram_8c.html#a04448c0c7f44be55a7e8dffb7144eecf",
 "postprocess_8h.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409",
-"pp__params_8h.html#af429d2bf0c7ecc710235d5f05ee2c9b7",
-"shader_8h.html#ae3dae1b87c4546baa4d8a15731aeb11d",
-"structAssetRegistryEntry.html#a6f2839a7d3a2a7080ce144f0670fd6bd",
-"structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021",
-"structPBRMaterial.html#a6d10204864085abe3dca544bc6c9699e",
-"structSceneLighting.html#a236eb3c46ee65975aae8d8bccf7a4ca2",
-"trail__renderer_8h.html#a410780d43ed6c5f3ea3f046f81343e9b"
+"pp__params_8h.html#af950c3b89015622c6f11daef618bef2d",
+"shader_8h_source.html",
+"structAsyncBackendInterface.html",
+"structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61",
+"structPBRSpecUniforms.html",
+"structSceneLighting.html#afacc999031ba4422a6faeb789ef3128a",
+"trail__renderer_8h.html#a45701e1c31aa42e037c5c2921949b441"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
