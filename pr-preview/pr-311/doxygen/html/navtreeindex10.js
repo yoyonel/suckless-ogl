@@ -1,6 +1,5 @@
 var NAVTREEINDEX10 =
 {
-"structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61":[5,0,54,3],
 "structGPUStage.html#a2de1e5fda6f1272093bbbf71a412455a":[5,0,54,5],
 "structGPUStage.html#a38657e9f22b67f1096addca91bd5a5e2":[5,0,54,2],
 "structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342":[5,0,54,4],
@@ -249,5 +248,6 @@ var NAVTREEINDEX10 =
 "structPBRMaterial.html#a080d9fec8ffd04454686d6299176c5a4":[5,0,82,0],
 "structPBRMaterial.html#a3d8eb6071a7df80bee915d23a4c31103":[5,0,82,1],
 "structPBRMaterial.html#a6d10204864085abe3dca544bc6c9699e":[5,0,82,3],
-"structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4":[5,0,82,2]
+"structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4":[5,0,82,2],
+"structPBRSpecUniforms.html":[5,0,83]
 };

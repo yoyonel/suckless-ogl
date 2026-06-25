@@ -242,9 +242,12 @@ $(document).ready(function(){initNavTree('async__backend__ktx_8c.html',''); init
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="async__backend_8h_source.html">async_backend.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;ktx.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -566,9 +569,9 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
 <div class="line">    <a class="code hl_function" href="async__backend__ktx_8c.html#a8de61fa2cbea54ae18958621a767967b">ktx_backend_load</a>, <a class="code hl_function" href="async__backend__ktx_8c.html#ac26b80be5fa584c33391ae95f5721e07">ktx_backend_convert</a>, <a class="code hl_function" href="async__backend__ktx_8c.html#a09ea249c5bf86b9ca683b4d487d3b78d">ktx_backend_cleanup</a>}</div>
-<div class="ttc" id="aasync__backend__ktx_8c_html_a09ea249c5bf86b9ca683b4d487d3b78d"><div class="ttname"><a href="async__backend__ktx_8c.html#a09ea249c5bf86b9ca683b4d487d3b78d">ktx_backend_cleanup</a></div><div class="ttdeci">static void ktx_backend_cleanup(AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_ktx.c:152</div></div>
-<div class="ttc" id="aasync__backend__ktx_8c_html_a8de61fa2cbea54ae18958621a767967b"><div class="ttname"><a href="async__backend__ktx_8c.html#a8de61fa2cbea54ae18958621a767967b">ktx_backend_load</a></div><div class="ttdeci">static bool ktx_backend_load(const char *path, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_ktx.c:99</div></div>
-<div class="ttc" id="aasync__backend__ktx_8c_html_ac26b80be5fa584c33391ae95f5721e07"><div class="ttname"><a href="async__backend__ktx_8c.html#ac26b80be5fa584c33391ae95f5721e07">ktx_backend_convert</a></div><div class="ttdeci">static void ktx_backend_convert(void *dst_ptr, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_ktx.c:128</div></div>
+<div class="ttc" id="aasync__backend__ktx_8c_html_a09ea249c5bf86b9ca683b4d487d3b78d"><div class="ttname"><a href="async__backend__ktx_8c.html#a09ea249c5bf86b9ca683b4d487d3b78d">ktx_backend_cleanup</a></div><div class="ttdeci">static void ktx_backend_cleanup(AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_ktx.c:155</div></div>
+<div class="ttc" id="aasync__backend__ktx_8c_html_a8de61fa2cbea54ae18958621a767967b"><div class="ttname"><a href="async__backend__ktx_8c.html#a8de61fa2cbea54ae18958621a767967b">ktx_backend_load</a></div><div class="ttdeci">static bool ktx_backend_load(const char *path, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_ktx.c:102</div></div>
+<div class="ttc" id="aasync__backend__ktx_8c_html_ac26b80be5fa584c33391ae95f5721e07"><div class="ttname"><a href="async__backend__ktx_8c.html#ac26b80be5fa584c33391ae95f5721e07">ktx_backend_convert</a></div><div class="ttdeci">static void ktx_backend_convert(void *dst_ptr, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_ktx.c:131</div></div>
 </div><!-- fragment -->
 </div>
 </div>

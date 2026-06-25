@@ -1,6 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"group__Environment.html#ga24f192aad05183c640849a649a49e70e":[4,3,3],
 "group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743":[4,3,6],
 "group__Environment.html#ga42cce2777f68380c5d6bc70f328d7b86":[4,3,9],
 "group__Environment.html#ga47f89c3d7c8c156494fdecaf0b5a33c8":[4,3,2],
@@ -127,8 +126,8 @@ var NAVTREEINDEX4 =
 "icosphere_8h.html#ad4ff3644bfe858f66d74316bbf80c39a":[6,0,2,35,9],
 "icosphere_8h.html#aeabbf4b8c74fefac0070104ad779cd62":[6,0,2,35,6],
 "icosphere_8h_source.html":[6,0,2,35],
-"index.html":[1],
 "index.html":[],
+"index.html":[1],
 "index.html#autotoc_md23":[1,0],
 "index.html#autotoc_md24":[1,1],
 "instanced__rendering_8c.html":[6,0,4,32],
@@ -249,5 +248,6 @@ var NAVTREEINDEX4 =
 "lum__downsample_8frag.html#a42fc3fbcbc53485304e7751a012b7235":[6,0,3,14,0],
 "lum__downsample_8frag.html#aaee44c5ca1558d7b20786e14a5c5881f":[6,0,3,14,1],
 "lum__downsample_8frag.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,14,2],
-"lum__histogram_8c.html":[6,0,4,37]
+"lum__histogram_8c.html":[6,0,4,37],
+"lum__histogram_8c.html#a04448c0c7f44be55a7e8dffb7144eecf":[6,0,4,37,1]
 };

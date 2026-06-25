@@ -26,7 +26,7 @@ var searchData=
   ['gl_5fscope_5fdebug_5fgroup_23',['GL_SCOPE_DEBUG_GROUP',['../gl__common_8h.html#a5f71b6552f5675333cc18677cb881580',1,'gl_common.h']]],
   ['gl_5fscope_5fuse_5fprogram_24',['GL_SCOPE_USE_PROGRAM',['../gl__common_8h.html#a8dcb3273b1d51b8da3a2a6f3082a799f',1,'gl_common.h']]],
   ['gl_5fubo_5faligned_25',['GL_UBO_ALIGNED',['../gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb',1,'gl_common.h']]],
-  ['glfw_5finclude_5fnone_26',['glfw_include_none',['../camera__input_8c.html#a088324ad8995e3eb76024e3e79083d48',1,'GLFW_INCLUDE_NONE:&#160;camera_input.c'],['../gamepad__input_8c.html#a088324ad8995e3eb76024e3e79083d48',1,'GLFW_INCLUDE_NONE:&#160;gamepad_input.c']]],
+  ['glfw_5finclude_5fnone_26',['GLFW_INCLUDE_NONE',['../gamepad__input_8c.html#a088324ad8995e3eb76024e3e79083d48',1,'gamepad_input.c']]],
   ['gpu_5fmeasure_5flog_27',['GPU_MEASURE_LOG',['../perf__timer_8h.html#abd41b4ab68073a6cbd6723d5899061dc',1,'perf_timer.h']]],
   ['gpu_5fmeasure_5fms_28',['GPU_MEASURE_MS',['../perf__timer_8h.html#a3fb37d4b6578334d733d017b9b8a0673',1,'perf_timer.h']]],
   ['gpu_5fstage_5fprofiler_29',['GPU_STAGE_PROFILER',['../gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122',1,'gpu_profiler.h']]]

@@ -1,6 +1,5 @@
 var camera__input_8c =
 [
-    [ "GLFW_INCLUDE_NONE", "camera__input_8c.html#a088324ad8995e3eb76024e3e79083d48", null ],
     [ "camera_apply_gamepad", "camera__input_8c.html#aad986783f42ce93127542bdfcff31ec4", null ],
     [ "camera_input_handle_key", "camera__input_8c.html#a44b94467ff02a7c22c5d8d1f6a706732", null ],
     [ "camera_input_handle_mouse", "camera__input_8c.html#a0090e5c77e75365ad38683e32b6c4d77", null ],

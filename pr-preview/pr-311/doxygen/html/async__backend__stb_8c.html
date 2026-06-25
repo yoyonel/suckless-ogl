@@ -241,11 +241,15 @@ $(document).ready(function(){initNavTree('async__backend__stb_8c.html',''); init
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="async__backend_8h_source.html">async_backend.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="simd__utils_8h_source.html">simd_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;stb_image.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -419,9 +423,9 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {<a class="code hl_function" href="async__backend__stb_8c.html#ad9d746b758ffc91a31529d7901b42a13">stb_load</a>, <a class="code hl_function" href="async__backend__stb_8c.html#ad92d2962f8677b9aaf2a83829262f7e2">stb_convert</a>,</div>
 <div class="line">                                                    <a class="code hl_function" href="async__backend__stb_8c.html#ab9bb898c54b7a72a29d3ca4f00085f2c">stb_cleanup</a>}</div>
-<div class="ttc" id="aasync__backend__stb_8c_html_ab9bb898c54b7a72a29d3ca4f00085f2c"><div class="ttname"><a href="async__backend__stb_8c.html#ab9bb898c54b7a72a29d3ca4f00085f2c">stb_cleanup</a></div><div class="ttdeci">static void stb_cleanup(AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_stb.c:66</div></div>
-<div class="ttc" id="aasync__backend__stb_8c_html_ad92d2962f8677b9aaf2a83829262f7e2"><div class="ttname"><a href="async__backend__stb_8c.html#ad92d2962f8677b9aaf2a83829262f7e2">stb_convert</a></div><div class="ttdeci">static void stb_convert(void *dst_ptr, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_stb.c:50</div></div>
-<div class="ttc" id="aasync__backend__stb_8c_html_ad9d746b758ffc91a31529d7901b42a13"><div class="ttname"><a href="async__backend__stb_8c.html#ad9d746b758ffc91a31529d7901b42a13">stb_load</a></div><div class="ttdeci">static bool stb_load(const char *path, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_stb.c:10</div></div>
+<div class="ttc" id="aasync__backend__stb_8c_html_ab9bb898c54b7a72a29d3ca4f00085f2c"><div class="ttname"><a href="async__backend__stb_8c.html#ab9bb898c54b7a72a29d3ca4f00085f2c">stb_cleanup</a></div><div class="ttdeci">static void stb_cleanup(AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_stb.c:70</div></div>
+<div class="ttc" id="aasync__backend__stb_8c_html_ad92d2962f8677b9aaf2a83829262f7e2"><div class="ttname"><a href="async__backend__stb_8c.html#ad92d2962f8677b9aaf2a83829262f7e2">stb_convert</a></div><div class="ttdeci">static void stb_convert(void *dst_ptr, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_stb.c:54</div></div>
+<div class="ttc" id="aasync__backend__stb_8c_html_ad9d746b758ffc91a31529d7901b42a13"><div class="ttname"><a href="async__backend__stb_8c.html#ad9d746b758ffc91a31529d7901b42a13">stb_load</a></div><div class="ttdeci">static bool stb_load(const char *path, AsyncRequest *req)</div><div class="ttdef"><b>Definition</b> async_backend_stb.c:14</div></div>
 </div><!-- fragment -->
 </div>
 </div>

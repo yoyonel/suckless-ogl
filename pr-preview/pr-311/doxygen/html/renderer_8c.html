@@ -241,6 +241,7 @@ $(document).ready(function(){initNavTree('renderer_8c.html',''); initResizable()
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="renderer_8h_source.html">renderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="action__notifier_8h_source.html">action_notifier.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="bool__utils_8h_source.html">bool_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="effect__benchmark_8h_source.html">effect_benchmark.h</a>&quot;</code><br />
@@ -249,11 +250,18 @@ $(document).ready(function(){initNavTree('renderer_8c.html',''); initResizable()
 <code>#include &quot;<a class="el" href="gl__debug_8h_source.html">gl_debug.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler__ui_8h_source.html">gpu_profiler_ui.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__internal_8h_source.html">postprocess_internal.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess__readback_8h_source.html">postprocess_readback.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene__visuals_8h_source.html">scene_visuals.h</a>&quot;</code><br />
 <code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<code>#include &lt;cglm/affine.h&gt;</code><br />
+<code>#include &lt;cglm/cam.h&gt;</code><br />
+<code>#include &lt;cglm/mat4.h&gt;</code><br />
+<code>#include &lt;cglm/types.h&gt;</code><br />
+<code>#include &lt;cglm/util.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for renderer.c:</div>
 <div class="dyncontent">
