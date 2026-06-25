@@ -1,6 +1,6 @@
 var postprocess__apply_8c =
 [
-    [ "postfx_ae_and_debug_histogram", "postprocess__apply_8c.html#a1eaf8197503efd0633054737e725ea6a", null ],
+    [ "postfx_auto_exposure_and_debug_histogram", "postprocess__apply_8c.html#a3a004560ec5db6b5d734c676edfce3a4", null ],
     [ "postfx_bloom", "postprocess__apply_8c.html#a72936e216b21bf69e0bba999e76867f1", null ],
     [ "postfx_dof", "postprocess__apply_8c.html#a297065c5bfa20ec27ef43c970a40a1b7", null ],
     [ "postfx_final_composite", "postprocess__apply_8c.html#a53a22a7926165f22b29c4005abfec6a0", null ],

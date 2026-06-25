@@ -1,5 +1,7 @@
 var NAVTREEINDEX8 =
 {
+"shader_8h.html#ae3dae1b87c4546baa4d8a15731aeb11d":[6,0,2,75,18],
+"shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db":[6,0,2,75,13],
 "shader_8h_source.html":[6,0,2,75],
 "shockwave_8c.html":[6,0,4,60],
 "shockwave_8c.html#a09ec2ed179d54eaa2c607f25877243da":[6,0,4,60,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX8 =
 "structAssetHandle.html#a8d5d1304183af509b11b2cd4d5c049c1":[5,0,12,3],
 "structAssetHandle.html#a96118a07b0684eda92bedf292d5e4e10":[5,0,12,0],
 "structAssetRegistryEntry.html":[5,0,13],
-"structAssetRegistryEntry.html#a6854a668285f35bd992df14667b8afee":[5,0,13,2],
-"structAssetRegistryEntry.html#a6f2839a7d3a2a7080ce144f0670fd6bd":[5,0,13,1],
-"structAssetRegistryEntry.html#a9526b364dfdb214afaa22a41b30cfc40":[5,0,13,0]
+"structAssetRegistryEntry.html#a6854a668285f35bd992df14667b8afee":[5,0,13,2]
 };

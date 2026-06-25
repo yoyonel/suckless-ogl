@@ -1,5 +1,7 @@
 var NAVTREEINDEX9 =
 {
+"structAssetRegistryEntry.html#a6f2839a7d3a2a7080ce144f0670fd6bd":[5,0,13,1],
+"structAssetRegistryEntry.html#a9526b364dfdb214afaa22a41b30cfc40":[5,0,13,0],
 "structAsyncBackendInterface.html":[5,0,14],
 "structAsyncBackendInterface.html#a0bed37b93f74a9a7e39333b46350f3c1":[5,0,14,0],
 "structAsyncBackendInterface.html#a8172a7856228e26fbf45bbe180c1b859":[5,0,14,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX9 =
 "structGPUQueryBuffer.html#a11e51c88a688b83cfb4d3e42aeb50f54":[5,0,53,2],
 "structGPUQueryBuffer.html#a421e7674f08d4177ce6abe89c9b1cb70":[5,0,53,0],
 "structGPUQueryBuffer.html#aea6a383906220fa489488797a55296b8":[5,0,53,1],
-"structGPUStage.html":[5,0,54],
-"structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021":[5,0,54,7],
-"structGPUStage.html#a154d5b6a8c83327fed0f932ceb96893f":[5,0,54,10]
+"structGPUStage.html":[5,0,54]
 };
