@@ -3610,12 +3610,18 @@
 <li><code>render_utils_setup_sphere_instance_attributes</code> now takes a <code>GLuint binding_point</code> and configures sphere rendering attributes (albedo, metallic, prev_center) on the specified binding point.</li>
 <li><strong>Instanced Rendering (<code>src/instanced_rendering.c</code>)</strong>:</li>
 <li>Refactored <code>instanced_group_bind_mesh</code> to bind mesh geometry (positions on point 0, normals on point 1) and instanced matrices/colors on point 2.</li>
+<li><strong>Standard &amp; SSBO Rendering (<code>src/scene_render.c</code>, <code>src/ssbo_rendering.c</code>)</strong>:</li>
+<li>Refactored <code>scene_update_gpu_buffers</code> (icosphere VAO) and <code>ssbo_group_bind_mesh</code> (SSBO geometry VAO) to use decoupled attribute formats and buffer bindings.</li>
 <li><strong>User Interface (<code>src/ui.c</code>)</strong>:</li>
 <li><code>setup_vertex_buffers</code> maps ImGui's vertex stream (positions, texcoords, colors) using <code>glVertexAttribFormat</code> on binding point 0.</li>
 <li><strong>Trail Renderer (<code>src/trail_renderer.c</code>)</strong>:</li>
 <li>Configures trail vertex positions and colors on binding point 0.</li>
-<li><strong>Billboard Rendering (<code>src/billboard_rendering.c</code>)</strong>:</li>
+<li><strong>Billboard &amp; Shockwave Rendering (<code>src/billboard_rendering.c</code>, <code>src/shockwave.c</code>)</strong>:</li>
 <li>Configures quad geometry on points 0 and 1, and instanced data on point 2.</li>
+<li>Refactored <code>shockwave_renderer_init</code> to map the shockwave billboard quad layout.</li>
+<li><strong>Debug &amp; Visualization (<code>src/light_probes.c</code>, <code>src/effects/fx_lut_viz.c</code>)</strong>:</li>
+<li>Refactored <code>light_probe_grid_init</code> (wireframe debug AABB VAO) to use VAB.</li>
+<li>Refactored <code>fx_lut_viz_init</code> (3D LUT point cloud grid VAO) to use VAB.</li>
 </ul>
 <h2 id="3-advantages">3. Advantages<a class="headerlink" href="#3-advantages" title="Permanent link">¶</a></h2>
 <ol>
@@ -3643,7 +3649,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2026 21:26:18 UTC">June 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 26, 2026 20:06:52 UTC">June 26, 2026</span>
   </span>
 
     
