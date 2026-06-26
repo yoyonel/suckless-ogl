@@ -3650,8 +3650,8 @@
 </span></code></pre></div>
 <hr>
 <h2 id="2-compilation-et-validation-automatisee-cli-justfile">2. Compilation et Validation Automatisée CLI (Justfile)<a class="headerlink" href="#2-compilation-et-validation-automatisee-cli-justfile" title="Permanent link">¶</a></h2>
-<p>Pour compiler et valider une release sans passer manuellement par l'interface graphique de Steam, l'utilisation de la CLI Flatpak permet de cibler directement Proton avec les variables d'environnement appropriées.</p>
-<p>Le préfixe de compatibilité Proton (<code>proton_prefix</code>) est défini à l'extérieur du dépôt de code (dans le dossier <code>compatdata</code> de Steam) pour éviter de polluer l'espace de travail.</p>
+<p>Pour compiler et valider une release sans passer manuellement par l'interface graphique de Steam, une commande de validation automatisée et agnostique de l'environnement est fournie. La cible <code>run-package-win</code> appelle un script d'assistance (<code>scripts/run_proton.sh</code>) qui détecte automatiquement si Steam tourne en version Flatpak ou en version native, configure l'environnement, s'assure de l'existence du préfixe Proton, et lance l'application via Proton.</p>
+<p>Lors des tests locaux de la release, le préfixe de compatibilité Proton est créé dans le dossier <code>test-dist/proton_pfx</code> (ignoré par git) pour garder l'environnement de test autonome. Pour la cible directe <code>run-proton</code>, le préfixe est défini dans le dossier <code>compatdata</code> de Steam pour éviter de polluer l'espace de travail.</p>
 <h3 id="commandes-utiles">Commandes Utiles<a class="headerlink" href="#commandes-utiles" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Configuration de la compilation croisée</strong> :
@@ -3664,7 +3664,7 @@
   <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>just<span class="w"> </span>package-win
 </span></code></pre></div></li>
 <li><strong>Validation automatisée de la release</strong> :
-  <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>just<span class="w"> </span>test-package-win
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>just<span class="w"> </span>run-package-win
 </span></code></pre></div></li>
 </ul>
 <p><strong>Définition des cibles de test sous Proton dans le <code>Justfile</code> :</strong></p>
@@ -3672,7 +3672,7 @@
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>proton_path := steam_root + "/steamapps/common/Proton - Experimental/proton"
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>proton_prefix := steam_root + "/steamapps/compatdata/suckless-ogl"
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a># Lancement direct du binaire en cours de développement sous Proton
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a># Lancement direct du binaire en cours de développement sous Proton (Flatpak uniquement)
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>run-proton: build-win
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    @echo "Création du préfixe Proton..."
 </span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    @mkdir -p "{{ proton_prefix }}"
@@ -3685,24 +3685,67 @@
 </span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        com.valvesoftware.Steam \
 </span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        "{{ proton_path }}" run "{{ justfile_directory() }}/{{ build_win_dir }}/app.exe"
 </span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
-</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a># Validation complète du package de release extrait
-</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>test-package-win: package-win
-</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    @echo "==&gt; 1. Nettoyage et extraction de l'archive de release..."
-</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    @rm -rf "{{ test_dist_dir }}"
-</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    @mkdir -p "{{ test_dist_dir }}"
-</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>    @tar -I 'zstd' -xf "{{ release_dir }}/../{{ release_name }}.tar.zst" -C "{{ test_dist_dir }}"
-</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
-</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>    @echo "==&gt; 2. Exécution du binaire packagé via Steam Proton..."
-</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>    @mkdir -p "{{ proton_prefix }}"
-</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>    @flatpak run \
-</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>        --env=MANGOHUD=1 \
-</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>        --env=MANGOHUD_CONFIG="full,cpu_temp,gpu_temp,ram,vram,frametime,graphs,core_load" \
-</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>        --filesystem="{{ justfile_directory() }}" \
-</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>        --env=STEAM_COMPAT_CLIENT_INSTALL_PATH="{{ steam_root }}" \
-</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>        --env=STEAM_COMPAT_DATA_PATH="{{ proton_prefix }}" \
-</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>        --command=python3 \
-</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>        com.valvesoftware.Steam \
-</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a>        "{{ proton_path }}" run "{{ extracted_app }}"
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a># Validation automatisée (Agnostique)
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>run-package-win: package-win
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    @echo "Lancement de l'environnement de test automatisé..."
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    @scripts/run_proton.sh "{{ release_dir }}" "{{ release_name }}" "{{ test_dist_dir }}" "{{ justfile_directory() }}"
+</span></code></pre></div>
+<p><strong>Script d'enveloppement pour la détection de l'environnement Steam (<code>scripts/run_proton.sh</code>) :</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="ch">#!/usr/bin/env bash</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># scripts/run_proton.sh</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">set</span><span class="w"> </span>-e
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Arguments passés par le Justfile</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nv">RELEASE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nv">RELEASE_NAME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nv">TEST_DIST_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$3</span><span class="s2">"</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="nv">PROJECT_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$4</span><span class="s2">"</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="nv">EXTRACTED_APP</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span><span class="s2">/app.exe"</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nv">PROTON_PFX</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">/proton_pfx"</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"==&gt; 1. Nettoyage et extraction de l'archive de release..."</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>tar<span class="w"> </span>-I<span class="w"> </span><span class="s1">'zstd'</span><span class="w"> </span>-xf<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RELEASE_DIR</span><span class="si">}</span><span class="s2">/../</span><span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span><span class="s2">.tar.zst"</span><span class="w"> </span>-C<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"==&gt; 2. Détection de l'environnement Steam..."</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="c1"># Test A : Présence d'un environnement Flatpak</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="k">if</span><span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>flatpak<span class="w"> </span><span class="p">&amp;</span>&gt;/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>flatpak<span class="w"> </span>info<span class="w"> </span>com.valvesoftware.Steam<span class="w"> </span><span class="p">&amp;</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"    [i] Environnement détecté : Steam Flatpak (Sandbox)"</span>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">    </span><span class="nv">STEAM_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.var/app/com.valvesoftware.Steam/.local/share/Steam"</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">    </span><span class="nv">PROTON_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">STEAM_ROOT</span><span class="si">}</span><span class="s2">/steamapps/common/Proton - Experimental/proton"</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"==&gt; 3. Lancement du moteur via Flatpak..."</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">    </span>flatpak<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">        </span>--filesystem<span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ROOT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="w">        </span>--env<span class="o">=</span><span class="nv">STEAM_COMPAT_CLIENT_INSTALL_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">STEAM_ROOT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="w">        </span>--env<span class="o">=</span><span class="nv">STEAM_COMPAT_DATA_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PROTON_PFX</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">        </span>--command<span class="o">=</span>python3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">        </span>com.valvesoftware.Steam<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="w">        </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROTON_PATH</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>run<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">EXTRACTED_APP</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a>
+</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="c1"># Test B : Présence d'un environnement Natif (Bazzite, Fedora, Arch...)</span>
+</span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.local/share/Steam"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"    [i] Environnement détecté : Steam Natif"</span>
+</span><span id="__span-7-40"><a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a><span class="w">    </span><span class="nv">STEAM_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.local/share/Steam"</span>
+</span><span id="__span-7-41"><a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="w">    </span><span class="nv">PROTON_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">STEAM_ROOT</span><span class="si">}</span><span class="s2">/steamapps/common/Proton - Experimental/proton"</span>
+</span><span id="__span-7-42"><a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a>
+</span><span id="__span-7-43"><a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"==&gt; 3. Lancement du moteur via Proton Natif..."</span>
+</span><span id="__span-7-44"><a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="w">    </span><span class="c1"># On s'assure que le dossier du préfixe existe avant de confier les clés à Proton</span>
+</span><span id="__span-7-45"><a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a><span class="w">    </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROTON_PFX</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-46"><a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a>
+</span><span id="__span-7-47"><a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a><span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_DIST_DIR</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-48"><a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a><span class="w">    </span><span class="nv">STEAM_COMPAT_CLIENT_INSTALL_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">STEAM_ROOT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-49"><a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a><span class="w">        </span><span class="nv">STEAM_COMPAT_DATA_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PROTON_PFX</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-50"><a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a><span class="w">        </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROTON_PATH</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>run<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">EXTRACTED_APP</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-7-51"><a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a>
+</span><span id="__span-7-52"><a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a><span class="k">else</span>
+</span><span id="__span-7-53"><a id="__codelineno-7-53" name="__codelineno-7-53" href="#__codelineno-7-53"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"    [x] Erreur : Aucune installation de Steam trouvée (ni Flatpak, ni Native)."</span>
+</span><span id="__span-7-54"><a id="__codelineno-7-54" name="__codelineno-7-54" href="#__codelineno-7-54"></a><span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+</span><span id="__span-7-55"><a id="__codelineno-7-55" name="__codelineno-7-55" href="#__codelineno-7-55"></a><span class="k">fi</span>
 </span></code></pre></div>
 <hr>
 <h2 id="3-ajout-gui-steam-le-piege-du-portail-flatpak">3. Ajout GUI Steam &amp; Le Piège du Portail Flatpak<a class="headerlink" href="#3-ajout-gui-steam-le-piege-du-portail-flatpak" title="Permanent link">¶</a></h2>
@@ -3723,7 +3766,7 @@
 <h2 id="4-profiling-avance-et-overlay-mangohud-opengl">4. Profiling Avancé et Overlay (MangoHud / OpenGL)<a class="headerlink" href="#4-profiling-avance-et-overlay-mangohud-opengl" title="Permanent link">¶</a></h2>
 <p>Contrairement aux applications Vulkan, MangoHud ne s'injecte pas automatiquement dans les processus OpenGL via de simples variables d'environnement globales. L'injection de la bibliothèque (<code>LD_PRELOAD</code>) doit être forcée.</p>
 <p>Pour analyser les performances du moteur (Frametimes, charge CPU/GPU, VRAM) via l'overlay MangoHud sous Steam, configurez la ligne suivante dans les <strong>Options de lancement</strong> du raccourci Steam :</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>STEAM_COMPAT_MOUNTS="/chemin/absolu/vers/test-dist/" WINEPREFIX="%compat%" mangohud %command%
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>STEAM_COMPAT_MOUNTS="/chemin/absolu/vers/test-dist/" WINEPREFIX="%compat%" mangohud %command%
 </span></code></pre></div>
 <ul>
 <li><strong><code>STEAM_COMPAT_MOUNTS</code></strong> : Force le sous-conteneur sécurisé de Valve (<em>Pressure Vessel</em>) à monter le répertoire de développement sur l'hôte, garantissant ainsi que Proton puisse y lire et y écrire librement (notamment pour générer les fichiers <code>suckless_output.log</code> et <code>suckless_crash.log</code>).</li>
@@ -3749,7 +3792,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 juin 2026 15:14:28 UTC">26 juin 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 juin 2026 19:14:33 UTC">26 juin 2026</span>
   </span>
 
     
