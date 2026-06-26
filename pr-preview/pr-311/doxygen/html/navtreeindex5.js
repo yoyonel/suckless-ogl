@@ -5,7 +5,7 @@ var NAVTREEINDEX5 =
 "lum__histogram_8h.html#aa64fd9d992cb9bde3f01e1acca71b659":[6,0,2,40,2],
 "lum__histogram_8h_source.html":[6,0,2,40],
 "main_8c.html":[6,0,4,38],
-"main_8c.html#a0ddf1224851353fc92bfbff6f499fa97":[6,0,4,38,0],
+"main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627":[6,0,4,38,0],
 "main_8h.html":[6,0,2,41],
 "main_8h_source.html":[6,0,2,41],
 "material_8c.html":[6,0,4,39],
