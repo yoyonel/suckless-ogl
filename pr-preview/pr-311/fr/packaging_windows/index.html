@@ -91,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#compilation-packaging-windows-et-integration-steamproton" class="md-skip">
+        <a href="#integration-steam-proton-deploiement-et-debugging" class="md-skip">
           Aller au contenu
         </a>
       
@@ -2313,22 +2313,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#1-presentation-prerequis" class="md-nav__link">
+  <a href="#1-architecture-suckless-du-binaire-cwd-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Présentation &amp; Prérequis
+        1. Architecture "Suckless" du Binaire (CWD &amp; Logs)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Présentation &amp; Prérequis">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-compilation-et-validation-automatisee-cli-justfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Compilation et Validation Automatisée CLI (Justfile)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Compilation et Validation Automatisée CLI (Justfile)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#outils-de-developpement-requis" class="md-nav__link">
+  <a href="#commandes-utiles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Outils de développement requis
+        Commandes Utiles
       
     </span>
   </a>
@@ -2341,22 +2352,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-compilation-et-execution" class="md-nav__link">
+  <a href="#3-ajout-gui-steam-le-piege-du-portail-flatpak" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Compilation et Exécution
+        3. Ajout GUI Steam &amp; Le Piège du Portail Flatpak
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Compilation et Exécution">
+    <nav class="md-nav" aria-label="3. Ajout GUI Steam &amp; Le Piège du Portail Flatpak">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#le-trou-noir-fuse-erreur-193" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration
+        Le "Trou Noir" FUSE (Erreur 193)
       
     </span>
   </a>
@@ -2364,32 +2375,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#compilation" class="md-nav__link">
+  <a href="#la-methode-fiable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compilation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Exécution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tests-automatises" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tests automatisés
+        La Méthode Fiable
       
     </span>
   </a>
@@ -2402,74 +2391,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-packaging-autonome-standalone" class="md-nav__link">
+  <a href="#4-profiling-avance-et-overlay-mangohud-opengl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Packaging Autonome (Standalone)
+        4. Profiling Avancé et Overlay (MangoHud / OpenGL)
       
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-configuration-sous-steam-et-proton" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Configuration sous Steam et Proton
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Configuration sous Steam et Proton">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#importation-dans-steam" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Importation dans Steam
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuration-de-la-compatibilite" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration de la compatibilité
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution-du-repertoire-de-travail-integree" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Résolution du répertoire de travail (Intégrée)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#diagnostic-et-logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagnostic et Logs
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3633,86 +3561,174 @@
   
 
 
-<h1 id="compilation-packaging-windows-et-integration-steamproton">Compilation, Packaging Windows et Intégration Steam/Proton<a class="headerlink" href="#compilation-packaging-windows-et-integration-steamproton" title="Permanent link">¶</a></h1>
-<p>Ce guide explique comment compiler l'application pour Windows depuis Linux, la packager pour la distribution, et l'exécuter/déboguer à l'aide de Wine, Proton et Steam.</p>
+<h1 id="integration-steam-proton-deploiement-et-debugging">Intégration Steam &amp; Proton : Déploiement et Debugging<a class="headerlink" href="#integration-steam-proton-deploiement-et-debugging" title="Permanent link">¶</a></h1>
+<p><strong>Horodatage :</strong> 2026-06-26 17:10:09 CEST
+<strong>Stack :</strong> Moteur C11 Custom (OpenGL), Linux, Flatpak Steam, Proton Experimental, Justfile.</p>
+<p>Cette documentation consolide les pratiques et les contournements nécessaires pour packager, tester et profiler de manière fiable une application native Win64 sous un environnement Linux via Steam Flatpak et Proton.</p>
 <hr>
-<h2 id="1-presentation-prerequis">1. Présentation &amp; Prérequis<a class="headerlink" href="#1-presentation-prerequis" title="Permanent link">¶</a></h2>
-<p>Le projet prend en charge la compilation croisée (cross-compilation) depuis un environnement Linux vers Windows en utilisant la chaîne d'outils <strong>MinGW-w64</strong>.</p>
-<h3 id="outils-de-developpement-requis">Outils de développement requis<a class="headerlink" href="#outils-de-developpement-requis" title="Permanent link">¶</a></h3>
-<p>Pour configurer, compiler et packager la cible Windows, assurez-vous de disposer de :
-- La chaîne d'outils <strong>MinGW-w64 GCC/G++</strong> (installée dans votre conteneur de dev ou sur l'hôte)
-- <strong>Wine</strong> (pour des tests rapides en ligne de commande locale)
-- <strong>Proton</strong> (facultatif, pour tester le comportement de l'exécuteur Proton)
-- <strong>Just</strong> (lanceur de commandes)
-- <strong>Zstandard (zstd)</strong> (pour la compression du package)</p>
-<hr>
-<h2 id="2-compilation-et-execution">2. Compilation et Exécution<a class="headerlink" href="#2-compilation-et-execution" title="Permanent link">¶</a></h2>
-<p>Plusieurs commandes <code>just</code> sont fournies pour gérer l'ensemble du cycle de vie de la version Windows.</p>
-<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h3>
-<p>Configurez CMake avec la chaîne d'outils MinGW :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>just<span class="w"> </span>configure-win
+<h2 id="1-architecture-suckless-du-binaire-cwd-logs">1. Architecture "Suckless" du Binaire (CWD &amp; Logs)<a class="headerlink" href="#1-architecture-suckless-du-binaire-cwd-logs" title="Permanent link">¶</a></h2>
+<p>La majorité des crashs silencieux sous Proton sont causés par une mauvaise gestion du répertoire de travail courant (CWD) par l'interface Steam, ou par la suppression des flux de sortie <code>stdout</code>/<code>stderr</code> lors de la compilation avec <code>-mwindows</code> (qui désactive la console).</p>
+<p>Pour qu'un moteur soit "increvable" quel que soit son lanceur (CLI, Raccourci Bureau, Steam), il doit autogérer son CWD et sécuriser ses propres logs au démarrage.</p>
+<p>Dans notre projet, cette logique est déportée dans les utilitaires de plateforme pour simplifier le point d'entrée de l'application.</p>
+<p><strong>Implémentation dans <code>src/platform/platform_fs.c</code> :</strong></p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"platform/platform_fs.h"</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="cp">#ifdef _WIN32</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;direct.h&gt;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;io.h&gt;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="cp">#define CHDIR _chdir</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="cp">#define ACCESS _access</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="cp">#define F_OK 0</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="cp">#else</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="cp">#define CHDIR chdir</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="cp">#define ACCESS access</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="cp">#define F_OK 0</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="cp">#endif</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="kt">void</span><span class="w"> </span><span class="nf">platform_setup_working_dir</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">exec_path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">exec_path</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">exec_path</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">    </span><span class="c1">// 1. Si les ressources indispensables sont déjà présentes, on ne change rien</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ACCESS</span><span class="p">(</span><span class="s">"shaders"</span><span class="p">,</span><span class="w"> </span><span class="n">F_OK</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ACCESS</span><span class="p">(</span><span class="s">"assets"</span><span class="p">,</span><span class="w"> </span><span class="n">F_OK</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">        </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="c1">// 2. Résolution du chemin absolu de l'exécutable</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">path</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">exec_path</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="n">path</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">    </span><span class="c1">// Recherche du dernier séparateur de dossier (Windows ou Unix)</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">last_slash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strrchr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="sc">'\\'</span><span class="p">);</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">last_slash</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">        </span><span class="n">last_slash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strrchr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="sc">'/'</span><span class="p">);</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">last_slash</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">        </span><span class="o">*</span><span class="n">last_slash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">        </span><span class="n">CHDIR</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="w">    </span><span class="c1">// 3. Remonter jusqu'à 4 niveaux parents si nécessaire (utile en mode dev)</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ACCESS</span><span class="p">(</span><span class="s">"shaders"</span><span class="p">,</span><span class="w"> </span><span class="n">F_OK</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ACCESS</span><span class="p">(</span><span class="s">"assets"</span><span class="p">,</span><span class="w"> </span><span class="n">F_OK</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">            </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w">        </span><span class="n">CHDIR</span><span class="p">(</span><span class="s">".."</span><span class="p">);</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="p">}</span>
 </span></code></pre></div>
-Cette commande crée le dossier <code>build-win</code> et configure la compilation croisée via le fichier de toolchain CMake <code>toolchain-mingw.cmake</code>.<p></p>
-<h3 id="compilation">Compilation<a class="headerlink" href="#compilation" title="Permanent link">¶</a></h3>
-<p>Compilez les cibles Windows (exécutable, tests et bibliothèques) :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>just<span class="w"> </span>build-win
-</span></code></pre></div><p></p>
-<h3 id="execution">Exécution<a class="headerlink" href="#execution" title="Permanent link">¶</a></h3>
-<p>Lancez l'exécutable <code>app.exe</code> compilé avec Wine :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>just<span class="w"> </span>run-win
-</span></code></pre></div><p></p>
-<p>Lancez l'exécutable <code>app.exe</code> compilé avec Proton :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>just<span class="w"> </span>run-proton
-</span></code></pre></div><p></p>
-<h3 id="tests-automatises">Tests automatisés<a class="headerlink" href="#tests-automatises" title="Permanent link">¶</a></h3>
-<p>Exécutez les tests d'intégration et unitaires sous Wine :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Tests d'intégration</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>just<span class="w"> </span>test-win
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Tests unitaires</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>just<span class="w"> </span>test-win-unit
-</span></code></pre></div><p></p>
+<p><strong>Point d'entrée sécurisé dans <code>src/main.c</code> :</strong></p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"platform/platform_fs.h"</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">{</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="c1">// 1. Sécuriser le dossier de travail et localiser les ressources</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="n">platform_setup_working_dir</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="c1">// 2. Préservation des flux de logs (Crucial avec -mwindows)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="c1">// Steam supprime l'accès au terminal. Ces logs se retrouveront</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="c1">// à côté de l'exécutable et garantiront une visibilité sur les erreurs.</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="kt">FILE</span><span class="o">*</span><span class="w"> </span><span class="n">dummy_err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">freopen</span><span class="p">(</span><span class="s">"suckless_crash.log"</span><span class="p">,</span><span class="w"> </span><span class="s">"w"</span><span class="p">,</span><span class="w"> </span><span class="n">stderr</span><span class="p">);</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="kt">FILE</span><span class="o">*</span><span class="w"> </span><span class="n">dummy_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">freopen</span><span class="p">(</span><span class="s">"suckless_output.log"</span><span class="p">,</span><span class="w"> </span><span class="s">"w"</span><span class="p">,</span><span class="w"> </span><span class="n">stdout</span><span class="p">);</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">dummy_err</span><span class="p">;</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">dummy_out</span><span class="p">;</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="c1">// Initialisation et boucle de rendu du moteur</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="p">}</span>
+</span></code></pre></div>
 <hr>
-<h2 id="3-packaging-autonome-standalone">3. Packaging Autonome (Standalone)<a class="headerlink" href="#3-packaging-autonome-standalone" title="Permanent link">¶</a></h2>
-<p>Pour préparer l'application pour une release ou une distribution :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>just<span class="w"> </span>package-win
-</span></code></pre></div><p></p>
-<p>Cette cible exécute le script <a href="file:///home/latty/Prog/__PERSO__/suckless-ogl/scripts/package_win.sh">package_win.sh</a> qui effectue les opérations suivantes :
-1. <strong>Création de la structure des dossiers</strong> : Crée un dossier de release cible dans <code>build-release/suckless-ogl-windows-&lt;version&gt;/</code>.
-2. <strong>Synchronisation des ressources</strong> : Utilise <code>rsync</code> pour copier de manière incrémentale <code>app.exe</code>, le dossier <code>shaders/</code> et le dossier <code>assets/</code>.
-3. <strong>Compression ZStandard</strong> : Compresse le dossier dans une archive <code>.tar.zst</code> (<code>build-release/suckless-ogl-windows-&lt;version&gt;.tar.zst</code>) en utilisant Zstandard (<code>zstd -T0</code>).
-   - L'archive est générée de manière atomique à l'aide d'une transaction de renommage temporaire pour éviter toute corruption en cas d'interruption.
-   - Elle utilise l'option <code>--rsyncable</code> pour minimiser la taille des diffs lors des mises à jour.</p>
-<p>Pour vérifier le package généré :
-</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>just<span class="w"> </span>test-package-win
-</span></code></pre></div><p></p>
+<h2 id="2-compilation-et-validation-automatisee-cli-justfile">2. Compilation et Validation Automatisée CLI (Justfile)<a class="headerlink" href="#2-compilation-et-validation-automatisee-cli-justfile" title="Permanent link">¶</a></h2>
+<p>Pour compiler et valider une release sans passer manuellement par l'interface graphique de Steam, l'utilisation de la CLI Flatpak permet de cibler directement Proton avec les variables d'environnement appropriées.</p>
+<p>Le préfixe de compatibilité Proton (<code>proton_prefix</code>) est défini à l'extérieur du dépôt de code (dans le dossier <code>compatdata</code> de Steam) pour éviter de polluer l'espace de travail.</p>
+<h3 id="commandes-utiles">Commandes Utiles<a class="headerlink" href="#commandes-utiles" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Configuration de la compilation croisée</strong> :
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>just<span class="w"> </span>configure-win
+</span></code></pre></div></li>
+<li><strong>Compilation</strong> :
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>just<span class="w"> </span>build-win
+</span></code></pre></div></li>
+<li><strong>Packaging de la version de distribution</strong> (archive compressée atomiquement avec Zstandard) :
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>just<span class="w"> </span>package-win
+</span></code></pre></div></li>
+<li><strong>Validation automatisée de la release</strong> :
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>just<span class="w"> </span>test-package-win
+</span></code></pre></div></li>
+</ul>
+<p><strong>Définition des cibles de test sous Proton dans le <code>Justfile</code> :</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>steam_root := env_var("HOME") + "/.var/app/com.valvesoftware.Steam/.local/share/Steam"
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>proton_path := steam_root + "/steamapps/common/Proton - Experimental/proton"
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>proton_prefix := steam_root + "/steamapps/compatdata/suckless-ogl"
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a># Lancement direct du binaire en cours de développement sous Proton
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>run-proton: build-win
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    @echo "Création du préfixe Proton..."
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    @mkdir -p "{{ proton_prefix }}"
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    @echo "Lancement via Steam Flatpak..."
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    @flatpak run \
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>        --filesystem="{{ justfile_directory() }}" \
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        --env=STEAM_COMPAT_CLIENT_INSTALL_PATH="{{ steam_root }}" \
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        --env=STEAM_COMPAT_DATA_PATH="{{ proton_prefix }}" \
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        --command=python3 \
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        com.valvesoftware.Steam \
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        "{{ proton_path }}" run "{{ justfile_directory() }}/{{ build_win_dir }}/app.exe"
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a># Validation complète du package de release extrait
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>test-package-win: package-win
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    @echo "==&gt; 1. Nettoyage et extraction de l'archive de release..."
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    @rm -rf "{{ test_dist_dir }}"
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    @mkdir -p "{{ test_dist_dir }}"
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>    @tar -I 'zstd' -xf "{{ release_dir }}/../{{ release_name }}.tar.zst" -C "{{ test_dist_dir }}"
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>    @echo "==&gt; 2. Exécution du binaire packagé via Steam Proton..."
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>    @mkdir -p "{{ proton_prefix }}"
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>    @flatpak run \
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>        --env=MANGOHUD=1 \
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>        --env=MANGOHUD_CONFIG="full,cpu_temp,gpu_temp,ram,vram,frametime,graphs,core_load" \
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>        --filesystem="{{ justfile_directory() }}" \
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>        --env=STEAM_COMPAT_CLIENT_INSTALL_PATH="{{ steam_root }}" \
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a>        --env=STEAM_COMPAT_DATA_PATH="{{ proton_prefix }}" \
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a>        --command=python3 \
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a>        com.valvesoftware.Steam \
+</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a>        "{{ proton_path }}" run "{{ extracted_app }}"
+</span></code></pre></div>
 <hr>
-<h2 id="4-configuration-sous-steam-et-proton">4. Configuration sous Steam et Proton<a class="headerlink" href="#4-configuration-sous-steam-et-proton" title="Permanent link">¶</a></h2>
-<p>Pour déployer et exécuter la version Windows packagée sous Steam sur Linux, suivez ces étapes :</p>
-<h3 id="importation-dans-steam">Importation dans Steam<a class="headerlink" href="#importation-dans-steam" title="Permanent link">¶</a></h3>
+<h2 id="3-ajout-gui-steam-le-piege-du-portail-flatpak">3. Ajout GUI Steam &amp; Le Piège du Portail Flatpak<a class="headerlink" href="#3-ajout-gui-steam-le-piege-du-portail-flatpak" title="Permanent link">¶</a></h2>
+<p>Lors de l'ajout du jeu non-Steam via l'interface graphique du client Steam (Bouton "Ajouter un jeu"), il est impératif de comprendre la gestion des permissions FUSE de Flatpak.</p>
+<h3 id="le-trou-noir-fuse-erreur-193">Le "Trou Noir" FUSE (Erreur 193)<a class="headerlink" href="#le-trou-noir-fuse-erreur-193" title="Permanent link">¶</a></h3>
+<p>Ne jamais utiliser les raccourcis récents ou le dossier virtuel <code>Documents/</code> dans l'explorateur de fichiers Steam. Cela passe par le <em>XDG Desktop Portal</em> qui monte le fichier cible en lecture seule dans <code>/run/user/1000/doc/...</code>.</p>
+<p>Cela provoque deux problèmes majeurs :
+1. Proton ne peut pas voir le dossier réel contenant les shaders et les assets, ce qui cause un plantage immédiat au démarrage.
+2. L'accès en lecture à l'exécutable peut être tronqué à <strong>0 octet</strong>, ce qui déclenche le code d'erreur Win32 <code>193</code> (<code>ERROR_BAD_EXE_FORMAT</code>).</p>
+<h3 id="la-methode-fiable">La Méthode Fiable<a class="headerlink" href="#la-methode-fiable" title="Permanent link">¶</a></h3>
 <ol>
-<li>Ouvrez Steam, cliquez sur <strong>Ajouter un jeu</strong> en bas à gauche de la fenêtre, puis choisissez <strong>Ajouter un jeu non-Steam...</strong></li>
-<li>Cliquez sur <strong>Parcourir...</strong> et naviguez jusqu'au dossier extrait de votre release (<code>suckless-ogl-windows-&lt;version&gt;/</code>).</li>
-<li>Sélectionnez <code>app.exe</code> et cliquez sur <strong>Ajouter les sélections</strong>.</li>
+<li>Dans l'explorateur Steam, naviguez physiquement depuis la racine <code>/</code> jusqu'au chemin absolu sous votre dossier utilisateur :
+   <code>/home/USER/Prog/.../test-dist/suckless-ogl-windows-v0.1.0/app.exe</code></li>
+<li>Ouvrez les <strong>Propriétés &gt; Compatibilité</strong> du raccourci dans Steam et cochez <strong>Forcer l'utilisation d'un outil de compatibilité</strong>, puis sélectionnez <strong>Proton Experimental</strong> (ou Proton 9.x).</li>
+<li>Dans <strong>Propriétés &gt; Raccourci</strong>, assurez-vous que les guillemets <code>" "</code> encadrent correctement les chemins absolus dans les champs <strong>Cible</strong> et <strong>Démarrer dans</strong>.</li>
 </ol>
-<h3 id="configuration-de-la-compatibilite">Configuration de la compatibilité<a class="headerlink" href="#configuration-de-la-compatibilite" title="Permanent link">¶</a></h3>
-<ol>
-<li>Faites un clic droit sur le jeu nouvellement ajouté dans votre bibliothèque Steam et sélectionnez <strong>Propriétés...</strong></li>
-<li>Allez dans l'onglet <strong>Compatibilité</strong>.</li>
-<li>Cochez <strong>Forcer l'utilisation d'un outil de compatibilité Steam Play spécifique</strong>.</li>
-<li>Sélectionnez une version moderne de Proton (par exemple, <em>Proton 9.0</em> ou <em>Proton Experimental</em>).</li>
-</ol>
-<h3 id="resolution-du-repertoire-de-travail-integree">Résolution du répertoire de travail (Intégrée)<a class="headerlink" href="#resolution-du-repertoire-de-travail-integree" title="Permanent link">¶</a></h3>
-<p>Les raccourcis de Steam/Proton peuvent parfois lancer les jeux avec un répertoire de travail (Working Directory) incorrect, ce qui empêche le chargement des assets ou des shaders.</p>
-<p>Pour résoudre ce problème, l'application intègre un <strong>résolveur de répertoire de travail</strong> :
-- Au démarrage, le chemin de l'exécutable (<code>argv[0]</code>) est analysé pour définir le répertoire de travail initial.
-- Le programme remonte ensuite jusqu'à 4 niveaux de répertoires parents jusqu'à ce qu'il trouve les dossiers <code>shaders/</code> et <code>assets/</code>.
-- Cela garantit que les ressources sont correctement localisées, même lors d'un lancement depuis un chemin absolu plat ou un espace de noms Wine virtuel.</p>
-<h3 id="diagnostic-et-logs">Diagnostic et Logs<a class="headerlink" href="#diagnostic-et-logs" title="Permanent link">¶</a></h3>
-<p>Lors de l'exécution via Steam/Proton, les sorties standard (<code>stdout</code>) et d'erreur (<code>stderr</code>) sont redirigées vers des fichiers journaux dans le répertoire du jeu :
-- <strong><code>suckless_output.log</code></strong> : Contient le cycle de vie du moteur et les événements de configuration (détails du GPU, assets chargés, mesures de performances).
-- <strong><code>suckless_crash.log</code></strong> : Contient les informations de plantage (panic) ou les erreurs fatales du pilote graphique.</p>
-<p>Consulter ces fichiers est le moyen le plus rapide de déboguer les problèmes de démarrage ou de pilote sous Proton.</p>
+<hr>
+<h2 id="4-profiling-avance-et-overlay-mangohud-opengl">4. Profiling Avancé et Overlay (MangoHud / OpenGL)<a class="headerlink" href="#4-profiling-avance-et-overlay-mangohud-opengl" title="Permanent link">¶</a></h2>
+<p>Contrairement aux applications Vulkan, MangoHud ne s'injecte pas automatiquement dans les processus OpenGL via de simples variables d'environnement globales. L'injection de la bibliothèque (<code>LD_PRELOAD</code>) doit être forcée.</p>
+<p>Pour analyser les performances du moteur (Frametimes, charge CPU/GPU, VRAM) via l'overlay MangoHud sous Steam, configurez la ligne suivante dans les <strong>Options de lancement</strong> du raccourci Steam :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>STEAM_COMPAT_MOUNTS="/chemin/absolu/vers/test-dist/" WINEPREFIX="%compat%" mangohud %command%
+</span></code></pre></div>
+<ul>
+<li><strong><code>STEAM_COMPAT_MOUNTS</code></strong> : Force le sous-conteneur sécurisé de Valve (<em>Pressure Vessel</em>) à monter le répertoire de développement sur l'hôte, garantissant ainsi que Proton puisse y lire et y écrire librement (notamment pour générer les fichiers <code>suckless_output.log</code> et <code>suckless_crash.log</code>).</li>
+<li><strong><code>mangohud %command%</code></strong> : Exécute explicitement le wrapper MangoHud devant la commande de lancement Proton, interceptant ainsi le contexte OpenGL créé par l'exécutable Windows.</li>
+</ul>
 
 
 
@@ -3733,7 +3749,7 @@ Cette commande crée le dossier <code>build-win</code> et configure la compilati
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 juin 2026 12:42:51 UTC">26 juin 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 juin 2026 15:14:28 UTC">26 juin 2026</span>
   </span>
 
     
