@@ -1,0 +1,104 @@
+<map id="env_manager_update" name="env_manager_update">
+<area shape="rect" id="Node000001" title="Core update function driving loading, IBL generation, and transitions." alt="" coords="5,219,168,244"/>
+<area shape="rect" id="Node000002" href="$async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a" title="Cancel a loading request waiting for PBO input." alt="" coords="235,5,392,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,217,106,182,132,133,168,83,190,60,214,40,224,34,226,39,218,44,194,64,172,86,137,136,111,184,95,219"/>
+<area shape="rect" id="Node000003" href="$async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" title="Poll the status of the current request." alt="" coords="244,55,383,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="94,217,139,155,174,119,215,89,230,81,232,86,217,94,178,123,143,159,98,220"/>
+<area shape="rect" id="Node000004" href="$async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" title="Provide the mapped memory address and GL buffer ID for PBO writing." alt="" coords="216,104,411,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="101,216,150,179,215,140,236,131,238,136,217,144,153,183,104,221"/>
+<area shape="rect" id="Node000005" href="$env__manager_8c.html#a358ceca48cb42f02066be38f92d66ef8" title=" " alt="" coords="229,154,398,194"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="137,216,220,195,221,200,138,221"/>
+<area shape="rect" id="Node000013" href="$env__manager_8c.html#a0e77722a5bf0ef99cc77ad29c1c7b650" title=" " alt="" coords="232,269,395,309"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="138,241,221,263,220,268,137,247"/>
+<area shape="rect" id="Node000042" href="$env__manager_8c.html#a77c2cd1c9ed582fa8439e8f5dedea44d" title=" " alt="" coords="232,333,395,373"/>
+<area shape="poly" id="edge52_Node000001_Node000042" title=" " alt="" coords="105,242,153,279,217,318,232,325,230,330,215,323,150,283,102,246"/>
+<area shape="rect" id="Node000043" href="$texture_8c.html#aab7453443bd88ad6c923d608ec066a28" title="Ensures a PBO is allocated with sufficient size." alt="" coords="238,397,389,423"/>
+<area shape="poly" id="edge54_Node000001_Node000043" title=" " alt="" coords="97,243,142,310,176,349,217,382,231,390,229,395,215,387,173,353,138,313,93,246"/>
+<area shape="rect" id="Node000044" href="$texture_8c.html#a0d3c44efbe21ce365f8726603776fab5" title="Maps a PBO for writing." alt="" coords="245,447,381,472"/>
+<area shape="poly" id="edge55_Node000001_Node000044" title=" " alt="" coords="95,243,109,281,135,333,171,387,193,412,218,433,234,442,231,447,214,438,189,416,166,391,130,335,104,283,90,245"/>
+<area shape="rect" id="Node000045" href="$texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359" title="Pre&#45;allocates VRAM for an HDR texture (glTexStorage2D only)." alt="" coords="459,215,636,240"/>
+<area shape="poly" id="edge56_Node000001_Node000045" title=" " alt="" coords="168,228,445,226,445,231,168,233"/>
+<area shape="rect" id="Node000006" href="$env__manager_8c.html#a9f9952dcff7726fb8564739bf85db607" title=" " alt="" coords="462,161,633,187"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="398,171,448,171,448,177,398,177"/>
+<area shape="rect" id="Node000008" href="$texture_8c.html#aec66cef20e7ef9260fd363ab5408a594" title="Generates mipmaps for an HDR texture." alt="" coords="466,33,629,73"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="385,152,409,138,424,125,432,111,442,97,457,83,466,77,469,81,460,87,446,100,437,114,428,128,412,143,388,156"/>
+<area shape="rect" id="Node000009" href="$texture_8c.html#a248f9778a106f6a6d303c5d706738e99" title="Finalizes HDR upload from a PBO (Unmap &#45;&gt; Upload &#45;&gt; Mipmaps)." alt="" coords="473,97,621,137"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="395,151,460,135,461,140,396,157"/>
+<area shape="rect" id="Node000007" href="$env__manager_8c.html#ab18add7ab6c2ba76fc23d9352a951854" title=" " alt="" coords="703,156,877,181"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="633,169,689,168,689,174,633,175"/>
+<area shape="rect" id="Node000010" href="$texture_8c.html#a11ce172df808eae87ff075956f11e0e8" title=" " alt="" coords="684,55,896,80"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="621,99,713,80,714,85,623,104"/>
+<area shape="rect" id="Node000011" href="$texture_8c.html#a35694e68e7796084e723cd719f7f1285" title=" " alt="" coords="686,104,894,129"/>
+<area shape="poly" id="edge10_Node000009_Node000011" title=" " alt="" coords="622,114,672,114,672,119,622,119"/>
+<area shape="rect" id="Node000012" href="$texture_8c.html#af0be6cd9be3963a59f28769b690e2635" title="Check if an existing texture matches the expected HDR format." alt="" coords="965,104,1125,129"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="894,114,952,114,952,119,894,119"/>
+<area shape="rect" id="Node000014" href="$env__manager_8c.html#a9ffed43dc8d9e848cc7d0279cf94927e" title=" " alt="" coords="479,276,616,301"/>
+<area shape="poly" id="edge13_Node000013_Node000014" title=" " alt="" coords="395,286,465,286,465,291,395,291"/>
+<area shape="rect" id="Node000015" href="$env__manager_8c.html#a7c8116470046be81700d5ebbf40537de" title=" " alt="" coords="466,326,629,366"/>
+<area shape="poly" id="edge14_Node000013_Node000015" title=" " alt="" coords="396,306,453,320,452,325,394,311"/>
+<area shape="rect" id="Node000039" href="$env__manager_8c.html#ae78d3a5d332aa74262fa5f83e727a463" title=" " alt="" coords="481,391,614,416"/>
+<area shape="poly" id="edge49_Node000013_Node000039" title=" " alt="" coords="390,306,412,319,428,333,437,348,445,362,460,376,473,383,471,388,457,380,441,366,432,351,424,337,409,323,388,311"/>
+<area shape="rect" id="Node000016" href="$env__manager_8c.html#a8c33467652f7f936529f32bffbd2fd79" title=" " alt="" coords="718,548,862,573"/>
+<area shape="poly" id="edge15_Node000015_Node000016" title=" " alt="" coords="614,364,638,377,668,406,705,448,773,535,769,538,701,452,664,409,634,381,611,368"/>
+<area shape="rect" id="Node000022" href="$env__manager_8c.html#adb8bbab5e56a7eaac8b65758938f1cf7" title=" " alt="" coords="717,333,863,359"/>
+<area shape="poly" id="edge21_Node000015_Node000022" title=" " alt="" coords="629,343,703,343,703,349,629,349"/>
+<area shape="rect" id="Node000026" href="$env__manager_8c.html#a8c9d06b549bb6a99208efa5919309dca" title=" " alt="" coords="699,257,881,283"/>
+<area shape="poly" id="edge26_Node000015_Node000026" title=" " alt="" coords="612,323,735,284,736,289,613,328"/>
+<area shape="rect" id="Node000028" href="$env__manager_8c.html#a7a9c81b71c5a028248f7c7721287b610" title=" " alt="" coords="709,384,871,409"/>
+<area shape="poly" id="edge29_Node000015_Node000028" title=" " alt="" coords="629,360,716,379,715,384,628,366"/>
+<area shape="rect" id="Node000031" href="$env__manager_8c.html#a70bdcf9765569e8e86540b0d5ed65c5f" title=" " alt="" coords="703,696,877,721"/>
+<area shape="poly" id="edge33_Node000015_Node000031" title=" " alt="" coords="622,364,638,378,656,404,666,429,670,454,670,478,670,528,675,555,686,585,704,614,724,641,766,685,762,688,720,644,699,617,682,587,670,557,665,528,665,478,665,454,661,430,652,406,634,381,619,368"/>
+<area shape="rect" id="Node000017" href="$env__manager_8c.html#a1e7293b3c0a2d29125bbe5008dc72c80" title=" " alt="" coords="965,548,1125,573"/>
+<area shape="poly" id="edge16_Node000016_Node000017" title=" " alt="" coords="862,558,952,558,952,563,862,563"/>
+<area shape="rect" id="Node000018" href="$env__manager_8c.html#a840de37691b0329a500d31b51d3a9452" title=" " alt="" coords="959,597,1132,623"/>
+<area shape="poly" id="edge17_Node000016_Node000018" title=" " alt="" coords="857,571,966,592,965,597,856,576"/>
+<area shape="rect" id="Node000020" href="$pbr_8c.html#a719d0f0fa9fdb9a743885fc82c617162" title="Computes one face/slice of the irradiance map." alt="" coords="969,483,1121,523"/>
+<area shape="poly" id="edge19_Node000016_Node000020" title=" " alt="" coords="847,545,955,521,956,526,848,551"/>
+<area shape="rect" id="Node000021" href="$utils_8c.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="992,647,1099,672"/>
+<area shape="poly" id="edge20_Node000016_Node000021" title=" " alt="" coords="815,571,873,602,945,633,980,643,978,648,943,638,870,606,812,576"/>
+<area shape="rect" id="Node000019" href="$perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc" title="Stops the timer and returns elapsed time in milliseconds." alt="" coords="1195,516,1369,541"/>
+<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="1106,595,1146,583,1241,545,1243,550,1148,589,1108,600"/>
+<area shape="rect" id="Node000023" href="$pbr_8c.html#ad7b8c646322f8f6704017540c02955eb" title="Starts the GPU computation for mean luminance (non&#45;blocking). Uses a two&#45;pass parallel reduction via ..." alt="" coords="946,269,1145,309"/>
+<area shape="poly" id="edge22_Node000022_Node000023" title=" " alt="" coords="847,331,942,309,943,314,848,336"/>
+<area shape="rect" id="Node000024" href="$env__manager_8c.html#a3f6db741eecc6c2859112fc28d0abbfc" title=" " alt="" coords="987,384,1104,409"/>
+<area shape="poly" id="edge23_Node000022_Node000024" title=" " alt="" coords="856,356,974,380,973,385,855,361"/>
+<area shape="rect" id="Node000025" href="$perf__timer_8c.html#a2fe19c18f13ab8077e83373abd1a00f5" title="Starts the CPU timer." alt="" coords="1219,359,1345,384"/>
+<area shape="poly" id="edge25_Node000022_Node000025" title=" " alt="" coords="864,347,1205,365,1205,370,863,352"/>
+<area shape="poly" id="edge24_Node000024_Node000025" title=" " alt="" coords="1104,388,1205,377,1205,382,1105,393"/>
+<area shape="poly" id="edge28_Node000026_Node000019" title=" " alt="" coords="852,255,895,237,908,225,917,213,927,201,943,190,1000,168,1050,156,1074,157,1098,162,1122,173,1148,191,1170,213,1182,236,1187,260,1187,284,1185,337,1188,365,1197,396,1230,455,1264,503,1259,507,1225,458,1192,398,1182,366,1179,337,1182,284,1182,260,1177,238,1166,216,1145,195,1120,178,1096,167,1073,162,1050,162,1002,173,945,195,930,205,921,216,912,229,897,242,854,260"/>
+<area shape="rect" id="Node000027" href="$pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c" title="Reads the result of mean luminance computation from the SSBO. This function should be called only aft..." alt="" coords="946,205,1145,245"/>
+<area shape="poly" id="edge27_Node000026_Node000027" title=" " alt="" coords="862,255,932,242,933,247,863,260"/>
+<area shape="poly" id="edge30_Node000028_Node000024" title=" " alt="" coords="872,394,973,394,973,399,872,399"/>
+<area shape="rect" id="Node000029" href="$pbr_8c.html#a71941da15aee302848216a21ec1cc846" title="Initializes a texture for progressive specular pre&#45;filtering." alt="" coords="981,433,1110,459"/>
+<area shape="poly" id="edge31_Node000028_Node000029" title=" " alt="" coords="857,407,968,428,967,434,856,412"/>
+<area shape="rect" id="Node000030" href="$render__utils_8c.html#a90d078a815893bfeb3fab9a551942916" title="Creates a 2D texture with specified parameters." alt="" coords="1209,669,1355,709"/>
+<area shape="poly" id="edge32_Node000029_Node000030" title=" " alt="" coords="1111,452,1131,459,1148,469,1168,488,1178,508,1185,528,1197,553,1262,655,1258,658,1192,555,1180,530,1173,510,1163,492,1145,473,1128,464,1109,457"/>
+<area shape="poly" id="edge42_Node000031_Node000017" title=" " alt="" coords="802,694,859,640,899,610,943,584,963,575,965,580,945,588,902,614,862,645,805,698"/>
+<area shape="poly" id="edge43_Node000031_Node000018" title=" " alt="" coords="813,693,871,664,943,633,971,624,973,629,945,638,874,668,816,698"/>
+<area shape="poly" id="edge48_Node000031_Node000021" title=" " alt="" coords="856,693,978,670,979,675,857,699"/>
+<area shape="poly" id="edge44_Node000031_Node000024" title=" " alt="" coords="804,694,848,648,873,618,894,585,904,561,908,539,910,498,916,460,925,440,942,420,956,409,972,402,975,407,959,414,946,424,930,443,921,461,916,499,914,540,909,563,898,587,877,621,852,652,808,698"/>
+<area shape="rect" id="Node000032" href="$env__manager_8c.html#a325df28750573fe64f999eace591c77b" title=" " alt="" coords="968,860,1123,885"/>
+<area shape="poly" id="edge34_Node000031_Node000032" title=" " alt="" coords="804,720,860,780,900,815,945,845,963,853,961,858,943,850,897,820,856,784,800,723"/>
+<area shape="rect" id="Node000034" href="$env__manager_8c.html#aaa5ff05792c6e4a641f2bffb90279ac4" title=" " alt="" coords="953,909,1137,935"/>
+<area shape="poly" id="edge36_Node000031_Node000034" title=" " alt="" coords="800,720,820,756,852,804,894,854,919,876,945,896,956,902,954,906,943,900,916,880,891,857,848,807,816,759,796,723"/>
+<area shape="rect" id="Node000035" href="$env__manager_8c.html#a68e655e2e6acfa7418ca6cbb31f7dfa7" title=" " alt="" coords="953,745,1137,771"/>
+<area shape="poly" id="edge38_Node000031_Node000035" title=" " alt="" coords="857,719,966,740,965,745,856,724"/>
+<area shape="rect" id="Node000036" href="$env__manager_8c.html#afd9d63c9f2007aeb78aa1e3df5552c3e" title=" " alt="" coords="944,795,1147,835"/>
+<area shape="poly" id="edge40_Node000031_Node000036" title=" " alt="" coords="816,719,874,749,945,781,965,788,963,793,943,786,872,754,813,724"/>
+<area shape="rect" id="Node000037" href="$pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7" title="Initializes a texture for progressive irradiance computation." alt="" coords="974,696,1117,721"/>
+<area shape="poly" id="edge45_Node000031_Node000037" title=" " alt="" coords="877,706,960,706,960,711,877,711"/>
+<area shape="rect" id="Node000038" href="$pbr_8c.html#a2e45982e37b3d9cbcaa5454ddbb5a660" title="Computes a single slice or mip&#45;level for progressive pre&#45;filtering." alt="" coords="979,959,1112,984"/>
+<area shape="poly" id="edge47_Node000031_Node000038" title=" " alt="" coords="803,720,845,779,898,859,911,885,918,907,927,926,946,945,967,957,964,962,942,949,923,929,913,909,906,887,894,862,841,782,799,723"/>
+<area shape="rect" id="Node000033" href="$env__manager_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e" title=" " alt="" coords="1203,831,1361,856"/>
+<area shape="poly" id="edge35_Node000032_Node000033" title=" " alt="" coords="1123,860,1189,852,1189,857,1124,866"/>
+<area shape="poly" id="edge37_Node000034_Node000033" title=" " alt="" coords="1106,907,1146,895,1239,859,1241,864,1148,901,1107,912"/>
+<area shape="poly" id="edge39_Node000035_Node000033" title=" " alt="" coords="1105,768,1148,781,1244,822,1242,827,1146,786,1104,773"/>
+<area shape="poly" id="edge41_Node000036_Node000033" title=" " alt="" coords="1147,825,1189,830,1189,835,1147,830"/>
+<area shape="poly" id="edge46_Node000037_Node000030" title=" " alt="" coords="1117,700,1195,693,1195,699,1117,705"/>
+<area shape="rect" id="Node000040" href="$postprocess__readback_8c.html#aecbf3590a5f6119f5093284c9319ead3" title="Updates the target exposure threshold for AE." alt="" coords="693,873,887,913"/>
+<area shape="poly" id="edge50_Node000039_Node000040" title=" " alt="" coords="555,415,603,547,642,640,686,733,728,802,768,860,763,863,723,805,682,735,637,642,598,549,550,417"/>
+<area shape="rect" id="Node000041" href="$postprocess__setters_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="948,1008,1143,1033"/>
+<area shape="poly" id="edge51_Node000040_Node000041" title=" " alt="" coords="817,911,873,953,908,975,945,994,964,1002,962,1007,943,999,906,980,870,958,813,915"/>
+<area shape="poly" id="edge53_Node000042_Node000039" title=" " alt="" coords="395,368,475,385,474,390,394,373"/>
+<area shape="poly" id="edge57_Node000045_Node000012" title=" " alt="" coords="636,231,696,230,762,225,830,212,895,190,909,181,918,170,928,158,943,146,976,131,978,136,945,151,932,162,923,173,913,185,897,195,831,217,763,230,696,236,636,236"/>
+</map>

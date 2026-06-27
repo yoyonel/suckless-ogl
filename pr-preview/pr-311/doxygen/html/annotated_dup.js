@@ -63,7 +63,6 @@ var annotated_dup =
     [ "HdrScanContext", "structHdrScanContext.html", "structHdrScanContext" ],
     [ "HybridTimer", "structHybridTimer.html", "structHybridTimer" ],
     [ "HybridTimerRAII", "structHybridTimerRAII.html", "structHybridTimerRAII" ],
-    [ "IBLCoordinator", "structIBLCoordinator.html", "structIBLCoordinator" ],
     [ "IcosphereGeometry", "structIcosphereGeometry.html", "structIcosphereGeometry" ],
     [ "IncludeContext", "structIncludeContext.html", "structIncludeContext" ],
     [ "InstanceData", "structInstanceData.html", "structInstanceData" ],

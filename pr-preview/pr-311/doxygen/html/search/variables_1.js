@@ -22,13 +22,12 @@ var searchData=
   ['ao_19',['ao',['../structSphereInstance.html#a859fe5779df50fa40fc8390ec36ccc77',1,'SphereInstance::ao'],['../structSphereInstanceSSBO.html#ad1a810cbf576b8626534d9c366be440e',1,'SphereInstanceSSBO::ao'],['../structInstanceData.html#a068536f2c0889153fa6341fc2ff162ad',1,'InstanceData::ao']]],
   ['app_5fsubsystem_5ftable_20',['APP_SUBSYSTEM_TABLE',['../app_8c.html#a6fb26f2c8f3e06d95c9dbaf1ad1473c2',1,'app.c']]],
   ['asset_5fregistry_21',['ASSET_REGISTRY',['../asset__manager_8c.html#ae4d3e5f81d29901ed5e77e6f54cb2167',1,'asset_manager.c']]],
-  ['async_5fcoord_22',['async_coord',['../structApp.html#afcde1a5cf1997b417702196d6992f5d0',1,'App']]],
-  ['async_5floader_23',['async_loader',['../structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516',1,'AppInputContext::async_loader'],['../structApp.html#ae23d2d96f024e64c81f150041c6f93af',1,'App::async_loader']]],
-  ['auto_5fexposure_24',['auto_exposure',['../structPostProcess.html#a8362e441c1070f454241f61975e5be5c',1,'PostProcess']]],
-  ['auto_5fexposure_5ffx_25',['auto_exposure_fx',['../structPostProcess.html#a3e461c228e9958518b604890bcfb198b',1,'PostProcess']]],
-  ['auto_5fthreshold_26',['auto_threshold',['../structPPExposureReadback.html#a7b8e6a12b111749203b5455f48602719',1,'PPExposureReadback']]],
-  ['available_27',['available',['../structGPUUsageMonitor.html#a815a9e1cb99076dd7da00fb098b1d4eb',1,'GPUUsageMonitor']]],
-  ['average_5fframe_5ftime_28',['average_frame_time',['../structFpsCounter.html#a17cfe0d94e6f5994b7f54d8033557732',1,'FpsCounter']]],
-  ['avg_5fdt_29',['avg_dt',['../structAdaptiveSampler.html#aea3449f2c179f805502b448ffe780650',1,'AdaptiveSampler']]],
-  ['axes_30',['axes',['../structGamepadState.html#a66613551f374fa5f157632cdf39ef812',1,'GamepadState']]]
+  ['async_5floader_22',['async_loader',['../structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516',1,'AppInputContext::async_loader'],['../structApp.html#ae23d2d96f024e64c81f150041c6f93af',1,'App::async_loader']]],
+  ['auto_5fexposure_23',['auto_exposure',['../structPostProcess.html#a8362e441c1070f454241f61975e5be5c',1,'PostProcess']]],
+  ['auto_5fexposure_5ffx_24',['auto_exposure_fx',['../structPostProcess.html#a3e461c228e9958518b604890bcfb198b',1,'PostProcess']]],
+  ['auto_5fthreshold_25',['auto_threshold',['../structPPExposureReadback.html#a7b8e6a12b111749203b5455f48602719',1,'PPExposureReadback']]],
+  ['available_26',['available',['../structGPUUsageMonitor.html#a815a9e1cb99076dd7da00fb098b1d4eb',1,'GPUUsageMonitor']]],
+  ['average_5fframe_5ftime_27',['average_frame_time',['../structFpsCounter.html#a17cfe0d94e6f5994b7f54d8033557732',1,'FpsCounter']]],
+  ['avg_5fdt_28',['avg_dt',['../structAdaptiveSampler.html#aea3449f2c179f805502b448ffe780650',1,'AdaptiveSampler']]],
+  ['axes_29',['axes',['../structGamepadState.html#a66613551f374fa5f157632cdf39ef812',1,'GamepadState']]]
 ];

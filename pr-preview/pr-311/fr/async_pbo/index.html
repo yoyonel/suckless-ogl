@@ -91,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pbos-asynchrones-double-tampon-persistant" class="md-skip">
+        <a href="#strategie-dupload-de-texture-asynchrone" class="md-skip">
           Aller au contenu
         </a>
       
@@ -1893,10 +1893,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#contexte-et-objectifs" class="md-nav__link">
+  <a href="#le-probleme" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Contexte et objectifs
+        Le Problème
       
     </span>
   </a>
@@ -1904,22 +1904,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#double-tampon-persistant" class="md-nav__link">
+  <a href="#vue-densemble-de-larchitecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Double tampon persistant
+        Vue d'Ensemble de l'Architecture
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Double tampon persistant">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-solution-pbos-double-tampon-non-synchronises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Solution : PBOs Double Tampon Non Synchronisés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="La Solution : PBOs Double Tampon Non Synchronisés">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#principe" class="md-nav__link">
+  <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Principe
+        Architecture
       
     </span>
   </a>
@@ -1927,10 +1938,138 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#allocation" class="md-nav__link">
+  <a href="#optimisations-cles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Allocation
+        Optimisations Clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optimisations Clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-double-tampon-mappage-non-synchronise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Double Tampon &amp; Mappage Non Synchronisé
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-allocation-persistante-sans-orphelinage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Allocation Persistante (Sans Orphelinage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-upload-en-2-etapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Upload en 2 étapes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialisation-multi-images-de-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialisation Multi-Images de Ressources
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Initialisation Multi-Images de Ressources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#le-goulot-detranglement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Le Goulot d'Étranglement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-strategie-repartir-le-travail-sur-3-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Stratégie : Répartir le Travail sur 3 Images
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="La Stratégie : Répartir le Travail sur 3 Images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#image-n-configuration-du-pbo-async_waiting_for_pbo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image N : Configuration du PBO (ASYNC_WAITING_FOR_PBO)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-n1-pre-allocation-vram-differee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image N+1 : Pré-allocation VRAM Différée
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-nm-upload-depuis-le-pbo-async_ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image N+M : Upload depuis le PBO (ASYNC_READY)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flux-de-pre-allocation-differee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flux de Pré-allocation Différée
       
     </span>
   </a>
@@ -1943,33 +2082,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialisation-multi-image" class="md-nav__link">
+  <a href="#suppression-des-points-de-synchronisation-audit-glgeterror" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Initialisation multi-image
+        Suppression des Points de Synchronisation (Audit glGetError)
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#suppression-des-points-de-synchronisation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Suppression des points de synchronisation
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Suppression des points de synchronisation">
+    <nav class="md-nav" aria-label="Suppression des Points de Synchronisation (Audit glGetError)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#laudit-glgeterror" class="md-nav__link">
+  <a href="#pourquoi-glgeterror-bloque-le-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L'audit glGetError
+        Pourquoi glGetError() Bloque le Pipeline
       
     </span>
   </a>
@@ -1977,10 +2105,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#resultat" class="md-nav__link">
+  <a href="#le-filet-de-securite-gl_debug_output_synchronous" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Résultat
+        Le Filet de Sécurité : GL_DEBUG_OUTPUT_SYNCHRONOUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultats-de-laudit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résultats de l'Audit
       
     </span>
   </a>
@@ -1993,22 +2132,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phases-devolution" class="md-nav__link">
+  <a href="#evolution-de-limplementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phases d'évolution
+        Évolution de l'Implémentation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Phases d'évolution">
+    <nav class="md-nav" aria-label="Évolution de l'Implémentation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#phase-1-pbo-simple" class="md-nav__link">
+  <a href="#phase-1-asynchrone-naif-bloquant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 1 — PBO simple
+        Phase 1 : Asynchrone Naïf (Bloquant)
       
     </span>
   </a>
@@ -2016,10 +2155,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-2-pbo-double-tampon" class="md-nav__link">
+  <a href="#phase-2-pbo-unique-orphelinage-ralentissements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 2 — PBO double tampon
+        Phase 2 : PBO Unique + Orphelinage (Ralentissements)
       
     </span>
   </a>
@@ -2027,10 +2166,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-3-pbo-persistant-actuel" class="md-nav__link">
+  <a href="#phase-3-pbo-unique-synchronisation-bloquant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 3 — PBO persistant (actuel)
+        Phase 3 : PBO Unique + Synchronisation (Bloquant)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-double-tampon-persistant-strategie-precedente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 : Double Tampon Persistant (Stratégie Précédente)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-pre-allocation-multi-images-retrait-de-glgeterror-actuelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 : Pré-allocation Multi-Images &amp; Retrait de glGetError (Actuelle)
       
     </span>
   </a>
@@ -2043,21 +2204,49 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#readback-lecture-gpu-cpu" class="md-nav__link">
+  <a href="#readbacks-de-performance-asynchrones-exposition-histogramme" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Readback (lecture GPU → CPU)
+        Readbacks de Performance Asynchrones (Exposition &amp; Histogramme)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Readbacks de Performance Asynchrones (Exposition &amp; Histogramme)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#le-defi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Le Défi
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#voir-aussi" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#limplementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Voir aussi
+        L'Implémentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references-du-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Références du Code
       
     </span>
   </a>
@@ -3672,85 +3861,351 @@
   
 
 
-<h1 id="pbos-asynchrones-double-tampon-persistant">PBOs asynchrones — Double tampon persistant<a class="headerlink" href="#pbos-asynchrones-double-tampon-persistant" title="Permanent link">¶</a></h1>
-<p>Ce document décrit l'architecture des Pixel Buffer Objects (PBOs) à double tampon persistant utilisée pour les transferts GPU sans synchronisation.</p>
-<h2 id="contexte-et-objectifs">Contexte et objectifs<a class="headerlink" href="#contexte-et-objectifs" title="Permanent link">¶</a></h2>
-<p>L'objectif est de transférer des données volumineux (textures HDR 4K, readbacks de pixels) entre le CPU et le GPU <strong>sans jamais bloquer la boucle de rendu</strong>. Cela implique :</p>
+<h1 id="strategie-dupload-de-texture-asynchrone">Stratégie d'Upload de Texture Asynchrone<a class="headerlink" href="#strategie-dupload-de-texture-asynchrone" title="Permanent link">¶</a></h1>
+<p>Ce document détaille l'implémentation du système d'upload asynchrone de textures haute résolution dans <code>suckless-ogl</code>, en se concentrant spécifiquement sur la stratégie de <strong>Pixel Buffer Object (PBO) à double tampon</strong> utilisée pour éliminer les blocages du thread principal, et la stratégie d'<strong>initialisation de ressources multi-images</strong> qui répartit les coûts d'allocation GPU sur plusieurs images (frames).</p>
+<h2 id="le-probleme">Le Problème<a class="headerlink" href="#le-probleme" title="Permanent link">¶</a></h2>
+<p>L'upload de grandes textures HDR 4K (environ 64 Mo) vers le GPU est une opération lourde.</p>
 <ul>
-<li>Pas d'orphelinage de tampon (<code>glBufferData</code> sur un tampon actif)</li>
-<li>Pas d'attente de synchronisation CPU/GPU</li>
-<li>Zéro appel à <code>glGetError</code> dans le chemin critique</li>
+<li><strong>Upload Direct (<code>glTexImage2D</code>)</strong> : Bloque le pilote et le thread principal jusqu'à ce que la copie soit terminée (~50ms+), provoquant des chutes de framerate massives.</li>
+<li><strong>PBO Naïf</strong> : L'utilisation d'un seul PBO permet un transfert DMA asynchrone, mais le <em>mappage</em> de ce PBO (<code>glMapBufferRange</code>) peut toujours bloquer si le GPU est en train d'y lire (synchronisation implicite).</li>
+<li><strong>Upload Monolithique</strong> : Même avec des PBOs, effectuer tout le travail GPU (allocation du stockage de texture, upload des données, génération des mipmaps) en une seule image crée un pic de ~60ms.</li>
 </ul>
-<h2 id="double-tampon-persistant">Double tampon persistant<a class="headerlink" href="#double-tampon-persistant" title="Permanent link">¶</a></h2>
-<h3 id="principe">Principe<a class="headerlink" href="#principe" title="Permanent link">¶</a></h3>
-<p>Deux PBOs sont alloués une fois à l'initialisation avec <code>GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT</code>. Ils restent mappés en permanence.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Image N-1 : PBO[0] → GPU traite
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Image N   : CPU écrit dans PBO[1]
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Image N+1 : PBO[1] → GPU traite, CPU écrit dans PBO[0]
-</span></code></pre></div>
-<p>À aucun moment le même PBO n'est écrit par le CPU et lu par le GPU simultanément.</p>
-<h3 id="allocation">Allocation<a class="headerlink" href="#allocation" title="Permanent link">¶</a></h3>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Allocation persistante — une seule fois</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">glGenBuffers</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">pbo</span><span class="p">);</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">glBindBuffer</span><span class="p">(</span><span class="n">GL_PIXEL_UNPACK_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="n">pbo</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">glBufferStorage</span><span class="p">(</span><span class="n">GL_PIXEL_UNPACK_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="n">HDR_MAX_SIZE</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">                    </span><span class="nb">NULL</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">                    </span><span class="n">GL_MAP_WRITE_BIT</span><span class="w"> </span><span class="o">|</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">                    </span><span class="n">GL_MAP_PERSISTENT_BIT</span><span class="w"> </span><span class="o">|</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">                    </span><span class="n">GL_MAP_COHERENT_BIT</span><span class="p">);</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">mapped_ptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glMapBufferRange</span><span class="p">(</span><span class="n">GL_PIXEL_UNPACK_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">HDR_MAX_SIZE</span><span class="p">,</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">                                     </span><span class="n">GL_MAP_WRITE_BIT</span><span class="w"> </span><span class="o">|</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">                                     </span><span class="n">GL_MAP_PERSISTENT_BIT</span><span class="w"> </span><span class="o">|</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">                                     </span><span class="n">GL_MAP_COHERENT_BIT</span><span class="p">);</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">}</span>
-</span></code></pre></div>
-<h2 id="initialisation-multi-image">Initialisation multi-image<a class="headerlink" href="#initialisation-multi-image" title="Permanent link">¶</a></h2>
-<p>Certaines ressources GPU (notamment les cube maps IBL) nécessitent plusieurs images pour être entièrement initialisées. Le protocole garantit que :</p>
+<h2 id="vue-densemble-de-larchitecture">Vue d'Ensemble de l'Architecture<a class="headerlink" href="#vue-densemble-de-larchitecture" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
+sequenceDiagram
+    participant Main as Thread Principal (EnvManager)
+    participant Worker as Worker Asynchrone
+    participant GPU as GPU / Pilote
+
+    Note over Main: Image N - Config PBO
+    Main-&gt;&gt;GPU: texture_ensure_pbo() + texture_map_pbo()
+    Main-&gt;&gt;Worker: async_loader_provide_pbo(mapped_ptr)
+
+    Note over Main: Image N+1 - Pré-allocation VRAM
+    Main-&gt;&gt;GPU: texture_preallocate_hdr()&lt;br/&gt;glTexImage2D(level 0, NULL)
+    Note over GPU: Allouer ~64 Mo niveau 0 uniquement
+
+    Note over Worker: Images N..N+M - Conversion en arrière-plan
+    Worker-&gt;&gt;Worker: float32 -&gt; float16 (SIMD)&lt;br/&gt;directement dans le PBO mappé
+
+    Note over Main: Image N+M - Upload &amp; Mipmaps
+    Main-&gt;&gt;GPU: glUnmapBuffer(PBO)
+    Main-&gt;&gt;GPU: glTexSubImage2D(depuis PBO)
+    Main-&gt;&gt;GPU: glGenerateMipmap()
+    Note over GPU: Transfert DMA + chaîne de mipmaps</code></pre>
+<h2 id="la-solution-pbos-double-tampon-non-synchronises">La Solution : PBOs Double Tampon Non Synchronisés<a class="headerlink" href="#la-solution-pbos-double-tampon-non-synchronises" title="Permanent link">¶</a></h2>
+<p>Pour garantir que le Thread Principal n'attende <em>jamais</em> le GPU, nous utilisons une stratégie de <strong>Ping-Pong</strong> avec deux PBOs persistants.</p>
+<h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
 <ol>
-<li>La ressource est créée avec <code>glTexStorage2D</code> (stockage immuable)</li>
-<li>Chaque face/mip est chargée progressivement via le PBO</li>
-<li>Un point de synchronisation explicite (<code>GLsync</code>) confirme la fin avant utilisation</li>
-</ol>
-<h2 id="suppression-des-points-de-synchronisation">Suppression des points de synchronisation<a class="headerlink" href="#suppression-des-points-de-synchronisation" title="Permanent link">¶</a></h2>
-<h3 id="laudit-glgeterror">L'audit <code>glGetError</code><a class="headerlink" href="#laudit-glgeterror" title="Permanent link">¶</a></h3>
-<p>L'audit initial du code révélait des appels <code>glGetError</code> après chaque upload, utilisés comme synchronisation implicite. Ces appels ont été supprimés car :</p>
+<li>
+<p><strong>Thread Worker Asynchrone</strong> :</p>
 <ul>
-<li><code>glGetError</code> vide la file de commandes GPU → synchronisation forcée non nécessaire</li>
-<li>Le double tampon garantit déjà qu'aucune course n'est possible</li>
-<li>Les clôtures explicites (<code>glFenceSync</code>) couvrent les cas où une synchronisation est réellement requise</li>
+<li>Charge le fichier HDR depuis le disque (I/O).</li>
+<li>Décode vers un buffer de floats.</li>
+<li><strong>Attend</strong> que le Thread Principal fournisse un pointeur GPU mappé.</li>
+<li>Convertit Float -&gt; Half-Float (FP16) <em>directement</em> dans la mémoire mappée.</li>
 </ul>
-<h3 id="resultat">Résultat<a class="headerlink" href="#resultat" title="Permanent link">¶</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Avant :  ~1.4 ms de blocage par upload (implicit sync via glGetError)
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Après :  &lt; 0.05 ms (transfert asynchrone, aucun blocage)
-</span></code></pre></div>
-<h2 id="phases-devolution">Phases d'évolution<a class="headerlink" href="#phases-devolution" title="Permanent link">¶</a></h2>
-<h3 id="phase-1-pbo-simple">Phase 1 — PBO simple<a class="headerlink" href="#phase-1-pbo-simple" title="Permanent link">¶</a></h3>
-<p>Upload synchrone via <code>glMapBuffer</code> + <code>memcpy</code>. Simple mais bloquant.</p>
-<h3 id="phase-2-pbo-double-tampon">Phase 2 — PBO double tampon<a class="headerlink" href="#phase-2-pbo-double-tampon" title="Permanent link">¶</a></h3>
-<p>Alternance entre deux PBOs pour éviter les conflits. Efficace pour les textures régulières.</p>
-<h3 id="phase-3-pbo-persistant-actuel">Phase 3 — PBO persistant (actuel)<a class="headerlink" href="#phase-3-pbo-persistant-actuel" title="Permanent link">¶</a></h3>
-<p>Mappage permanent, cohérence automatique, suppression de <code>glGetError</code>. Adapté aux uploads haute fréquence et aux grandes textures HDR.</p>
-<h2 id="readback-lecture-gpu-cpu">Readback (lecture GPU → CPU)<a class="headerlink" href="#readback-lecture-gpu-cpu" title="Permanent link">¶</a></h2>
-<p>Le même principe s'applique aux readbacks de pixels (histogramme de luminance, débogage) :</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Déclencher le readback (non bloquant)</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">glBindBuffer</span><span class="p">(</span><span class="n">GL_PIXEL_PACK_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="n">pbo_read</span><span class="p">[</span><span class="n">idx</span><span class="p">]);</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">glReadPixels</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">GL_RGBA</span><span class="p">,</span><span class="w"> </span><span class="n">GL_UNSIGNED_BYTE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">fence</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glFenceSync</span><span class="p">(</span><span class="n">GL_SYNC_GPU_COMMANDS_COMPLETE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">// Image suivante : lire le résultat si disponible</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">GLenum</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glClientWaitSync</span><span class="p">(</span><span class="n">fence</span><span class="p">[</span><span class="o">!</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">GL_SYNC_FLUSH_COMMANDS_BIT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">GL_TIMEOUT_EXPIRED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glMapBuffer</span><span class="p">(</span><span class="n">GL_PIXEL_PACK_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="n">GL_READ_ONLY</span><span class="p">);</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="n">process_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="n">glUnmapBuffer</span><span class="p">(</span><span class="n">GL_PIXEL_PACK_BUFFER</span><span class="p">);</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">}</span>
-</span></code></pre></div>
-<h2 id="voir-aussi">Voir aussi<a class="headerlink" href="#voir-aussi" title="Permanent link">¶</a></h2>
+</li>
+<li>
+<p><strong>Thread Principal (<code>env_manager_update</code>)</strong> :</p>
 <ul>
-<li><a href="../async_loader/">async_loader.md</a> — Vue d'ensemble du chargeur HDR</li>
-<li><a href="../gpu-rendering-synchronization/">gpu-rendering-synchronization.md</a> — Synchronisation explicite</li>
-<li><a href="../synchronization_overview/">synchronization_overview.md</a> — Philosophie de synchronisation</li>
+<li>Vérifie si le worker est en attente.</li>
+<li>Sélectionne le <strong>prochain PBO disponible</strong> (index <code>upload_pbo_idx</code>).</li>
+<li><strong>Mappe</strong> le PBO avec le flag <code>GL_MAP_UNSYNCHRONIZED_BIT</code>.</li>
+<li>Transmet le pointeur au worker.</li>
+<li>Lorsque le worker a terminé, <strong>démappe (Unmap)</strong> et appelle <code>glTexSubImage2D</code> (dans les étapes de chargement progressif IBL/chargement).</li>
+</ul>
+</li>
+</ol>
+<h3 id="optimisations-cles">Optimisations Clés<a class="headerlink" href="#optimisations-cles" title="Permanent link">¶</a></h3>
+<h4 id="1-double-tampon-mappage-non-synchronise">1. Double Tampon &amp; Mappage Non Synchronisé<a class="headerlink" href="#1-double-tampon-mappage-non-synchronise" title="Permanent link">¶</a></h4>
+<p>En alternant entre <code>upload_pbo[0]</code> and <code>upload_pbo[1]</code>, nous garantissons que pendant que le GPU lit depuis le PBO 0 (pour la texture précédente), nous mappons et écrivons dans le PBO 1.
+Cela nous permet d'utiliser le flag <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, qui indique au pilote : <em>"Je promets que je n'écrase pas des données que tu es en train d'utiliser, donc ne vérifie rien, donne-moi juste le pointeur immédiatement."</em></p>
+<h4 id="2-allocation-persistante-sans-orphelinage">2. Allocation Persistante (Sans Orphelinage)<a class="headerlink" href="#2-allocation-persistante-sans-orphelinage" title="Permanent link">¶</a></h4>
+<p>Auparavant, nous utilisions <code>glBufferData(NULL)</code> (Orphelinage/Orphaning) pour forcer le pilote à nous donner un nouveau bloc de mémoire. Bien que cela évite la synchronisation, l'allocation elle-même pour 64 Mo prenait ~26-40ms sur certains pilotes.
+<strong>Approche Actuelle</strong> : Nous allouons les PBOs une seule fois (ou les redimensionnons uniquement si des textures plus grandes sont chargées). Nous réutilisons le stockage VRAM existant, éliminant ainsi le coût d'allocation.</p>
+<h4 id="3-upload-en-2-etapes">3. Upload en 2 étapes<a class="headerlink" href="#3-upload-en-2-etapes" title="Permanent link">¶</a></h4>
+<p>Au lieu de faire la conversion complète sur le thread spécifique puis de copier, nous faisons :</p>
+<ol>
+<li><strong>Chargement</strong> (Worker)</li>
+<li><strong>Mappage</strong> (Thread Principal via <code>EnvManager</code>)</li>
+<li><strong>Conversion &amp; Écriture</strong> (Worker, directement dans le PBO)</li>
+<li><strong>Upload</strong> (Thread Principal, DMA)</li>
+</ol>
+<p>Cela évite que le Thread Principal ne touche aux données de pixels sur le CPU, et évite au Worker d'avoir besoin d'un contexte GL.</p>
+<h2 id="initialisation-multi-images-de-ressources">Initialisation Multi-Images de Ressources<a class="headerlink" href="#initialisation-multi-images-de-ressources" title="Permanent link">¶</a></h2>
+<h3 id="le-goulot-detranglement">Le Goulot d'Étranglement<a class="headerlink" href="#le-goulot-detranglement" title="Permanent link">¶</a></h3>
+<p>Même avec la stratégie PBO ci-dessus, l'image d'upload causait toujours un pic de ~60ms car toutes les opérations GPU lourdes étaient concentrées sur une seule image :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Opération</th>
+<th style="text-align: center;">Coût Approx.</th>
+<th style="text-align: left;">Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>glTexStorage2D</code> (13 niveaux de mip)</td>
+<td style="text-align: center;">~15-20ms</td>
+<td style="text-align: left;">Allocation VRAM de ~85 Mo</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>glUnmapBuffer</code></td>
+<td style="text-align: center;">~1-3ms</td>
+<td style="text-align: left;">Flush du cache d'écriture DMA</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>glTexSubImage2D</code></td>
+<td style="text-align: center;">~10-15ms</td>
+<td style="text-align: left;">Transfert DMA PBO → texture</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>glGenerateMipmap</code></td>
+<td style="text-align: center;">~10-15ms</td>
+<td style="text-align: left;">Calcul GPU sur 13 niveaux</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>glGetError</code> × 3</td>
+<td style="text-align: center;">~5-10ms</td>
+<td style="text-align: left;"><strong>Points de synchronisation GPU</strong> (blocages)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total</strong></td>
+<td style="text-align: center;"><strong>~45-65ms</strong></td>
+<td style="text-align: left;">Pic sur une seule image</td>
+</tr>
+</tbody>
+</table>
+<h3 id="la-strategie-repartir-le-travail-sur-3-images">La Stratégie : Répartir le Travail sur 3 Images<a class="headerlink" href="#la-strategie-repartir-le-travail-sur-3-images" title="Permanent link">¶</a></h3>
+<p>Au lieu de tout faire en une seule image, nous distribuons le travail en utilisant le protocole multi-étapes du chargeur asynchrone comme frontières naturelles d'images :</p>
+<pre class="mermaid"><code>gantt
+    title Répartition Temporelle des Images
+    dateFormat X
+    axisFormat %s ms
+
+    section Avant (1 image)
+    Configuration PBO + Stockage + Upload + Mipmaps + 3×glGetError :done, 0, 60
+
+    section Après (3 images)
+    Image N   - Config PBO &amp; Mappage     :active, 0, 5
+    Image N+1 - Préalloc VRAM (niveau 0) :active, 8, 15
+    Image N+M - Upload + Mipmaps         :active, 18, 38</code></pre>
+<h4 id="image-n-configuration-du-pbo-async_waiting_for_pbo">Image N : Configuration du PBO (<code>ASYNC_WAITING_FOR_PBO</code>)<a class="headerlink" href="#image-n-configuration-du-pbo-async_waiting_for_pbo" title="Permanent link">¶</a></h4>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// env_manager_update() — branche ASYNC_WAITING_FOR_PBO</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">texture_ensure_pbo</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo_size</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">],</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture_map_pbo</span><span class="p">(</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">],</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">async_loader_provide_pbo</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">]);</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">// Planifier la pré-allocation différée pour l'image SUIVANTE</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Coût</strong> : ~1-5ms (réutilisation du PBO, pas d'allocation)</p>
+<h4 id="image-n1-pre-allocation-vram-differee">Image N+1 : Pré-allocation VRAM Différée<a class="headerlink" href="#image-n1-pre-allocation-vram-differee" title="Permanent link">¶</a></h4>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// env_manager_update() — haut de la fonction, avant le poll</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">gpu</span><span class="o">-&gt;</span><span class="n">recycled_hdr_tex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture_preallocate_hdr</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="p">,</span><span class="w"> </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">gpu</span><span class="o">-&gt;</span><span class="n">recycled_hdr_tex</span><span class="p">);</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Décisions clés :</p>
+<ul>
+<li><strong><code>glTexImage2D</code> au lieu de <code>glTexStorage2D</code></strong> : Alloue uniquement le niveau 0 (~64 Mo) au lieu des 13 niveaux de mipmaps (~85 Mo). La chaîne de mipmaps est créée plus tard par <code>glGenerateMipmap</code>.</li>
+<li><strong>Pas de <code>glGetError()</code></strong> : Évite de forcer un point de synchronisation GPU. Les erreurs sont capturées par le callback <code>GL_DEBUG_OUTPUT_SYNCHRONOUS</code>.</li>
+<li><strong>Réutilisation de texture</strong> : Si <code>recycled_hdr_tex</code> correspond déjà aux dimensions et au format, la pré-allocation est un <strong>no-op</strong> (chemin à coût nul).</li>
+</ul>
+<p><strong>Coût</strong> : ~5-15ms au premier chargement, ~0ms sur les chargements suivants avec les mêmes dimensions.</p>
+<h4 id="image-nm-upload-depuis-le-pbo-async_ready">Image N+M : Upload depuis le PBO (<code>ASYNC_READY</code>)<a class="headerlink" href="#image-nm-upload-depuis-le-pbo-async_ready" title="Permanent link">¶</a></h4>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// env_manager_process_loading_step_internal() étape EML_UPLOAD_HDR_FROM_PBO</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// texture_upload_hdr_from_pbo() est appelée</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// reuse_tex_id correspond à la texture pré-allouée -&gt; sauter glTexStorage2D (OK)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">glUnmapBuffer</span><span class="p">(</span><span class="n">PBO</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">glTexSubImage2D</span><span class="p">(...,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">   </span><span class="c1">// DMA depuis PBO offset 0</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">glGenerateMipmap</span><span class="p">();</span><span class="w">        </span><span class="c1">// Génère la chaîne de mipmaps (alloue aussi les niveaux restants)</span>
+</span></code></pre></div>
+<p><strong>Coût</strong> : ~20-30ms (travail GPU incompressible)</p>
+<h3 id="flux-de-pre-allocation-differee">Flux de Pré-allocation Différée<a class="headerlink" href="#flux-de-pre-allocation-differee" title="Permanent link">¶</a></h3>
+<pre class="mermaid"><code>%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "primaryColor": "#24283b",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#7aa2f7",
+    "lineColor": "#7aa2f7",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "actorBorder": "#7aa2f7",
+    "actorBkg": "#24283b",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26"
+  }
+}%%
+flowchart TD
+    A["env_manager_update() appelé"] --&gt; B{"pending_prealloc_w &gt; 0?"}
+    B -- Oui --&gt; C["texture_preallocate_hdr()"]
+    C --&gt; D{"recycled_hdr_tex correspond?"}
+    D -- Oui --&gt; E["Réutilisation à coût nul (OK)"]
+    D -- No --&gt; F["glTexImage2D(level 0, NULL)"]
+    F --&gt; G["Stocker dans scene-&gt;gpu-&gt;recycled_hdr_tex"]
+    B -- No --&gt; H["async_loader_poll()"]
+    E --&gt; H
+    G --&gt; H
+    H --&gt; I{"req.state?"}
+    I -- WAITING_FOR_PBO --&gt; J["Config PBO &amp; Mappage"]
+    J --&gt; K["Planifier pending_prealloc_w/h"]
+    I -- ASYNC_READY --&gt; L["Étape EML_UPLOAD_HDR_FROM_PBO"]
+    L --&gt; M{"recycled_hdr_tex correspond?"}
+    M -- Oui --&gt; N["Sauter glTexStorage2D (OK)"]
+    M -- No --&gt; O["Repli: glTexStorage2D"]
+    N --&gt; P["glUnmapBuffer + glTexSubImage2D"]
+    O --&gt; P
+    P --&gt; Q["glGenerateMipmap"]</code></pre>
+<h2 id="suppression-des-points-de-synchronisation-audit-glgeterror">Suppression des Points de Synchronisation (Audit <code>glGetError</code>)<a class="headerlink" href="#suppression-des-points-de-synchronisation-audit-glgeterror" title="Permanent link">¶</a></h2>
+<h3 id="pourquoi-glgeterror-bloque-le-pipeline">Pourquoi <code>glGetError()</code> Bloque le Pipeline<a class="headerlink" href="#pourquoi-glgeterror-bloque-le-pipeline" title="Permanent link">¶</a></h3>
+<p><code>glGetError()</code> est une <strong>requête synchrone</strong> : le CPU doit attendre que le GPU ait traité <strong>toutes les commandes en attente</strong> avant de renvoyer l'état d'erreur. Dans une architecture en pipeline, cela va à l'encontre de l'intérêt des chargements asynchrones.</p>
+<pre class="mermaid"><code>%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
+sequenceDiagram
+    participant CPU
+    participant CmdQueue as File d'attente GPU
+    participant GPU
+
+    CPU-&gt;&gt;CmdQueue: glTexSubImage2D (async, retourne immédiatement)
+    CPU-&gt;&gt;CmdQueue: glGetError() -&gt; BLOCAGE
+    Note over CPU: (Attente) CPU bloqué en attendant le GPU
+    CmdQueue-&gt;&gt;GPU: Exécuter TexSubImage...
+    GPU--&gt;&gt;CmdQueue: Terminé
+    CmdQueue--&gt;&gt;CPU: GL_NO_ERROR
+    Note over CPU: Peut enfin continuer</code></pre>
+<h3 id="le-filet-de-securite-gl_debug_output_synchronous">Le Filet de Sécurité : <code>GL_DEBUG_OUTPUT_SYNCHRONOUS</code><a class="headerlink" href="#le-filet-de-securite-gl_debug_output_synchronous" title="Permanent link">¶</a></h3>
+<p>L'application active la sortie de débogage OpenGL en mode synchrone (<code>gl_debug.c</code>) :</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_DEBUG_OUTPUT</span><span class="p">);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_DEBUG_OUTPUT_SYNCHRONOUS</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Cela signifie que <strong>chaque erreur GL est déjà signalée immédiatement</strong> via le callback de débogage, rendant les appels à <code>glGetError()</code> redondants pour la détection d'erreurs.</p>
+<h3 id="resultats-de-laudit">Résultats de l'Audit<a class="headerlink" href="#resultats-de-laudit" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Emplacement</th>
+<th style="text-align: left;">Contexte</th>
+<th style="text-align: left;">Action</th>
+<th style="text-align: left;">Justification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>ssbo_rendering.c:24</code></td>
+<td style="text-align: left;">Après init SSBO</td>
+<td style="text-align: left;"><strong>Conservé</strong></td>
+<td style="text-align: left;">Temps d'init uniquement, coût négligeable</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>texture.c</code> (auparavant ligne 206)</td>
+<td style="text-align: left;">Nettoyage d'erreur persistant</td>
+<td style="text-align: left;"><strong>Supprimé</strong></td>
+<td style="text-align: left;">Redondant avec le callback de débogage</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>texture.c</code> (auparavant ligne 260)</td>
+<td style="text-align: left;">Après <code>glTexStorage2D</code></td>
+<td style="text-align: left;"><strong>Debug uniquement</strong> (<code>#ifndef NDEBUG</code>)</td>
+<td style="text-align: left;">Chemin de repli, utile pour le débogage</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>texture.c</code> (auparavant ligne 289)</td>
+<td style="text-align: left;">Après <code>glTexSubImage2D</code></td>
+<td style="text-align: left;"><strong>Supprimé</strong></td>
+<td style="text-align: left;">Chemin critique, le callback de débogage capture les erreurs</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>texture.c</code> (auparavant ligne 309)</td>
+<td style="text-align: left;">Après <code>glGenerateMipmap</code></td>
+<td style="text-align: left;"><strong>Supprimé</strong></td>
+<td style="text-align: left;">Chemin critique, le callback de débogage capture les erreurs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="evolution-de-limplementation">Évolution de l'Implémentation<a class="headerlink" href="#evolution-de-limplementation" title="Permanent link">¶</a></h2>
+<h3 id="phase-1-asynchrone-naif-bloquant">Phase 1 : Asynchrone Naïf (Bloquant)<a class="headerlink" href="#phase-1-asynchrone-naif-bloquant" title="Permanent link">¶</a></h3>
+<p>Au départ, le worker convertissait les données dans un buffer CPU, et le Thread Principal appelait <code>glBufferData</code>.</p>
+<ul>
+<li><strong>Résultat</strong> : Le thread principal bloquait pendant ~45ms lors de l'allocation/copie.</li>
+</ul>
+<h3 id="phase-2-pbo-unique-orphelinage-ralentissements">Phase 2 : PBO Unique + Orphelinage (Ralentissements)<a class="headerlink" href="#phase-2-pbo-unique-orphelinage-ralentissements" title="Permanent link">¶</a></h3>
+<p>Nous sommes passés aux PBOs, mais en réutilisant un seul PBO. Nous avons essayé de forcer <code>glBufferData(NULL)</code> pour orpheliner le buffer.</p>
+<ul>
+<li><strong>Résultat</strong> : La configuration du PBO allouait de la mémoire à chaque image, prenant ~26-40ms. Le temps de rendu a explosé.</li>
+</ul>
+<h3 id="phase-3-pbo-unique-synchronisation-bloquant">Phase 3 : PBO Unique + Synchronisation (Bloquant)<a class="headerlink" href="#phase-3-pbo-unique-synchronisation-bloquant" title="Permanent link">¶</a></h3>
+<p>Nous avons essayé de supprimer l'orphelinage.</p>
+<ul>
+<li><strong>Résultat</strong> : <code>glMapBufferRange</code> bloquait fortement car le GPU lisait encore l'upload précédent. La synchronisation implicite s'est activée.</li>
+</ul>
+<h3 id="phase-4-double-tampon-persistant-strategie-precedente">Phase 4 : Double Tampon Persistant (Stratégie Précédente)<a class="headerlink" href="#phase-4-double-tampon-persistant-strategie-precedente" title="Permanent link">¶</a></h3>
+<p>Nous avons implémenté <code>upload_pbo[2]</code>.</p>
+<ul>
+<li><strong>Résultat</strong> : Le coût de configuration du PBO est tombé à <strong>&lt; 0.1ms</strong>. Le blocage a complètement disparu, et nous maintenons le streaming HDR 4K à plein framerate.</li>
+</ul>
+<h3 id="phase-5-pre-allocation-multi-images-retrait-de-glgeterror-actuelle">Phase 5 : Pré-allocation Multi-Images &amp; Retrait de glGetError (Actuelle)<a class="headerlink" href="#phase-5-pre-allocation-multi-images-retrait-de-glgeterror-actuelle" title="Permanent link">¶</a></h3>
+<p>Nous avons divisé l'initialisation des textures sur 3 images et supprimé les points de synchronisation de <code>glGetError()</code>.</p>
+<ul>
+<li><strong>Config PBO</strong> à l'image N (~1-5ms)</li>
+<li><strong>Pré-allocation VRAM</strong> différée à l'image N+1 (~5-15ms, ou 0ms avec réutilisation)</li>
+<li><strong>Upload + Mipmaps</strong> à l'image N+M (~20-30ms)</li>
+<li><strong>3 points de synchronisation <code>glGetError()</code> supprimés</strong> du chemin d'upload</li>
+<li><strong><code>glTexImage2D(level 0)</code> remplace <code>glTexStorage2D(13 levels)</code></strong> : allocation plus légère, création de mipmap différée</li>
+</ul>
+<p><strong>Résultat</strong> : Le pic d'image dans le pire des cas est passé de ~60ms à ~20-30ms. Avec la réutilisation de texture (mêmes dimensions), l'image de pré-allocation est un no-op.</p>
+<h2 id="readbacks-de-performance-asynchrones-exposition-histogramme">Readbacks de Performance Asynchrones (Exposition &amp; Histogramme)<a class="headerlink" href="#readbacks-de-performance-asynchrones-exposition-histogramme" title="Permanent link">¶</a></h2>
+<p>Le même principe de PBO est appliqué en sens inverse pour les <strong>lectures GPU vers CPU</strong> (Auto-Exposition et Histogramme).</p>
+<h3 id="le-defi">Le Défi<a class="headerlink" href="#le-defi" title="Permanent link">¶</a></h3>
+<p><code>glReadPixels</code> ou <code>glGetTexImage</code> sans PBO bloquera le CPU jusqu'à ce que le GPU termine le rendu de l'image et transfère les données. Cela coûte généralement <strong>1-2ms par appel</strong>, même pour de petites données.</p>
+<h3 id="limplementation">L'Implémentation<a class="headerlink" href="#limplementation" title="Permanent link">¶</a></h3>
+<p>Nous utilisons des <strong>PBOs Double Tampon + Clôtures de Synchronisation (Sync Fences)</strong> :</p>
+<ol>
+<li><strong>Phase de Déclenchement (Image N)</strong> :</li>
+<li>Appeler <code>glGetTexImage</code> dans le <code>pbo[idx]</code>.</li>
+<li>Insérer une clôture : <code>sync[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)</code>.</li>
+<li><strong>Phase de Lecture (Image N+1)</strong> :</li>
+<li>Vérifier la clôture : <code>glClientWaitSync(sync[!idx], ..., 0)</code>.</li>
+<li>Si <code>GL_ALREADY_SIGNALED</code> ou <code>GL_CONDITION_SATISFIED</code>, mapper le PBO et lire les données.</li>
+<li>Si non signalée, <strong>sauter la mise à jour</strong> pour cette image. Cela évite que le CPU ne bloque, au coût d'une image de latence supplémentaire pour les valeurs de l'interface.</li>
+</ol>
+<p><strong>Résultat</strong> : Le calcul de l'exposition et l'extraction de l'histogramme coûtent <strong>&lt; 0.05ms</strong> sur le CPU, quelle que soit la complexité de la scène.</p>
+<h2 id="references-du-code">Références du Code<a class="headerlink" href="#references-du-code" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong><code>src/app.c</code></strong> : Appelle <code>env_manager_update</code> dans <code>app_update</code>.</li>
+<li><strong><code>src/env_manager.c</code></strong> : Gère la boucle de PBOs, la pré-allocation différée dans <code>env_manager_update</code>, et le pilotage des étapes de chargement progressif. Champs : <code>pending_prealloc_w</code>, <code>pending_prealloc_h</code>, <code>upload_pbo[2]</code>, <code>upload_pbo_size[2]</code>, <code>upload_pbo_idx</code>.</li>
+<li><strong><code>src/texture.c</code></strong> : <code>texture_ensure_pbo</code> (dimensionnement), <code>texture_map_pbo</code> (flags), <code>texture_preallocate_hdr</code> (pré-allocation VRAM), <code>texture_upload_hdr_from_pbo</code> (pipeline d'upload).</li>
+<li><strong><code>src/async_loader.c</code></strong> : Gère la machine à états de threads (<code>WAITING_FOR_PBO</code>).</li>
+<li><strong><code>include/env_manager.h</code></strong> : La structure <code>EnvManager</code> contient <code>pending_prealloc_w/h</code>, <code>upload_pbo[2]</code>, <code>upload_pbo_size[2]</code>, <code>upload_pbo_idx</code>.</li>
+<li><strong><code>src/gl_debug.c</code></strong> : Configure <code>GL_DEBUG_OUTPUT_SYNCHRONOUS</code>.</li>
 </ul>
 
 
@@ -3772,7 +4227,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="27 juin 2026 18:30:07 UTC">27 juin 2026</span>
   </span>
 
     

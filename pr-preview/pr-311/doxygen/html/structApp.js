@@ -1,6 +1,5 @@
 var structApp =
 [
-    [ "async_coord", "structApp.html#afcde1a5cf1997b417702196d6992f5d0", null ],
     [ "async_loader", "structApp.html#ae23d2d96f024e64c81f150041c6f93af", null ],
     [ "delta_time", "structApp.html#a90dac3c1153b09925cace5205c06889b", null ],
     [ "effect_bench", "structApp.html#a421525fe2e3ce5106baf043c7371ff9f", null ],

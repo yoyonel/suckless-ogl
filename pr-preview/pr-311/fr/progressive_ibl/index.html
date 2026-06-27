@@ -91,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ibl-progressif-generation-incrementielle" class="md-skip">
+        <a href="#architecture-ibl-progressive-asynchrone" class="md-skip">
           Aller au contenu
         </a>
       
@@ -1025,55 +1025,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#probleme-initial" class="md-nav__link">
+  <a href="#1-vue-densemble" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Problème initial
+        1. Vue d'Ensemble
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#solution-decoupe-temporelle" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Solution : Découpe temporelle
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Solution : Découpe temporelle">
+    <nav class="md-nav" aria-label="1. Vue d'Ensemble">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#strategie-de-decoupe" class="md-nav__link">
+  <a href="#le-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stratégie de découpe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#decoupe-par-tranche-y-u_max_y_slice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Découpe par tranche Y (u_max_y_slice)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#protection-contre-le-chevauchement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Protection contre le chevauchement
+        Le Pipeline
       
     </span>
   </a>
@@ -1086,10 +1053,160 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optimisation-de-la-barriere-differee" class="md-nav__link">
+  <a href="#2-strategie-de-decoupe-slicing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optimisation de la barrière différée
+        2. Stratégie de Découpe ("Slicing")
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Stratégie de Découpe (&quot;Slicing&quot;)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-protection-contre-le-chevauchement-crucial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Protection contre le Chevauchement (Crucial)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configuration-optimisee-slicing-adaptatif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration Optimisée (Slicing Adaptatif)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configuration Optimisée (Slicing Adaptatif)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-luminance-moyenne-lecture-asynchrone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Luminance Moyenne (Lecture Asynchrone)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-generation-de-mipmaps-glgeneratemipmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Génération de Mipmaps (glGenerateMipmap)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-carte-dirradiance-64x64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Carte d'Irradiance (64x64)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-carte-speculaire-1024x1024" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Carte Spéculaire (1024x1024)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-optimisation-de-la-barriere-de-memoire-differee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Optimisation de la Barrière de Mémoire Différée
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Optimisation de la Barrière de Mémoire Différée">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-le-probleme-cout-des-barrieres-par-tranche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Le Problème : Coût des Barrières par Tranche
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-observation-cle-pas-de-dependance-entre-les-tranches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Observation Clé : Pas de Dépendance entre les Tranches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-solution-une-unique-barriere-differee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Solution : Une Unique Barrière Différée
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-resultats-de-benchmark-16-tranches-sur-mip-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Résultats de Benchmark (16 tranches sur Mip 0)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-performances-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Performances Globales
       
     </span>
   </a>
@@ -1097,21 +1214,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#resultats-de-benchmark" class="md-nav__link">
+  <a href="#6-fichiers-cles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Résultats de benchmark
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#voir-aussi" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Voir aussi
+        6. Fichiers Clés
       
     </span>
   </a>
@@ -3594,95 +3700,261 @@
   
 
 
-<h1 id="ibl-progressif-generation-incrementielle">IBL Progressif — Génération incrémentielle<a class="headerlink" href="#ibl-progressif-generation-incrementielle" title="Permanent link">¶</a></h1>
-<p>Ce document décrit l'architecture de génération progressive (incrémentielle par image) de la carte spéculaire préfiltrée IBL.</p>
-<h2 id="probleme-initial">Problème initial<a class="headerlink" href="#probleme-initial" title="Permanent link">¶</a></h2>
-<p>La génération complète de la carte spéculaire préfiltrée (Prefiltered Specular Map) pour un HDR 4K en une seule passe prenait ~350 ms sur GPU intégré, causant un gel visible de l'application.</p>
-<h2 id="solution-decoupe-temporelle">Solution : Découpe temporelle<a class="headerlink" href="#solution-decoupe-temporelle" title="Permanent link">¶</a></h2>
-<p>Au lieu de générer tous les niveaux de mipmap en une seule frame, on en génère un ou quelques-uns par image.</p>
-<h3 id="strategie-de-decoupe">Stratégie de découpe<a class="headerlink" href="#strategie-de-decoupe" title="Permanent link">¶</a></h3>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">current_mip</span><span class="p">;</span><span class="w">      </span><span class="c1">// Niveau actuellement en cours de génération</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">total_mips</span><span class="p">;</span><span class="w">       </span><span class="c1">// Nombre total de niveaux</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">in_progress</span><span class="p">;</span><span class="w">     </span><span class="c1">// Génération en cours</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span><span class="w"> </span><span class="n">IBLProgressState</span><span class="p">;</span>
+<h1 id="architecture-ibl-progressive-asynchrone">Architecture IBL Progressive &amp; Asynchrone<a class="headerlink" href="#architecture-ibl-progressive-asynchrone" title="Permanent link">¶</a></h1>
+<p>Ce document détaille l'implémentation du chargement asynchrone et de la génération progressive des cartes IBL (Image Based Lighting) pour éliminer les saccades et les gels lors du changement d'environnement.</p>
+<h2 id="1-vue-densemble">1. Vue d'Ensemble<a class="headerlink" href="#1-vue-densemble" title="Permanent link">¶</a></h2>
+<p>L'objectif était de passer d'un chargement synchrone bloquant (gel de 100ms à 800ms) à une approche fluide où le temps de calcul est réparti sur plusieurs images (Time Slicing).</p>
+<h3 id="le-pipeline">Le Pipeline<a class="headerlink" href="#le-pipeline" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Chargement Disque (Thread Séparé)</strong> : Le fichier <code>.hdr</code> est chargé et décodé (stb_image) dans un thread dédié (<code>async_loader.c</code>).</li>
+<li><strong>Upload GPU (Thread Principal)</strong> : Une fois prêt, les données brutes sont uploadées vers la VRAM (texture HDR) en arrière-plan à l'aide de PBOs double tampon.</li>
+<li><strong>Génération IBL (Progressive)</strong> : Une machine à états (<code>env_manager_update_ibl_state</code>) pilote les compute shaders étape par étape pour générer :<ul>
+<li>La luminance moyenne (lecture GPU asynchrone via <code>glFenceSync</code>).</li>
+<li>La carte d'irradiance (diffuse).</li>
+<li>La carte spéculaire pré-filtrée (réflexion).</li>
+</ul>
+</li>
+<li><strong>Échange (Double Buffering)</strong> : Nous utilisons des textures temporaires "Pending". L'ancien environnement reste affiché jusqu'à ce que le nouveau soit prêt à 100%.</li>
+</ol>
+<hr>
+<h2 id="2-strategie-de-decoupe-slicing">2. Stratégie de Découpe ("Slicing")<a class="headerlink" href="#2-strategie-de-decoupe-slicing" title="Permanent link">¶</a></h2>
+<p>Les compute shaders PBR (particulièrement pour les cartes spéculaires haute résolution) sont très coûteux. Le calcul d'une texture complète 512x512 prend environ 250ms sur un GPU intégré, gelant l'application.</p>
+<p><strong>Solution</strong> : Découper le travail horizontalement ("Slicing") et ne calculer qu'une bande de l'image par frame.</p>
+<h3 id="21-protection-contre-le-chevauchement-crucial">2.1 Protection contre le Chevauchement (Crucial)<a class="headerlink" href="#21-protection-contre-le-chevauchement-crucial" title="Permanent link">¶</a></h3>
+<p>Les Workgroups des Compute Shaders ont une taille fixe (32x32). Si nous demandons de calculer une tranche de <strong>1 pixel</strong> de haut, le GPU lance quand même un bloc de 32 pixels de haut.
+Sans protection, les 31 lignes excédentaires écrasent/recalculent les pixels voisins, gaspillant massivement les ressources.</p>
+<p><strong>Le Correctif (<code>u_max_y_slice</code>)</strong> :
+Nous passons une limite précise au shader :</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// shaders/IBL/spmap.glsl &amp; irmap.glsl</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">u_max_y_slice</span><span class="p">;</span><span class="w"> </span><span class="c1">// Limite Y de la tranche actuelle</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">void</span><span class="w"> </span><span class="n">main_task</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="c1">// Arrêt chirurgical pour éviter les workgroups gaspillés sur les bords de tranche</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pixel_pos</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">u_max_y_slice</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Arrêt immédiat pour les threads fantômes</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>Dans la boucle principale :</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ibl_progress</span><span class="p">.</span><span class="n">in_progress</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="c1">// Générer 1 niveau par image</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">generate_specular_mip</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ibl</span><span class="p">,</span><span class="w"> </span><span class="n">ibl_progress</span><span class="p">.</span><span class="n">current_mip</span><span class="p">);</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">ibl_progress</span><span class="p">.</span><span class="n">current_mip</span><span class="o">++</span><span class="p">;</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ibl_progress</span><span class="p">.</span><span class="n">current_mip</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">ibl_progress</span><span class="p">.</span><span class="n">total_mips</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="n">ibl_progress</span><span class="p">.</span><span class="n">in_progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
-</span></code></pre></div>
-<h3 id="decoupe-par-tranche-y-u_max_y_slice">Découpe par tranche Y (<code>u_max_y_slice</code>)<a class="headerlink" href="#decoupe-par-tranche-y-u_max_y_slice" title="Permanent link">¶</a></h3>
-<p>Pour les niveaux de mip larges (mip 0, mip 1), même une seule passe peut dépasser le budget. Le shader accepte un paramètre <code>u_max_y_slice</code> pour traiter seulement une bande horizontale :</p>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Uniforme de contexte</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">u_max_y_slice</span><span class="p">;</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="kt">ivec2</span><span class="w"> </span><span class="n">texel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">ivec2</span><span class="p">(</span><span class="nb">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">xy</span><span class="p">);</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">texel</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">u_max_y_slice</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Sauter les texels hors de la tranche</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="c1">// ... calcul ...</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
-</span></code></pre></div>
-<h3 id="protection-contre-le-chevauchement">Protection contre le chevauchement<a class="headerlink" href="#protection-contre-le-chevauchement" title="Permanent link">¶</a></h3>
-<p>Un mécanisme évite de démarrer une nouvelle génération avant que la précédente soit terminée :</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Vérifier la clôture de la passe précédente</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ibl</span><span class="p">.</span><span class="n">prev_fence</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">GLenum</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glClientWaitSync</span><span class="p">(</span><span class="n">ibl</span><span class="p">.</span><span class="n">prev_fence</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">GL_TIMEOUT_EXPIRED</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Pas encore terminée</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">glDeleteSync</span><span class="p">(</span><span class="n">ibl</span><span class="p">.</span><span class="n">prev_fence</span><span class="p">);</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">}</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">// Lancer la passe suivante</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">dispatch_mip_pass</span><span class="p">(...);</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">ibl</span><span class="p">.</span><span class="n">prev_fence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glFenceSync</span><span class="p">(</span><span class="n">GL_SYNC_GPU_COMMANDS_COMPLETE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-</span></code></pre></div>
-<h2 id="optimisation-de-la-barriere-differee">Optimisation de la barrière différée<a class="headerlink" href="#optimisation-de-la-barriere-differee" title="Permanent link">¶</a></h2>
-<p>La barrière <code>glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT)</code> n'est émise qu'une seule fois après la génération complète de tous les mips, plutôt qu'après chaque mip :</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Avant (une barrière par mip — sous-optimal)</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">mip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">mip</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">total_mips</span><span class="p">;</span><span class="w"> </span><span class="n">mip</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="n">generate_mip</span><span class="p">(</span><span class="n">mip</span><span class="p">);</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">glMemoryBarrier</span><span class="p">(</span><span class="n">GL_TEXTURE_FETCH_BARRIER_BIT</span><span class="p">);</span><span class="w"> </span><span class="c1">// ← Trop fréquent</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">// Après (une seule barrière finale)</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">mip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">mip</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">total_mips</span><span class="p">;</span><span class="w"> </span><span class="n">mip</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">generate_mip</span><span class="p">(</span><span class="n">mip</span><span class="p">);</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">}</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">glMemoryBarrier</span><span class="p">(</span><span class="n">GL_TEXTURE_FETCH_BARRIER_BIT</span><span class="p">);</span><span class="w"> </span><span class="c1">// ← Une seule fois</span>
-</span></code></pre></div>
-<h2 id="resultats-de-benchmark">Résultats de benchmark<a class="headerlink" href="#resultats-de-benchmark" title="Permanent link">¶</a></h2>
+<hr>
+<h2 id="3-configuration-optimisee-slicing-adaptatif">3. Configuration Optimisée (Slicing Adaptatif)<a class="headerlink" href="#3-configuration-optimisee-slicing-adaptatif" title="Permanent link">¶</a></h2>
+<p>Pour concilier <strong>fluidité</strong> (pas de gel) et <strong>vitesse globale</strong> (chargement rapide), nous utilisons une stratégie adaptative basée sur la charge de travail, combinée à des lectures GPU asynchrones.</p>
+<h3 id="a-luminance-moyenne-lecture-asynchrone">A. Luminance Moyenne (Lecture Asynchrone)<a class="headerlink" href="#a-luminance-moyenne-lecture-asynchrone" title="Permanent link">¶</a></h3>
+<p>Le calcul de la luminance moyenne est nécessaire pour ajuster automatiquement la luminosité, mais la lecture du résultat vers le CPU peut provoquer un blocage important du pipeline (<code>glGetBufferSubData</code>).</p>
+<ul>
+<li><strong>Stratégie</strong> : Lecture asynchrone.</li>
+<li><strong>Implémentation</strong> : Nous exécutons le compute shader et insérons une clôture <code>glFenceSync</code>. La machine à états passe à <code>IBL_STATE_LUMINANCE_WAIT</code>. Dans les images suivantes, <code>glClientWaitSync(..., 0)</code> est utilisé pour interroger le GPU de manière non bloquante. Dès que les données sont prêtes, nous les lisons instantanément sans bloquer le CPU.</li>
+</ul>
+<h3 id="b-generation-de-mipmaps-glgeneratemipmap">B. Génération de Mipmaps (<code>glGenerateMipmap</code>)<a class="headerlink" href="#b-generation-de-mipmaps-glgeneratemipmap" title="Permanent link">¶</a></h3>
+<p>Avant de commencer le calcul de l'IBL, la texture HDR uploadée doit avoir sa chaîne de mipmaps générée.</p>
+<ul>
+<li><strong>Stratégie</strong> : Image isolée (Dedicated Frame).</li>
+<li><strong>Coût</strong> : ~40ms (sur une image HDR 4K).</li>
+<li><strong>Limitation</strong> : <code>glGenerateMipmap</code> est une fonction OpenGL monolithique. Elle ne peut être ni découpée ni interrompue. Elle force le GPU à lire, réduire et écrire 13 niveaux de données flottantes haute précision en une seule opération massive.</li>
+<li><strong>Résultat</strong> : Cela crée un seul pic de rendu incompressible (~24 FPS pendant une seule image). Cette étape est volontairement isolée sur sa propre image pour éviter de s'accumuler avec l'upload (<code>glTexSubImage2D</code>) ou les compute shaders IBL.</li>
+</ul>
+<h3 id="c-carte-dirradiance-64x64">C. Carte d'Irradiance (64x64)<a class="headerlink" href="#c-carte-dirradiance-64x64" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Stratégie</strong> : Découpage constant.</li>
+<li><strong>Découpage</strong> : 12 tranches (Slices).</li>
+<li><strong>Coût</strong> : ~5ms / tranche.</li>
+</ul>
+<h3 id="d-carte-speculaire-1024x1024">D. Carte Spéculaire (1024x1024)<a class="headerlink" href="#d-carte-speculaire-1024x1024" title="Permanent link">¶</a></h3>
+<p>C'est la partie la plus lourde. Le coût par niveau de mipmap diminue de manière exponentielle.</p>
 <table>
 <thead>
 <tr>
-<th>Configuration</th>
-<th>Gel visible</th>
-<th>Temps total génération</th>
+<th style="text-align: left;">Niveau Mip</th>
+<th style="text-align: left;">Taille</th>
+<th style="text-align: left;">Stratégie</th>
+<th style="text-align: left;">Coût Est. / Image</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Génération monolithique</td>
-<td>~350 ms</td>
-<td>350 ms</td>
+<td style="text-align: left;"><strong>Mip 0</strong></td>
+<td style="text-align: left;">1024x1024</td>
+<td style="text-align: left;"><strong>24 Tranches</strong></td>
+<td style="text-align: left;">~25-35ms</td>
+<td style="text-align: left;">Le plus lourd (détails haute fréquence).</td>
 </tr>
 <tr>
-<td>Génération progressive (1 mip/frame)</td>
-<td><strong>0 ms</strong></td>
-<td>~10 frames × 35 ms</td>
+<td style="text-align: left;"><strong>Mip 1</strong></td>
+<td style="text-align: left;">512x512</td>
+<td style="text-align: left;"><strong>8 Tranches</strong></td>
+<td style="text-align: left;">~15-25ms</td>
+<td style="text-align: left;">Moyen.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mip 2</strong></td>
+<td style="text-align: left;">256x256</td>
+<td style="text-align: left;"><strong>1 Tranche</strong></td>
+<td style="text-align: left;">~15ms</td>
+<td style="text-align: left;">Léger, calculé d'un seul coup.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mip 3-10</strong></td>
+<td style="text-align: left;">128..1</td>
+<td style="text-align: left;"><strong>Regroupement Final</strong></td>
+<td style="text-align: left;">~20ms (Total)</td>
+<td style="text-align: left;">Tous calculés dans <strong>une seule image</strong>.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="voir-aussi">Voir aussi<a class="headerlink" href="#voir-aussi" title="Permanent link">¶</a></h2>
+<p><strong>Regroupement Final (Tail Grouping)</strong> : Regrouper les petits mips (3 à 10) évite de gaspiller 7 images de latence pour des tâches minuscules (&lt;1ms chacune).</p>
+<pre class="mermaid"><code>%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "primaryColor": "#24283b",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#7aa2f7",
+    "lineColor": "#7aa2f7",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "actorBorder": "#7aa2f7",
+    "actorBkg": "#24283b",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26"
+  }
+}%%
+flowchart LR
+  subgraph HeavyGroup["Lourde Charge Découpée"]
+    Mip0["Mip 0 4 Images"]
+    Mip1["Mip 1 2 Images"]
+  end
+  subgraph LightGroup["Calcul Rapide Groupé"]
+    Mip2["Mip 2 1 Image"]
+    Tail["Mips 3-10 1 Image"]
+  end
+  Start(["Début"]) --&gt; Mip0
+  Mip0 --&gt; Mip1
+  Mip1 --&gt; Mip2
+  Mip2 --&gt; Tail
+  Tail --&gt; End(["Terminé"])
+
+  style HeavyGroup fill:#24283b,stroke:#f7768e,stroke-dasharray: 5, 5
+  style LightGroup fill:#24283b,stroke:#9ece6a
+  style Start fill:#7aa2f7,color:#ffffff
+  style End fill:#9ece6a,color:#ffffff
+  style Mip0 fill:#414868,stroke:#f7768e
+  style Mip1 fill:#414868,stroke:#f7768e
+  style Mip2 fill:#414868,stroke:#9ece6a
+  style Tail fill:#414868,stroke:#9ece6a</code></pre>
+<hr>
+<h2 id="4-optimisation-de-la-barriere-de-memoire-differee">4. Optimisation de la Barrière de Mémoire Différée<a class="headerlink" href="#4-optimisation-de-la-barriere-de-memoire-differee" title="Permanent link">¶</a></h2>
+<h3 id="41-le-probleme-cout-des-barrieres-par-tranche">4.1 Le Problème : Coût des Barrières par Tranche<a class="headerlink" href="#41-le-probleme-cout-des-barrieres-par-tranche" title="Permanent link">¶</a></h3>
+<p>Initialement, chaque exécution de tranche appelait <code>glMemoryBarrier(GL_ALL_BARRIER_BITS)</code> à la fin. Cela forçait le GPU à :</p>
+<ol>
+<li><strong>Vider tout le pipeline</strong> — toutes les commandes en cours doivent se terminer avant le début de la tranche suivante.</li>
+<li><strong>Invalider tous les caches GPU</strong> — cache de texture, L2, framebuffer, etc.</li>
+<li><strong>Redémarrage à froid</strong> — l'exécution suivante doit récupérer <code>env_hdr_tex</code> depuis la VRAM au lieu d'utiliser le cache.</li>
+</ol>
+<p>Le surcoût était <strong>super-linéaire</strong> : doubler le nombre de tranches doublait plus que le temps total de traitement. Cela rendait un découpage fin (beaucoup de petites tranches pour un budget de ~33ms/image) impraticable.</p>
+<h3 id="42-observation-cle-pas-de-dependance-entre-les-tranches">4.2 Observation Clé : Pas de Dépendance entre les Tranches<a class="headerlink" href="#42-observation-cle-pas-de-dependance-entre-les-tranches" title="Permanent link">¶</a></h3>
+<p>L'analyse du flux de données révèle que les tranches sont <strong>indépendantes</strong> :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Tranche 0: LIRE env_hdr_tex → ÉCRIRE dest_tex[mip][y: 0..N]
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Tranche 1: LIRE env_hdr_tex → ÉCRIRE dest_tex[mip][y: N..2N]
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>...etc
+</span></code></pre></div>
 <ul>
-<li><a href="../ibl_architecture_ideas/">ibl_architecture_ideas.md</a> — Idées d'optimisations futures</li>
-<li><a href="../async_loader/">async_loader.md</a> — Intégration avec le chargeur HDR</li>
-<li><a href="../synchronization_overview/">synchronization_overview.md</a> — Synchronisation des ressources GPU</li>
+<li>Toutes les tranches <strong>lisent</strong> à partir de la même texture HDR source (jamais modifiée).</li>
+<li>Chaque tranche <strong>écrit</strong> dans une plage Y disjointe de la texture de destination.</li>
+<li>Il n'y a pas de risque de conflit lecture-après-écriture ou écriture-après-écriture entre les tranches.</li>
+</ul>
+<p>Il en va de même pour les niveaux de mipmaps : chaque mip écrit dans un niveau de mip différent de la destination, et lit depuis la même texture HDR source.</p>
+<h3 id="43-solution-une-unique-barriere-differee">4.3 Solution : Une Unique Barrière Différée<a class="headerlink" href="#43-solution-une-unique-barriere-differee" title="Permanent link">¶</a></h3>
+<p>Supprimer toutes les barrières par tranche et émettre <strong>une seule</strong> barrière à la toute fin :</p>
+<ul>
+<li><code>pbr_prefilter_mip()</code> et <code>pbr_irradiance_slice_compute()</code> n'appellent plus <code>glMemoryBarrier()</code>. C'est le code appelant qui s'en charge.</li>
+<li>Une unique barrière <code>glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)</code> est placée dans <code>env_manager_update_ibl_state</code> lors du passage à l'état <code>IBL_STATE_DONE</code>, juste avant que les textures ne soient échantillonnées pour le rendu.</li>
+<li>Le type de barrière est réduit de <code>GL_ALL_BARRIER_BITS</code> à <code>GL_SHADER_IMAGE_ACCESS_BARRIER_BIT</code> — seule la cohérence entre l'écriture d'image et la lecture de texture est synchronisée.</li>
+</ul>
+<pre class="mermaid"><code>%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
+sequenceDiagram
+    participant CPU
+    participant GPU
+
+    Note over CPU,GPU: Ancienne approche (barrière par tranche)
+    loop Chaque tranche
+        CPU-&gt;&gt;GPU: glDispatchCompute()
+        CPU-&gt;&gt;GPU: glMemoryBarrier(ALL_BARRIER_BITS)
+        Note right of GPU: Vidage du pipeline + invalidation du cache
+    end
+
+    Note over CPU,GPU: Nouvelle approche (barrière différée)
+    loop Chaque tranche
+        CPU-&gt;&gt;GPU: glDispatchCompute()
+        Note right of GPU: Travail planifié, pas de blocage
+    end
+    CPU-&gt;&gt;GPU: glMemoryBarrier(IMAGE_ACCESS_BIT)
+    Note right of GPU: Synchronisation unique avant affichage</code></pre>
+<h3 id="44-resultats-de-benchmark-16-tranches-sur-mip-0">4.4 Résultats de Benchmark (16 tranches sur Mip 0)<a class="headerlink" href="#44-resultats-de-benchmark-16-tranches-sur-mip-0" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Métrique</th>
+<th style="text-align: left;">Avant (barrière par tranche)</th>
+<th style="text-align: left;">Après (différée)</th>
+<th style="text-align: left;">Amélioration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Moyenne</strong></td>
+<td style="text-align: left;">~1004 ms</td>
+<td style="text-align: left;">~875 ms</td>
+<td style="text-align: left;"><strong>~13%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Minimum</strong></td>
+<td style="text-align: left;">792 ms</td>
+<td style="text-align: left;">668 ms</td>
+<td style="text-align: left;"><strong>~16%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Maximum</strong></td>
+<td style="text-align: left;">1189 ms</td>
+<td style="text-align: left;">904 ms</td>
+<td style="text-align: left;"><strong>~24%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Variance</strong></td>
+<td style="text-align: left;">±200 ms</td>
+<td style="text-align: left;">±80 ms</td>
+<td style="text-align: left;"><strong>Beaucoup plus stable</strong></td>
+</tr>
+</tbody>
+</table>
+<p>La réduction de la variance est importante : les vidages de pipeline par tranche introduisaient des temps d'inactivité GPU imprévisibles. Avec la barrière différée, le GPU fonctionne en continu sans interruption.</p>
+<blockquote>
+<p>[!IMPORTANT]
+Avec la barrière différée, le nombre de tranches peut être augmenté librement sans surcoût super-linéaire. Cela permet de viser précisément un budget de ~33ms/image par tranche pour maintenir un framerate de 30 FPS fluide pendant la génération de l'IBL.</p>
+</blockquote>
+<hr>
+<h2 id="5-performances-globales">5. Performances Globales<a class="headerlink" href="#5-performances-globales" title="Permanent link">¶</a></h2>
+<p>Avec cette architecture sur un GPU dédié :</p>
+<ul>
+<li><strong>FPS</strong> : Reste fluide (~30+ FPS pendant la génération IBL).</li>
+<li><strong>Temps Total</strong> : Une transition complète d'environnement prend environ <strong>850ms à 950ms</strong> (avec 24+8+12 tranches).</li>
+<li><strong>Latence Perçue</strong> : Presque nulle grâce à l'affichage continu de l'ancien environnement pendant le calcul.</li>
+</ul>
+<h2 id="6-fichiers-cles">6. Fichiers Clés<a class="headerlink" href="#6-fichiers-cles" title="Permanent link">¶</a></h2>
+<ul>
+<li><code>src/env_manager.c</code> : Contient la machine à états de la génération progressive d'IBL et met à jour les transitions.</li>
+<li><code>src/pbr.c</code> : Implémente le calcul découpé (<code>pbr_prefilter_mip</code>, <code>pbr_irradiance_slice_compute</code>) — aucune barrière interne.</li>
+<li><code>include/pbr.h</code> : Documentation de l'API avec la mention <code>@note</code> sur la responsabilité de la barrière par l'appelant.</li>
+<li><code>shaders/IBL/*.glsl</code> : Shaders modifiés pour supporter <code>u_offset_y</code> et <code>u_max_y</code>.</li>
 </ul>
 
 
@@ -3704,7 +3976,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="27 juin 2026 18:30:07 UTC">27 juin 2026</span>
   </span>
 
     

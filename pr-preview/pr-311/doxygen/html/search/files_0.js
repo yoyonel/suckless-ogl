@@ -31,7 +31,6 @@ var searchData=
   ['async_5fbackend_2eh_28',['async_backend.h',['../async__backend_8h.html',1,'']]],
   ['async_5fbackend_5fktx_2ec_29',['async_backend_ktx.c',['../async__backend__ktx_8c.html',1,'']]],
   ['async_5fbackend_5fstb_2ec_30',['async_backend_stb.c',['../async__backend__stb_8c.html',1,'']]],
-  ['async_5fcoordinator_2ec_31',['async_coordinator.c',['../async__coordinator_8c.html',1,'']]],
-  ['async_5floader_2ec_32',['async_loader.c',['../async__loader_8c.html',1,'']]],
-  ['async_5floader_2eh_33',['async_loader.h',['../async__loader_8h.html',1,'']]]
+  ['async_5floader_2ec_31',['async_loader.c',['../async__loader_8c.html',1,'']]],
+  ['async_5floader_2eh_32',['async_loader.h',['../async__loader_8h.html',1,'']]]
 ];
