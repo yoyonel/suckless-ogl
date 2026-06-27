@@ -3491,7 +3491,7 @@
 <p>Lors de la compilation et du linkage dans un environnement conteneurisé minimal (comme l'environnement de développement <code>clang-dev</code> basé sur Fedora), l'éditeur de liens peut échouer avec l'erreur suivante :
 </p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>/usr/bin/ld: cannot find /usr/lib64/libtsan.so.2.0.0: No such file or directory
 </span></code></pre></div><p></p>
-<p><strong>Cause :</strong> 
+<p><strong>Cause :</strong>
 Le paquet <code>gcc</code> fournit le fichier d'entrée de liaison <code>/usr/lib/gcc/x86_64-redhat-linux/&lt;version&gt;/libtsan.so</code> (qui est un script d'éditeur de liens de type linker script contenant <code>INPUT ( /usr/lib64/libtsan.so.2.0.0 )</code>), mais la bibliothèque d'exécution ThreadSanitizer elle-même (<code>libtsan</code>) n'est pas installée par défaut dans le conteneur.</p>
 <p><strong>Résolution :</strong>
 Il est nécessaire d'installer explicitement la dépendance d'exécution à l'intérieur du conteneur <code>distrobox</code> :
@@ -3564,7 +3564,7 @@ TSan a permis d'identifier une Data Race silencieuse dans notre système de jour
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 26, 2026 20:05:49 UTC">June 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 27, 2026 12:03:58 UTC">June 27, 2026</span>
   </span>
 
     
