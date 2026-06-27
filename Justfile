@@ -46,6 +46,7 @@ xvfb_wrapper := ".github/workflows/scripts/run_test_with_xvfb.sh"
 extra_cmake_flags := ""
 
 # ApiTrace configuration
+
 apitrace_dir := env("HOME") / ".local/apitrace-latest-Linux"
 apitrace_bin := `if [ -f "{{apitrace_dir}}/bin/apitrace" ]; then echo "{{apitrace_dir}}/bin/apitrace"; else echo "apitrace"; fi`
 
@@ -667,6 +668,7 @@ clean:
 tracy_legacy := `if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then echo OFF; else echo ON; fi`
 
 # Auto-detects the first free port in the 8086-8100 range
+
 tracy_port := env("TRACY_PORT", `for p in $(seq 8086 8100); do if ! ss -tlnH sport = :$p 2>/dev/null | grep -q .; then echo $p; exit 0; fi; done; echo "NONE"`)
 
 # Build Tracy Server (X11 by default on Linux if LEGACY=ON)

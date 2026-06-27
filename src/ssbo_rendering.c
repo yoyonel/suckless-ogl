@@ -20,13 +20,6 @@ void ssbo_group_init(SSBOGroup* group, const SphereInstanceSSBO* data,
 	/* IMPORTANT : Binding au point 0 */
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, group->ssbo);
 
-	/* Vérification OpenGL */
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		LOG_ERROR("suckless-ogl.ssbo",
-		          "OpenGL error after SSBO init: 0x%x", error);
-	}
-
 	LOG_INFO("suckless-ogl.ssbo",
 	         "SSBO initialized: %d instances (%zu bytes), buffer ID: %u",
 	         count, count * sizeof(SphereInstanceSSBO), group->ssbo);

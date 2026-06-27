@@ -144,9 +144,12 @@ void setup_opengl_debug(void)
 		glDebugMessageCallback(gl_debug_callback, NULL);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE,
 		                      0, NULL, GL_TRUE);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+		                      GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL,
+		                      GL_FALSE);
 		LOG_INFO(LOG_TAG,
 		         "OpenGL Debug Callback initialized "
-		         "(High Sensitivity)");
+		         "(Spam Filter Active)");
 	} else {
 		LOG_WARNING(LOG_TAG,
 		            "Debug Context NOT active - "
@@ -154,6 +157,7 @@ void setup_opengl_debug(void)
 	}
 }
 
+#ifndef NDEBUG
 void gl_debug_push_group(const char* name)
 {
 	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name);
@@ -163,3 +167,4 @@ void gl_debug_pop_group(void)
 {
 	glPopDebugGroup();
 }
+#endif
