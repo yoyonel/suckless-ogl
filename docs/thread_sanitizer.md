@@ -57,7 +57,7 @@ Lors de la compilation et du linkage dans un environnement conteneurisé minimal
 /usr/bin/ld: cannot find /usr/lib64/libtsan.so.2.0.0: No such file or directory
 ```
 
-**Cause :** 
+**Cause :**
 Le paquet `gcc` fournit le fichier d'entrée de liaison `/usr/lib/gcc/x86_64-redhat-linux/<version>/libtsan.so` (qui est un script d'éditeur de liens de type linker script contenant `INPUT ( /usr/lib64/libtsan.so.2.0.0 )`), mais la bibliothèque d'exécution ThreadSanitizer elle-même (`libtsan`) n'est pas installée par défaut dans le conteneur.
 
 **Résolution :**

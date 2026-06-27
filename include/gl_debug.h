@@ -9,6 +9,7 @@
  */
 void setup_opengl_debug(void);
 
+#ifndef NDEBUG
 /**
  * @brief Push a named debug group onto the OpenGL debug stack.
  *
@@ -25,5 +26,15 @@ void gl_debug_push_group(const char* name);
  * Wraps glPopDebugGroup(). Must be paired with gl_debug_push_group().
  */
 void gl_debug_pop_group(void);
+#else
+static inline void gl_debug_push_group(const char* name)
+{
+	(void)name;
+}
+
+static inline void gl_debug_pop_group(void)
+{
+}
+#endif
 
 #endif /* GL_DEBUG_H */

@@ -810,6 +810,7 @@ void glDeleteSync(GLsync sync)
 	(void)sync;
 }
 
+#ifndef NDEBUG
 void gl_debug_push_group(const char* name)
 {
 	(void)name;
@@ -818,6 +819,7 @@ void gl_debug_push_group(const char* name)
 void gl_debug_pop_group(void)
 {
 }
+#endif
 
 void glDepthMask(GLboolean flag)
 {

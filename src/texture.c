@@ -251,14 +251,6 @@ static bool texture_allocate_storage_hdr(int width, int height, int levels,
 		               height);
 	}
 
-#ifndef NDEBUG
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "GL error after glTexStorage2D: 0x%x", err);
-		return false;
-	}
-#endif
 	return true;
 }
 
