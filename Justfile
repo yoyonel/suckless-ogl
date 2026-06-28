@@ -618,7 +618,7 @@ lint:
         -DENABLE_CLANG_TIDY=ON \
         -DCMAKE_C_COMPILER_LAUNCHER=ccache
     @{{ distrobox }} cmake --build build-lint
-    @{{ distrobox }} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
+    @{{ distrobox }} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py scripts/inject_steam_art.py
     @{{ distrobox }} bash scripts/lint_shaders.sh
 
 # IWYU full scan (all src/*.c files — CI grade, ~2-3 min)
