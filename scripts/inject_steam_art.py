@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-import os
 import shutil
-import struct
 import sys
-import zlib
 from pathlib import Path
 
 import vdf
@@ -29,6 +26,7 @@ def get_steam_id(target_name):
 
 def inject(target_name):
     steam_root = get_steam_root()
+    assert steam_root
     shortcut_path = list(steam_root.glob("userdata/*/config/shortcuts.vdf"))[0]
     # Pointage direct sur le dossier grid du bon utilisateur
     grid_dir = shortcut_path.parent.parent / "grid"
