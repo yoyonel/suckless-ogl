@@ -810,3 +810,30 @@ package-win: build-win
 run-package-win: package-win
     @echo "Lancement de l'environnement de test automatisé..."
     @scripts/run_proton.sh "{{ release_dir }}" "{{ release_name }}" "{{ test_dist_dir }}" "{{ justfile_directory() }}"
+
+# =============================================================================
+# Steam Artwork (Steamgrid)
+# =============================================================================
+
+setup-steamgrid:
+    @mkdir -p deps/steamgrid_bin
+    @if [ ! -f deps/steamgrid_bin/steamgrid ]; then \
+        echo "→ Recherche de la dernière version de steamgrid via l'API GitHub..."; \
+        LATEST_URL=$(curl -s https://api.github.com/repos/boppreh/steamgrid/releases/latest | grep "browser_download_url" | grep -i "linux" | grep -i "zip" | cut -d '"' -f 4 | head -n 1); \
+        if [ -z "$LATEST_URL" ]; then echo "❌ Échec de la récupération de l'URL."; exit 1; fi; \
+        echo "→ Téléchargement depuis $LATEST_URL ..."; \
+        rm -f deps/steamgrid.zip; \
+        curl -sL "$LATEST_URL" -o deps/steamgrid.zip; \
+        unzip -q deps/steamgrid.zip -d deps/steamgrid_bin; \
+        chmod +x deps/steamgrid_bin/steamgrid; \
+        rm deps/steamgrid.zip; \
+    fi
+
+# Génère les artworks Steam à partir de docs/reference_image.png
+steam-gen-assets:
+    @./scripts/generate_steam_assets.sh
+
+steam-art target_name="app.exe" icon="assets/icon.ico": setup-steamgrid steam-gen-assets
+    @echo "→ Exécution de l'injection Python via {{ py_run }}..."
+    @{{ py_run }} scripts/inject_steam_art.py "{{ target_name }}" "{{ icon }}"
+    @echo "✓ Terminé. Redémarre Steam."
