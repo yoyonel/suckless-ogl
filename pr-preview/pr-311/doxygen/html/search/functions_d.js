@@ -97,12 +97,12 @@ var searchData=
   ['precompute_5fcached_5fspheres_94',['precompute_cached_spheres',['../light__probes_8c.html#aa084be4e5a8048861388958381a6c4f9',1,'light_probes.c']]],
   ['prepare_5fbatch_95',['prepare_batch',['../ui_8c.html#a2542a31c87c66c322c255f6110d7b273',1,'ui.c']]],
   ['print_5fhelp_96',['print_help',['../cli_8c.html#ac834d46f6713123c5798578457691016',1,'cli.c']]],
-  ['process_5firradiance_97',['process_irradiance',['../env__manager_8c.html#a8c33467652f7f936529f32bffbd2fd79',1,'env_manager.c']]],
+  ['process_5firradiance_97',['process_irradiance',['../ibl__coordinator_8c.html#aa548dc7694895fdd9c9f75c4e95482cb',1,'ibl_coordinator.c']]],
   ['process_5fktx_5fcompression_98',['process_ktx_compression',['../async__backend__ktx_8c.html#a454464e1e65a2183f06c83c163ea4950',1,'async_backend_ktx.c']]],
-  ['process_5fluminance_99',['process_luminance',['../env__manager_8c.html#adb8bbab5e56a7eaac8b65758938f1cf7',1,'env_manager.c']]],
-  ['process_5fluminance_5fwait_100',['process_luminance_wait',['../env__manager_8c.html#a8c9d06b549bb6a99208efa5919309dca',1,'env_manager.c']]],
+  ['process_5fluminance_99',['process_luminance',['../ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2',1,'ibl_coordinator.c']]],
+  ['process_5fluminance_5fwait_100',['process_luminance_wait',['../ibl__coordinator_8c.html#a60e618f4adff2efc497ca8e74e6c88ce',1,'ibl_coordinator.c']]],
   ['process_5fsource_101',['process_source',['../shader_8c.html#a3aeeed571399ca7ff98bc7dc73ca8d05',1,'shader.c']]],
-  ['process_5fspecular_5finit_102',['process_specular_init',['../env__manager_8c.html#a7a9c81b71c5a028248f7c7721287b610',1,'env_manager.c']]],
-  ['process_5fspecular_5fmips_103',['process_specular_mips',['../env__manager_8c.html#a70bdcf9765569e8e86540b0d5ed65c5f',1,'env_manager.c']]],
+  ['process_5fspecular_5finit_102',['process_specular_init',['../ibl__coordinator_8c.html#aeca35c868d46274d0d55fc83628a3cce',1,'ibl_coordinator.c']]],
+  ['process_5fspecular_5fmips_103',['process_specular_mips',['../ibl__coordinator_8c.html#a54892dd4ffc15e478031926ea1cdc068',1,'ibl_coordinator.c']]],
   ['push_5fbatch_5fquad_104',['push_batch_quad',['../ui_8c.html#a288a4c20fc565627f3c5d04024dfe73e',1,'ui.c']]]
 ];

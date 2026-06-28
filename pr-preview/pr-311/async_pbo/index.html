@@ -1915,15 +1915,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-solution-double-buffered-unsynchronized-pbos" class="md-nav__link">
+  <a href="#the-solution-double-buffered-persistent-pbos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Solution: Double-Buffered Unsynchronized PBOs
+        The Solution: Double-Buffered Persistent PBOs
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The Solution: Double-Buffered Unsynchronized PBOs">
+    <nav class="md-nav" aria-label="The Solution: Double-Buffered Persistent PBOs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2177,10 +2177,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-4-double-buffered-persistent-previous-pbo-strategy" class="md-nav__link">
+  <a href="#phase-4-double-buffered-persistent-current-pbo-strategy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 4: Double-Buffered Persistent (Previous PBO Strategy)
+        Phase 4: Double-Buffered Persistent (Current PBO Strategy)
       
     </span>
   </a>
@@ -3862,7 +3862,7 @@
 
 
 <h1 id="asynchronous-texture-upload-strategy">Asynchronous Texture Upload Strategy<a class="headerlink" href="#asynchronous-texture-upload-strategy" title="Permanent link">¶</a></h1>
-<p>This document details the implementation of the asynchronous high-resolution texture upload system in <code>suckless-ogl</code>, specifically focusing on the <strong>Double-Buffered Pixel Buffer Object (PBO)</strong> strategy used to eliminate main-thread stalling, and the <strong>Multi-Frame Resource Initialization</strong> strategy that spreads GPU allocation costs across frames.</p>
+<p>This document details the implementation of the asynchronous high-resolution texture upload system in <code>suckless-ogl</code>, specifically focusing on the <strong>Double-Buffered Persistent Pixel Buffer Object (PBO)</strong> strategy used to eliminate main-thread stalling, and the <strong>Multi-Frame Resource Initialization</strong> strategy that spreads GPU allocation costs across frames.</p>
 <h2 id="the-problem">The Problem<a class="headerlink" href="#the-problem" title="Permanent link">¶</a></h2>
 <p>Uploading large 4K HDR textures (approx. 64MB) to the GPU is a heavy operation.</p>
 <ul>
@@ -3884,7 +3884,7 @@
   }
 }%%
 sequenceDiagram
-    participant Main as Main Thread (EnvManager)
+    participant Main as Main Thread
     participant Worker as Async Worker
     participant GPU as GPU / Driver
 
@@ -3904,7 +3904,7 @@ sequenceDiagram
     Main-&gt;&gt;GPU: glTexSubImage2D(from PBO)
     Main-&gt;&gt;GPU: glGenerateMipmap()
     Note over GPU: DMA transfer + mipmap chain</code></pre>
-<h2 id="the-solution-double-buffered-unsynchronized-pbos">The Solution: Double-Buffered Unsynchronized PBOs<a class="headerlink" href="#the-solution-double-buffered-unsynchronized-pbos" title="Permanent link">¶</a></h2>
+<h2 id="the-solution-double-buffered-persistent-pbos">The Solution: Double-Buffered Persistent PBOs<a class="headerlink" href="#the-solution-double-buffered-persistent-pbos" title="Permanent link">¶</a></h2>
 <p>To ensure the Main Thread <em>never</em> waits for the GPU, we use a <strong>Ping-Pong</strong> strategy with two persistent PBOs.</p>
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
 <ol>
@@ -3918,13 +3918,13 @@ sequenceDiagram
 </ul>
 </li>
 <li>
-<p><strong>Main Thread (<code>env_manager_update</code>)</strong>:</p>
+<p><strong>Main Thread (<code>app_update</code>)</strong>:</p>
 <ul>
 <li>Checks if the worker is waiting.</li>
-<li>Selects the <strong>next available PBO</strong> (index <code>upload_pbo_idx</code>).</li>
+<li>Selects the <strong>next available PBO</strong> (index <code>frame % 2</code>).</li>
 <li><strong>Maps</strong> the PBO with <code>GL_MAP_UNSYNCHRONIZED_BIT</code>.</li>
 <li>Passes the pointer to the worker.</li>
-<li>When worker finishes, <strong>Unmaps</strong> and calls <code>glTexSubImage2D</code> (inside the progressive IBL/loading pipeline steps).</li>
+<li>When worker finishes, <strong>Unmaps</strong> and calls <code>glTexSubImage2D</code>.</li>
 </ul>
 </li>
 </ol>
@@ -3939,7 +3939,7 @@ This allows us to use <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, which tells the dr
 <p>Instead of fully converting on the specific thread and then copying, we:</p>
 <ol>
 <li><strong>Load</strong> (Worker)</li>
-<li><strong>Map</strong> (Main Thread via <code>EnvManager</code>)</li>
+<li><strong>Map</strong> (Main Thread)</li>
 <li><strong>Convert &amp; Write</strong> (Worker, directly into PBO)</li>
 <li><strong>Upload</strong> (Main Thread, DMA)</li>
 </ol>
@@ -4003,25 +4003,24 @@ This allows us to use <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, which tells the dr
     Frame N+1 - TexPrealloc (level 0) :active, 8, 15
     Frame N+M - Upload + Mipmap       :active, 18, 38</code></pre>
 <h4 id="frame-n-pbo-setup-async_waiting_for_pbo">Frame N: PBO Setup (<code>ASYNC_WAITING_FOR_PBO</code>)<a class="headerlink" href="#frame-n-pbo-setup-async_waiting_for_pbo" title="Permanent link">¶</a></h4>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// env_manager_update() — ASYNC_WAITING_FOR_PBO branch</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">texture_ensure_pbo</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo_size</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">],</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture_map_pbo</span><span class="p">(</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">],</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">async_loader_provide_pbo</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">pbo_idx</span><span class="p">]);</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// app_update() — ASYNC_WAITING_FOR_PBO branch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">texture_ensure_pbo</span><span class="p">(</span><span class="o">&amp;</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">upload_pbo_size</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture_map_pbo</span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">async_loader_provide_pbo</span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">async_loader</span><span class="p">,</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">upload_pbo</span><span class="p">[</span><span class="n">idx</span><span class="p">]);</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">// Schedule deferred pre-allocation for NEXT frame</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
 </span></code></pre></div>
 <p><strong>Cost</strong>: ~1-5ms (PBO reuse, no allocation)</p>
 <h4 id="frame-n1-deferred-vram-pre-allocation">Frame N+1: Deferred VRAM Pre-allocation<a class="headerlink" href="#frame-n1-deferred-vram-pre-allocation" title="Permanent link">¶</a></h4>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// env_manager_update() — top of function, before poll</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">gpu</span><span class="o">-&gt;</span><span class="n">recycled_hdr_tex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture_preallocate_hdr</span><span class="p">(</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="p">,</span><span class="w"> </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">gpu</span><span class="o">-&gt;</span><span class="n">recycled_hdr_tex</span><span class="p">);</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">mgr</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// app_update() — top of function, before poll</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">recycled_hdr_tex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture_preallocate_hdr</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="p">,</span><span class="w"> </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_prealloc_h</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">recycled_hdr_tex</span><span class="p">);</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_prealloc_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Key decisions:</p>
 <ul>
@@ -4031,12 +4030,11 @@ This allows us to use <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, which tells the dr
 </ul>
 <p><strong>Cost</strong>: ~5-15ms first load, ~0ms on subsequent loads with same dimensions</p>
 <h4 id="frame-nm-upload-from-pbo-async_ready">Frame N+M: Upload from PBO (<code>ASYNC_READY</code>)<a class="headerlink" href="#frame-nm-upload-from-pbo-async_ready" title="Permanent link">¶</a></h4>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// env_manager_process_loading_step_internal() step EML_UPLOAD_HDR_FROM_PBO</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// texture_upload_hdr_from_pbo() is called</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// reuse_tex_id matches pre-allocated texture -&gt; skip glTexStorage2D (OK)</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">glUnmapBuffer</span><span class="p">(</span><span class="n">PBO</span><span class="p">);</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">glTexSubImage2D</span><span class="p">(...,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">   </span><span class="c1">// DMA from PBO offset 0</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">glGenerateMipmap</span><span class="p">();</span><span class="w">        </span><span class="c1">// Generates mip chain (also allocates mip levels)</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// app_finalize_environment_load() → texture_upload_hdr_from_pbo()</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// reuse_tex_id matches pre-allocated texture -&gt; skip glTexStorage2D (OK)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">glUnmapBuffer</span><span class="p">(</span><span class="n">PBO</span><span class="p">);</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">glTexSubImage2D</span><span class="p">(...,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">   </span><span class="c1">// DMA from PBO offset 0</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">glGenerateMipmap</span><span class="p">();</span><span class="w">        </span><span class="c1">// Generates mip chain (also allocates mip levels)</span>
 </span></code></pre></div>
 <p><strong>Cost</strong>: ~20-30ms (irreducible GPU work)</p>
 <h3 id="deferred-pre-allocation-flow">Deferred Pre-allocation Flow<a class="headerlink" href="#deferred-pre-allocation-flow" title="Permanent link">¶</a></h3>
@@ -4056,20 +4054,20 @@ This allows us to use <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, which tells the dr
   }
 }%%
 flowchart TD
-    A["env_manager_update() called"] --&gt; B{"pending_prealloc_w &gt; 0?"}
+    A["app_update() called"] --&gt; B{"pending_prealloc_w &gt; 0?"}
     B -- Yes --&gt; C["texture_preallocate_hdr()"]
     C --&gt; D{"recycled_hdr_tex matches?"}
     D -- Yes --&gt; E["Zero-cost reuse (OK)"]
     D -- No --&gt; F["glTexImage2D(level 0, NULL)"]
-    F --&gt; G["Store in scene-&gt;gpu-&gt;recycled_hdr_tex"]
+    F --&gt; G["Store in app-&gt;recycled_hdr_tex"]
     B -- No --&gt; H["async_loader_poll()"]
     E --&gt; H
     G --&gt; H
     H --&gt; I{"req.state?"}
     I -- WAITING_FOR_PBO --&gt; J["PBO Setup &amp; Map"]
     J --&gt; K["Schedule pending_prealloc_w/h"]
-    I -- ASYNC_READY --&gt; L["Step EML_UPLOAD_HDR_FROM_PBO"]
-    L --&gt; M{"recycled_hdr_tex matches?"}
+    I -- ASYNC_READY --&gt; L["texture_upload_hdr_from_pbo()"]
+    L --&gt; M{"reuse_tex matches?"}
     M -- Yes --&gt; N["Skip glTexStorage2D (OK)"]
     M -- No --&gt; O["Fallback: glTexStorage2D"]
     N --&gt; P["glUnmapBuffer + glTexSubImage2D"]
@@ -4167,7 +4165,7 @@ sequenceDiagram
 <ul>
 <li><strong>Result</strong>: <code>glMapBufferRange</code> blocked heavily because the GPU was still reading the previous upload. Implicit synchronization kicked in.</li>
 </ul>
-<h3 id="phase-4-double-buffered-persistent-previous-pbo-strategy">Phase 4: Double-Buffered Persistent (Previous PBO Strategy)<a class="headerlink" href="#phase-4-double-buffered-persistent-previous-pbo-strategy" title="Permanent link">¶</a></h3>
+<h3 id="phase-4-double-buffered-persistent-current-pbo-strategy">Phase 4: Double-Buffered Persistent (Current PBO Strategy)<a class="headerlink" href="#phase-4-double-buffered-persistent-current-pbo-strategy" title="Permanent link">¶</a></h3>
 <p>We implemented <code>upload_pbo[2]</code>.</p>
 <ul>
 <li><strong>Result</strong>: <code>PBO Setup</code> dropped to <strong>&lt; 0.1ms</strong>. The stall is completely gone, and we maintain 4k HDR streaming at full framerate.</li>
@@ -4200,11 +4198,10 @@ sequenceDiagram
 <p><strong>Result</strong>: Exposure calculation and histogram extraction cost <strong>&lt; 0.05ms</strong> on the CPU, regardless of scene complexity.</p>
 <h2 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong><code>src/app.c</code></strong>: Calls <code>env_manager_update</code> in <code>app_update</code>.</li>
-<li><strong><code>src/env_manager.c</code></strong>: Manages the PBO array loop, deferred pre-allocation in <code>env_manager_update</code>, and driving progressive loading steps. Fields: <code>pending_prealloc_w</code>, <code>pending_prealloc_h</code>, <code>upload_pbo[2]</code>, <code>upload_pbo_size[2]</code>, <code>upload_pbo_idx</code>.</li>
+<li><strong><code>src/app.c</code></strong>: Manages the PBO array loop and deferred pre-allocation in <code>app_update</code>. Fields: <code>pending_prealloc_w</code>, <code>pending_prealloc_h</code>.</li>
 <li><strong><code>src/texture.c</code></strong>: <code>texture_ensure_pbo</code> (sizing), <code>texture_map_pbo</code> (flags), <code>texture_preallocate_hdr</code> (VRAM pre-allocation), <code>texture_upload_hdr_from_pbo</code> (upload pipeline).</li>
 <li><strong><code>src/async_loader.c</code></strong>: Handles the threading state machine (<code>WAITING_FOR_PBO</code>).</li>
-<li><strong><code>include/env_manager.h</code></strong>: <code>EnvManager</code> struct holds <code>pending_prealloc_w/h</code>, <code>upload_pbo[2]</code>, <code>upload_pbo_size[2]</code>, <code>upload_pbo_idx</code>.</li>
+<li><strong><code>include/app.h</code></strong>: <code>App</code> struct holds <code>recycled_hdr_tex</code>, <code>pending_prealloc_w/h</code>, <code>upload_pbo[2]</code>.</li>
 <li><strong><code>src/gl_debug.c</code></strong>: Configures <code>GL_DEBUG_OUTPUT_SYNCHRONOUS</code>.</li>
 </ul>
 
@@ -4227,7 +4224,7 @@ sequenceDiagram
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 27, 2026 18:30:07 UTC">June 27, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
   </span>
 
     

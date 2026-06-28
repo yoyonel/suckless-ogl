@@ -246,23 +246,18 @@ $(document).ready(function(){initNavTree('env__manager_8c.html',''); initResizab
 <code>#include &quot;<a class="el" href="asset__manager_8h_source.html">asset_manager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="pbr_8h_source.html">pbr.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
 <code>#include &quot;platform/platform_utils.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__readback_8h_source.html">postprocess_readback.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene__gpu__resources_8h_source.html">scene_gpu_resources.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene__shaders_8h_source.html">scene_shaders.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
-<code>#include &lt;float.h&gt;</code><br />
-<code>#include &lt;math.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
-<code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for env_manager.c:</div>
 <div class="dyncontent">
@@ -271,72 +266,32 @@ Include dependency graph for env_manager.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac7967759b1ba80b70a7d1bba2dfa753e" id="r_ac7967759b1ba80b70a7d1bba2dfa753e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e">is_software_renderer</a> (void)</td></tr>
-<tr class="separator:ac7967759b1ba80b70a7d1bba2dfa753e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a325df28750573fe64f999eace591c77b" id="r_a325df28750573fe64f999eace591c77b"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a325df28750573fe64f999eace591c77b">ibl_irradiance_slices</a> (void)</td></tr>
-<tr class="separator:a325df28750573fe64f999eace591c77b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa5ff05792c6e4a641f2bffb90279ac4" id="r_aaa5ff05792c6e4a641f2bffb90279ac4"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#aaa5ff05792c6e4a641f2bffb90279ac4">ibl_specular_mip0_slices</a> (void)</td></tr>
-<tr class="separator:aaa5ff05792c6e4a641f2bffb90279ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68e655e2e6acfa7418ca6cbb31f7dfa7" id="r_a68e655e2e6acfa7418ca6cbb31f7dfa7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a68e655e2e6acfa7418ca6cbb31f7dfa7">ibl_specular_mip1_slices</a> (void)</td></tr>
-<tr class="separator:a68e655e2e6acfa7418ca6cbb31f7dfa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd9d63c9f2007aeb78aa1e3df5552c3e" id="r_afd9d63c9f2007aeb78aa1e3df5552c3e"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#afd9d63c9f2007aeb78aa1e3df5552c3e">ibl_specular_mips_grouping_start</a> (void)</td></tr>
-<tr class="separator:afd9d63c9f2007aeb78aa1e3df5552c3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f6db741eecc6c2859112fc28d0abbfc" id="r_a3f6db741eecc6c2859112fc28d0abbfc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a3f6db741eecc6c2859112fc28d0abbfc">ibl_stats_reset</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *ctx)</td></tr>
-<tr class="separator:a3f6db741eecc6c2859112fc28d0abbfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e7293b3c0a2d29125bbe5008dc72c80" id="r_a1e7293b3c0a2d29125bbe5008dc72c80"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a1e7293b3c0a2d29125bbe5008dc72c80">ibl_stats_accumulate</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *ctx, double gpu_ms)</td></tr>
-<tr class="separator:a1e7293b3c0a2d29125bbe5008dc72c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a840de37691b0329a500d31b51d3a9452" id="r_a840de37691b0329a500d31b51d3a9452"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a840de37691b0329a500d31b51d3a9452">ibl_stats_log_summary</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *ctx, uint64_t frame, const char *stage_name)</td></tr>
-<tr class="separator:a840de37691b0329a500d31b51d3a9452"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab18add7ab6c2ba76fc23d9352a951854" id="r_ab18add7ab6c2ba76fc23d9352a951854"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ab18add7ab6c2ba76fc23d9352a951854">env_manager_reset_ibl</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr)</td></tr>
-<tr class="separator:ab18add7ab6c2ba76fc23d9352a951854"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f9952dcff7726fb8564739bf85db607" id="r_a9f9952dcff7726fb8564739bf85db607"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a9f9952dcff7726fb8564739bf85db607">env_manager_start_ibl</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, GLuint hdr_tex, int width, int height)</td></tr>
-<tr class="separator:a9f9952dcff7726fb8564739bf85db607"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb8bbab5e56a7eaac8b65758938f1cf7" id="r_adb8bbab5e56a7eaac8b65758938f1cf7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#adb8bbab5e56a7eaac8b65758938f1cf7">process_luminance</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, unsigned long long frame)</td></tr>
-<tr class="separator:adb8bbab5e56a7eaac8b65758938f1cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c9d06b549bb6a99208efa5919309dca" id="r_a8c9d06b549bb6a99208efa5919309dca"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a8c9d06b549bb6a99208efa5919309dca">process_luminance_wait</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, unsigned long long frame)</td></tr>
-<tr class="separator:a8c9d06b549bb6a99208efa5919309dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a9c81b71c5a028248f7c7721287b610" id="r_a7a9c81b71c5a028248f7c7721287b610"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a7a9c81b71c5a028248f7c7721287b610">process_specular_init</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, unsigned long long frame)</td></tr>
-<tr class="separator:a7a9c81b71c5a028248f7c7721287b610"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70bdcf9765569e8e86540b0d5ed65c5f" id="r_a70bdcf9765569e8e86540b0d5ed65c5f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a70bdcf9765569e8e86540b0d5ed65c5f">process_specular_mips</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, unsigned long long frame)</td></tr>
-<tr class="separator:a70bdcf9765569e8e86540b0d5ed65c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c33467652f7f936529f32bffbd2fd79" id="r_a8c33467652f7f936529f32bffbd2fd79"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a8c33467652f7f936529f32bffbd2fd79">process_irradiance</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, unsigned long long frame)</td></tr>
-<tr class="separator:a8c33467652f7f936529f32bffbd2fd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c8116470046be81700d5ebbf40537de" id="r_a7c8116470046be81700d5ebbf40537de"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a7c8116470046be81700d5ebbf40537de">env_manager_update_ibl_state</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, uint64_t frame_count)</td></tr>
-<tr class="separator:a7c8116470046be81700d5ebbf40537de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52eb527ac9d038867786a7f50231ee4b" id="r_a52eb527ac9d038867786a7f50231ee4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a52eb527ac9d038867786a7f50231ee4b">env_manager_init</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
-<tr class="memdesc:a52eb527ac9d038867786a7f50231ee4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the environment manager, binding shader programs from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>.  <br /></td></tr>
-<tr class="separator:a52eb527ac9d038867786a7f50231ee4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4d555f76a7025a1376e21ab6fb077ce" id="r_ad4d555f76a7025a1376e21ab6fb077ce"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ad4d555f76a7025a1376e21ab6fb077ce">env_manager_load</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, const char *filename)</td></tr>
 <tr class="memdesc:ad4d555f76a7025a1376e21ab6fb077ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts an asynchronous load of an environment map.  <br /></td></tr>
 <tr class="separator:ad4d555f76a7025a1376e21ab6fb077ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a358ceca48cb42f02066be38f92d66ef8" id="r_a358ceca48cb42f02066be38f92d66ef8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a358ceca48cb42f02066be38f92d66ef8">env_manager_process_loading_step_internal</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, GLuint *recycled_hdr_tex)</td></tr>
-<tr class="separator:a358ceca48cb42f02066be38f92d66ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca14ba762de723629de8d921ffc52cdd" id="r_aca14ba762de723629de8d921ffc52cdd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#aca14ba762de723629de8d921ffc52cdd">env_manager_process_loading_step</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, GLuint *recycled_hdr_tex, <a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *ibl)</td></tr>
+<tr class="memdesc:aca14ba762de723629de8d921ffc52cdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the multi-frame HDR environment loading state machine.  <br /></td></tr>
+<tr class="separator:aca14ba762de723629de8d921ffc52cdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af88a5d2054c4f6f3d03085ba9d247306" id="r_af88a5d2054c4f6f3d03085ba9d247306"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#af88a5d2054c4f6f3d03085ba9d247306">env_manager_trigger_transition</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, const char *filename)</td></tr>
-<tr class="memdesc:af88a5d2054c4f6f3d03085ba9d247306"><td class="mdescLeft">&#160;</td><td class="mdescRight">Triggers a new environment transition (with fade-in/out or crossfade).  <br /></td></tr>
+<tr class="memdesc:af88a5d2054c4f6f3d03085ba9d247306"><td class="mdescLeft">&#160;</td><td class="mdescRight">Triggers a new environment transition.  <br /></td></tr>
 <tr class="separator:af88a5d2054c4f6f3d03085ba9d247306"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ffed43dc8d9e848cc7d0279cf94927e" id="r_a9ffed43dc8d9e848cc7d0279cf94927e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a9ffed43dc8d9e848cc7d0279cf94927e">capture_snapshot</a> (<a class="el" href="structScene.html">Scene</a> *scene, int width, int height)</td></tr>
 <tr class="separator:a9ffed43dc8d9e848cc7d0279cf94927e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae78d3a5d332aa74262fa5f83e727a463" id="r_ae78d3a5d332aa74262fa5f83e727a463"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ae78d3a5d332aa74262fa5f83e727a463">finalize_ibl_swap</a> (<a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, GLuint hdr_tex, GLuint spec_tex, GLuint irr_tex, float threshold, uint64_t frame_count)</td></tr>
 <tr class="separator:ae78d3a5d332aa74262fa5f83e727a463"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e77722a5bf0ef99cc77ad29c1c7b650" id="r_a0e77722a5bf0ef99cc77ad29c1c7b650"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a0e77722a5bf0ef99cc77ad29c1c7b650">env_manager_update_ibl_pipeline</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, uint64_t frame_count, int width, int height)</td></tr>
-<tr class="separator:a0e77722a5bf0ef99cc77ad29c1c7b650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77c2cd1c9ed582fa8439e8f5dedea44d" id="r_a77c2cd1c9ed582fa8439e8f5dedea44d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a77c2cd1c9ed582fa8439e8f5dedea44d">env_manager_update_transition</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, double delta_time, uint64_t frame_count)</td></tr>
-<tr class="separator:a77c2cd1c9ed582fa8439e8f5dedea44d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a8e4c362fb7ec501f8d5d5556af04bb" id="r_a5a8e4c362fb7ec501f8d5d5556af04bb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a5a8e4c362fb7ec501f8d5d5556af04bb">handle_ibl_done_wait_state</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, uint64_t frame_count)</td></tr>
+<tr class="separator:a5a8e4c362fb7ec501f8d5d5556af04bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2be9d0e288060ee8fc01063fae7417aa" id="r_a2be9d0e288060ee8fc01063fae7417aa"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a2be9d0e288060ee8fc01063fae7417aa">handle_ibl_done_loading_state</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, uint64_t frame_count, int width, int height)</td></tr>
+<tr class="separator:a2be9d0e288060ee8fc01063fae7417aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6cf5ee2b30a1efd1a49fdd7839a67b8" id="r_af6cf5ee2b30a1efd1a49fdd7839a67b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#af6cf5ee2b30a1efd1a49fdd7839a67b8">env_manager_update_ibl</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, uint64_t frame_count, int width, int height)</td></tr>
+<tr class="memdesc:af6cf5ee2b30a1efd1a49fdd7839a67b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the IBL state machine and handles transition events.  <br /></td></tr>
+<tr class="separator:af6cf5ee2b30a1efd1a49fdd7839a67b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafd47aadf2c5e1696d618a510326ce78" id="r_aafd47aadf2c5e1696d618a510326ce78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#aafd47aadf2c5e1696d618a510326ce78">env_manager_update_transition</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, double delta_time, uint64_t frame_count)</td></tr>
+<tr class="memdesc:aafd47aadf2c5e1696d618a510326ce78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the environment transition animation.  <br /></td></tr>
+<tr class="separator:aafd47aadf2c5e1696d618a510326ce78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae12a5f2406e71f9cd410cc4e6518ca61" id="r_ae12a5f2406e71f9cd410cc4e6518ca61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ae12a5f2406e71f9cd410cc4e6518ca61">env_manager_render_overlay</a> (const <a class="el" href="structEnvManager.html">EnvManager</a> *mgr, const <a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="memdesc:ae12a5f2406e71f9cd410cc4e6518ca61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the transition overlay (fade/crossfade).  <br /></td></tr>
 <tr class="separator:ae12a5f2406e71f9cd410cc4e6518ca61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c38f4e33b570dfc830b1ffee06fa1ad" id="r_a3c38f4e33b570dfc830b1ffee06fa1ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a3c38f4e33b570dfc830b1ffee06fa1ad">env_manager_update</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr, <a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postproc, double delta_time, uint64_t frame_count, int width, int height)</td></tr>
-<tr class="memdesc:a3c38f4e33b570dfc830b1ffee06fa1ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Core update function driving loading, IBL generation, and transitions.  <br /></td></tr>
-<tr class="separator:a3c38f4e33b570dfc830b1ffee06fa1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad858e8a00f64b82abc9cdbeb54ae04af" id="r_ad858e8a00f64b82abc9cdbeb54ae04af"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ad858e8a00f64b82abc9cdbeb54ae04af">env_manager_is_busy</a> (const <a class="el" href="structEnvManager.html">EnvManager</a> *mgr)</td></tr>
-<tr class="memdesc:ad858e8a00f64b82abc9cdbeb54ae04af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queries whether the environment manager is currently busy loading/generating.  <br /></td></tr>
-<tr class="separator:ad858e8a00f64b82abc9cdbeb54ae04af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c745b5eebea1f0f70232839f010e69d" id="r_a1c745b5eebea1f0f70232839f010e69d"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a1c745b5eebea1f0f70232839f010e69d">env_manager_get_status_string</a> (const <a class="el" href="structEnvManager.html">EnvManager</a> *mgr)</td></tr>
-<tr class="memdesc:a1c745b5eebea1f0f70232839f010e69d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a user-friendly status string of the current operation.  <br /></td></tr>
-<tr class="separator:a1c745b5eebea1f0f70232839f010e69d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a954bea9a2134bb04e655e58397d681e0" id="r_a954bea9a2134bb04e655e58397d681e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a954bea9a2134bb04e655e58397d681e0">env_manager_cleanup</a> (<a class="el" href="structEnvManager.html">EnvManager</a> *mgr)</td></tr>
-<tr class="memdesc:a954bea9a2134bb04e655e58397d681e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleanups all GPU and CPU resources held by the environment manager.  <br /></td></tr>
-<tr class="separator:a954bea9a2134bb04e655e58397d681e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89ea646fa4ff92af07feec86ca99e95b" id="r_a89ea646fa4ff92af07feec86ca99e95b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a89ea646fa4ff92af07feec86ca99e95b">env_mgr_subsys_init</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="separator:a89ea646fa4ff92af07feec86ca99e95b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff1d6e8d0d27f3dd34f631c6d55bb4f7" id="r_aff1d6e8d0d27f3dd34f631c6d55bb4f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#aff1d6e8d0d27f3dd34f631c6d55bb4f7">env_mgr_subsys_cleanup</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
@@ -346,24 +301,6 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:acf85965108ddb048b66205bcd09d87b6" id="r_acf85965108ddb048b66205bcd09d87b6"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#acf85965108ddb048b66205bcd09d87b6">MAX_PATH_LENGTH</a> = 256</td></tr>
 <tr class="separator:acf85965108ddb048b66205bcd09d87b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01c03b8c9f962bd93616041f8e85f0ac" id="r_a01c03b8c9f962bd93616041f8e85f0ac"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structEnvManager.html">EnvManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a01c03b8c9f962bd93616041f8e85f0ac">EMPTY_ENV_MANAGER</a></td></tr>
-<tr class="separator:a01c03b8c9f962bd93616041f8e85f0ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6494d63e0ff1eb4d9ec732a056ab655c" id="r_a6494d63e0ff1eb4d9ec732a056ab655c"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a6494d63e0ff1eb4d9ec732a056ab655c">IBL_SOFTWARE_FALLBACK_SLICES</a> = 1</td></tr>
-<tr class="separator:a6494d63e0ff1eb4d9ec732a056ab655c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50f2c8aeca54eeb71bd72a8fdeaf1c45" id="r_a50f2c8aeca54eeb71bd72a8fdeaf1c45"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a50f2c8aeca54eeb71bd72a8fdeaf1c45">IBL_IRRADIANCE_HARDWARE_SLICES</a> = 12</td></tr>
-<tr class="separator:a50f2c8aeca54eeb71bd72a8fdeaf1c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10906b0fc6004f05d5b0428c10cad2e9" id="r_a10906b0fc6004f05d5b0428c10cad2e9"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a10906b0fc6004f05d5b0428c10cad2e9">IBL_SPECULAR_MIP0_HARDWARE_SLICES</a> = 24</td></tr>
-<tr class="separator:a10906b0fc6004f05d5b0428c10cad2e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad724e11eb756c49bf2e1f0603946b3e0" id="r_ad724e11eb756c49bf2e1f0603946b3e0"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#ad724e11eb756c49bf2e1f0603946b3e0">IBL_SPECULAR_MIP1_HARDWARE_SLICES</a> = 8</td></tr>
-<tr class="separator:ad724e11eb756c49bf2e1f0603946b3e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f951302cb33cd6f2aa28d7314bc2bc8" id="r_a0f951302cb33cd6f2aa28d7314bc2bc8"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a0f951302cb33cd6f2aa28d7314bc2bc8">IBL_SPECULAR_MIP_GROUPING_START_MIP</a> = 3</td></tr>
-<tr class="separator:a0f951302cb33cd6f2aa28d7314bc2bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7427e33647e1f11c1129bfe49029bcce" id="r_a7427e33647e1f11c1129bfe49029bcce"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a7427e33647e1f11c1129bfe49029bcce">IBL_SOFTWARE_MIP_GROUPING_START_MIP</a> = 0</td></tr>
-<tr class="separator:a7427e33647e1f11c1129bfe49029bcce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f01277e23e73c88a937e3771351252c" id="r_a7f01277e23e73c88a937e3771351252c"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#a7f01277e23e73c88a937e3771351252c">IBL_THRESHOLD_FALLBACK_MIN</a> = 1.0F</td></tr>
-<tr class="separator:a7f01277e23e73c88a937e3771351252c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5ac2b4f077bc45d4ea556539a84db38" id="r_aa5ac2b4f077bc45d4ea556539a84db38"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="env__manager_8c.html#aa5ac2b4f077bc45d4ea556539a84db38">IBL_LOG_LABEL_SIZE</a> = 128</td></tr>
-<tr class="separator:aa5ac2b4f077bc45d4ea556539a84db38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a9ffed43dc8d9e848cc7d0279cf94927e" name="a9ffed43dc8d9e848cc7d0279cf94927e"></a>
@@ -405,133 +342,6 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a954bea9a2134bb04e655e58397d681e0" name="a954bea9a2134bb04e655e58397d681e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a954bea9a2134bb04e655e58397d681e0">&#9670;&#160;</a></span>env_manager_cleanup()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void env_manager_cleanup </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Cleanups all GPU and CPU resources held by the environment manager. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a954bea9a2134bb04e655e58397d681e0_cgraph.svg" width="403" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a1c745b5eebea1f0f70232839f010e69d" name="a1c745b5eebea1f0f70232839f010e69d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c745b5eebea1f0f70232839f010e69d">&#9670;&#160;</a></span>env_manager_get_status_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char * env_manager_get_status_string </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns a user-friendly status string of the current operation. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Status string. </dd></dl>
-
-</div>
-</div>
-<a id="a52eb527ac9d038867786a7f50231ee4b" name="a52eb527ac9d038867786a7f50231ee4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52eb527ac9d038867786a7f50231ee4b">&#9670;&#160;</a></span>env_manager_init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void env_manager_init </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
-          <td class="paramname"><em>scene</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Initializes the environment manager, binding shader programs from <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
-    <tr><td class="paramname">scene</td><td>Pointer to the scene. </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a52eb527ac9d038867786a7f50231ee4b_cgraph.svg" width="371" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="ad858e8a00f64b82abc9cdbeb54ae04af" name="ad858e8a00f64b82abc9cdbeb54ae04af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad858e8a00f64b82abc9cdbeb54ae04af">&#9670;&#160;</a></span>env_manager_is_busy()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool env_manager_is_busy </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Queries whether the environment manager is currently busy loading/generating. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if busy. </dd></dl>
 
 </div>
 </div>
@@ -585,17 +395,14 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a358ceca48cb42f02066be38f92d66ef8" name="a358ceca48cb42f02066be38f92d66ef8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a358ceca48cb42f02066be38f92d66ef8">&#9670;&#160;</a></span>env_manager_process_loading_step_internal()</h2>
+<a id="aca14ba762de723629de8d921ffc52cdd" name="aca14ba762de723629de8d921ffc52cdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca14ba762de723629de8d921ffc52cdd">&#9670;&#160;</a></span>env_manager_process_loading_step()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void env_manager_process_loading_step_internal </td>
+          <td class="memname">void env_manager_process_loading_step </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
           <td class="paramname"><em>mgr</em>, </td>
@@ -604,7 +411,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint *&#160;</td>
-          <td class="paramname"><em>recycled_hdr_tex</em>&#160;</td>
+          <td class="paramname"><em>recycled_hdr_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *&#160;</td>
+          <td class="paramname"><em>ibl</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -612,16 +425,21 @@ Here is the call graph for this function:</div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>Processes the multi-frame HDR environment loading state machine. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
+    <tr><td class="paramname">recycled_hdr_tex</td><td>Pointer to the recycled HDR texture handle. </td></tr>
+    <tr><td class="paramname">ibl</td><td>Pointer to the IBL coordinator. </td></tr>
+  </table>
+  </dd>
+</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a358ceca48cb42f02066be38f92d66ef8_cgraph.svg" width="100%" height="436"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_aca14ba762de723629de8d921ffc52cdd_cgraph.svg" width="100%" height="436"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -656,7 +474,7 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
-    <tr><td class="paramname">scene</td><td>Pointer to the scene. </td></tr>
+    <tr><td class="paramname">scene</td><td>Pointer to the scene (contains debug shader and quad). </td></tr>
   </table>
   </dd>
 </dl>
@@ -664,85 +482,6 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_ae12a5f2406e71f9cd410cc4e6518ca61_cgraph.svg" width="100%" height="401"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
-</div>
-
-</div>
-</div>
-<a id="ab18add7ab6c2ba76fc23d9352a951854" name="ab18add7ab6c2ba76fc23d9352a951854"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab18add7ab6c2ba76fc23d9352a951854">&#9670;&#160;</a></span>env_manager_reset_ibl()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void env_manager_reset_ibl </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9f9952dcff7726fb8564739bf85db607" name="a9f9952dcff7726fb8564739bf85db607"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f9952dcff7726fb8564739bf85db607">&#9670;&#160;</a></span>env_manager_start_ibl()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void env_manager_start_ibl </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>hdr_tex</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a9f9952dcff7726fb8564739bf85db607_cgraph.svg" width="404" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -779,7 +518,7 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Triggers a new environment transition (with fade-in/out or crossfade). </p>
+<p>Triggers a new environment transition. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
@@ -797,23 +536,17 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a3c38f4e33b570dfc830b1ffee06fa1ad" name="a3c38f4e33b570dfc830b1ffee06fa1ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c38f4e33b570dfc830b1ffee06fa1ad">&#9670;&#160;</a></span>env_manager_update()</h2>
+<a id="af6cf5ee2b30a1efd1a49fdd7839a67b8" name="af6cf5ee2b30a1efd1a49fdd7839a67b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6cf5ee2b30a1efd1a49fdd7839a67b8">&#9670;&#160;</a></span>env_manager_update_ibl()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void env_manager_update </td>
+          <td class="memname">void env_manager_update_ibl </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
           <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
-          <td class="paramname"><em>loader</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -826,12 +559,6 @@ Here is the call graph for this function:</div>
           <td></td>
           <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
           <td class="paramname"><em>postproc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>delta_time</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -859,145 +586,35 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Core update function driving loading, IBL generation, and transitions. </p>
+<p>Updates the IBL state machine and handles transition events. </p>
+<p>This function combines the logic of checking IBL progress and updating the transition state (loading -&gt; fade out/in).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
-    <tr><td class="paramname">loader</td><td>Pointer to the async loader. </td></tr>
-    <tr><td class="paramname">scene</td><td>Pointer to the scene. </td></tr>
-    <tr><td class="paramname">postproc</td><td>Pointer to post-process. </td></tr>
-    <tr><td class="paramname">delta_time</td><td>Frame delta time in seconds. </td></tr>
-    <tr><td class="paramname">frame_count</td><td>Monotonic frame counter. </td></tr>
-    <tr><td class="paramname">width</td><td>Current window width. </td></tr>
-    <tr><td class="paramname">height</td><td>Current window height. </td></tr>
+    <tr><td class="paramname">scene</td><td>Pointer to the scene (for texture management). </td></tr>
+    <tr><td class="paramname">postproc</td><td>Pointer to post-process (for exposure). </td></tr>
+    <tr><td class="paramname">frame_count</td><td>Current frame count. </td></tr>
+    <tr><td class="paramname">width</td><td>Current window width (for snapshot). </td></tr>
+    <tr><td class="paramname">height</td><td>Current window height (for snapshot). </td></tr>
   </table>
   </dd>
 </dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a3c38f4e33b570dfc830b1ffee06fa1ad_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_af6cf5ee2b30a1efd1a49fdd7839a67b8_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
 </div>
-<a id="a0e77722a5bf0ef99cc77ad29c1c7b650" name="a0e77722a5bf0ef99cc77ad29c1c7b650"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e77722a5bf0ef99cc77ad29c1c7b650">&#9670;&#160;</a></span>env_manager_update_ibl_pipeline()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void env_manager_update_ibl_pipeline </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
-          <td class="paramname"><em>scene</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
-          <td class="paramname"><em>postproc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>frame_count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a0e77722a5bf0ef99cc77ad29c1c7b650_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
-</div>
-
-</div>
-</div>
-<a id="a7c8116470046be81700d5ebbf40537de" name="a7c8116470046be81700d5ebbf40537de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c8116470046be81700d5ebbf40537de">&#9670;&#160;</a></span>env_manager_update_ibl_state()</h2>
+<a id="aafd47aadf2c5e1696d618a510326ce78" name="aafd47aadf2c5e1696d618a510326ce78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafd47aadf2c5e1696d618a510326ce78">&#9670;&#160;</a></span>env_manager_update_transition()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> env_manager_update_ibl_state </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>frame_count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a7c8116470046be81700d5ebbf40537de_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
-</div>
-
-</div>
-</div>
-<a id="a77c2cd1c9ed582fa8439e8f5dedea44d" name="a77c2cd1c9ed582fa8439e8f5dedea44d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77c2cd1c9ed582fa8439e8f5dedea44d">&#9670;&#160;</a></span>env_manager_update_transition()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void env_manager_update_transition </td>
+          <td class="memname">void env_manager_update_transition </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
           <td class="paramname"><em>mgr</em>, </td>
@@ -1032,16 +649,23 @@ Here is the call graph for this function:</div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>Updates the environment transition animation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mgr</td><td>Pointer to the environment manager. </td></tr>
+    <tr><td class="paramname">scene</td><td>Pointer to the scene. </td></tr>
+    <tr><td class="paramname">postproc</td><td>Pointer to post-process. </td></tr>
+    <tr><td class="paramname">delta_time</td><td>Time elapsed since last frame. </td></tr>
+    <tr><td class="paramname">frame_count</td><td>Current frame count. </td></tr>
+  </table>
+  </dd>
+</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a77c2cd1c9ed582fa8439e8f5dedea44d_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_aafd47aadf2c5e1696d618a510326ce78_cgraph.svg" width="100%" height="381"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1061,11 +685,6 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_aff1d6e8d0d27f3dd34f631c6d55bb4f7_cgraph.svg" width="640" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
@@ -1084,11 +703,6 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a89ea646fa4ff92af07feec86ca99e95b_cgraph.svg" width="578" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
@@ -1163,8 +777,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a325df28750573fe64f999eace591c77b" name="a325df28750573fe64f999eace591c77b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a325df28750573fe64f999eace591c77b">&#9670;&#160;</a></span>ibl_irradiance_slices()</h2>
+<a id="a2be9d0e288060ee8fc01063fae7417aa" name="a2be9d0e288060ee8fc01063fae7417aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2be9d0e288060ee8fc01063fae7417aa">&#9670;&#160;</a></span>handle_ibl_done_loading_state()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1173,182 +787,40 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int ibl_irradiance_slices </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a325df28750573fe64f999eace591c77b_cgraph.svg" width="372" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="aaa5ff05792c6e4a641f2bffb90279ac4" name="aaa5ff05792c6e4a641f2bffb90279ac4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa5ff05792c6e4a641f2bffb90279ac4">&#9670;&#160;</a></span>ibl_specular_mip0_slices()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int ibl_specular_mip0_slices </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_aaa5ff05792c6e4a641f2bffb90279ac4_cgraph.svg" width="402" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a68e655e2e6acfa7418ca6cbb31f7dfa7" name="a68e655e2e6acfa7418ca6cbb31f7dfa7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68e655e2e6acfa7418ca6cbb31f7dfa7">&#9670;&#160;</a></span>ibl_specular_mip1_slices()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int ibl_specular_mip1_slices </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a68e655e2e6acfa7418ca6cbb31f7dfa7_cgraph.svg" width="402" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="afd9d63c9f2007aeb78aa1e3df5552c3e" name="afd9d63c9f2007aeb78aa1e3df5552c3e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd9d63c9f2007aeb78aa1e3df5552c3e">&#9670;&#160;</a></span>ibl_specular_mips_grouping_start()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int ibl_specular_mips_grouping_start </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_afd9d63c9f2007aeb78aa1e3df5552c3e_cgraph.svg" width="420" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a1e7293b3c0a2d29125bbe5008dc72c80" name="a1e7293b3c0a2d29125bbe5008dc72c80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e7293b3c0a2d29125bbe5008dc72c80">&#9670;&#160;</a></span>ibl_stats_accumulate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void ibl_stats_accumulate </td>
+          <td class="memname">static void handle_ibl_done_loading_state </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
+          <td class="paramname"><em>mgr</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>gpu_ms</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
+          <td class="paramname"><em>scene</em>, </td>
         </tr>
         <tr>
+          <td class="paramkey"></td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a840de37691b0329a500d31b51d3a9452" name="a840de37691b0329a500d31b51d3a9452"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a840de37691b0329a500d31b51d3a9452">&#9670;&#160;</a></span>ibl_stats_log_summary()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void ibl_stats_log_summary </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>postproc</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>frame</em>, </td>
+          <td class="paramname"><em>frame_count</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>stage_name</em>&#160;</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1365,44 +837,13 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a840de37691b0329a500d31b51d3a9452_cgraph.svg" width="407" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a2be9d0e288060ee8fc01063fae7417aa_cgraph.svg" width="100%" height="413"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
 </div>
-<a id="a3f6db741eecc6c2859112fc28d0abbfc" name="a3f6db741eecc6c2859112fc28d0abbfc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f6db741eecc6c2859112fc28d0abbfc">&#9670;&#160;</a></span>ibl_stats_reset()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void ibl_stats_reset </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>ctx</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a3f6db741eecc6c2859112fc28d0abbfc_cgraph.svg" width="303" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="ac7967759b1ba80b70a7d1bba2dfa753e" name="ac7967759b1ba80b70a7d1bba2dfa753e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7967759b1ba80b70a7d1bba2dfa753e">&#9670;&#160;</a></span>is_software_renderer()</h2>
+<a id="a5a8e4c362fb7ec501f8d5d5556af04bb" name="a5a8e4c362fb7ec501f8d5d5556af04bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a8e4c362fb7ec501f8d5d5556af04bb">&#9670;&#160;</a></span>handle_ibl_done_wait_state()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1411,33 +852,7 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool is_software_renderer </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8c33467652f7f936529f32bffbd2fd79" name="a8c33467652f7f936529f32bffbd2fd79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c33467652f7f936529f32bffbd2fd79">&#9670;&#160;</a></span>process_irradiance()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> process_irradiance </td>
+          <td class="memname">static void handle_ibl_done_wait_state </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
           <td class="paramname"><em>mgr</em>, </td>
@@ -1445,90 +860,20 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned long long&#160;</td>
-          <td class="paramname"><em>frame</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a8c33467652f7f936529f32bffbd2fd79_cgraph.svg" width="599" height="200"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="adb8bbab5e56a7eaac8b65758938f1cf7" name="adb8bbab5e56a7eaac8b65758938f1cf7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb8bbab5e56a7eaac8b65758938f1cf7">&#9670;&#160;</a></span>process_luminance()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> process_luminance </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
+          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
+          <td class="paramname"><em>scene</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned long long&#160;</td>
-          <td class="paramname"><em>frame</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_adb8bbab5e56a7eaac8b65758938f1cf7_cgraph.svg" width="579" height="127"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a8c9d06b549bb6a99208efa5919309dca" name="a8c9d06b549bb6a99208efa5919309dca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c9d06b549bb6a99208efa5919309dca">&#9670;&#160;</a></span>process_luminance_wait()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> process_luminance_wait </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>postproc</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned long long&#160;</td>
-          <td class="paramname"><em>frame</em>&#160;</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1545,292 +890,12 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a8c9d06b549bb6a99208efa5919309dca_cgraph.svg" width="440" height="102"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a7a9c81b71c5a028248f7c7721287b610" name="a7a9c81b71c5a028248f7c7721287b610"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a9c81b71c5a028248f7c7721287b610">&#9670;&#160;</a></span>process_specular_init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> process_specular_init </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned long long&#160;</td>
-          <td class="paramname"><em>frame</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a7a9c81b71c5a028248f7c7721287b610_cgraph.svg" width="546" height="102"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a70bdcf9765569e8e86540b0d5ed65c5f" name="a70bdcf9765569e8e86540b0d5ed65c5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70bdcf9765569e8e86540b0d5ed65c5f">&#9670;&#160;</a></span>process_specular_mips()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="env__manager_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> process_specular_mips </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td>
-          <td class="paramname"><em>mgr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned long long&#160;</td>
-          <td class="paramname"><em>frame</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a70bdcf9765569e8e86540b0d5ed65c5f_cgraph.svg" width="658" height="496"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="env__manager_8c_a5a8e4c362fb7ec501f8d5d5556af04bb_cgraph.svg" width="100%" height="381"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a01c03b8c9f962bd93616041f8e85f0ac" name="a01c03b8c9f962bd93616041f8e85f0ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01c03b8c9f962bd93616041f8e85f0ac">&#9670;&#160;</a></span>EMPTY_ENV_MANAGER</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="structEnvManager.html">EnvManager</a> EMPTY_ENV_MANAGER</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a50f2c8aeca54eeb71bd72a8fdeaf1c45" name="a50f2c8aeca54eeb71bd72a8fdeaf1c45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50f2c8aeca54eeb71bd72a8fdeaf1c45">&#9670;&#160;</a></span>IBL_IRRADIANCE_HARDWARE_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_IRRADIANCE_HARDWARE_SLICES = 12</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa5ac2b4f077bc45d4ea556539a84db38" name="aa5ac2b4f077bc45d4ea556539a84db38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5ac2b4f077bc45d4ea556539a84db38">&#9670;&#160;</a></span>IBL_LOG_LABEL_SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_LOG_LABEL_SIZE = 128</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6494d63e0ff1eb4d9ec732a056ab655c" name="a6494d63e0ff1eb4d9ec732a056ab655c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6494d63e0ff1eb4d9ec732a056ab655c">&#9670;&#160;</a></span>IBL_SOFTWARE_FALLBACK_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SOFTWARE_FALLBACK_SLICES = 1</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7427e33647e1f11c1129bfe49029bcce" name="a7427e33647e1f11c1129bfe49029bcce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7427e33647e1f11c1129bfe49029bcce">&#9670;&#160;</a></span>IBL_SOFTWARE_MIP_GROUPING_START_MIP</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SOFTWARE_MIP_GROUPING_START_MIP = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a10906b0fc6004f05d5b0428c10cad2e9" name="a10906b0fc6004f05d5b0428c10cad2e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10906b0fc6004f05d5b0428c10cad2e9">&#9670;&#160;</a></span>IBL_SPECULAR_MIP0_HARDWARE_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SPECULAR_MIP0_HARDWARE_SLICES = 24</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad724e11eb756c49bf2e1f0603946b3e0" name="ad724e11eb756c49bf2e1f0603946b3e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad724e11eb756c49bf2e1f0603946b3e0">&#9670;&#160;</a></span>IBL_SPECULAR_MIP1_HARDWARE_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SPECULAR_MIP1_HARDWARE_SLICES = 8</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0f951302cb33cd6f2aa28d7314bc2bc8" name="a0f951302cb33cd6f2aa28d7314bc2bc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f951302cb33cd6f2aa28d7314bc2bc8">&#9670;&#160;</a></span>IBL_SPECULAR_MIP_GROUPING_START_MIP</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SPECULAR_MIP_GROUPING_START_MIP = 3</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7f01277e23e73c88a937e3771351252c" name="a7f01277e23e73c88a937e3771351252c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f01277e23e73c88a937e3771351252c">&#9670;&#160;</a></span>IBL_THRESHOLD_FALLBACK_MIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const float IBL_THRESHOLD_FALLBACK_MIN = 1.0F</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="acf85965108ddb048b66205bcd09d87b6" name="acf85965108ddb048b66205bcd09d87b6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf85965108ddb048b66205bcd09d87b6">&#9670;&#160;</a></span>MAX_PATH_LENGTH</h2>
 

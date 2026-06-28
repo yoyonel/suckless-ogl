@@ -91,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#transitions-denvironnement" class="md-skip">
+        <a href="#transitions-entre-environnements-hdr" class="md-skip">
           Aller au contenu
         </a>
       
@@ -1277,52 +1277,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#vue-densemble" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Vue d'Ensemble
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#modes-de-transition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modes de Transition
+        Modes de transition
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Modes de Transition">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-fondu-enchaine-crossfade-par-defaut" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Fondu Enchaîné (Crossfade - Par défaut)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-ecran-noir-black-screen" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Écran Noir (Black Screen)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1330,19 +1291,19 @@
   <a href="#machine-a-etats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Machine à États
+        Machine à états
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Machine à États">
+    <nav class="md-nav" aria-label="Machine à états">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#etats-de-transition-transitionstate" class="md-nav__link">
+  <a href="#etats-detailles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        États de Transition (TransitionState)
+        États détaillés
       
     </span>
   </a>
@@ -1355,22 +1316,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#details-dimplementation" class="md-nav__link">
+  <a href="#implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Détails d'Implémentation
+        Implémentation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Détails d'Implémentation">
+    <nav class="md-nav" aria-label="Implémentation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#capture-de-framebuffer-snapshot" class="md-nav__link">
+  <a href="#fondu-enchaine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capture de Framebuffer (Snapshot)
+        Fondu enchaîné
       
     </span>
   </a>
@@ -1378,10 +1339,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#chargement-en-arriere-plan" class="md-nav__link">
+  <a href="#ecran-noir" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Chargement en Arrière-Plan
+        Écran noir
       
     </span>
   </a>
@@ -1394,49 +1355,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#continuite-pendant-le-chargement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration
+        Continuité pendant le chargement
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constantes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constantes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#controles-en-cours-dexecution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Contrôles en Cours d'Exécution
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#etendre-le-systeme-de-transition" class="md-nav__link">
+  <a href="#voir-aussi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Étendre le Système de Transition
+        Voir aussi
       
     </span>
   </a>
@@ -3667,75 +3600,91 @@
   
 
 
-<h1 id="transitions-denvironnement">Transitions d'Environnement<a class="headerlink" href="#transitions-denvironnement" title="Permanent link">¶</a></h1>
-<p>Ce document décrit l'architecture, l'implémentation et la configuration des transitions de cartes d'environnement HDR dans Suckless OGL.</p>
-<h2 id="vue-densemble">Vue d'Ensemble<a class="headerlink" href="#vue-densemble" title="Permanent link">¶</a></h2>
-<p>Lors du basculement entre des cartes d'environnement HDR (High Dynamic Range), l'application effectue une transition visuelle pour garantir une expérience utilisateur fluide. Deux modes principaux sont pris en charge : <strong>Fondu enchaîné (Crossfade)</strong> et <strong>Écran noir (Black Screen)</strong>.</p>
-<h2 id="modes-de-transition">Modes de Transition<a class="headerlink" href="#modes-de-transition" title="Permanent link">¶</a></h2>
-<h3 id="1-fondu-enchaine-crossfade-par-defaut">1. Fondu Enchaîné (Crossfade - Par défaut)<a class="headerlink" href="#1-fondu-enchaine-crossfade-par-defaut" title="Permanent link">¶</a></h3>
-<p>Le mode de fondu enchaîné offre un mélange fluide de l'environnement précédent vers le nouveau.</p>
-<ul>
-<li><strong>Comportement</strong> : Dès que le nouvel environnement (et ses textures IBL associées) est prêt, l'application capture instantanément l'image actuelle (snapshot) du framebuffer. Elle échange ensuite l'environnement et applique un fondu de la capture au-dessus de la nouvelle scène.</li>
-<li><strong>Esthétique</strong> : Offre une sensation haut de gamme et transparente.</li>
-<li><strong>Implémentation</strong> : Utilise une texture de capture de framebuffer.</li>
-</ul>
-<h3 id="2-ecran-noir-black-screen">2. Écran Noir (Black Screen)<a class="headerlink" href="#2-ecran-noir-black-screen" title="Permanent link">¶</a></h3>
-<p>Le mode écran noir fournit une transition classique avec un "fondu au noir".</p>
-<ul>
-<li><strong>Comportement</strong> : L'environnement actuel reste interactif pendant le chargement du nouveau en arrière-plan (<code>TRANSITION_LOADING</code>). Une fois le chargement terminé, l'application effectue un fondu au noir, échange les textures de l'environnement, puis réaffiche progressivement la nouvelle scène.</li>
-<li><strong>Cas d'Utilisation</strong> : Préféré pour les systèmes plus lents ou lorsqu'une rupture visuelle nette est souhaitée entre les environnements.</li>
-<li><strong>Implémentation</strong> : Utilise une texture noire de remplacement (dummy black texture) comme calque d'overlay.</li>
-</ul>
-<h2 id="machine-a-etats">Machine à États<a class="headerlink" href="#machine-a-etats" title="Permanent link">¶</a></h2>
-<p>Les transitions sont régies par une machine à états située dans <code>src/env_manager.c</code>.</p>
+<h1 id="transitions-entre-environnements-hdr">Transitions entre environnements HDR<a class="headerlink" href="#transitions-entre-environnements-hdr" title="Permanent link">¶</a></h1>
+<p>Ce document décrit le système de transitions animées entre cartes d'environnement HDR.</p>
+<h2 id="modes-de-transition">Modes de transition<a class="headerlink" href="#modes-de-transition" title="Permanent link">¶</a></h2>
+<p>Deux modes de transition sont disponibles :</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+<th>Raccourci</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fondu enchaîné</strong></td>
+<td>Mélange progressif entre l'ancien et le nouvel environnement</td>
+<td>Défaut</td>
+</tr>
+<tr>
+<td><strong>Écran noir</strong></td>
+<td>Fondu vers le noir, chargement, fondu depuis le noir</td>
+<td><code>ALT+T</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="machine-a-etats">Machine à états<a class="headerlink" href="#machine-a-etats" title="Permanent link">¶</a></h2>
 <pre class="mermaid"><code>stateDiagram-v2
-    state "  IDLE  " as idle
-    state "  LOADING  " as loading
-    state "  FADE_OUT  " as fade_out
-    state "  FADE_IN  " as fade_in
-    state "  WAIT_IBL  " as wait_ibl
-
-    idle --&gt; loading : env_manager_load
-    loading --&gt; fade_out : IBL Terminé (Mode Écran Noir)
-    loading --&gt; fade_in : IBL Terminé (Mode Fondu Enchaîné)
-    fade_out --&gt; fade_in : Alpha &gt;= 1.0 (Échange des Textures)
-    fade_in --&gt; idle : Alpha &lt;= 0.0
-
-    idle --&gt; wait_ibl : Démarrage Initial
-    wait_ibl --&gt; fade_in : IBL Terminé (Chargement Initial)</code></pre>
-<h3 id="etats-de-transition-transitionstate">États de Transition (<code>TransitionState</code>)<a class="headerlink" href="#etats-de-transition-transitionstate" title="Permanent link">¶</a></h3>
-<ul>
-<li><code>TRANSITION_IDLE</code> : Aucune transition active.</li>
-<li><code>TRANSITION_LOADING</code> : Chargement en arrière-plan des textures HDR/IBL pendant que l'ancienne scène reste visible.</li>
-<li><code>TRANSITION_WAIT_IBL</code> : Utilisé lors du démarrage initial pour maintenir l'écran noir jusqu'à ce que le premier environnement soit prêt.</li>
-<li><code>TRANSITION_FADE_OUT</code> : La scène effectue un fondu vers le noir.</li>
-<li><code>TRANSITION_FADE_IN</code> : La scène apparaît progressivement depuis le noir ou depuis la capture d'overlay.</li>
-</ul>
-<h2 id="details-dimplementation">Détails d'Implémentation<a class="headerlink" href="#details-dimplementation" title="Permanent link">¶</a></h2>
-<h3 id="capture-de-framebuffer-snapshot">Capture de Framebuffer (Snapshot)<a class="headerlink" href="#capture-de-framebuffer-snapshot" title="Permanent link">¶</a></h3>
-<p>En mode Fondu Enchaîné, une capture est effectuée à l'aide de <code>glCopyTexSubImage2D</code> dans la texture <code>scene-&gt;gpu-&gt;transition_snapshot_tex</code>. Cette texture est ensuite affichée sous forme de quad plein écran au-dessus de la nouvelle scène à l'aide du shader <code>debug_tex.frag</code> avec une opacité variable.</p>
-<h3 id="chargement-en-arriere-plan">Chargement en Arrière-Plan<a class="headerlink" href="#chargement-en-arriere-plan" title="Permanent link">¶</a></h3>
-<p>Les cartes d'environnement sont chargées à l'aide d'un chargeur asynchrone. La logique de transition diffère tout changement visuel jusqu'à ce que <code>IBLState</code> atteigne <code>IBL_STATE_DONE</code>, garantissant ainsi que l'utilisateur ne voie jamais d'environnement non initialisé ou partiellement chargé.</p>
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
-<p>Les transitions peuvent être configurées via <code>include/app_settings.h</code> ou contrôlées au moment de l'exécution.</p>
-<h3 id="constantes">Constantes<a class="headerlink" href="#constantes" title="Permanent link">¶</a></h3>
-<ul>
-<li><code>DEFAULT_ENV_TRANSITION_DURATION</code> : La durée en secondes pour un fondu complet.</li>
-<li><code>DEFAULT_ENV_TRANSITION_MODE</code> : Le mode par défaut (<code>ENV_TRANSITION_CROSSFADE</code> ou <code>ENV_TRANSITION_BLACK_SCREEN</code>).</li>
-</ul>
-<h3 id="controles-en-cours-dexecution">Contrôles en Cours d'Exécution<a class="headerlink" href="#controles-en-cours-dexecution" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Touche <code>T</code></strong> : Alterne entre les modes Fondu Enchaîné et Écran Noir.</li>
-</ul>
-<h2 id="etendre-le-systeme-de-transition">Étendre le Système de Transition<a class="headerlink" href="#etendre-le-systeme-de-transition" title="Permanent link">¶</a></h2>
-<p>Pour ajouter un nouveau type de transition (par exemple, "Radial Wipe" ou "Pixelate") :</p>
+    [*] --&gt; IDLE
+    IDLE --&gt; LOADING : requête de changement
+    LOADING --&gt; FADE_OUT : chargement terminé
+    FADE_OUT --&gt; SWITCHING : opacité = 0
+    SWITCHING --&gt; FADE_IN : swap des textures IBL
+    FADE_IN --&gt; IDLE : opacité = 1</code></pre>
+<h3 id="etats-detailles">États détaillés<a class="headerlink" href="#etats-detailles" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>État</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IDLE</code></td>
+<td>Environnement stable, aucune transition en cours</td>
+</tr>
+<tr>
+<td><code>LOADING</code></td>
+<td>Chargement asynchrone du HDR en arrière-plan</td>
+</tr>
+<tr>
+<td><code>FADE_OUT</code></td>
+<td>Atténuation progressive de l'environnement actuel</td>
+</tr>
+<tr>
+<td><code>SWITCHING</code></td>
+<td>Échange atomique des ressources GPU</td>
+</tr>
+<tr>
+<td><code>FADE_IN</code></td>
+<td>Introduction progressive du nouvel environnement</td>
+</tr>
+</tbody>
+</table>
+<h2 id="implementation">Implémentation<a class="headerlink" href="#implementation" title="Permanent link">¶</a></h2>
+<h3 id="fondu-enchaine">Fondu enchaîné<a class="headerlink" href="#fondu-enchaine" title="Permanent link">¶</a></h3>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Dans le shader de skybox</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">vec3</span><span class="w"> </span><span class="n">env_old</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">u_env_old</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">vec3</span><span class="w"> </span><span class="n">env_new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">u_env_new</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">vec3</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="n">env_old</span><span class="p">,</span><span class="w"> </span><span class="n">env_new</span><span class="p">,</span><span class="w"> </span><span class="n">u_transition_factor</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Le facteur <code>u_transition_factor</code> passe de 0.0 à 1.0 en <code>TRANSITION_DURATION</code> secondes (valeur par défaut : 0.8 s).</p>
+<h3 id="ecran-noir">Écran noir<a class="headerlink" href="#ecran-noir" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Enums</strong> : Ajoutez votre nouveau mode à <code>EnvTransitionMode</code> dans <code>app_settings.h</code>.</li>
-<li><strong>Machine à États</strong> : Mettez à jour la logique dans <code>env_manager_update_ibl_pipeline</code> (dans <code>src/env_manager.c</code>) pour initier la séquence d'états correspondant à votre nouveau mode.</li>
-<li><strong>Shaders</strong> : Si la transition nécessite un effet spécial, créez un nouveau fragment shader ou étendez <code>debug_tex.frag</code>.</li>
-<li><strong>Rendu</strong> : Mettez à jour <code>env_manager_render_transition</code> dans <code>src/env_manager.c</code> pour lier les textures nécessaires et configurer les uniforms pour le nouvel effet de shader lorsque <code>mgr-&gt;env_transition_mode</code> correspond à votre nouvelle valeur d'enum.</li>
-<li><strong>Tests Unitaires</strong> : Ajoutez des cas de test dans <code>tests/test_env_transition.c</code> pour vérifier le fonctionnement de votre nouvelle transition.</li>
+<li>Phase 1 : <code>u_blackout_factor</code> passe de 0.0 à 1.0 (0.4 s)</li>
+<li>Échange des ressources IBL (synchrone, mais masqué par le noir)</li>
+<li>Phase 2 : <code>u_blackout_factor</code> passe de 1.0 à 0.0 (0.4 s)</li>
 </ol>
+<h2 id="continuite-pendant-le-chargement">Continuité pendant le chargement<a class="headerlink" href="#continuite-pendant-le-chargement" title="Permanent link">¶</a></h2>
+<p>Si un second changement d'environnement est demandé pendant qu'une transition est en cours, la requête est mise en file d'attente et exécutée après la fin de la transition courante. Cela évite les artefacts visuels liés aux transitions imbriquées.</p>
+<h2 id="voir-aussi">Voir aussi<a class="headerlink" href="#voir-aussi" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../async_loader/">async_loader.md</a> — Chargement asynchrone HDR</li>
+<li><a href="../progressive_ibl/">progressive_ibl.md</a> — Génération IBL progressive</li>
+</ul>
 
 
 
@@ -3756,7 +3705,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="27 juin 2026 18:30:07 UTC">27 juin 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
   </span>
 
     

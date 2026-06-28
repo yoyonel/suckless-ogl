@@ -3707,8 +3707,8 @@
 <h3 id="the-pipeline">The Pipeline<a class="headerlink" href="#the-pipeline" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Disk Load (Separate Thread)</strong>: The <code>.hdr</code> file is loaded and decoded (stb_image) in a dedicated thread (<code>async_loader.c</code>).</li>
-<li><strong>GPU Upload (Main Thread)</strong>: Once ready, raw data is uploaded to VRAM (HDR texture) in the background via double-buffered PBOs.</li>
-<li><strong>IBL Generation (Progressive)</strong>: A state machine (<code>env_manager_update_ibl_state</code>) drives the compute shaders step-by-step to generate:<ul>
+<li><strong>GPU Upload (Main Thread)</strong>: Once ready, raw data is uploaded to VRAM (HDR texture).</li>
+<li><strong>IBL Generation (Progressive)</strong>: A state machine (<code>ibl_coordinator_update</code>) drives the compute shaders step-by-step to generate:<ul>
 <li>Mean Luminance (Async GPU readback via <code>glFenceSync</code>).</li>
 <li>Irradiance Map (Diffuse).</li>
 <li>Specular Prefiltered Map (Reflection).</li>
@@ -3754,8 +3754,12 @@ We pass a precise limit to the shader:</p>
 </ul>
 <h3 id="c-irradiance-map-64x64">C. Irradiance Map (64x64)<a class="headerlink" href="#c-irradiance-map-64x64" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Strategy</strong>: Constant slicing.</li>
-<li><strong>Slicing</strong>: 12 Slices.</li>
+<li>
+<p><strong>Strategy</strong>: Constant slicing.</p>
+</li>
+<li>
+<p><strong>Slicing</strong>: 12 Slices.</p>
+</li>
 <li><strong>Cost</strong>: ~5ms / slice.</li>
 </ul>
 <h3 id="d-specular-map-1024x1024">D. Specular Map (1024x1024)<a class="headerlink" href="#d-specular-map-1024x1024" title="Permanent link">¶</a></h3>
@@ -3843,13 +3847,18 @@ flowchart LR
 <hr>
 <h2 id="4-deferred-memory-barrier-optimization">4. Deferred Memory Barrier Optimization<a class="headerlink" href="#4-deferred-memory-barrier-optimization" title="Permanent link">¶</a></h2>
 <h3 id="41-the-problem-per-slice-barrier-overhead">4.1 The Problem: Per-Slice Barrier Overhead<a class="headerlink" href="#41-the-problem-per-slice-barrier-overhead" title="Permanent link">¶</a></h3>
-<p>Initially, each slice dispatch called <code>glMemoryBarrier(GL_ALL_BARRIER_BITS)</code> at the end. This forced the GPU to:</p>
+<p>Initially, each slice dispatch called <code>glMemoryBarrier(GL_ALL_BARRIER_BITS)</code> at
+the end. This forced the GPU to:</p>
 <ol>
-<li><strong>Drain the entire pipeline</strong> — all in-flight commands complete before the next dispatch starts.</li>
+<li><strong>Drain the entire pipeline</strong> — all in-flight commands complete before the
+    next dispatch starts.</li>
 <li><strong>Invalidate all GPU caches</strong> — texture cache, L2, framebuffer, etc.</li>
-<li><strong>Cold-restart</strong> — the next dispatch re-fetches <code>env_hdr_tex</code> from VRAM instead of hitting cache.</li>
+<li><strong>Cold-restart</strong> — the next dispatch re-fetches <code>env_hdr_tex</code> from VRAM
+    instead of hitting cache.</li>
 </ol>
-<p>The overhead was <strong>super-linear</strong>: doubling the slice count more than doubled the total processing time. This made fine-grained slicing (many small slices for ~33ms/frame budget) impractical.</p>
+<p>The overhead was <strong>super-linear</strong>: doubling the slice count more than doubled
+the total processing time. This made fine-grained slicing (many small slices
+for ~33ms/frame budget) impractical.</p>
 <h3 id="42-key-observation-no-inter-slice-data-dependencies">4.2 Key Observation: No Inter-Slice Data Dependencies<a class="headerlink" href="#42-key-observation-no-inter-slice-data-dependencies" title="Permanent link">¶</a></h3>
 <p>Analyzing the data flow reveals that slices are <strong>independent</strong>:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Slice 0: READ env_hdr_tex → WRITE dest_tex[mip][y: 0..N]
@@ -3861,13 +3870,18 @@ flowchart LR
 <li>Each slice <strong>writes</strong> to a disjoint Y-range of the destination texture.</li>
 <li>There is no read-after-write or write-after-write hazard between slices.</li>
 </ul>
-<p>The same holds across mip levels: each mip writes to a different mip level of the destination, and reads from the same source HDR.</p>
+<p>The same holds across mip levels: each mip writes to a different mip level of
+the destination, and reads from the same source HDR.</p>
 <h3 id="43-solution-single-deferred-barrier">4.3 Solution: Single Deferred Barrier<a class="headerlink" href="#43-solution-single-deferred-barrier" title="Permanent link">¶</a></h3>
 <p>Remove all per-slice barriers and issue <strong>one</strong> barrier at the end:</p>
 <ul>
-<li><code>pbr_prefilter_mip()</code> and <code>pbr_irradiance_slice_compute()</code> no longer call <code>glMemoryBarrier()</code>. The caller is responsible.</li>
-<li>A single <code>glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)</code> is placed in <code>env_manager_update_ibl_state</code> when reaching <code>IBL_STATE_DONE</code>, just before the textures are sampled for rendering.</li>
-<li>The barrier type is narrowed from <code>GL_ALL_BARRIER_BITS</code> to <code>GL_SHADER_IMAGE_ACCESS_BARRIER_BIT</code> — only the image-store-to-texture-fetch coherency path is flushed.</li>
+<li><code>pbr_prefilter_mip()</code> and <code>pbr_irradiance_slice_compute()</code> no longer call
+    <code>glMemoryBarrier()</code>. The caller is responsible.</li>
+<li>A single <code>glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)</code> is placed in
+    <code>IBL_STATE_DONE</code>, just before the textures are sampled for rendering.</li>
+<li>The barrier type is narrowed from <code>GL_ALL_BARRIER_BITS</code> to
+    <code>GL_SHADER_IMAGE_ACCESS_BARRIER_BIT</code> — only the image-store-to-texture-fetch
+    coherency path is flushed.</li>
 </ul>
 <pre class="mermaid"><code>%%{init: {
   "theme": "dark",
@@ -3936,10 +3950,14 @@ sequenceDiagram
 </tr>
 </tbody>
 </table>
-<p>The variance reduction is significant: per-slice pipeline drains introduced unpredictable GPU idle time. With the deferred barrier, the GPU runs continuously without stalls.</p>
+<p>The variance reduction is significant: per-slice pipeline drains introduced
+unpredictable GPU idle time. With the deferred barrier, the GPU runs
+continuously without stalls.</p>
 <blockquote>
 <p>[!IMPORTANT]
-With the deferred barrier, the slice count can be increased freely without super-linear overhead. This allows targeting a ~33ms/frame budget per slice for smooth 30 FPS during IBL generation.</p>
+With the deferred barrier, the slice count can be increased freely without
+super-linear overhead. This allows targeting a ~33ms/frame budget per slice
+for smooth 30 FPS during IBL generation.</p>
 </blockquote>
 <hr>
 <h2 id="5-global-performance">5. Global Performance<a class="headerlink" href="#5-global-performance" title="Permanent link">¶</a></h2>
@@ -3951,7 +3969,7 @@ With the deferred barrier, the slice count can be increased freely without super
 </ul>
 <h2 id="6-key-files">6. Key Files<a class="headerlink" href="#6-key-files" title="Permanent link">¶</a></h2>
 <ul>
-<li><code>src/env_manager.c</code>: Contains the progressive IBL State Machine and updates transitions.</li>
+<li><code>src/ibl_coordinator.c</code>: Contains the State Machine (<code>ibl_coordinator_update</code>) and the deferred barrier in <code>IBL_STATE_DONE</code>.</li>
 <li><code>src/pbr.c</code>: Implements sliced compute dispatches (<code>pbr_prefilter_mip</code>, <code>pbr_irradiance_slice_compute</code>) — no internal barriers.</li>
 <li><code>include/pbr.h</code>: API documentation with <code>@note</code> about caller barrier responsibility.</li>
 <li><code>shaders/IBL/*.glsl</code>: Shaders modified to support <code>u_offset_y</code> and <code>u_max_y</code>.</li>
@@ -3976,7 +3994,7 @@ With the deferred barrier, the slice count can be increased freely without super
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 27, 2026 18:30:07 UTC">June 27, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
   </span>
 
     

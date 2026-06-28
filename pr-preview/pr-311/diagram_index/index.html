@@ -4445,7 +4445,7 @@ M-&gt;&gt;M: Start Progressive IBL</code></pre>
 }
 }%%
 sequenceDiagram
-participant Main as Main Thread (EnvManager)
+participant Main as Main Thread
 participant Worker as Async Worker
 participant GPU as GPU / Driver
 Note over Main: Frame N - PBO Setup
@@ -4503,20 +4503,20 @@ Frame N+M - Upload + Mipmap       :active, 18, 38</code></pre>
 }
 }%%
 flowchart TD
-A["env_manager_update() called"] --&gt; B{"pending_prealloc_w &gt; 0?"}
+A["app_update() called"] --&gt; B{"pending_prealloc_w &gt; 0?"}
 B -- Yes --&gt; C["texture_preallocate_hdr()"]
 C --&gt; D{"recycled_hdr_tex matches?"}
 D -- Yes --&gt; E["Zero-cost reuse (OK)"]
 D -- No --&gt; F["glTexImage2D(level 0, NULL)"]
-F --&gt; G["Store in scene-&gt;gpu-&gt;recycled_hdr_tex"]
+F --&gt; G["Store in app-&gt;recycled_hdr_tex"]
 B -- No --&gt; H["async_loader_poll()"]
 E --&gt; H
 G --&gt; H
 H --&gt; I{"req.state?"}
 I -- WAITING_FOR_PBO --&gt; J["PBO Setup &amp; Map"]
 J --&gt; K["Schedule pending_prealloc_w/h"]
-I -- ASYNC_READY --&gt; L["Step EML_UPLOAD_HDR_FROM_PBO"]
-L --&gt; M{"recycled_hdr_tex matches?"}
+I -- ASYNC_READY --&gt; L["texture_upload_hdr_from_pbo()"]
+L --&gt; M{"reuse_tex matches?"}
 M -- Yes --&gt; N["Skip glTexStorage2D (OK)"]
 M -- No --&gt; O["Fallback: glTexStorage2D"]
 N --&gt; P["glUnmapBuffer + glTexSubImage2D"]
@@ -4602,7 +4602,7 @@ ADAPT --&gt; EXP[Exposure Tex]</code></pre>
 
 <h2 id="environment-transitions"><a href="../env_transitions/">Environment Transitions</a><a class="headerlink" href="#environment-transitions" title="Permanent link">¶</a></h2>
 <div class="diagram-item">
-  <a href="../env_transitions/#state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">Transitions are governed by a state machine in `src/envmanager.c`.</span>
+  <a href="../env_transitions/#state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">Transitions are governed by a state machine in `src/appenv.c`.</span>
   <div class="mermaid-preview">
 
 <pre class="mermaid"><code>stateDiagram-v2
@@ -4611,7 +4611,7 @@ state "  LOADING  " as loading
 state "  FADE_OUT  " as fade_out
 state "  FADE_IN  " as fade_in
 state "  WAIT_IBL  " as wait_ibl
-idle --&gt; loading : env_manager_load
+idle --&gt; loading : app_trigger_env_transition
 loading --&gt; fade_out : IBL Done (Black Screen Mode)
 loading --&gt; fade_in : IBL Done (Crossfade Mode)
 fade_out --&gt; fade_in : Alpha &gt;= 1.0 (Swap Textures)
@@ -5066,7 +5066,7 @@ style Tail fill:#414868,stroke:#9ece6a</code></pre>
 </div>
 
 <div class="diagram-item">
-  <a href="../progressive_ibl/#43-solution-single-deferred-barrier" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.3 Solution: Single Deferred Barrier</a> : <span style="opacity: 0.6; font-size: 0.85em;"> The barrier type is narrowed from `GLALLBARRIERBITS` to `GLSHADERIMAGEACCESSBARRIERBIT` — only the image-store-to-texture-fetch coherency path is flushed.</span>
+  <a href="../progressive_ibl/#43-solution-single-deferred-barrier" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.3 Solution: Single Deferred Barrier</a> : <span style="opacity: 0.6; font-size: 0.85em;">coherency path is flushed.</span>
   <div class="mermaid-preview">
 
 <pre class="mermaid"><code>%%{init: {

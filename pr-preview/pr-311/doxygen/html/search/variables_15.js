@@ -8,7 +8,7 @@ var searchData=
   ['u_5fcam_5fpos_5',['u_cam_pos',['../sphere__sort_8glsl.html#ae25a97e47f52d72afd377058c7fbd877',1,'sphere_sort.glsl']]],
   ['u_5fcamera_5fpos_6',['u_camera_pos',['../shockwave_8vert.html#a1c6eb18f6de93286f5f21bc9ec2ffeeb',1,'shockwave.vert']]],
   ['u_5fcenter_7',['u_center',['../shockwave_8vert.html#add0f4fe52e65d79462b0524097291274',1,'shockwave.vert']]],
-  ['u_5fcolor_8',['u_color',['../structDebugUniforms.html#ad720803bbc1ccb5a22eca52eefd3d3c4',1,'DebugUniforms::u_color'],['../shockwave_8frag.html#a8a8d82f3e78fcb597d5d514999e6cc28',1,'u_color:&#160;shockwave.frag']]],
+  ['u_5fcolor_8',['u_color',['../shockwave_8frag.html#a8a8d82f3e78fcb597d5d514999e6cc28',1,'u_color:&#160;shockwave.frag'],['../structDebugUniforms.html#ad720803bbc1ccb5a22eca52eefd3d3c4',1,'DebugUniforms::u_color']]],
   ['u_5fcore_5fexp_9',['u_core_exp',['../trail_8frag.html#a7a197de3d9649a7675f18ec73325ec84',1,'trail.frag']]],
   ['u_5fcount_10',['u_count',['../sphere__sort_8glsl.html#ad23dda656d66e84e6e28ada1d93cf50d',1,'sphere_sort.glsl']]],
   ['u_5fcount_5fpot_11',['u_count_pot',['../sphere__sort_8glsl.html#a783290ed66db149184d1fa8be9ab9654',1,'sphere_sort.glsl']]],
@@ -19,7 +19,7 @@ var searchData=
   ['u_5finv_5fview_5fproj_16',['u_inv_view_proj',['../structSkybox.html#a029b89fe6524f5edf0f814d5fe6a6af4',1,'Skybox']]],
   ['u_5fj_17',['u_j',['../sphere__sort_8glsl.html#a7121a10b559750db51fbc41416945728',1,'sphere_sort.glsl']]],
   ['u_5fk_18',['u_k',['../sphere__sort_8glsl.html#af555618d67bce5fc4371651fa4c1a201',1,'sphere_sort.glsl']]],
-  ['u_5fmax_5fy_19',['u_max_y',['../structPBRIrrUniforms.html#a966cafd4f3faabcd9901611a6917d839',1,'PBRIrrUniforms::u_max_y'],['../structPBRSpecUniforms.html#a093dd76c96c1eee1ee2bafd4189d5932',1,'PBRSpecUniforms::u_max_y']]],
+  ['u_5fmax_5fy_19',['u_max_y',['../structPBRSpecUniforms.html#a093dd76c96c1eee1ee2bafd4189d5932',1,'PBRSpecUniforms::u_max_y'],['../structPBRIrrUniforms.html#a966cafd4f3faabcd9901611a6917d839',1,'PBRIrrUniforms::u_max_y']]],
   ['u_5fmetallic_20',['u_metallic',['../structApp.html#a5f8d7250b5676f0babc40055e8184580',1,'App']]],
   ['u_5fmip_21',['u_mip',['../structPBRSpecUniforms.html#a306cd0ac8f5fe3b4841bd73beda16e13',1,'PBRSpecUniforms']]],
   ['u_5fnumgroups_22',['u_numGroups',['../structPBRLumUniforms.html#a658240218d9a04b8eac19d0a937d8a5e',1,'PBRLumUniforms']]],
@@ -36,7 +36,7 @@ var searchData=
   ['u_5fuse_5finstance_5fcol_33',['u_use_instance_col',['../structDebugUniforms.html#ae6d734c0354fa0449a0acc52bdb796ee',1,'DebugUniforms']]],
   ['u_5fview_34',['u_view',['../shockwave_8vert.html#a1c71793072b8ab091d877eb922d15f40',1,'u_view:&#160;shockwave.vert'],['../trail_8vert.html#a1c71793072b8ab091d877eb922d15f40',1,'u_view:&#160;trail.vert']]],
   ['ubo_5fdirty_35',['ubo_dirty',['../structPostProcess.html#a66656d6950a7540d140bd93c19c73d55',1,'PostProcess']]],
-  ['ui_36',['ui',['../structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529',1,'UILayout::ui'],['../structAppUIOverlay.html#a342c24bfe5f41efda7705cf53a10da9f',1,'AppUIOverlay::ui']]],
+  ['ui_36',['ui',['../structAppUIOverlay.html#a342c24bfe5f41efda7705cf53a10da9f',1,'AppUIOverlay::ui'],['../structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529',1,'UILayout::ui']]],
   ['ui_5fcenter_5ffactor_37',['UI_CENTER_FACTOR',['../app__ui__layout_8h.html#aa89f5598bad4c30e87b9a26b73c80f6b',1,'app_ui_layout.h']]],
   ['ui_5floading_5ftext_5fwidth_5ffactor_38',['UI_LOADING_TEXT_WIDTH_FACTOR',['../app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17',1,'app_ui_layout.h']]],
   ['ui_5fmode_5fbloom_39',['UI_MODE_BLOOM',['../ui_8c.html#ac905219effb90c29ba46c0a22def5c73',1,'ui.c']]],
@@ -53,8 +53,5 @@ var searchData=
   ['ui_5fspinner_5fspeed_50',['UI_SPINNER_SPEED',['../app__ui__layout_8h.html#a9641a608a591e3d12b583671f938ea18',1,'app_ui_layout.h']]],
   ['ui_5ftext_5foffset_5ffactor_51',['UI_TEXT_OFFSET_FACTOR',['../app__ui__layout_8h.html#a1f0fde4e033eb34145d84e32d4a06178',1,'app_ui_layout.h']]],
   ['up_52',['up',['../structCamera.html#aff4fd1aa62994840f7742b698f15313e',1,'Camera']]],
-  ['update_5fpending_53',['update_pending',['../structLightProbeGrid.html#a3a13b85e86af015d04be174519025fd5',1,'LightProbeGrid']]],
-  ['upload_5fpbo_54',['upload_pbo',['../structEnvManager.html#ab0d60c646b2c965307c0240ed089ccb0',1,'EnvManager']]],
-  ['upload_5fpbo_5fidx_55',['upload_pbo_idx',['../structEnvManager.html#ac184a6c316d07d07053559097d8ea555',1,'EnvManager']]],
-  ['upload_5fpbo_5fsize_56',['upload_pbo_size',['../structEnvManager.html#a304ad0885b1ce9f17ae4fcccbcccb294',1,'EnvManager']]]
+  ['update_5fpending_53',['update_pending',['../structLightProbeGrid.html#a3a13b85e86af015d04be174519025fd5',1,'LightProbeGrid']]]
 ];

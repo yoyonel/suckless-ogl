@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['glfwwindow_0',['GLFWwindow',['../window_8h.html#a3c96d80d363e67d13a41b5d1821f3242',1,'window.h']]]
+  ['dvec3_0',['dvec3',['../dvec3_8h.html#a6dd1988231447f1f4a0dde45f1d0eb76',1,'dvec3.h']]]
 ];

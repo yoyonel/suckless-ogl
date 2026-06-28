@@ -79,19 +79,19 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui__layout_8h.html#a2f98977b6b578bddebc5e2d078b7baca",
-"camera_8h.html#af05584dded9d53ee67bacbe2b16f5c01",
-"gamepad__input_8c.html#a088324ad8995e3eb76024e3e79083d48",
-"gpu__profiler__ui__layout_8h.html#aff86e01a027445b88533494da73fb54f",
-"material_8c.html#aa231f444b37b3b2f771ad22b78b2acb3",
-"postprocess__apply_8c.html#a8fdad312e138cf7080b4596e127584e5",
-"profiler_8h.html#ab9fca9f5f2fdcab4a6f5e01df77d4447",
-"shockwave_8frag.html#a43eaa5778581dfc7fb7194899dba1856",
-"structAsyncRequest.html#a3050b10d8e5b74f241183ab01eec97b5",
-"structGPUProfilerUI.html#a0748c683404423a1ac0fd8bd559c9ba5",
-"structPPExposureReadback.html#a71c8c331311e9fafcc0334bd37cc8ae6",
-"structSceneVisuals.html#a0ef3c8494a9616d7b521bbc4d4113aa3",
-"trail__renderer_8h.html#ad65403268c340a602a289598ac94716d"
+"app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17",
+"camera_8h.html#aa6af90fbafcc281c7c546b1468369a9f",
+"gl__common_8h.html#acc0369d2f808530b4d51126a46d96bb0",
+"group__Environment.html#ga42cce2777f68380c5d6bc70f328d7b86",
+"lum__histogram_8h.html#a27eba0a626a2aea79cee3b7070977e10",
+"postprocess_8h.html#aa84256eef04459c5acf3b67987da736b",
+"pp__shader__state_8h_source.html",
+"shockwave_8c.html#a11c9519d13e6bc82854ece26481eaf62",
+"structAsyncBackendInterface.html#ac0f18bb408b35052a3f29e760428a8c6",
+"structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342",
+"structPBRSpecUniforms.html#a306cd0ac8f5fe3b4841bd73beda16e13",
+"structSceneShaders.html#a2a856e01fa5b2fc633579910e471bd79",
+"trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
