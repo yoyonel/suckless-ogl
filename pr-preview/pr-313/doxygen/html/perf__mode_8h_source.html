@@ -1,0 +1,333 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/perf_mode.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('perf__mode_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">perf_mode.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="perf__mode_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#ifndef PERF_MODE_H</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#define PERF_MODE_H</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;sched.h&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="foldopen" id="foldopen00031" data-start="{" data-end="};">
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">   31</a></span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492adfec5c3140e9017a2794a8fb01ca6b3a">   32</a></span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492adfec5c3140e9017a2794a8fb01ca6b3a">PERF_MODE_OFF</a> = 0,      </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a8e0e1bebf4fb203100ccea067f82a766">   33</a></span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a8e0e1bebf4fb203100ccea067f82a766">PERF_MODE_GAMEMODE</a>,     </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a52ea4c7af9b2b3ea758361ebc3bc4e88">   34</a></span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a52ea4c7af9b2b3ea758361ebc3bc4e88">PERF_MODE_NATIVE_SCHED</a>, </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a0e0b87a68bf94127a214871f08b1fe61">   35</a></span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a0e0b87a68bf94127a214871f08b1fe61">PERF_MODE_NATIVE_NICE</a>,  </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a5f6fddc2bb2d88ee2127d38f0c2a3d87">PERF_MODE_ERROR</a>         </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a5f6fddc2bb2d88ee2127d38f0c2a3d87">   37</a></span>} <a class="code hl_enumeration" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">PerfModeState</a>;</div>
+</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="foldopen" id="foldopen00043" data-start="{" data-end="};">
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">   43</a></span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a93462a72c1ecb7be68154e3a9b56566c">   44</a></span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a93462a72c1ecb7be68154e3a9b56566c">PERF_BACKEND_NONE</a> = 0, </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a5de51ac27cd0cb45294b2d2fe5310a0d">   45</a></span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a5de51ac27cd0cb45294b2d2fe5310a0d">PERF_BACKEND_GAMEMODE</a>, </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <a class="code hl_enumvalue" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a902630e1bd21cbe7d6a850af4a8b1b35">PERF_BACKEND_NATIVE</a>    </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a902630e1bd21cbe7d6a850af4a8b1b35">   47</a></span>} <a class="code hl_enumeration" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">PerfModeBackend</a>;</div>
+</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="foldopen" id="foldopen00053" data-start="{" data-end="};">
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structPerfModeContext.html">   53</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a> {</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="structPerfModeContext.html#a2cd10780d3c30c53e8053dd7c26e72df">   54</a></span>    <a class="code hl_enumeration" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">PerfModeState</a> <a class="code hl_variable" href="structPerfModeContext.html#a2cd10780d3c30c53e8053dd7c26e72df">state</a>;               </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="structPerfModeContext.html#a846f44009190f3ca9bae1c684857dd2f">   55</a></span>    <a class="code hl_enumeration" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">PerfModeBackend</a> <a class="code hl_variable" href="structPerfModeContext.html#a846f44009190f3ca9bae1c684857dd2f">backend</a>;           </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39">   56</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39">original_policy</a>;               </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924">   57</a></span>    <span class="keyword">struct </span>sched_param <a class="code hl_variable" href="structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924">original_param</a>; </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686">   58</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686">original_nice</a>;                 </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structPerfModeContext.html#a67e638400f3ae69e32a5c98d840f7aa7">   59</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structPerfModeContext.html#a67e638400f3ae69e32a5c98d840f7aa7">initialized</a>;                  </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>} <a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>;</div>
+</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="keywordtype">int</span> <a class="code hl_function" href="perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505">perf_mode_init</a>(<a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="keywordtype">void</span> <a class="code hl_function" href="perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2">perf_mode_cleanup</a>(<a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keywordtype">int</span> <a class="code hl_function" href="perf__mode_8h.html#a24bb58cfa7928d93310def4391d3394e">perf_mode_request_start</a>(<a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="keywordtype">int</span> <a class="code hl_function" href="perf__mode_8h.html#a8a498514effcc3a3fa67efdcd6530a8a">perf_mode_request_end</a>(<a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><a class="code hl_enumeration" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">PerfModeState</a> <a class="code hl_function" href="perf__mode_8h.html#a4ff3e4dc53bde11bc737a5286afb02e1">perf_mode_get_state</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><a class="code hl_enumeration" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">PerfModeBackend</a> <a class="code hl_function" href="perf__mode_8h.html#aa667cf6303e7347a152fe91b1f67bbf6">perf_mode_get_backend</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="perf__mode_8h.html#aa6e7d34f198b807e5319bd33ed97aaa2">perf_mode_get_state_string</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span><span class="keywordtype">int</span> <a class="code hl_function" href="perf__mode_8h.html#af6fe4848ea239fdecd15d6c3056f7b78">perf_mode_is_active</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structPerfModeContext.html">PerfModeContext</a>* ctx);</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span><span class="preprocessor">#endif </span><span class="comment">/* PERF_MODE_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aperf__mode_8h_html_a154025c04a9fa8a639eeb948e58e2505"><div class="ttname"><a href="perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505">perf_mode_init</a></div><div class="ttdeci">int perf_mode_init(PerfModeContext *ctx)</div><div class="ttdoc">Initialize the performance mode subsystem.</div><div class="ttdef"><b>Definition</b> perf_mode.c:89</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a24bb58cfa7928d93310def4391d3394e"><div class="ttname"><a href="perf__mode_8h.html#a24bb58cfa7928d93310def4391d3394e">perf_mode_request_start</a></div><div class="ttdeci">int perf_mode_request_start(PerfModeContext *ctx)</div><div class="ttdoc">Request activation of performance mode.</div><div class="ttdef"><b>Definition</b> perf_mode.c:277</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a37872c6bedfeee2206740a57ca310492"><div class="ttname"><a href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">PerfModeState</a></div><div class="ttdeci">PerfModeState</div><div class="ttdoc">Current state of the performance mode subsystem.</div><div class="ttdef"><b>Definition</b> perf_mode.h:31</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a37872c6bedfeee2206740a57ca310492a0e0b87a68bf94127a214871f08b1fe61"><div class="ttname"><a href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a0e0b87a68bf94127a214871f08b1fe61">PERF_MODE_NATIVE_NICE</a></div><div class="ttdeci">@ PERF_MODE_NATIVE_NICE</div><div class="ttdef"><b>Definition</b> perf_mode.h:35</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a37872c6bedfeee2206740a57ca310492a52ea4c7af9b2b3ea758361ebc3bc4e88"><div class="ttname"><a href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a52ea4c7af9b2b3ea758361ebc3bc4e88">PERF_MODE_NATIVE_SCHED</a></div><div class="ttdeci">@ PERF_MODE_NATIVE_SCHED</div><div class="ttdef"><b>Definition</b> perf_mode.h:34</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a37872c6bedfeee2206740a57ca310492a5f6fddc2bb2d88ee2127d38f0c2a3d87"><div class="ttname"><a href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a5f6fddc2bb2d88ee2127d38f0c2a3d87">PERF_MODE_ERROR</a></div><div class="ttdeci">@ PERF_MODE_ERROR</div><div class="ttdef"><b>Definition</b> perf_mode.h:36</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a37872c6bedfeee2206740a57ca310492a8e0e1bebf4fb203100ccea067f82a766"><div class="ttname"><a href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492a8e0e1bebf4fb203100ccea067f82a766">PERF_MODE_GAMEMODE</a></div><div class="ttdeci">@ PERF_MODE_GAMEMODE</div><div class="ttdef"><b>Definition</b> perf_mode.h:33</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a37872c6bedfeee2206740a57ca310492adfec5c3140e9017a2794a8fb01ca6b3a"><div class="ttname"><a href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492adfec5c3140e9017a2794a8fb01ca6b3a">PERF_MODE_OFF</a></div><div class="ttdeci">@ PERF_MODE_OFF</div><div class="ttdef"><b>Definition</b> perf_mode.h:32</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a4ff3e4dc53bde11bc737a5286afb02e1"><div class="ttname"><a href="perf__mode_8h.html#a4ff3e4dc53bde11bc737a5286afb02e1">perf_mode_get_state</a></div><div class="ttdeci">PerfModeState perf_mode_get_state(const PerfModeContext *ctx)</div><div class="ttdoc">Get the current performance mode state.</div><div class="ttdef"><b>Definition</b> perf_mode.c:365</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a8a498514effcc3a3fa67efdcd6530a8a"><div class="ttname"><a href="perf__mode_8h.html#a8a498514effcc3a3fa67efdcd6530a8a">perf_mode_request_end</a></div><div class="ttdeci">int perf_mode_request_end(PerfModeContext *ctx)</div><div class="ttdoc">Request deactivation of performance mode.</div><div class="ttdef"><b>Definition</b> perf_mode.c:318</div></div>
+<div class="ttc" id="aperf__mode_8h_html_a93ee859004a75de69605d3984f7ea2f2"><div class="ttname"><a href="perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2">perf_mode_cleanup</a></div><div class="ttdeci">void perf_mode_cleanup(PerfModeContext *ctx)</div><div class="ttdoc">Clean up performance mode resources.</div><div class="ttdef"><b>Definition</b> perf_mode.c:350</div></div>
+<div class="ttc" id="aperf__mode_8h_html_aa667cf6303e7347a152fe91b1f67bbf6"><div class="ttname"><a href="perf__mode_8h.html#aa667cf6303e7347a152fe91b1f67bbf6">perf_mode_get_backend</a></div><div class="ttdeci">PerfModeBackend perf_mode_get_backend(const PerfModeContext *ctx)</div><div class="ttdoc">Get the detected backend type.</div><div class="ttdef"><b>Definition</b> perf_mode.c:370</div></div>
+<div class="ttc" id="aperf__mode_8h_html_aa6e7d34f198b807e5319bd33ed97aaa2"><div class="ttname"><a href="perf__mode_8h.html#aa6e7d34f198b807e5319bd33ed97aaa2">perf_mode_get_state_string</a></div><div class="ttdeci">const char * perf_mode_get_state_string(const PerfModeContext *ctx)</div><div class="ttdoc">Get a human-readable string for the current state.</div><div class="ttdef"><b>Definition</b> perf_mode.c:375</div></div>
+<div class="ttc" id="aperf__mode_8h_html_ac5467609abb7a40ec168953640e608f0"><div class="ttname"><a href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">PerfModeBackend</a></div><div class="ttdeci">PerfModeBackend</div><div class="ttdoc">Available performance optimization backends.</div><div class="ttdef"><b>Definition</b> perf_mode.h:43</div></div>
+<div class="ttc" id="aperf__mode_8h_html_ac5467609abb7a40ec168953640e608f0a5de51ac27cd0cb45294b2d2fe5310a0d"><div class="ttname"><a href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a5de51ac27cd0cb45294b2d2fe5310a0d">PERF_BACKEND_GAMEMODE</a></div><div class="ttdeci">@ PERF_BACKEND_GAMEMODE</div><div class="ttdef"><b>Definition</b> perf_mode.h:45</div></div>
+<div class="ttc" id="aperf__mode_8h_html_ac5467609abb7a40ec168953640e608f0a902630e1bd21cbe7d6a850af4a8b1b35"><div class="ttname"><a href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a902630e1bd21cbe7d6a850af4a8b1b35">PERF_BACKEND_NATIVE</a></div><div class="ttdeci">@ PERF_BACKEND_NATIVE</div><div class="ttdef"><b>Definition</b> perf_mode.h:46</div></div>
+<div class="ttc" id="aperf__mode_8h_html_ac5467609abb7a40ec168953640e608f0a93462a72c1ecb7be68154e3a9b56566c"><div class="ttname"><a href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0a93462a72c1ecb7be68154e3a9b56566c">PERF_BACKEND_NONE</a></div><div class="ttdeci">@ PERF_BACKEND_NONE</div><div class="ttdef"><b>Definition</b> perf_mode.h:44</div></div>
+<div class="ttc" id="aperf__mode_8h_html_af6fe4848ea239fdecd15d6c3056f7b78"><div class="ttname"><a href="perf__mode_8h.html#af6fe4848ea239fdecd15d6c3056f7b78">perf_mode_is_active</a></div><div class="ttdeci">int perf_mode_is_active(const PerfModeContext *ctx)</div><div class="ttdoc">Check if performance mode is currently active.</div><div class="ttdef"><b>Definition</b> perf_mode.c:396</div></div>
+<div class="ttc" id="astructPerfModeContext_html"><div class="ttname"><a href="structPerfModeContext.html">PerfModeContext</a></div><div class="ttdoc">State container for performance mode.</div><div class="ttdef"><b>Definition</b> perf_mode.h:53</div></div>
+<div class="ttc" id="astructPerfModeContext_html_a01144e7c08a71144e50675947eb9a924"><div class="ttname"><a href="structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924">PerfModeContext::original_param</a></div><div class="ttdeci">struct sched_param original_param</div><div class="ttdef"><b>Definition</b> perf_mode.h:57</div></div>
+<div class="ttc" id="astructPerfModeContext_html_a0a9459d468bcc63c73bc1d5667daed39"><div class="ttname"><a href="structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39">PerfModeContext::original_policy</a></div><div class="ttdeci">int original_policy</div><div class="ttdef"><b>Definition</b> perf_mode.h:56</div></div>
+<div class="ttc" id="astructPerfModeContext_html_a2cd10780d3c30c53e8053dd7c26e72df"><div class="ttname"><a href="structPerfModeContext.html#a2cd10780d3c30c53e8053dd7c26e72df">PerfModeContext::state</a></div><div class="ttdeci">PerfModeState state</div><div class="ttdef"><b>Definition</b> perf_mode.h:54</div></div>
+<div class="ttc" id="astructPerfModeContext_html_a67e638400f3ae69e32a5c98d840f7aa7"><div class="ttname"><a href="structPerfModeContext.html#a67e638400f3ae69e32a5c98d840f7aa7">PerfModeContext::initialized</a></div><div class="ttdeci">bool initialized</div><div class="ttdef"><b>Definition</b> perf_mode.h:59</div></div>
+<div class="ttc" id="astructPerfModeContext_html_a846f44009190f3ca9bae1c684857dd2f"><div class="ttname"><a href="structPerfModeContext.html#a846f44009190f3ca9bae1c684857dd2f">PerfModeContext::backend</a></div><div class="ttdeci">PerfModeBackend backend</div><div class="ttdef"><b>Definition</b> perf_mode.h:55</div></div>
+<div class="ttc" id="astructPerfModeContext_html_ab45237df04bfc4de37c223f552d25686"><div class="ttname"><a href="structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686">PerfModeContext::original_nice</a></div><div class="ttdeci">int original_nice</div><div class="ttdef"><b>Definition</b> perf_mode.h:58</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="perf__mode_8h.html">perf_mode.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

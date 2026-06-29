@@ -1,0 +1,874 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/texture.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('texture_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">texture.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="io_8h_source.html">io.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;stb_image.h&gt;</code><br />
+<code>#include &lt;stddef.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for texture.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="texture_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a9e93d8eae633734dfeb29e24a1f3a7c0" id="r_a9e93d8eae633734dfeb29e24a1f3a7c0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="texture_8c.html#a9e93d8eae633734dfeb29e24a1f3a7c0a0d3aebca00d51ee1340e5b60c9d2eba4">MAX_TEXTURE_FILE_SIZE</a> = 64 * 1024 * 1024
+ }</td></tr>
+<tr class="separator:a9e93d8eae633734dfeb29e24a1f3a7c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a4c821497ea20a5b74199e3080c0f4a1c" id="r_a4c821497ea20a5b74199e3080c0f4a1c"><td class="memItemLeft" align="right" valign="top">float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a4c821497ea20a5b74199e3080c0f4a1c">texture_load_pixels</a> (const char *path, int *width, int *height, int *channels)</td></tr>
+<tr class="memdesc:a4c821497ea20a5b74199e3080c0f4a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes an HDR image into RAM without uploading to GPU.  <br /></td></tr>
+<tr class="separator:a4c821497ea20a5b74199e3080c0f4a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab7453443bd88ad6c923d608ec066a28" id="r_aab7453443bd88ad6c923d608ec066a28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#aab7453443bd88ad6c923d608ec066a28">texture_ensure_pbo</a> (GLuint *pbo_id, GLsizeiptr *current_size, GLsizeiptr required_size)</td></tr>
+<tr class="memdesc:aab7453443bd88ad6c923d608ec066a28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensures a PBO is allocated with sufficient size.  <br /></td></tr>
+<tr class="separator:aab7453443bd88ad6c923d608ec066a28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d3c44efbe21ce365f8726603776fab5" id="r_a0d3c44efbe21ce365f8726603776fab5"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a0d3c44efbe21ce365f8726603776fab5">texture_map_pbo</a> (GLuint pbo_id, size_t size_bytes)</td></tr>
+<tr class="memdesc:a0d3c44efbe21ce365f8726603776fab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps a PBO for writing.  <br /></td></tr>
+<tr class="separator:a0d3c44efbe21ce365f8726603776fab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba2936ced854edf19507c84b2e008b88" id="r_aba2936ced854edf19507c84b2e008b88"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#aba2936ced854edf19507c84b2e008b88">texture_matches_hdr</a> (int width, int height)</td></tr>
+<tr class="memdesc:aba2936ced854edf19507c84b2e008b88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an existing texture matches the expected HDR format.  <br /></td></tr>
+<tr class="separator:aba2936ced854edf19507c84b2e008b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaaf787b6ecd6938e78ec390d6749359" id="r_aeaaf787b6ecd6938e78ec390d6749359"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359">texture_preallocate_hdr</a> (int width, int height, GLuint old_tex)</td></tr>
+<tr class="memdesc:aeaaf787b6ecd6938e78ec390d6749359"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pre-allocates VRAM for an HDR texture (glTexStorage2D only).  <br /></td></tr>
+<tr class="separator:aeaaf787b6ecd6938e78ec390d6749359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a5326d68a2497f0b4bd7afbca69139" id="r_a87a5326d68a2497f0b4bd7afbca69139"><td class="memItemLeft" align="right" valign="top">static GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a87a5326d68a2497f0b4bd7afbca69139">texture_reuse_or_create_hdr</a> (int width, int height, GLuint reuse_tex_id, bool *is_reused, int *levels_out)</td></tr>
+<tr class="separator:a87a5326d68a2497f0b4bd7afbca69139"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4fa58847422e51db4b6960239724bf2" id="r_ae4fa58847422e51db4b6960239724bf2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#ae4fa58847422e51db4b6960239724bf2">texture_allocate_storage_hdr</a> (int width, int height, int levels)</td></tr>
+<tr class="separator:ae4fa58847422e51db4b6960239724bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59a6aeb7e1f2eef3491ac07ba4f6f9e3" id="r_a59a6aeb7e1f2eef3491ac07ba4f6f9e3"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3">texture_upload_hdr_from_pbo</a> (GLuint pbo_id, void *ptr, int width, int height, GLuint reuse_tex_id)</td></tr>
+<tr class="memdesc:a59a6aeb7e1f2eef3491ac07ba4f6f9e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps).  <br /></td></tr>
+<tr class="separator:a59a6aeb7e1f2eef3491ac07ba4f6f9e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec66cef20e7ef9260fd363ab5408a594" id="r_aec66cef20e7ef9260fd363ab5408a594"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#aec66cef20e7ef9260fd363ab5408a594">texture_generate_hdr_mipmap</a> (GLuint tex)</td></tr>
+<tr class="memdesc:aec66cef20e7ef9260fd363ab5408a594"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates mipmaps for an HDR texture.  <br /></td></tr>
+<tr class="separator:aec66cef20e7ef9260fd363ab5408a594"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6580fa2ed8ec9292064bf450367b5ea" id="r_ab6580fa2ed8ec9292064bf450367b5ea"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#ab6580fa2ed8ec9292064bf450367b5ea">texture_load_rgba_png</a> (const char *path)</td></tr>
+<tr class="memdesc:ab6580fa2ed8ec9292064bf450367b5ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a PNG image from disk and creates an OpenGL RGBA texture.  <br /></td></tr>
+<tr class="separator:ab6580fa2ed8ec9292064bf450367b5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:af6ab67ecd2fee0eec421544f3346bcea" id="r_af6ab67ecd2fee0eec421544f3346bcea"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#af6ab67ecd2fee0eec421544f3346bcea">TRACY_COLOR_TEXTURE_UPLOAD</a> = 0xAAAA55</td></tr>
+<tr class="separator:af6ab67ecd2fee0eec421544f3346bcea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2bce177ad7e5edf264488115901a2b2" id="r_ae2bce177ad7e5edf264488115901a2b2"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#ae2bce177ad7e5edf264488115901a2b2">TRACY_COLOR_TEXTURE_STORAGE</a> = 0xAA55AA</td></tr>
+<tr class="separator:ae2bce177ad7e5edf264488115901a2b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7aefbbaa4db5045ab98544632bb689e3" id="r_a7aefbbaa4db5045ab98544632bb689e3"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a7aefbbaa4db5045ab98544632bb689e3">TRACY_COLOR_MIPMAP_GEN</a> = 0x55AAAA</td></tr>
+<tr class="separator:a7aefbbaa4db5045ab98544632bb689e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94dc4fc43b2c6f3610a1582be71e7dd4" id="r_a94dc4fc43b2c6f3610a1582be71e7dd4"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a94dc4fc43b2c6f3610a1582be71e7dd4">TRACY_COLOR_TEXTURE_UPLOAD_FULL</a> = 0xFF8800</td></tr>
+<tr class="separator:a94dc4fc43b2c6f3610a1582be71e7dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a9e93d8eae633734dfeb29e24a1f3a7c0" name="a9e93d8eae633734dfeb29e24a1f3a7c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e93d8eae633734dfeb29e24a1f3a7c0">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9e93d8eae633734dfeb29e24a1f3a7c0a0d3aebca00d51ee1340e5b60c9d2eba4" name="a9e93d8eae633734dfeb29e24a1f3a7c0a0d3aebca00d51ee1340e5b60c9d2eba4"></a>MAX_TEXTURE_FILE_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ae4fa58847422e51db4b6960239724bf2" name="ae4fa58847422e51db4b6960239724bf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4fa58847422e51db4b6960239724bf2">&#9670;&#160;</a></span>texture_allocate_storage_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool texture_allocate_storage_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab7453443bd88ad6c923d608ec066a28" name="aab7453443bd88ad6c923d608ec066a28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab7453443bd88ad6c923d608ec066a28">&#9670;&#160;</a></span>texture_ensure_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void texture_ensure_pbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>pbo_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLsizeiptr *&#160;</td>
+          <td class="paramname"><em>current_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLsizeiptr&#160;</td>
+          <td class="paramname"><em>required_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ensures a PBO is allocated with sufficient size. </p>
+<p>Checks if internal *current_size is &gt;= required_size. If not, reallocates (orphans) the buffer using glBufferData.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pbo_id</td><td>Pointer to the PBO ID (generated if 0). </td></tr>
+    <tr><td class="paramname">current_size</td><td>Pointer to the currently tracking size (updated on realloc). </td></tr>
+    <tr><td class="paramname">required_size</td><td>The minimum size needed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aec66cef20e7ef9260fd363ab5408a594" name="aec66cef20e7ef9260fd363ab5408a594"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec66cef20e7ef9260fd363ab5408a594">&#9670;&#160;</a></span>texture_generate_hdr_mipmap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void texture_generate_hdr_mipmap </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>tex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates mipmaps for an HDR texture. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tex</td><td>The OpenGL ID of the texture. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4c821497ea20a5b74199e3080c0f4a1c" name="a4c821497ea20a5b74199e3080c0f4a1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c821497ea20a5b74199e3080c0f4a1c">&#9670;&#160;</a></span>texture_load_pixels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float * texture_load_pixels </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>channels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Decodes an HDR image into RAM without uploading to GPU. </p>
+<p>Useful for asynchronous loading or CPU-side processing. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">path</td><td>File system path. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">width</td><td>Width. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">height</td><td>Height. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">channels</td><td>Number of color channels. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to heap-allocated data. Buffer must be freed by caller. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a4c821497ea20a5b74199e3080c0f4a1c_cgraph.svg" width="515" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ab6580fa2ed8ec9292064bf450367b5ea" name="ab6580fa2ed8ec9292064bf450367b5ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6580fa2ed8ec9292064bf450367b5ea">&#9670;&#160;</a></span>texture_load_rgba_png()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint texture_load_rgba_png </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads a PNG image from disk and creates an OpenGL RGBA texture. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>File system path to the PNG image. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GLuint The OpenGL texture ID, or 0 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a0d3c44efbe21ce365f8726603776fab5" name="a0d3c44efbe21ce365f8726603776fab5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d3c44efbe21ce365f8726603776fab5">&#9670;&#160;</a></span>texture_map_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * texture_map_pbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>pbo_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_bytes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maps a PBO for writing. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pbo_id</td><td>ID of the PBO to map. </td></tr>
+    <tr><td class="paramname">size_bytes</td><td>Size to map (should match creation size). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to mapped memory, or NULL on failure. </dd></dl>
+
+</div>
+</div>
+<a id="aba2936ced854edf19507c84b2e008b88" name="aba2936ced854edf19507c84b2e008b88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba2936ced854edf19507c84b2e008b88">&#9670;&#160;</a></span>texture_matches_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool texture_matches_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if an existing texture matches the expected HDR format. </p>
+<p>Queries GL state for the texture's level-0 dimensions and internal format. The texture must already be bound to GL_TEXTURE_2D before calling.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if width, height and format (GL_RGBA16F) all match. </dd></dl>
+
+</div>
+</div>
+<a id="aeaaf787b6ecd6938e78ec390d6749359" name="aeaaf787b6ecd6938e78ec390d6749359"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaaf787b6ecd6938e78ec390d6749359">&#9670;&#160;</a></span>texture_preallocate_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint texture_preallocate_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>old_tex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pre-allocates VRAM for an HDR texture (glTexStorage2D only). </p>
+<p>Call this early (e.g. when async loader requests a PBO) to spread the cost of texture allocation across frames. If old_tex already matches the requested dimensions, it is returned as-is (zero-cost reuse).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td>Texture width. </td></tr>
+    <tr><td class="paramname">height</td><td>Texture height. </td></tr>
+    <tr><td class="paramname">old_tex</td><td>Existing texture ID to check for reuse (0 if none). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GLuint Pre-allocated texture ID, or 0 on failure. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_aeaaf787b6ecd6938e78ec390d6749359_cgraph.svg" width="396" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a87a5326d68a2497f0b4bd7afbca69139" name="a87a5326d68a2497f0b4bd7afbca69139"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87a5326d68a2497f0b4bd7afbca69139">&#9670;&#160;</a></span>texture_reuse_or_create_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static GLuint texture_reuse_or_create_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>reuse_tex_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>is_reused</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>levels_out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a87a5326d68a2497f0b4bd7afbca69139_cgraph.svg" width="427" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a59a6aeb7e1f2eef3491ac07ba4f6f9e3" name="a59a6aeb7e1f2eef3491ac07ba4f6f9e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59a6aeb7e1f2eef3491ac07ba4f6f9e3">&#9670;&#160;</a></span>texture_upload_hdr_from_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint texture_upload_hdr_from_pbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>pbo_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>reuse_tex_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pbo_id</td><td>ID of the PBO (must be bound). </td></tr>
+    <tr><td class="paramname">ptr</td><td>Pointer to the mapped PBO memory (will be unmapped). </td></tr>
+    <tr><td class="paramname">width</td><td>Texture width. </td></tr>
+    <tr><td class="paramname">height</td><td>Texture height. </td></tr>
+    <tr><td class="paramname">reuse_tex_id</td><td>Existing texture ID to update/reuse. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GLuint The texture ID (new or reused). </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a59a6aeb7e1f2eef3491ac07ba4f6f9e3_cgraph.svg" width="627" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a7aefbbaa4db5045ab98544632bb689e3" name="a7aefbbaa4db5045ab98544632bb689e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7aefbbaa4db5045ab98544632bb689e3">&#9670;&#160;</a></span>TRACY_COLOR_MIPMAP_GEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t TRACY_COLOR_MIPMAP_GEN = 0x55AAAA</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae2bce177ad7e5edf264488115901a2b2" name="ae2bce177ad7e5edf264488115901a2b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2bce177ad7e5edf264488115901a2b2">&#9670;&#160;</a></span>TRACY_COLOR_TEXTURE_STORAGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t TRACY_COLOR_TEXTURE_STORAGE = 0xAA55AA</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af6ab67ecd2fee0eec421544f3346bcea" name="af6ab67ecd2fee0eec421544f3346bcea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6ab67ecd2fee0eec421544f3346bcea">&#9670;&#160;</a></span>TRACY_COLOR_TEXTURE_UPLOAD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t TRACY_COLOR_TEXTURE_UPLOAD = 0xAAAA55</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a94dc4fc43b2c6f3610a1582be71e7dd4" name="a94dc4fc43b2c6f3610a1582be71e7dd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94dc4fc43b2c6f3610a1582be71e7dd4">&#9670;&#160;</a></span>TRACY_COLOR_TEXTURE_UPLOAD_FULL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t TRACY_COLOR_TEXTURE_UPLOAD_FULL = 0xFF8800</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="texture_8c.html">texture.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

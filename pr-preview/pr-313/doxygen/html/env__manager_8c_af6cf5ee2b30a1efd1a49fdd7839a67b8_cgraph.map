@@ -1,0 +1,78 @@
+<map id="env_manager_update_ibl" name="env_manager_update_ibl">
+<area shape="rect" id="Node000001" title="Updates the IBL state machine and handles transition events." alt="" coords="5,117,192,143"/>
+<area shape="rect" id="Node000002" href="$env__manager_8c.html#a2be9d0e288060ee8fc01063fae7417aa" title=" " alt="" coords="240,46,423,86"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,115,244,87,245,92,147,120"/>
+<area shape="rect" id="Node000008" href="$env__manager_8c.html#a5a8e4c362fb7ec501f8d5d5556af04bb" title=" " alt="" coords="250,110,413,150"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="192,127,236,127,236,133,192,133"/>
+<area shape="rect" id="Node000009" href="$ibl__coordinator_8c.html#ac4e66403e82cf9193c1eeb0a534b90d8" title="Advances the state machine by one step (slice or pass)." alt="" coords="246,369,417,395"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="114,141,311,357,307,361,110,145"/>
+<area shape="rect" id="Node000003" href="$env__manager_8c.html#a9ffed43dc8d9e848cc7d0279cf94927e" title=" " alt="" coords="493,5,631,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="422,44,487,31,488,36,423,50"/>
+<area shape="rect" id="Node000004" href="$env__manager_8c.html#ae78d3a5d332aa74262fa5f83e727a463" title=" " alt="" coords="495,55,629,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="423,64,482,64,482,70,423,69"/>
+<area shape="rect" id="Node000007" href="$ibl__coordinator_8c.html#a897ce59e5e3e582ff1385f4c9e2c7f82" title="Retrieves the results of the IBL generation." alt="" coords="489,107,635,147"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="408,84,476,102,475,107,407,89"/>
+<area shape="rect" id="Node000005" href="$postprocess__readback_8c.html#aecbf3590a5f6119f5093284c9319ead3" title="Updates the target exposure threshold for AE." alt="" coords="705,34,900,74"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="629,61,691,58,691,63,629,66"/>
+<area shape="rect" id="Node000006" href="$postprocess__setters_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="952,41,1147,67"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="900,51,938,51,938,57,900,57"/>
+<area shape="poly" id="edge8_Node000008_Node000004" title=" " alt="" coords="405,107,501,81,502,86,406,113"/>
+<area shape="poly" id="edge9_Node000008_Node000007" title=" " alt="" coords="413,126,475,126,475,131,413,132"/>
+<area shape="rect" id="Node000010" href="$ibl__coordinator_8c.html#aa548dc7694895fdd9c9f75c4e95482cb" title=" " alt="" coords="490,673,634,699"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="344,393,545,661,541,664,340,396"/>
+<area shape="rect" id="Node000016" href="$ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2" title=" " alt="" coords="489,188,635,213"/>
+<area shape="poly" id="edge17_Node000009_Node000016" title=" " alt="" coords="342,367,394,313,469,248,519,217,522,222,472,252,398,316,346,371"/>
+<area shape="rect" id="Node000020" href="$ibl__coordinator_8c.html#a60e618f4adff2efc497ca8e74e6c88ce" title=" " alt="" coords="471,837,653,863"/>
+<area shape="poly" id="edge22_Node000009_Node000020" title=" " alt="" coords="340,394,389,525,428,617,473,710,510,773,545,825,541,828,506,776,468,713,423,619,384,527,335,396"/>
+<area shape="rect" id="Node000022" href="$ibl__coordinator_8c.html#aeca35c868d46274d0d55fc83628a3cce" title=" " alt="" coords="481,263,643,288"/>
+<area shape="poly" id="edge25_Node000009_Node000022" title=" " alt="" coords="359,367,520,291,522,296,361,372"/>
+<area shape="rect" id="Node000025" href="$ibl__coordinator_8c.html#a54892dd4ffc15e478031926ea1cdc068" title=" " alt="" coords="475,476,649,501"/>
+<area shape="poly" id="edge29_Node000009_Node000025" title=" " alt="" coords="361,392,522,468,520,473,359,397"/>
+<area shape="rect" id="Node000011" href="$ibl__coordinator_8c.html#ad84674ac64b27b24aeca92bd5ab7d1c4" title="Accumulate a slice&#39;s GPU timing into the stage statistics." alt="" coords="723,624,883,649"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="624,671,726,650,727,655,625,676"/>
+<area shape="rect" id="Node000012" href="$ibl__coordinator_8c.html#a5b1a8f5de925bfe99792303d6c760488" title="Log a single INFO summary line for a completed IBL stage." alt="" coords="716,673,889,699"/>
+<area shape="poly" id="edge13_Node000010_Node000012" title=" " alt="" coords="634,683,702,683,702,689,634,689"/>
+<area shape="rect" id="Node000014" href="$pbr_8c.html#a719d0f0fa9fdb9a743885fc82c617162" title="Computes one face/slice of the irradiance map." alt="" coords="727,773,879,813"/>
+<area shape="poly" id="edge15_Node000010_Node000014" title=" " alt="" coords="586,697,638,727,702,758,721,766,719,770,700,763,635,731,583,701"/>
+<area shape="rect" id="Node000015" href="$utils_8c.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="749,723,856,748"/>
+<area shape="poly" id="edge16_Node000010_Node000015" title=" " alt="" coords="625,696,736,719,735,724,624,701"/>
+<area shape="rect" id="Node000013" href="$perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc" title="Stops the timer and returns elapsed time in milliseconds." alt="" coords="962,755,1137,780"/>
+<area shape="poly" id="edge14_Node000012_Node000013" title=" " alt="" coords="860,696,905,709,1006,747,1004,752,903,714,859,701"/>
+<area shape="rect" id="Node000017" href="$pbr_8c.html#ad7b8c646322f8f6704017540c02955eb" title="Starts the GPU computation for mean luminance (non&#45;blocking). Uses a two&#45;pass parallel reduction via ..." alt="" coords="703,98,902,138"/>
+<area shape="poly" id="edge18_Node000016_Node000017" title=" " alt="" coords="599,185,729,140,731,145,601,190"/>
+<area shape="rect" id="Node000018" href="$ibl__coordinator_8c.html#a50744c66f0d06568ff860aecb9f30cba" title="Reset stage timing statistics for a new IBL stage." alt="" coords="744,213,861,239"/>
+<area shape="poly" id="edge19_Node000016_Node000018" title=" " alt="" coords="636,206,731,216,730,221,635,211"/>
+<area shape="rect" id="Node000019" href="$perf__timer_8c.html#a2fe19c18f13ab8077e83373abd1a00f5" title="Starts the CPU timer." alt="" coords="986,188,1113,213"/>
+<area shape="poly" id="edge21_Node000016_Node000019" title=" " alt="" coords="635,198,972,198,972,203,635,203"/>
+<area shape="poly" id="edge20_Node000018_Node000019" title=" " alt="" coords="862,217,972,206,973,211,862,223"/>
+<area shape="poly" id="edge24_Node000020_Node000013" title=" " alt="" coords="653,848,773,842,839,834,903,822,960,804,1010,783,1012,788,962,810,905,827,840,839,774,847,654,853"/>
+<area shape="rect" id="Node000021" href="$pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c" title="Reads the result of mean luminance computation from the SSBO. This function should be called only aft..." alt="" coords="703,887,902,927"/>
+<area shape="poly" id="edge23_Node000020_Node000021" title=" " alt="" coords="617,860,706,882,704,887,616,865"/>
+<area shape="poly" id="edge26_Node000022_Node000018" title=" " alt="" coords="624,260,730,238,731,243,625,265"/>
+<area shape="rect" id="Node000023" href="$pbr_8c.html#a71941da15aee302848216a21ec1cc846" title="Initializes a texture for progressive specular pre&#45;filtering." alt="" coords="738,263,867,288"/>
+<area shape="poly" id="edge27_Node000022_Node000023" title=" " alt="" coords="644,273,724,273,724,278,644,278"/>
+<area shape="rect" id="Node000024" href="$render__utils_8c.html#a90d078a815893bfeb3fab9a551942916" title="Creates a 2D texture with specified parameters." alt="" coords="976,281,1123,321"/>
+<area shape="poly" id="edge28_Node000023_Node000024" title=" " alt="" coords="868,279,962,289,962,294,867,285"/>
+<area shape="poly" id="edge38_Node000025_Node000011" title=" " alt="" coords="576,500,626,554,662,584,703,610,717,617,715,622,700,615,659,589,623,558,572,503"/>
+<area shape="poly" id="edge39_Node000025_Node000012" title=" " alt="" coords="572,500,590,533,619,576,657,622,703,660,714,666,711,670,700,664,653,626,615,580,586,536,567,503"/>
+<area shape="poly" id="edge44_Node000025_Node000015" title=" " alt="" coords="572,501,631,611,669,671,687,694,703,709,737,725,735,730,700,714,683,698,665,674,626,613,567,503"/>
+<area shape="poly" id="edge40_Node000025_Node000018" title=" " alt="" coords="567,475,625,356,664,291,683,265,700,248,730,233,732,238,703,252,687,269,668,294,630,359,571,477"/>
+<area shape="rect" id="Node000026" href="$ibl__coordinator_8c.html#a325df28750573fe64f999eace591c77b" title=" " alt="" coords="725,427,880,452"/>
+<area shape="poly" id="edge30_Node000025_Node000026" title=" " alt="" coords="624,473,726,452,727,457,625,479"/>
+<area shape="rect" id="Node000028" href="$ibl__coordinator_8c.html#aaa5ff05792c6e4a641f2bffb90279ac4" title=" " alt="" coords="711,476,895,501"/>
+<area shape="poly" id="edge32_Node000025_Node000028" title=" " alt="" coords="649,486,697,486,697,491,649,491"/>
+<area shape="rect" id="Node000029" href="$ibl__coordinator_8c.html#a68e655e2e6acfa7418ca6cbb31f7dfa7" title=" " alt="" coords="711,525,895,551"/>
+<area shape="poly" id="edge34_Node000025_Node000029" title=" " alt="" coords="625,499,727,520,726,525,624,504"/>
+<area shape="rect" id="Node000030" href="$ibl__coordinator_8c.html#afd9d63c9f2007aeb78aa1e3df5552c3e" title=" " alt="" coords="701,362,904,402"/>
+<area shape="poly" id="edge36_Node000025_Node000030" title=" " alt="" coords="583,473,635,443,700,412,719,404,721,409,702,416,638,448,586,478"/>
+<area shape="rect" id="Node000031" href="$pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7" title="Initializes a texture for progressive irradiance computation." alt="" coords="731,312,874,337"/>
+<area shape="poly" id="edge41_Node000025_Node000031" title=" " alt="" coords="570,474,620,413,658,378,700,348,717,340,719,344,703,352,661,382,624,417,574,477"/>
+<area shape="rect" id="Node000032" href="$pbr_8c.html#a2e45982e37b3d9cbcaa5454ddbb5a660" title="Computes a single slice or mip&#45;level for progressive pre&#45;filtering." alt="" coords="736,575,869,600"/>
+<area shape="poly" id="edge43_Node000025_Node000032" title=" " alt="" coords="584,499,637,530,702,561,725,568,723,573,700,566,634,535,582,504"/>
+<area shape="rect" id="Node000027" href="$ibl__coordinator_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e" title=" " alt="" coords="970,452,1129,477"/>
+<area shape="poly" id="edge31_Node000026_Node000027" title=" " alt="" coords="880,445,957,453,956,458,880,450"/>
+<area shape="poly" id="edge33_Node000028_Node000027" title=" " alt="" coords="895,477,956,471,956,476,895,482"/>
+<area shape="poly" id="edge35_Node000029_Node000027" title=" " alt="" coords="861,523,903,511,1000,479,1002,484,905,517,862,528"/>
+<area shape="poly" id="edge37_Node000030_Node000027" title=" " alt="" coords="868,400,905,411,1001,445,999,450,903,417,867,405"/>
+<area shape="poly" id="edge42_Node000031_Node000024" title=" " alt="" coords="874,315,962,306,963,312,875,320"/>
+</map>

@@ -1,0 +1,335 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/billboard_sorting.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('billboard__sorting_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">billboard_sorting.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="billboard__sorting_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifndef BILLBOARD_SORTING_H</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define BILLBOARD_SORTING_H</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="sphere__types_8h.html">sphere_types.h</a>&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;cglm/cglm.h&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="};">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="structBillboardSortEntry.html">   19</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structBillboardSortEntry.html#adb408c3b2fc98a5000340adcd18dec2f">   20</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structBillboardSortEntry.html#adb408c3b2fc98a5000340adcd18dec2f">original_index</a>; </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structBillboardSortEntry.html#a765eb7e00c090619b67638a7783d9c1d">   21</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structBillboardSortEntry.html#a765eb7e00c090619b67638a7783d9c1d">depth</a>;        </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>} <a class="code hl_struct" href="structBillboardSortEntry.html">BillboardSortEntry</a>;</div>
+</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="foldopen" id="foldopen00028" data-start="{" data-end="};">
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structBillboardSorter.html">   28</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a718c6f6b94fd67ff15a8fcbb33fe163e">   29</a></span>    GLuint <a class="code hl_variable" href="structBillboardSorter.html#a718c6f6b94fd67ff15a8fcbb33fe163e">compute_program</a>;      </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a20b35b0a4e71456affb6ee75f77489c9">   30</a></span>    GLuint <a class="code hl_variable" href="structBillboardSorter.html#a20b35b0a4e71456affb6ee75f77489c9">instance_ssbo</a>;        </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a21f16aff1411b58244884680e3c9d965">   31</a></span>    GLuint <a class="code hl_variable" href="structBillboardSorter.html#a21f16aff1411b58244884680e3c9d965">index_ssbo</a>;           </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6">   32</a></span>    GLuint <a class="code hl_variable" href="structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6">sorted_instance_ssbo</a>; </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="comment">/* Cached uniform locations (resolved once at init). */</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#ae5211cd10d71410ac839c400a36d3cd9">   35</a></span>    GLint <a class="code hl_variable" href="structBillboardSorter.html#ae5211cd10d71410ac839c400a36d3cd9">loc_stage</a>;     </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a5dc17de0e0ec703056257fe420eb9a00">   36</a></span>    GLint <a class="code hl_variable" href="structBillboardSorter.html#a5dc17de0e0ec703056257fe420eb9a00">loc_count</a>;     </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a534b9ac28f76011b0c91803ce2b821dd">   37</a></span>    GLint <a class="code hl_variable" href="structBillboardSorter.html#a534b9ac28f76011b0c91803ce2b821dd">loc_count_pot</a>; </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a0e96b1deb48957de5bec4dd10db704df">   38</a></span>    GLint <a class="code hl_variable" href="structBillboardSorter.html#a0e96b1deb48957de5bec4dd10db704df">loc_cam</a>;       </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a4cff6853cb361d635b33b897b27fd912">   39</a></span>    GLint <a class="code hl_variable" href="structBillboardSorter.html#a4cff6853cb361d635b33b897b27fd912">loc_j</a>;         </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#ad591c3d3c296117270271b9dc6e4d2d9">   40</a></span>    GLint <a class="code hl_variable" href="structBillboardSorter.html#ad591c3d3c296117270271b9dc6e4d2d9">loc_k</a>;         </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#aecb362477e67d12648d1b635177cdb75">   42</a></span>    <a class="code hl_struct" href="structBillboardSortEntry.html">BillboardSortEntry</a>* <a class="code hl_variable" href="structBillboardSorter.html#aecb362477e67d12648d1b635177cdb75">entries</a>;     </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a4cdabb471077890d2aa3e34e70dc4c7b">   43</a></span>    <a class="code hl_struct" href="structBillboardSortEntry.html">BillboardSortEntry</a>* <a class="code hl_variable" href="structBillboardSorter.html#a4cdabb471077890d2aa3e34e70dc4c7b">entries_aux</a>; </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#ac3d3ca74ea3932296c64db0f799a0146">   44</a></span>    <a class="code hl_struct" href="structSphereInstance.html">SphereInstance</a>* <a class="code hl_variable" href="structBillboardSorter.html#ac3d3ca74ea3932296c64db0f799a0146">temp_instances</a>;  </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a36092b844c19fa636ecdf9f667388d2f">   45</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structBillboardSorter.html#a36092b844c19fa636ecdf9f667388d2f">ssbo_capacity</a>; </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#a169f88b606830e255d3f8287ae496a19">   46</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structBillboardSorter.html#a169f88b606830e255d3f8287ae496a19">cpu_capacity</a>;  </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structBillboardSorter.html#ac3cdc2bff2b4b7707f6be87f393a5aeb">   47</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structBillboardSorter.html#ac3cdc2bff2b4b7707f6be87f393a5aeb">min_capacity</a>;  </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>} <a class="code hl_struct" href="structBillboardSorter.html">BillboardSorter</a>;</div>
+</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">void</span> <a class="code hl_function" href="billboard__sorting_8h.html#a8e7ee0aa8c5ef73be74bfe3f9bba3205">billboard_sorter_init</a>(<a class="code hl_struct" href="structBillboardSorter.html">BillboardSorter</a>* sorter, <span class="keywordtype">int</span> initial_capacity);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keywordtype">void</span> <a class="code hl_function" href="billboard__sorting_8h.html#ad7a360778f7d79b99618da36773fb1fd">billboard_sorter_cleanup</a>(<a class="code hl_struct" href="structBillboardSorter.html">BillboardSorter</a>* sorter);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>GLuint <a class="code hl_function" href="billboard__sorting_8h.html#a4e0b31ffd7cd8db6aa71284ffac670c4">billboard_sorter_sort_gpu</a>(<a class="code hl_struct" href="structBillboardSorter.html">BillboardSorter</a>* sorter,</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                                 <span class="keyword">const</span> <a class="code hl_struct" href="structSphereInstance.html">SphereInstance</a>* instances, <span class="keywordtype">int</span> count,</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                                 <span class="keyword">const</span> vec3 camera_pos);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>GLuint <a class="code hl_function" href="billboard__sorting_8h.html#aec701145359c500f4af067ef11e050e6">billboard_sorter_sort_cpu</a>(<a class="code hl_struct" href="structBillboardSorter.html">BillboardSorter</a>* sorter,</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                                 <span class="keyword">const</span> <a class="code hl_struct" href="structSphereInstance.html">SphereInstance</a>* instances, <span class="keywordtype">int</span> count,</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                                 <span class="keyword">const</span> vec3 camera_pos);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>GLuint <a class="code hl_function" href="billboard__sorting_8h.html#a34714dfd087e0b6f3176014fde266235">billboard_sorter_sort_cpu_radix</a>(<a class="code hl_struct" href="structBillboardSorter.html">BillboardSorter</a>* sorter,</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                                       <span class="keyword">const</span> <a class="code hl_struct" href="structSphereInstance.html">SphereInstance</a>* instances,</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                                       <span class="keywordtype">int</span> count, <span class="keyword">const</span> vec3 camera_pos);</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="preprocessor">#endif </span><span class="comment">/* BILLBOARD_SORTING_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="abillboard__sorting_8h_html_a34714dfd087e0b6f3176014fde266235"><div class="ttname"><a href="billboard__sorting_8h.html#a34714dfd087e0b6f3176014fde266235">billboard_sorter_sort_cpu_radix</a></div><div class="ttdeci">GLuint billboard_sorter_sort_cpu_radix(BillboardSorter *sorter, const SphereInstance *instances, int count, const vec3 camera_pos)</div><div class="ttdoc">Sorts the array of instances Back-to-Front (descending depth) using Radix Sort.</div><div class="ttdef"><b>Definition</b> billboard_sorting.c:395</div></div>
+<div class="ttc" id="abillboard__sorting_8h_html_a4e0b31ffd7cd8db6aa71284ffac670c4"><div class="ttname"><a href="billboard__sorting_8h.html#a4e0b31ffd7cd8db6aa71284ffac670c4">billboard_sorter_sort_gpu</a></div><div class="ttdeci">GLuint billboard_sorter_sort_gpu(BillboardSorter *sorter, const SphereInstance *instances, int count, const vec3 camera_pos)</div><div class="ttdoc">Sorts the array of instances Back-to-Front (descending depth) on GPU.</div><div class="ttdef"><b>Definition</b> billboard_sorting.c:186</div></div>
+<div class="ttc" id="abillboard__sorting_8h_html_a8e7ee0aa8c5ef73be74bfe3f9bba3205"><div class="ttname"><a href="billboard__sorting_8h.html#a8e7ee0aa8c5ef73be74bfe3f9bba3205">billboard_sorter_init</a></div><div class="ttdeci">void billboard_sorter_init(BillboardSorter *sorter, int initial_capacity)</div><div class="ttdoc">Allocates internal buffers for the sorter.</div><div class="ttdef"><b>Definition</b> billboard_sorting.c:129</div></div>
+<div class="ttc" id="abillboard__sorting_8h_html_ad7a360778f7d79b99618da36773fb1fd"><div class="ttname"><a href="billboard__sorting_8h.html#ad7a360778f7d79b99618da36773fb1fd">billboard_sorter_cleanup</a></div><div class="ttdeci">void billboard_sorter_cleanup(BillboardSorter *sorter)</div><div class="ttdoc">Destroys the sorter context.</div><div class="ttdef"><b>Definition</b> billboard_sorting.c:169</div></div>
+<div class="ttc" id="abillboard__sorting_8h_html_aec701145359c500f4af067ef11e050e6"><div class="ttname"><a href="billboard__sorting_8h.html#aec701145359c500f4af067ef11e050e6">billboard_sorter_sort_cpu</a></div><div class="ttdeci">GLuint billboard_sorter_sort_cpu(BillboardSorter *sorter, const SphereInstance *instances, int count, const vec3 camera_pos)</div><div class="ttdoc">Sorts the array of instances Back-to-Front (descending depth) on CPU.</div><div class="ttdef"><b>Definition</b> billboard_sorting.c:334</div></div>
+<div class="ttc" id="asphere__types_8h_html"><div class="ttname"><a href="sphere__types_8h.html">sphere_types.h</a></div><div class="ttdoc">Pure-data type for per-instance sphere attributes.</div></div>
+<div class="ttc" id="astructBillboardSortEntry_html"><div class="ttname"><a href="structBillboardSortEntry.html">BillboardSortEntry</a></div><div class="ttdoc">Lightweight proxy for sorting data without moving large structs.</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:19</div></div>
+<div class="ttc" id="astructBillboardSortEntry_html_a765eb7e00c090619b67638a7783d9c1d"><div class="ttname"><a href="structBillboardSortEntry.html#a765eb7e00c090619b67638a7783d9c1d">BillboardSortEntry::depth</a></div><div class="ttdeci">float depth</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:21</div></div>
+<div class="ttc" id="astructBillboardSortEntry_html_adb408c3b2fc98a5000340adcd18dec2f"><div class="ttname"><a href="structBillboardSortEntry.html#adb408c3b2fc98a5000340adcd18dec2f">BillboardSortEntry::original_index</a></div><div class="ttdeci">int original_index</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:20</div></div>
+<div class="ttc" id="astructBillboardSorter_html"><div class="ttname"><a href="structBillboardSorter.html">BillboardSorter</a></div><div class="ttdoc">Reusable memory context for sorting operations.</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:28</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a0e96b1deb48957de5bec4dd10db704df"><div class="ttname"><a href="structBillboardSorter.html#a0e96b1deb48957de5bec4dd10db704df">BillboardSorter::loc_cam</a></div><div class="ttdeci">GLint loc_cam</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:38</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a169f88b606830e255d3f8287ae496a19"><div class="ttname"><a href="structBillboardSorter.html#a169f88b606830e255d3f8287ae496a19">BillboardSorter::cpu_capacity</a></div><div class="ttdeci">int cpu_capacity</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:46</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a20b35b0a4e71456affb6ee75f77489c9"><div class="ttname"><a href="structBillboardSorter.html#a20b35b0a4e71456affb6ee75f77489c9">BillboardSorter::instance_ssbo</a></div><div class="ttdeci">GLuint instance_ssbo</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:30</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a21f16aff1411b58244884680e3c9d965"><div class="ttname"><a href="structBillboardSorter.html#a21f16aff1411b58244884680e3c9d965">BillboardSorter::index_ssbo</a></div><div class="ttdeci">GLuint index_ssbo</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:31</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a36092b844c19fa636ecdf9f667388d2f"><div class="ttname"><a href="structBillboardSorter.html#a36092b844c19fa636ecdf9f667388d2f">BillboardSorter::ssbo_capacity</a></div><div class="ttdeci">int ssbo_capacity</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:45</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a4cdabb471077890d2aa3e34e70dc4c7b"><div class="ttname"><a href="structBillboardSorter.html#a4cdabb471077890d2aa3e34e70dc4c7b">BillboardSorter::entries_aux</a></div><div class="ttdeci">BillboardSortEntry * entries_aux</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:43</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a4cff6853cb361d635b33b897b27fd912"><div class="ttname"><a href="structBillboardSorter.html#a4cff6853cb361d635b33b897b27fd912">BillboardSorter::loc_j</a></div><div class="ttdeci">GLint loc_j</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:39</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a534b9ac28f76011b0c91803ce2b821dd"><div class="ttname"><a href="structBillboardSorter.html#a534b9ac28f76011b0c91803ce2b821dd">BillboardSorter::loc_count_pot</a></div><div class="ttdeci">GLint loc_count_pot</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:37</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a5dc17de0e0ec703056257fe420eb9a00"><div class="ttname"><a href="structBillboardSorter.html#a5dc17de0e0ec703056257fe420eb9a00">BillboardSorter::loc_count</a></div><div class="ttdeci">GLint loc_count</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:36</div></div>
+<div class="ttc" id="astructBillboardSorter_html_a718c6f6b94fd67ff15a8fcbb33fe163e"><div class="ttname"><a href="structBillboardSorter.html#a718c6f6b94fd67ff15a8fcbb33fe163e">BillboardSorter::compute_program</a></div><div class="ttdeci">GLuint compute_program</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:29</div></div>
+<div class="ttc" id="astructBillboardSorter_html_ac3cdc2bff2b4b7707f6be87f393a5aeb"><div class="ttname"><a href="structBillboardSorter.html#ac3cdc2bff2b4b7707f6be87f393a5aeb">BillboardSorter::min_capacity</a></div><div class="ttdeci">int min_capacity</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:47</div></div>
+<div class="ttc" id="astructBillboardSorter_html_ac3d3ca74ea3932296c64db0f799a0146"><div class="ttname"><a href="structBillboardSorter.html#ac3d3ca74ea3932296c64db0f799a0146">BillboardSorter::temp_instances</a></div><div class="ttdeci">SphereInstance * temp_instances</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:44</div></div>
+<div class="ttc" id="astructBillboardSorter_html_acec5dd153babd0b224c37ba8aceffae6"><div class="ttname"><a href="structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6">BillboardSorter::sorted_instance_ssbo</a></div><div class="ttdeci">GLuint sorted_instance_ssbo</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:32</div></div>
+<div class="ttc" id="astructBillboardSorter_html_ad591c3d3c296117270271b9dc6e4d2d9"><div class="ttname"><a href="structBillboardSorter.html#ad591c3d3c296117270271b9dc6e4d2d9">BillboardSorter::loc_k</a></div><div class="ttdeci">GLint loc_k</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:40</div></div>
+<div class="ttc" id="astructBillboardSorter_html_ae5211cd10d71410ac839c400a36d3cd9"><div class="ttname"><a href="structBillboardSorter.html#ae5211cd10d71410ac839c400a36d3cd9">BillboardSorter::loc_stage</a></div><div class="ttdeci">GLint loc_stage</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:35</div></div>
+<div class="ttc" id="astructBillboardSorter_html_aecb362477e67d12648d1b635177cdb75"><div class="ttname"><a href="structBillboardSorter.html#aecb362477e67d12648d1b635177cdb75">BillboardSorter::entries</a></div><div class="ttdeci">BillboardSortEntry * entries</div><div class="ttdef"><b>Definition</b> billboard_sorting.h:42</div></div>
+<div class="ttc" id="astructSphereInstance_html"><div class="ttname"><a href="structSphereInstance.html">SphereInstance</a></div><div class="ttdoc">Per-instance data sent to the shader via an instanced VBO.</div><div class="ttdef"><b>Definition</b> sphere_types.h:25</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="billboard__sorting_8h.html">billboard_sorting.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

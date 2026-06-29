@@ -1,0 +1,1178 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/light_probes.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('light__probes_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">light_probes.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;glad/glad.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="light__probes_8h_source.html">light_probes.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
+<code>#include &quot;platform/platform_utils.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="sphere__types_8h_source.html">sphere_types.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;float.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for light_probes.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCachedSphere.html">CachedSphere</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ae71449b1cc6e6250b91f539153a7a0d3" id="r_ae71449b1cc6e6250b91f539153a7a0d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#ae71449b1cc6e6250b91f539153a7a0d3">M_PI</a>&#160;&#160;&#160;3.14159265358979323846</td></tr>
+<tr class="separator:ae71449b1cc6e6250b91f539153a7a0d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43a3c5d2c87cf7cee5f60e3502852d6d" id="r_a43a3c5d2c87cf7cee5f60e3502852d6d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a43a3c5d2c87cf7cee5f60e3502852d6d">USE_SH_BAKE_FACTORS</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a43a3c5d2c87cf7cee5f60e3502852d6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5a6429b639acc6c76b9a7f59ed59572" id="r_aa5a6429b639acc6c76b9a7f59ed59572"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#aa5a6429b639acc6c76b9a7f59ed59572">SH_COEFF_COUNT</a>&#160;&#160;&#160;9</td></tr>
+<tr class="separator:aa5a6429b639acc6c76b9a7f59ed59572"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58e005cf8b962a80a0964376dbec202b" id="r_a58e005cf8b962a80a0964376dbec202b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a58e005cf8b962a80a0964376dbec202b">GI_BOUNCE_SCALE</a>&#160;&#160;&#160;2.0F</td></tr>
+<tr class="separator:a58e005cf8b962a80a0964376dbec202b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a914ef7f00117754d0910e9f0c7f60894" id="r_a914ef7f00117754d0910e9f0c7f60894"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a914ef7f00117754d0910e9f0c7f60894">GI_MIN_DIST_RADII</a>&#160;&#160;&#160;1.05F</td></tr>
+<tr class="separator:a914ef7f00117754d0910e9f0c7f60894"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab93462b0ec98005b20ab155e72779d0d" id="r_ab93462b0ec98005b20ab155e72779d0d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#ab93462b0ec98005b20ab155e72779d0d">GI_MAX_DIST_RADII</a>&#160;&#160;&#160;3.0F</td></tr>
+<tr class="separator:ab93462b0ec98005b20ab155e72779d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada31c354822314d7a24f3506360adfbd" id="r_ada31c354822314d7a24f3506360adfbd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#ada31c354822314d7a24f3506360adfbd">GI_EPSILON</a>&#160;&#160;&#160;0.000001F</td></tr>
+<tr class="separator:ada31c354822314d7a24f3506360adfbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac304b4e77cc08a0e58d568419bc63491" id="r_ac304b4e77cc08a0e58d568419bc63491"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#ac304b4e77cc08a0e58d568419bc63491">GI_HALF</a>&#160;&#160;&#160;0.5F</td></tr>
+<tr class="separator:ac304b4e77cc08a0e58d568419bc63491"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedf6403f1f3fb1760777e3c196dca3d2" id="r_aedf6403f1f3fb1760777e3c196dca3d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#aedf6403f1f3fb1760777e3c196dca3d2">GI_ZERO</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:aedf6403f1f3fb1760777e3c196dca3d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:af715e26dfffd1f8de1c18449e2770cff" id="r_af715e26dfffd1f8de1c18449e2770cff"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffadd736b70ac73170b9644d6fe7dbdd6ba">GI_DEBUG_PROBE_VERTICES</a> = 6
+, <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffaf1db8d5cb9170cc48e50f01378675bc2">GI_WIRE_CUBE_VERTICES</a> = 24
+, <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffafe2fed8b2ca9113062d05bbf50f6e6b8">GI_LOG_BUF_SIZE</a> = 128
+, <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffa18b0bd55142c07ceea2c4d99755af444">GI_SMALL_LOG_BUF_SIZE</a> = 64
+ }</td></tr>
+<tr class="separator:af715e26dfffd1f8de1c18449e2770cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a338c4d4188abbbfc6646566d6e4465cf" id="r_a338c4d4188abbbfc6646566d6e4465cf"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a338c4d4188abbbfc6646566d6e4465cf">get_sphere_pos</a> (const <a class="el" href="structSphereInstance.html">SphereInstance</a> *sphere, vec3 dest)</td></tr>
+<tr class="separator:a338c4d4188abbbfc6646566d6e4465cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2d94e4994527bae8373ac34109506d8" id="r_ac2d94e4994527bae8373ac34109506d8"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#ac2d94e4994527bae8373ac34109506d8">get_sphere_radius</a> (const <a class="el" href="structSphereInstance.html">SphereInstance</a> *sphere)</td></tr>
+<tr class="separator:ac2d94e4994527bae8373ac34109506d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b221eea19814ee6e47b8d1ec8a05400" id="r_a1b221eea19814ee6e47b8d1ec8a05400"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a1b221eea19814ee6e47b8d1ec8a05400">light_probe_grid_compute_aabb</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, const void *spheres, int count, size_t stride, float padding)</td></tr>
+<tr class="memdesc:a1b221eea19814ee6e47b8d1ec8a05400"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the AABB for the grid based on sphere instances.  <br /></td></tr>
+<tr class="separator:a1b221eea19814ee6e47b8d1ec8a05400"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b0de5a5962e8f8e7a1c47a2177cedf0" id="r_a3b0de5a5962e8f8e7a1c47a2177cedf0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a3b0de5a5962e8f8e7a1c47a2177cedf0">light_probe_grid_init_cpu</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, int dim_x, int dim_y, int dim_z)</td></tr>
+<tr class="memdesc:a3b0de5a5962e8f8e7a1c47a2177cedf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the grid structure (CPU only).  <br /></td></tr>
+<tr class="separator:a3b0de5a5962e8f8e7a1c47a2177cedf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2faf1cd11e22b3cedfba8ea055224df" id="r_af2faf1cd11e22b3cedfba8ea055224df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df">light_probe_grid_free_cpu</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
+<tr class="memdesc:af2faf1cd11e22b3cedfba8ea055224df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up CPU resources.  <br /></td></tr>
+<tr class="separator:af2faf1cd11e22b3cedfba8ea055224df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c10cfc74aacb0946926259cbd7610fd" id="r_a5c10cfc74aacb0946926259cbd7610fd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a5c10cfc74aacb0946926259cbd7610fd">compute_probe_sh</a> (const <a class="el" href="structCachedSphere.html">CachedSphere</a> *cached_scene, int local_count, vec3 probe_pos, <a class="el" href="structSH9.html">SH9</a> *sh_data)</td></tr>
+<tr class="separator:a5c10cfc74aacb0946926259cbd7610fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abde5719c10df3a99d455b1664addce2a" id="r_abde5719c10df3a99d455b1664addce2a"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#abde5719c10df3a99d455b1664addce2a">is_probe_inside_sphere</a> (vec3 probe_pos, const <a class="el" href="structCachedSphere.html">CachedSphere</a> *cached_scene, int local_count)</td></tr>
+<tr class="separator:abde5719c10df3a99d455b1664addce2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e903f61e016f1bb69fc006c5b73ad12" id="r_a1e903f61e016f1bb69fc006c5b73ad12"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a1e903f61e016f1bb69fc006c5b73ad12">light_probe_worker_compute_probe</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, int grid_x, int grid_y, int grid_z, const <a class="el" href="structCachedSphere.html">CachedSphere</a> *cached_scene, int local_count)</td></tr>
+<tr class="separator:a1e903f61e016f1bb69fc006c5b73ad12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa084be4e5a8048861388958381a6c4f9" id="r_aa084be4e5a8048861388958381a6c4f9"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#aa084be4e5a8048861388958381a6c4f9">precompute_cached_spheres</a> (<a class="el" href="structSphereInstance.html">SphereInstance</a> *local_scene, int local_count)</td></tr>
+<tr class="separator:aa084be4e5a8048861388958381a6c4f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42fe11f71d4d970a36f06df85fb263c4" id="r_a42fe11f71d4d970a36f06df85fb263c4"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a42fe11f71d4d970a36f06df85fb263c4">light_probe_worker</a> (void *arg)</td></tr>
+<tr class="separator:a42fe11f71d4d970a36f06df85fb263c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27b0e33c943a86a3cbf620b5619244bf" id="r_a27b0e33c943a86a3cbf620b5619244bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a27b0e33c943a86a3cbf620b5619244bf">light_probe_grid_init</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, int dim_x, int dim_y, int dim_z)</td></tr>
+<tr class="memdesc:a27b0e33c943a86a3cbf620b5619244bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the grid structure, creates SSBO, and starts worker thread.  <br /></td></tr>
+<tr class="separator:a27b0e33c943a86a3cbf620b5619244bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a3fc14269f1f5bfab72ddc185ed4b0a" id="r_a9a3fc14269f1f5bfab72ddc185ed4b0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a9a3fc14269f1f5bfab72ddc185ed4b0a">light_probe_grid_set_bounds</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, vec3 aabb_min, vec3 aabb_max)</td></tr>
+<tr class="memdesc:a9a3fc14269f1f5bfab72ddc185ed4b0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the grid AABB and computes cell sizes from dimensions.  <br /></td></tr>
+<tr class="separator:a9a3fc14269f1f5bfab72ddc185ed4b0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7257874abc46a1df3d4a0780083e7a39" id="r_a7257874abc46a1df3d4a0780083e7a39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a7257874abc46a1df3d4a0780083e7a39">light_probe_grid_set_scene</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, const void *spheres, int count, size_t stride)</td></tr>
+<tr class="memdesc:a7257874abc46a1df3d4a0780083e7a39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the scene data used by the grid (copies it).  <br /></td></tr>
+<tr class="separator:a7257874abc46a1df3d4a0780083e7a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97344a57a3a68fb6c2e832f1fb3086cd" id="r_a97344a57a3a68fb6c2e832f1fb3086cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a97344a57a3a68fb6c2e832f1fb3086cd">light_probe_grid_update_async</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
+<tr class="memdesc:a97344a57a3a68fb6c2e832f1fb3086cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signals the worker thread to perform an SH update.  <br /></td></tr>
+<tr class="separator:a97344a57a3a68fb6c2e832f1fb3086cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c6afc74398af12423f7175864b6128a" id="r_a7c6afc74398af12423f7175864b6128a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a7c6afc74398af12423f7175864b6128a">light_probe_grid_sync</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
+<tr class="memdesc:a7c6afc74398af12423f7175864b6128a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if results are ready and uploads to GPU. Should be called on main thread.  <br /></td></tr>
+<tr class="separator:a7c6afc74398af12423f7175864b6128a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c8fc97128572ecc44171194266abf88" id="r_a6c8fc97128572ecc44171194266abf88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a6c8fc97128572ecc44171194266abf88">light_probe_grid_cleanup</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
+<tr class="memdesc:a6c8fc97128572ecc44171194266abf88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up all resources (CPU, GPU, Threads).  <br /></td></tr>
+<tr class="separator:a6c8fc97128572ecc44171194266abf88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a467b1b3835e8530de39ed71333f08f31" id="r_a467b1b3835e8530de39ed71333f08f31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a467b1b3835e8530de39ed71333f08f31">light_probe_grid_render_debug</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, mat4 view, mat4 proj)</td></tr>
+<tr class="memdesc:a467b1b3835e8530de39ed71333f08f31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders debug spheres for the probes.  <br /></td></tr>
+<tr class="separator:a467b1b3835e8530de39ed71333f08f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a58e005cf8b962a80a0964376dbec202b" name="a58e005cf8b962a80a0964376dbec202b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58e005cf8b962a80a0964376dbec202b">&#9670;&#160;</a></span>GI_BOUNCE_SCALE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GI_BOUNCE_SCALE&#160;&#160;&#160;2.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada31c354822314d7a24f3506360adfbd" name="ada31c354822314d7a24f3506360adfbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada31c354822314d7a24f3506360adfbd">&#9670;&#160;</a></span>GI_EPSILON</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GI_EPSILON&#160;&#160;&#160;0.000001F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac304b4e77cc08a0e58d568419bc63491" name="ac304b4e77cc08a0e58d568419bc63491"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac304b4e77cc08a0e58d568419bc63491">&#9670;&#160;</a></span>GI_HALF</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GI_HALF&#160;&#160;&#160;0.5F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab93462b0ec98005b20ab155e72779d0d" name="ab93462b0ec98005b20ab155e72779d0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab93462b0ec98005b20ab155e72779d0d">&#9670;&#160;</a></span>GI_MAX_DIST_RADII</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GI_MAX_DIST_RADII&#160;&#160;&#160;3.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a914ef7f00117754d0910e9f0c7f60894" name="a914ef7f00117754d0910e9f0c7f60894"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914ef7f00117754d0910e9f0c7f60894">&#9670;&#160;</a></span>GI_MIN_DIST_RADII</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GI_MIN_DIST_RADII&#160;&#160;&#160;1.05F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aedf6403f1f3fb1760777e3c196dca3d2" name="aedf6403f1f3fb1760777e3c196dca3d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedf6403f1f3fb1760777e3c196dca3d2">&#9670;&#160;</a></span>GI_ZERO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GI_ZERO&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae71449b1cc6e6250b91f539153a7a0d3" name="ae71449b1cc6e6250b91f539153a7a0d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae71449b1cc6e6250b91f539153a7a0d3">&#9670;&#160;</a></span>M_PI</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define M_PI&#160;&#160;&#160;3.14159265358979323846</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa5a6429b639acc6c76b9a7f59ed59572" name="aa5a6429b639acc6c76b9a7f59ed59572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5a6429b639acc6c76b9a7f59ed59572">&#9670;&#160;</a></span>SH_COEFF_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SH_COEFF_COUNT&#160;&#160;&#160;9</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a43a3c5d2c87cf7cee5f60e3502852d6d" name="a43a3c5d2c87cf7cee5f60e3502852d6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43a3c5d2c87cf7cee5f60e3502852d6d">&#9670;&#160;</a></span>USE_SH_BAKE_FACTORS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define USE_SH_BAKE_FACTORS&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="af715e26dfffd1f8de1c18449e2770cff" name="af715e26dfffd1f8de1c18449e2770cff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af715e26dfffd1f8de1c18449e2770cff">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffadd736b70ac73170b9644d6fe7dbdd6ba" name="af715e26dfffd1f8de1c18449e2770cffadd736b70ac73170b9644d6fe7dbdd6ba"></a>GI_DEBUG_PROBE_VERTICES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffaf1db8d5cb9170cc48e50f01378675bc2" name="af715e26dfffd1f8de1c18449e2770cffaf1db8d5cb9170cc48e50f01378675bc2"></a>GI_WIRE_CUBE_VERTICES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffafe2fed8b2ca9113062d05bbf50f6e6b8" name="af715e26dfffd1f8de1c18449e2770cffafe2fed8b2ca9113062d05bbf50f6e6b8"></a>GI_LOG_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffa18b0bd55142c07ceea2c4d99755af444" name="af715e26dfffd1f8de1c18449e2770cffa18b0bd55142c07ceea2c4d99755af444"></a>GI_SMALL_LOG_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a5c10cfc74aacb0946926259cbd7610fd" name="a5c10cfc74aacb0946926259cbd7610fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c10cfc74aacb0946926259cbd7610fd">&#9670;&#160;</a></span>compute_probe_sh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void compute_probe_sh </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCachedSphere.html">CachedSphere</a> *&#160;</td>
+          <td class="paramname"><em>cached_scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>local_count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>probe_pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structSH9.html">SH9</a> *&#160;</td>
+          <td class="paramname"><em>sh_data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a5c10cfc74aacb0946926259cbd7610fd_cgraph.svg" width="370" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a338c4d4188abbbfc6646566d6e4465cf" name="a338c4d4188abbbfc6646566d6e4465cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a338c4d4188abbbfc6646566d6e4465cf">&#9670;&#160;</a></span>get_sphere_pos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void get_sphere_pos </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>sphere</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac2d94e4994527bae8373ac34109506d8" name="ac2d94e4994527bae8373ac34109506d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2d94e4994527bae8373ac34109506d8">&#9670;&#160;</a></span>get_sphere_radius()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static float get_sphere_radius </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>sphere</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abde5719c10df3a99d455b1664addce2a" name="abde5719c10df3a99d455b1664addce2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abde5719c10df3a99d455b1664addce2a">&#9670;&#160;</a></span>is_probe_inside_sphere()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int is_probe_inside_sphere </td>
+          <td>(</td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>probe_pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structCachedSphere.html">CachedSphere</a> *&#160;</td>
+          <td class="paramname"><em>cached_scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>local_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c8fc97128572ecc44171194266abf88" name="a6c8fc97128572ecc44171194266abf88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c8fc97128572ecc44171194266abf88">&#9670;&#160;</a></span>light_probe_grid_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cleans up all resources (CPU, GPU, Threads). </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a6c8fc97128572ecc44171194266abf88_cgraph.svg" width="435" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a1b221eea19814ee6e47b8d1ec8a05400" name="a1b221eea19814ee6e47b8d1ec8a05400"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b221eea19814ee6e47b8d1ec8a05400">&#9670;&#160;</a></span>light_probe_grid_compute_aabb()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_compute_aabb </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>spheres</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>stride</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>padding</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the AABB for the grid based on sphere instances. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">grid</td><td>Pointer to grid. </td></tr>
+    <tr><td class="paramname">spheres</td><td>Array of sphere instances (generic pointer to avoid GL dep in header if needed). </td></tr>
+    <tr><td class="paramname">count</td><td>Number of spheres. </td></tr>
+    <tr><td class="paramname">stride</td><td>Stride between spheres. </td></tr>
+    <tr><td class="paramname">padding</td><td>Padding to add to the AABB. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a1b221eea19814ee6e47b8d1ec8a05400_cgraph.svg" width="414" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="af2faf1cd11e22b3cedfba8ea055224df" name="af2faf1cd11e22b3cedfba8ea055224df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2faf1cd11e22b3cedfba8ea055224df">&#9670;&#160;</a></span>light_probe_grid_free_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_free_cpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cleans up CPU resources. </p>
+
+</div>
+</div>
+<a id="a27b0e33c943a86a3cbf620b5619244bf" name="a27b0e33c943a86a3cbf620b5619244bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27b0e33c943a86a3cbf620b5619244bf">&#9670;&#160;</a></span>light_probe_grid_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim_z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the grid structure, creates SSBO, and starts worker thread. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a27b0e33c943a86a3cbf620b5619244bf_cgraph.svg" width="100%" height="573"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a3b0de5a5962e8f8e7a1c47a2177cedf0" name="a3b0de5a5962e8f8e7a1c47a2177cedf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b0de5a5962e8f8e7a1c47a2177cedf0">&#9670;&#160;</a></span>light_probe_grid_init_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_init_cpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim_z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the grid structure (CPU only). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">grid</td><td>Pointer to grid. </td></tr>
+    <tr><td class="paramname">dim_x</td><td>Grid dimension X. </td></tr>
+    <tr><td class="paramname">dim_y</td><td>Grid dimension Y. </td></tr>
+    <tr><td class="paramname">dim_z</td><td>Grid dimension Z. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a467b1b3835e8530de39ed71333f08f31" name="a467b1b3835e8530de39ed71333f08f31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a467b1b3835e8530de39ed71333f08f31">&#9670;&#160;</a></span>light_probe_grid_render_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_render_debug </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mat4&#160;</td>
+          <td class="paramname"><em>view</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mat4&#160;</td>
+          <td class="paramname"><em>proj</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Renders debug spheres for the probes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">grid</td><td>Pointer to grid. </td></tr>
+    <tr><td class="paramname">view</td><td>View matrix. </td></tr>
+    <tr><td class="paramname">proj</td><td>Projection matrix. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a467b1b3835e8530de39ed71333f08f31_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a9a3fc14269f1f5bfab72ddc185ed4b0a" name="a9a3fc14269f1f5bfab72ddc185ed4b0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a3fc14269f1f5bfab72ddc185ed4b0a">&#9670;&#160;</a></span>light_probe_grid_set_bounds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_set_bounds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>aabb_min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>aabb_max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the grid AABB and computes cell sizes from dimensions. </p>
+
+</div>
+</div>
+<a id="a7257874abc46a1df3d4a0780083e7a39" name="a7257874abc46a1df3d4a0780083e7a39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7257874abc46a1df3d4a0780083e7a39">&#9670;&#160;</a></span>light_probe_grid_set_scene()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_set_scene </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>spheres</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>stride</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Updates the scene data used by the grid (copies it). </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a7257874abc46a1df3d4a0780083e7a39_cgraph.svg" width="328" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a7c6afc74398af12423f7175864b6128a" name="a7c6afc74398af12423f7175864b6128a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c6afc74398af12423f7175864b6128a">&#9670;&#160;</a></span>light_probe_grid_sync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_sync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if results are ready and uploads to GPU. Should be called on main thread. </p>
+
+</div>
+</div>
+<a id="a97344a57a3a68fb6c2e832f1fb3086cd" name="a97344a57a3a68fb6c2e832f1fb3086cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97344a57a3a68fb6c2e832f1fb3086cd">&#9670;&#160;</a></span>light_probe_grid_update_async()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_update_async </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Signals the worker thread to perform an SH update. </p>
+
+</div>
+</div>
+<a id="a42fe11f71d4d970a36f06df85fb263c4" name="a42fe11f71d4d970a36f06df85fb263c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42fe11f71d4d970a36f06df85fb263c4">&#9670;&#160;</a></span>light_probe_worker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void * light_probe_worker </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a42fe11f71d4d970a36f06df85fb263c4_cgraph.svg" width="100%" height="573"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a1e903f61e016f1bb69fc006c5b73ad12" name="a1e903f61e016f1bb69fc006c5b73ad12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e903f61e016f1bb69fc006c5b73ad12">&#9670;&#160;</a></span>light_probe_worker_compute_probe()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void light_probe_worker_compute_probe </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>grid_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>grid_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>grid_z</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structCachedSphere.html">CachedSphere</a> *&#160;</td>
+          <td class="paramname"><em>cached_scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>local_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a1e903f61e016f1bb69fc006c5b73ad12_cgraph.svg" width="594" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aa084be4e5a8048861388958381a6c4f9" name="aa084be4e5a8048861388958381a6c4f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa084be4e5a8048861388958381a6c4f9">&#9670;&#160;</a></span>precompute_cached_spheres()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void * precompute_cached_spheres </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>local_scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>local_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_aa084be4e5a8048861388958381a6c4f9_cgraph.svg" width="411" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="light__probes_8c.html">light_probes.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/trail_renderer.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('trail__renderer_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">trail_renderer.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="trail__renderer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#ifndef TRAIL_RENDERER_H</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#define TRAIL_RENDERER_H</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;<a class="code" href="nbody_8h.html">nbody.h</a>&quot;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;cglm/types.h&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structShader.html">Shader</a> <a class="code hl_struct" href="structShader.html">Shader</a>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a4caf8d8f829279fba122163d961608a4af87c84c7806bccc5e676f390a7b31678">   24</a></span><span class="keyword">enum</span> { <a class="code hl_enumvalue" href="trail__renderer_8h.html#a4caf8d8f829279fba122163d961608a4af87c84c7806bccc5e676f390a7b31678">TRAIL_MAX_POINTS</a> = 256 };</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a3d4573c823d99094e05ef8813cfe95b4">   27</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a3d4573c823d99094e05ef8813cfe95b4">TRAIL_HDR_INTENSITY</a> = 5.0F;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a4787e6fd0fac1a4ec43c98ed9bf449ba">   30</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a4787e6fd0fac1a4ec43c98ed9bf449ba">TRAIL_MAX_WIDTH</a> = 0.24F;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#ad65403268c340a602a289598ac94716d">   33</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#ad65403268c340a602a289598ac94716d">TRAIL_SAMPLE_INTERVAL</a> = 1.0F / 60.0F;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a74ce508c09a63cbec3cd0f1017e2d8c5">   36</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a74ce508c09a63cbec3cd0f1017e2d8c5">TRAIL_DURATION_DEFAULT</a> = 4.0F;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#ab80eca51a868157a5bba3a75e72abb1f">   39</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#ab80eca51a868157a5bba3a75e72abb1f">TRAIL_DURATION_MIN</a> = 0.5F;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a410780d43ed6c5f3ea3f046f81343e9b">   40</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a410780d43ed6c5f3ea3f046f81343e9b">TRAIL_DURATION_MAX</a> = 30.0F;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a610eafa3ffd25101b37ee160d93bbaa2">   41</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a610eafa3ffd25101b37ee160d93bbaa2">TRAIL_DURATION_STEP</a> = 0.5F;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="foldopen" id="foldopen00049" data-start="{" data-end="};">
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structTrailVertex.html">   49</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structTrailVertex.html#adddac6fa3f63d5f26a9ac787a786a3de">   50</a></span>    <span class="keywordtype">float</span> position[3]; </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structTrailVertex.html#a648924b36bd4627b2656a35716be418c">   51</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailVertex.html#a648924b36bd4627b2656a35716be418c">u</a>;           </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structTrailVertex.html#a79aa78b00f3008fb669e291d72a94e9b">   52</a></span>    <span class="keywordtype">float</span> color[3];    </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structTrailVertex.html#afc483ea239818c4aa14d272f904eda07">   53</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailVertex.html#afc483ea239818c4aa14d272f904eda07">v</a>;           </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>} <a class="code hl_struct" href="structTrailVertex.html">TrailVertex</a>;</div>
+</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="foldopen" id="foldopen00060" data-start="{" data-end="};">
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structTrailRing.html">   60</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structTrailRing.html#af02ca242c71b05cd912d05cf5d9a121e">   61</a></span>    vec3 points[<a class="code hl_enumvalue" href="trail__renderer_8h.html#a4caf8d8f829279fba122163d961608a4af87c84c7806bccc5e676f390a7b31678">TRAIL_MAX_POINTS</a>]; </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="structTrailRing.html#afd090a76da445395252136a8904fd1c1">   62</a></span>    <span class="keywordtype">float</span> timestamps[<a class="code hl_enumvalue" href="trail__renderer_8h.html#a4caf8d8f829279fba122163d961608a4af87c84c7806bccc5e676f390a7b31678">TRAIL_MAX_POINTS</a>]; </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="structTrailRing.html#aca2481df97027f58c9d18fc952b47a8e">   64</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structTrailRing.html#aca2481df97027f58c9d18fc952b47a8e">head</a>;                           </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="structTrailRing.html#a0d1b0c64a68ee8ec65b463551dad32f7">   65</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structTrailRing.html#a0d1b0c64a68ee8ec65b463551dad32f7">count</a>;                          </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>} <a class="code hl_struct" href="structTrailRing.html">TrailRing</a>;</div>
+</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="foldopen" id="foldopen00072" data-start="{" data-end="};">
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b">   72</a></span><span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8badc2b327c75aee62c0cad58121021e9ef">   73</a></span>    <a class="code hl_enumvalue" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8badc2b327c75aee62c0cad58121021e9ef">TRAIL_NEON_PARAM_INTENSITY</a> = 0,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba81282d66a5516dddd84953b8e822aa86">   74</a></span>    <a class="code hl_enumvalue" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba81282d66a5516dddd84953b8e822aa86">TRAIL_NEON_PARAM_CORE</a>,</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba6165cee39a58de759970574639839a0e">   75</a></span>    <a class="code hl_enumvalue" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba6165cee39a58de759970574639839a0e">TRAIL_NEON_PARAM_WIDTH</a>,</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <a class="code hl_enumvalue" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba3d3561353a27be3250ac1821fe104381">TRAIL_NEON_PARAM_COUNT</a></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba3d3561353a27be3250ac1821fe104381">   77</a></span>} <a class="code hl_enumeration" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b">TrailNeonParam</a>;</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="foldopen" id="foldopen00083" data-start="{" data-end="};">
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structTrailNeonParams.html">   83</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structTrailNeonParams.html#ab8483aaa0f010e21a779433cafc5346f">   84</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailNeonParams.html#ab8483aaa0f010e21a779433cafc5346f">intensity</a>; </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="structTrailNeonParams.html#a27ef75c053a6e1066047bc0d2f6a98fd">   85</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailNeonParams.html#a27ef75c053a6e1066047bc0d2f6a98fd">core_exp</a>;  </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="structTrailNeonParams.html#a81a41c8c1690d02bcc79c01ccbbe72e6">   86</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailNeonParams.html#a81a41c8c1690d02bcc79c01ccbbe72e6">width</a>;     </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="structTrailNeonParams.html#a4fe1fff63221d8328900235982c073bf">   87</a></span>    <a class="code hl_enumeration" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b">TrailNeonParam</a> <a class="code hl_variable" href="structTrailNeonParams.html#a4fe1fff63221d8328900235982c073bf">active</a>; </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>} <a class="code hl_struct" href="structTrailNeonParams.html">TrailNeonParams</a>;</div>
+</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a4682a5b0a09be8ada60f762bd2bd4ed7">   91</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a4682a5b0a09be8ada60f762bd2bd4ed7">TRAIL_NEON_INTENSITY_DEFAULT</a> = 5.0F;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a451af5322713fbd9e4b339f4afc86e69">   92</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a451af5322713fbd9e4b339f4afc86e69">TRAIL_NEON_CORE_EXP_DEFAULT</a> = 12.0F;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a6d280ba790249c1570a30ae26426fcd5">   93</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a6d280ba790249c1570a30ae26426fcd5">TRAIL_NEON_WIDTH_DEFAULT</a> = 0.24F;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e">   94</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e">TRAIL_NEON_INTENSITY_STEP</a> = 0.5F;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6">   95</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6">TRAIL_NEON_CORE_STEP</a> = 2.0F;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8">   96</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8">TRAIL_NEON_WIDTH_STEP</a> = 0.02F;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#ae48865aefa5f44067796b4771d230cc4">   97</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#ae48865aefa5f44067796b4771d230cc4">TRAIL_NEON_INTENSITY_MIN</a> = 0.5F;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#ab8add3fd9059ce9286080fc30901afd2">   98</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#ab8add3fd9059ce9286080fc30901afd2">TRAIL_NEON_CORE_MIN</a> = 2.0F;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03">   99</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> <a class="code hl_variable" href="trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03">TRAIL_NEON_WIDTH_MIN</a> = 0.04F;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="foldopen" id="foldopen00105" data-start="{" data-end="};">
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="structTrailRenderer.html">  105</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a3cca3a9b3481a85b6b18d68bbe15a264">  106</a></span>    <a class="code hl_struct" href="structTrailRing.html">TrailRing</a> rings[<a class="code hl_enumvalue" href="nbody__types_8h.html#a94798fdadfbf49a7c658ace669a1d310a4a415bff49a2b0923c1fe9f82e90e6a7">NBODY_MAX_BODIES</a>]; </div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a800f330d4199cb520ab0535c45434956">  107</a></span>    <a class="code hl_struct" href="structTrailVertex.html">TrailVertex</a>* <a class="code hl_variable" href="structTrailRenderer.html#a800f330d4199cb520ab0535c45434956">staging</a>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a5409308b329d738678a0fbde9968087b">  108</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structTrailRenderer.html#a5409308b329d738678a0fbde9968087b">body_count</a>;       </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a82d0b15e7daf9435c3c74b10f0964f2c">  109</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailRenderer.html#a82d0b15e7daf9435c3c74b10f0964f2c">sample_timer</a>;   </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a986d214bd6bb2a9dd4ee03520217642f">  110</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailRenderer.html#a986d214bd6bb2a9dd4ee03520217642f">sim_time</a>;       </div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a2ffb15a93b1862e3ac95799a9815d594">  111</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structTrailRenderer.html#a2ffb15a93b1862e3ac95799a9815d594">trail_duration</a>; </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="comment">/* GPU Resources */</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a5f1380bdd02bf5cbc446407601f1c690">  114</a></span>    GLuint <a class="code hl_variable" href="structTrailRenderer.html#a5f1380bdd02bf5cbc446407601f1c690">vao</a>;       </div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0">  115</a></span>    GLuint <a class="code hl_variable" href="structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0">vbo</a>;       </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a5fe190d038615f049365c812f60b6ccd">  116</a></span>    <a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_variable" href="structTrailRenderer.html#a5fe190d038615f049365c812f60b6ccd">shader</a>;   </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#aa98b7a30610d2aee1b257a047c151951">  117</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structTrailRenderer.html#aa98b7a30610d2aee1b257a047c151951">vertex_count</a>; </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    <span class="comment">/* Per-body trail colors (HDR emissive). */</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a42736add9cd8e8d0902da76e096969a6">  120</a></span>    vec3 colors[<a class="code hl_enumvalue" href="nbody__types_8h.html#a94798fdadfbf49a7c658ace669a1d310a4a415bff49a2b0923c1fe9f82e90e6a7">NBODY_MAX_BODIES</a>];</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="comment">/* Runtime neon glow parameters */</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno"><a class="line" href="structTrailRenderer.html#a067bde5dbf3273f4cdbaf69a50394d79">  123</a></span>    <a class="code hl_struct" href="structTrailNeonParams.html">TrailNeonParams</a> <a class="code hl_variable" href="structTrailRenderer.html#a067bde5dbf3273f4cdbaf69a50394d79">neon</a>; </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>} <a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>;</div>
+</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="keywordtype">bool</span> <a class="code hl_function" href="trail__renderer_8h.html#a65b1a1d6f29aef2cb4cd38e6bfa67ea8">trail_renderer_init</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr, <span class="keywordtype">int</span> body_count);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="keywordtype">void</span> <a class="code hl_function" href="trail__renderer_8h.html#a45701e1c31aa42e037c5c2921949b441">trail_renderer_set_color</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr, <span class="keywordtype">int</span> body_index,</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>                              <span class="keyword">const</span> vec3 color);</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="keywordtype">void</span> <a class="code hl_function" href="trail__renderer_8h.html#a7e1c8078c51686832375c5f3f520b3e6">trail_renderer_record</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr, <span class="keyword">const</span> <a class="code hl_struct" href="structNBodySim.html">NBodySim</a>* sim,</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>                           <span class="keywordtype">float</span> delta_time);</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="keywordtype">float</span> <a class="code hl_function" href="trail__renderer_8h.html#a10f80d37b2756126f0989e21f24c1417">trail_renderer_get_duration</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="keywordtype">void</span> <a class="code hl_function" href="trail__renderer_8h.html#ad796ac6e55dc2e5e8f3889babffd9f99">trail_renderer_set_duration</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr, <span class="keywordtype">float</span> duration);</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="keywordtype">void</span> <a class="code hl_function" href="trail__renderer_8h.html#af7db1447b4499e66bd9f20ab3174a671">trail_renderer_draw</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr, mat4 view, mat4 proj, vec3 cam_pos);</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="keywordtype">void</span> <a class="code hl_function" href="trail__renderer_8h.html#a66dbb77b4b30d862246d2ea40e189866">trail_renderer_clear</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr);</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="keywordtype">void</span> <a class="code hl_function" href="trail__renderer_8h.html#a6fbcb92a34d5a00b5e17049d444e5d9e">trail_renderer_cleanup</a>(<a class="code hl_struct" href="structTrailRenderer.html">TrailRenderer</a>* tr);</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="preprocessor">#endif </span><span class="comment">/* TRAIL_RENDERER_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="anbody_8h_html"><div class="ttname"><a href="nbody_8h.html">nbody.h</a></div><div class="ttdoc">N-body gravitational simulation (Velocity Verlet + Plummer softening).</div></div>
+<div class="ttc" id="anbody__types_8h_html_a94798fdadfbf49a7c658ace669a1d310a4a415bff49a2b0923c1fe9f82e90e6a7"><div class="ttname"><a href="nbody__types_8h.html#a94798fdadfbf49a7c658ace669a1d310a4a415bff49a2b0923c1fe9f82e90e6a7">NBODY_MAX_BODIES</a></div><div class="ttdeci">@ NBODY_MAX_BODIES</div><div class="ttdef"><b>Definition</b> nbody_types.h:8</div></div>
+<div class="ttc" id="astructNBodySim_html"><div class="ttname"><a href="structNBodySim.html">NBodySim</a></div><div class="ttdoc">State container for the N-body simulation.</div><div class="ttdef"><b>Definition</b> nbody_types.h:68</div></div>
+<div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition</b> shader.h:71</div></div>
+<div class="ttc" id="astructTrailNeonParams_html"><div class="ttname"><a href="structTrailNeonParams.html">TrailNeonParams</a></div><div class="ttdoc">Runtime-adjustable neon glow profile parameters.</div><div class="ttdef"><b>Definition</b> trail_renderer.h:83</div></div>
+<div class="ttc" id="astructTrailNeonParams_html_a27ef75c053a6e1066047bc0d2f6a98fd"><div class="ttname"><a href="structTrailNeonParams.html#a27ef75c053a6e1066047bc0d2f6a98fd">TrailNeonParams::core_exp</a></div><div class="ttdeci">float core_exp</div><div class="ttdef"><b>Definition</b> trail_renderer.h:85</div></div>
+<div class="ttc" id="astructTrailNeonParams_html_a4fe1fff63221d8328900235982c073bf"><div class="ttname"><a href="structTrailNeonParams.html#a4fe1fff63221d8328900235982c073bf">TrailNeonParams::active</a></div><div class="ttdeci">TrailNeonParam active</div><div class="ttdef"><b>Definition</b> trail_renderer.h:87</div></div>
+<div class="ttc" id="astructTrailNeonParams_html_a81a41c8c1690d02bcc79c01ccbbe72e6"><div class="ttname"><a href="structTrailNeonParams.html#a81a41c8c1690d02bcc79c01ccbbe72e6">TrailNeonParams::width</a></div><div class="ttdeci">float width</div><div class="ttdef"><b>Definition</b> trail_renderer.h:86</div></div>
+<div class="ttc" id="astructTrailNeonParams_html_ab8483aaa0f010e21a779433cafc5346f"><div class="ttname"><a href="structTrailNeonParams.html#ab8483aaa0f010e21a779433cafc5346f">TrailNeonParams::intensity</a></div><div class="ttdeci">float intensity</div><div class="ttdef"><b>Definition</b> trail_renderer.h:84</div></div>
+<div class="ttc" id="astructTrailRenderer_html"><div class="ttname"><a href="structTrailRenderer.html">TrailRenderer</a></div><div class="ttdoc">Manages trail state and GPU resources for all bodies.</div><div class="ttdef"><b>Definition</b> trail_renderer.h:105</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a067bde5dbf3273f4cdbaf69a50394d79"><div class="ttname"><a href="structTrailRenderer.html#a067bde5dbf3273f4cdbaf69a50394d79">TrailRenderer::neon</a></div><div class="ttdeci">TrailNeonParams neon</div><div class="ttdef"><b>Definition</b> trail_renderer.h:123</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a2ffb15a93b1862e3ac95799a9815d594"><div class="ttname"><a href="structTrailRenderer.html#a2ffb15a93b1862e3ac95799a9815d594">TrailRenderer::trail_duration</a></div><div class="ttdeci">float trail_duration</div><div class="ttdef"><b>Definition</b> trail_renderer.h:111</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a5409308b329d738678a0fbde9968087b"><div class="ttname"><a href="structTrailRenderer.html#a5409308b329d738678a0fbde9968087b">TrailRenderer::body_count</a></div><div class="ttdeci">int body_count</div><div class="ttdef"><b>Definition</b> trail_renderer.h:108</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a5f1380bdd02bf5cbc446407601f1c690"><div class="ttname"><a href="structTrailRenderer.html#a5f1380bdd02bf5cbc446407601f1c690">TrailRenderer::vao</a></div><div class="ttdeci">GLuint vao</div><div class="ttdef"><b>Definition</b> trail_renderer.h:114</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a5fe190d038615f049365c812f60b6ccd"><div class="ttname"><a href="structTrailRenderer.html#a5fe190d038615f049365c812f60b6ccd">TrailRenderer::shader</a></div><div class="ttdeci">Shader * shader</div><div class="ttdef"><b>Definition</b> trail_renderer.h:116</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a800f330d4199cb520ab0535c45434956"><div class="ttname"><a href="structTrailRenderer.html#a800f330d4199cb520ab0535c45434956">TrailRenderer::staging</a></div><div class="ttdeci">TrailVertex * staging</div><div class="ttdef"><b>Definition</b> trail_renderer.h:107</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a82d0b15e7daf9435c3c74b10f0964f2c"><div class="ttname"><a href="structTrailRenderer.html#a82d0b15e7daf9435c3c74b10f0964f2c">TrailRenderer::sample_timer</a></div><div class="ttdeci">float sample_timer</div><div class="ttdef"><b>Definition</b> trail_renderer.h:109</div></div>
+<div class="ttc" id="astructTrailRenderer_html_a986d214bd6bb2a9dd4ee03520217642f"><div class="ttname"><a href="structTrailRenderer.html#a986d214bd6bb2a9dd4ee03520217642f">TrailRenderer::sim_time</a></div><div class="ttdeci">float sim_time</div><div class="ttdef"><b>Definition</b> trail_renderer.h:110</div></div>
+<div class="ttc" id="astructTrailRenderer_html_aa98b7a30610d2aee1b257a047c151951"><div class="ttname"><a href="structTrailRenderer.html#aa98b7a30610d2aee1b257a047c151951">TrailRenderer::vertex_count</a></div><div class="ttdeci">int vertex_count</div><div class="ttdef"><b>Definition</b> trail_renderer.h:117</div></div>
+<div class="ttc" id="astructTrailRenderer_html_af66c4804020a0f14660e36c79aa5a7e0"><div class="ttname"><a href="structTrailRenderer.html#af66c4804020a0f14660e36c79aa5a7e0">TrailRenderer::vbo</a></div><div class="ttdeci">GLuint vbo</div><div class="ttdef"><b>Definition</b> trail_renderer.h:115</div></div>
+<div class="ttc" id="astructTrailRing_html"><div class="ttname"><a href="structTrailRing.html">TrailRing</a></div><div class="ttdoc">Ring buffer of recorded positions for one body.</div><div class="ttdef"><b>Definition</b> trail_renderer.h:60</div></div>
+<div class="ttc" id="astructTrailRing_html_a0d1b0c64a68ee8ec65b463551dad32f7"><div class="ttname"><a href="structTrailRing.html#a0d1b0c64a68ee8ec65b463551dad32f7">TrailRing::count</a></div><div class="ttdeci">int count</div><div class="ttdef"><b>Definition</b> trail_renderer.h:65</div></div>
+<div class="ttc" id="astructTrailRing_html_aca2481df97027f58c9d18fc952b47a8e"><div class="ttname"><a href="structTrailRing.html#aca2481df97027f58c9d18fc952b47a8e">TrailRing::head</a></div><div class="ttdeci">int head</div><div class="ttdef"><b>Definition</b> trail_renderer.h:64</div></div>
+<div class="ttc" id="astructTrailVertex_html"><div class="ttname"><a href="structTrailVertex.html">TrailVertex</a></div><div class="ttdoc">Per-vertex data for the ribbon triangle strip.</div><div class="ttdef"><b>Definition</b> trail_renderer.h:49</div></div>
+<div class="ttc" id="astructTrailVertex_html_a648924b36bd4627b2656a35716be418c"><div class="ttname"><a href="structTrailVertex.html#a648924b36bd4627b2656a35716be418c">TrailVertex::u</a></div><div class="ttdeci">float u</div><div class="ttdef"><b>Definition</b> trail_renderer.h:51</div></div>
+<div class="ttc" id="astructTrailVertex_html_afc483ea239818c4aa14d272f904eda07"><div class="ttname"><a href="structTrailVertex.html#afc483ea239818c4aa14d272f904eda07">TrailVertex::v</a></div><div class="ttdeci">float v</div><div class="ttdef"><b>Definition</b> trail_renderer.h:53</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a02a553a9b863bec6c23078a1b273ae0e"><div class="ttname"><a href="trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e">TRAIL_NEON_INTENSITY_STEP</a></div><div class="ttdeci">static const float TRAIL_NEON_INTENSITY_STEP</div><div class="ttdef"><b>Definition</b> trail_renderer.h:94</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a10f80d37b2756126f0989e21f24c1417"><div class="ttname"><a href="trail__renderer_8h.html#a10f80d37b2756126f0989e21f24c1417">trail_renderer_get_duration</a></div><div class="ttdeci">float trail_renderer_get_duration(const TrailRenderer *tr)</div><div class="ttdoc">Returns the current trail duration in seconds.</div><div class="ttdef"><b>Definition</b> trail_renderer.c:376</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a28466e53642ccc00abfbef94ea20a3f6"><div class="ttname"><a href="trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6">TRAIL_NEON_CORE_STEP</a></div><div class="ttdeci">static const float TRAIL_NEON_CORE_STEP</div><div class="ttdef"><b>Definition</b> trail_renderer.h:95</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a3d4573c823d99094e05ef8813cfe95b4"><div class="ttname"><a href="trail__renderer_8h.html#a3d4573c823d99094e05ef8813cfe95b4">TRAIL_HDR_INTENSITY</a></div><div class="ttdeci">static const float TRAIL_HDR_INTENSITY</div><div class="ttdef"><b>Definition</b> trail_renderer.h:27</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a410780d43ed6c5f3ea3f046f81343e9b"><div class="ttname"><a href="trail__renderer_8h.html#a410780d43ed6c5f3ea3f046f81343e9b">TRAIL_DURATION_MAX</a></div><div class="ttdeci">static const float TRAIL_DURATION_MAX</div><div class="ttdef"><b>Definition</b> trail_renderer.h:40</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a451af5322713fbd9e4b339f4afc86e69"><div class="ttname"><a href="trail__renderer_8h.html#a451af5322713fbd9e4b339f4afc86e69">TRAIL_NEON_CORE_EXP_DEFAULT</a></div><div class="ttdeci">static const float TRAIL_NEON_CORE_EXP_DEFAULT</div><div class="ttdef"><b>Definition</b> trail_renderer.h:92</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a45701e1c31aa42e037c5c2921949b441"><div class="ttname"><a href="trail__renderer_8h.html#a45701e1c31aa42e037c5c2921949b441">trail_renderer_set_color</a></div><div class="ttdeci">void trail_renderer_set_color(TrailRenderer *tr, int body_index, const vec3 color)</div><div class="ttdoc">Sets the trail color for a specific body.</div><div class="ttdef"><b>Definition</b> trail_renderer.c:117</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a4682a5b0a09be8ada60f762bd2bd4ed7"><div class="ttname"><a href="trail__renderer_8h.html#a4682a5b0a09be8ada60f762bd2bd4ed7">TRAIL_NEON_INTENSITY_DEFAULT</a></div><div class="ttdeci">static const float TRAIL_NEON_INTENSITY_DEFAULT</div><div class="ttdef"><b>Definition</b> trail_renderer.h:91</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a4787e6fd0fac1a4ec43c98ed9bf449ba"><div class="ttname"><a href="trail__renderer_8h.html#a4787e6fd0fac1a4ec43c98ed9bf449ba">TRAIL_MAX_WIDTH</a></div><div class="ttdeci">static const float TRAIL_MAX_WIDTH</div><div class="ttdef"><b>Definition</b> trail_renderer.h:30</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a4caf8d8f829279fba122163d961608a4af87c84c7806bccc5e676f390a7b31678"><div class="ttname"><a href="trail__renderer_8h.html#a4caf8d8f829279fba122163d961608a4af87c84c7806bccc5e676f390a7b31678">TRAIL_MAX_POINTS</a></div><div class="ttdeci">@ TRAIL_MAX_POINTS</div><div class="ttdef"><b>Definition</b> trail_renderer.h:24</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a50b00d157377faeecc98e7eed5e97ac8"><div class="ttname"><a href="trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8">TRAIL_NEON_WIDTH_STEP</a></div><div class="ttdeci">static const float TRAIL_NEON_WIDTH_STEP</div><div class="ttdef"><b>Definition</b> trail_renderer.h:96</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a610eafa3ffd25101b37ee160d93bbaa2"><div class="ttname"><a href="trail__renderer_8h.html#a610eafa3ffd25101b37ee160d93bbaa2">TRAIL_DURATION_STEP</a></div><div class="ttdeci">static const float TRAIL_DURATION_STEP</div><div class="ttdef"><b>Definition</b> trail_renderer.h:41</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a65b1a1d6f29aef2cb4cd38e6bfa67ea8"><div class="ttname"><a href="trail__renderer_8h.html#a65b1a1d6f29aef2cb4cd38e6bfa67ea8">trail_renderer_init</a></div><div class="ttdeci">bool trail_renderer_init(TrailRenderer *tr, int body_count)</div><div class="ttdoc">Initializes trail renderer resources.</div><div class="ttdef"><b>Definition</b> trail_renderer.c:58</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a66dbb77b4b30d862246d2ea40e189866"><div class="ttname"><a href="trail__renderer_8h.html#a66dbb77b4b30d862246d2ea40e189866">trail_renderer_clear</a></div><div class="ttdeci">void trail_renderer_clear(TrailRenderer *tr)</div><div class="ttdoc">Clears all recorded trail data (e.g., on simulation reset).</div><div class="ttdef"><b>Definition</b> trail_renderer.c:141</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a6d280ba790249c1570a30ae26426fcd5"><div class="ttname"><a href="trail__renderer_8h.html#a6d280ba790249c1570a30ae26426fcd5">TRAIL_NEON_WIDTH_DEFAULT</a></div><div class="ttdeci">static const float TRAIL_NEON_WIDTH_DEFAULT</div><div class="ttdef"><b>Definition</b> trail_renderer.h:93</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a6fbcb92a34d5a00b5e17049d444e5d9e"><div class="ttname"><a href="trail__renderer_8h.html#a6fbcb92a34d5a00b5e17049d444e5d9e">trail_renderer_cleanup</a></div><div class="ttdeci">void trail_renderer_cleanup(TrailRenderer *tr)</div><div class="ttdoc">Releases all GPU resources.</div><div class="ttdef"><b>Definition</b> trail_renderer.c:125</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a74ce508c09a63cbec3cd0f1017e2d8c5"><div class="ttname"><a href="trail__renderer_8h.html#a74ce508c09a63cbec3cd0f1017e2d8c5">TRAIL_DURATION_DEFAULT</a></div><div class="ttdeci">static const float TRAIL_DURATION_DEFAULT</div><div class="ttdef"><b>Definition</b> trail_renderer.h:36</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_a7e1c8078c51686832375c5f3f520b3e6"><div class="ttname"><a href="trail__renderer_8h.html#a7e1c8078c51686832375c5f3f520b3e6">trail_renderer_record</a></div><div class="ttdeci">void trail_renderer_record(TrailRenderer *tr, const NBodySim *sim, float delta_time)</div><div class="ttdoc">Records current positions from the simulation.</div><div class="ttdef"><b>Definition</b> trail_renderer.c:154</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_ab80eca51a868157a5bba3a75e72abb1f"><div class="ttname"><a href="trail__renderer_8h.html#ab80eca51a868157a5bba3a75e72abb1f">TRAIL_DURATION_MIN</a></div><div class="ttdeci">static const float TRAIL_DURATION_MIN</div><div class="ttdef"><b>Definition</b> trail_renderer.h:39</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_ab8add3fd9059ce9286080fc30901afd2"><div class="ttname"><a href="trail__renderer_8h.html#ab8add3fd9059ce9286080fc30901afd2">TRAIL_NEON_CORE_MIN</a></div><div class="ttdeci">static const float TRAIL_NEON_CORE_MIN</div><div class="ttdef"><b>Definition</b> trail_renderer.h:98</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_accb8b262bafa0490c6ef39b14b95fc03"><div class="ttname"><a href="trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03">TRAIL_NEON_WIDTH_MIN</a></div><div class="ttdeci">static const float TRAIL_NEON_WIDTH_MIN</div><div class="ttdef"><b>Definition</b> trail_renderer.h:99</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_ad65403268c340a602a289598ac94716d"><div class="ttname"><a href="trail__renderer_8h.html#ad65403268c340a602a289598ac94716d">TRAIL_SAMPLE_INTERVAL</a></div><div class="ttdeci">static const float TRAIL_SAMPLE_INTERVAL</div><div class="ttdef"><b>Definition</b> trail_renderer.h:33</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_ad796ac6e55dc2e5e8f3889babffd9f99"><div class="ttname"><a href="trail__renderer_8h.html#ad796ac6e55dc2e5e8f3889babffd9f99">trail_renderer_set_duration</a></div><div class="ttdeci">void trail_renderer_set_duration(TrailRenderer *tr, float duration)</div><div class="ttdoc">Sets the trail duration in seconds (clamped to valid range).</div><div class="ttdef"><b>Definition</b> trail_renderer.c:381</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_ae48865aefa5f44067796b4771d230cc4"><div class="ttname"><a href="trail__renderer_8h.html#ae48865aefa5f44067796b4771d230cc4">TRAIL_NEON_INTENSITY_MIN</a></div><div class="ttdeci">static const float TRAIL_NEON_INTENSITY_MIN</div><div class="ttdef"><b>Definition</b> trail_renderer.h:97</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_aeea0fca6776525f01d227a71e9f21b8b"><div class="ttname"><a href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b">TrailNeonParam</a></div><div class="ttdeci">TrailNeonParam</div><div class="ttdoc">Identifies which neon parameter is being adjusted.</div><div class="ttdef"><b>Definition</b> trail_renderer.h:72</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_aeea0fca6776525f01d227a71e9f21b8ba3d3561353a27be3250ac1821fe104381"><div class="ttname"><a href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba3d3561353a27be3250ac1821fe104381">TRAIL_NEON_PARAM_COUNT</a></div><div class="ttdeci">@ TRAIL_NEON_PARAM_COUNT</div><div class="ttdef"><b>Definition</b> trail_renderer.h:76</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_aeea0fca6776525f01d227a71e9f21b8ba6165cee39a58de759970574639839a0e"><div class="ttname"><a href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba6165cee39a58de759970574639839a0e">TRAIL_NEON_PARAM_WIDTH</a></div><div class="ttdeci">@ TRAIL_NEON_PARAM_WIDTH</div><div class="ttdef"><b>Definition</b> trail_renderer.h:75</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_aeea0fca6776525f01d227a71e9f21b8ba81282d66a5516dddd84953b8e822aa86"><div class="ttname"><a href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba81282d66a5516dddd84953b8e822aa86">TRAIL_NEON_PARAM_CORE</a></div><div class="ttdeci">@ TRAIL_NEON_PARAM_CORE</div><div class="ttdef"><b>Definition</b> trail_renderer.h:74</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_aeea0fca6776525f01d227a71e9f21b8badc2b327c75aee62c0cad58121021e9ef"><div class="ttname"><a href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8badc2b327c75aee62c0cad58121021e9ef">TRAIL_NEON_PARAM_INTENSITY</a></div><div class="ttdeci">@ TRAIL_NEON_PARAM_INTENSITY</div><div class="ttdef"><b>Definition</b> trail_renderer.h:73</div></div>
+<div class="ttc" id="atrail__renderer_8h_html_af7db1447b4499e66bd9f20ab3174a671"><div class="ttname"><a href="trail__renderer_8h.html#af7db1447b4499e66bd9f20ab3174a671">trail_renderer_draw</a></div><div class="ttdeci">void trail_renderer_draw(TrailRenderer *tr, mat4 view, mat4 proj, vec3 cam_pos)</div><div class="ttdoc">Builds ribbon geometry and renders all trails.</div><div class="ttdef"><b>Definition</b> trail_renderer.c:289</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="trail__renderer_8h.html">trail_renderer.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,1097 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/gpu_profiler.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('gpu__profiler_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">gpu_profiler.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="adaptive__sampler_8h_source.html">adaptive_sampler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="metric__stack_8h_source.html">metric_stack.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for gpu_profiler.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h__incl.svg" width="520" height="256"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h__dep__incl.svg" width="100%" height="514"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="gpu__profiler_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUStage.html">GPUStage</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a single profiling stage (e.g., "Shadow Map", "G-Buffer").  <a href="structGPUStage.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUStageInfo.html">GPUStageInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-frame stage metadata stored alongside queries.  <a href="structGPUStageInfo.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUQueryBuffer.html">GPUQueryBuffer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of GL queries for one frame, with stage metadata.  <a href="structGPUQueryBuffer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUProfiler.html">GPUProfiler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manages GPU timing using double-buffered queries to avoid stalls.  <a href="structGPUProfiler.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUStageRAII.html">GPUStageRAII</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII container for automatic GPU stage management and Tracy zones.  <a href="structGPUStageRAII.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a30b0408d8cfedb388bca9987b7d83122" id="r_a30b0408d8cfedb388bca9987b7d83122"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">GPU_STAGE_PROFILER</a>(profiler_ptr,  name,  color)</td></tr>
+<tr class="memdesc:a30b0408d8cfedb388bca9987b7d83122"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scoped GPU profiling stage. Automatically ends on scope exit.  <br /></td></tr>
+<tr class="separator:a30b0408d8cfedb388bca9987b7d83122"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a80155586fa275b28773c9b203f52caba" id="r_a80155586fa275b28773c9b203f52caba"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gpu__profiler_8h.html#a80155586fa275b28773c9b203f52cabaaa73413f46202d6fd3b0703d1603b037b">MAX_GPU_STAGES</a> = 32
+, <a class="el" href="gpu__profiler_8h.html#a80155586fa275b28773c9b203f52cabaa8904315164a499e90a0eebcf569691ef">MAX_GPU_STAGE_NAME</a> = 32
+, <a class="el" href="gpu__profiler_8h.html#a80155586fa275b28773c9b203f52cabaa253a489f6b3470ff87bbe17d5f5e589d">GPU_QUERY_BUFFER_COUNT</a> = 2
+ }</td></tr>
+<tr class="separator:a80155586fa275b28773c9b203f52caba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a80772be366a911115ff01dc5d9bcd4f0" id="r_a80772be366a911115ff01dc5d9bcd4f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler_init</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler)</td></tr>
+<tr class="memdesc:a80772be366a911115ff01dc5d9bcd4f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the GPU profiler.  <br /></td></tr>
+<tr class="separator:a80772be366a911115ff01dc5d9bcd4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99aa06bd6e69115f881711abc461984e" id="r_a99aa06bd6e69115f881711abc461984e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler_cleanup</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler)</td></tr>
+<tr class="memdesc:a99aa06bd6e69115f881711abc461984e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up GPU resources.  <br /></td></tr>
+<tr class="separator:a99aa06bd6e69115f881711abc461984e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b02eae0daab556a5ceadace03aad5e4" id="r_a1b02eae0daab556a5ceadace03aad5e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler_begin_frame</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, uint64_t frame_index)</td></tr>
+<tr class="memdesc:a1b02eae0daab556a5ceadace03aad5e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Marks the beginning of a frame. Swaps buffers and processes previous results.  <br /></td></tr>
+<tr class="separator:a1b02eae0daab556a5ceadace03aad5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44de4cea7056033e6c03683013cbcc02" id="r_a44de4cea7056033e6c03683013cbcc02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler_set_enabled</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, bool enabled)</td></tr>
+<tr class="memdesc:a44de4cea7056033e6c03683013cbcc02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables the profiler.  <br /></td></tr>
+<tr class="separator:a44de4cea7056033e6c03683013cbcc02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab4caa95e9c5f77266939ae13806b530" id="r_aab4caa95e9c5f77266939ae13806b530"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler_start_stage</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, const char *name, uint32_t color)</td></tr>
+<tr class="memdesc:aab4caa95e9c5f77266939ae13806b530"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts a new profiling stage.  <br /></td></tr>
+<tr class="separator:aab4caa95e9c5f77266939ae13806b530"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae819b47b90af9fa7965f5fc44331ac1d" id="r_ae819b47b90af9fa7965f5fc44331ac1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler_end_stage</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler)</td></tr>
+<tr class="memdesc:ae819b47b90af9fa7965f5fc44331ac1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ends the current profiling stage.  <br /></td></tr>
+<tr class="separator:ae819b47b90af9fa7965f5fc44331ac1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb8eabbef66554b6e1646f398037face" id="r_abb8eabbef66554b6e1646f398037face"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face">gpu_profiler_reset_samplers</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, double current_time)</td></tr>
+<tr class="memdesc:abb8eabbef66554b6e1646f398037face"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets all samplers for a new capture window.  <br /></td></tr>
+<tr class="separator:abb8eabbef66554b6e1646f398037face"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaca3fdb25b304688a5aedf1a57d276d9" id="r_aaca3fdb25b304688a5aedf1a57d276d9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a> (<a class="el" href="structGPUStageRAII.html">GPUStageRAII</a> *stage_raii)</td></tr>
+<tr class="memdesc:aaca3fdb25b304688a5aedf1a57d276d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cleanup function for <a class="el" href="structGPUStageRAII.html" title="RAII container for automatic GPU stage management and Tracy zones.">GPUStageRAII</a>.  <br /></td></tr>
+<tr class="separator:aaca3fdb25b304688a5aedf1a57d276d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:abb09d067ee2fcb5f5d5ed2d6c0ac4261" id="r_abb09d067ee2fcb5f5d5ed2d6c0ac4261"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261">GPU_PROFILER_TOTAL_FRAME_COLOR</a> = 0xECEFF4</td></tr>
+<tr class="separator:abb09d067ee2fcb5f5d5ed2d6c0ac4261"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a077b530bc1be19ecc056d48a6d4793f3" id="r_a077b530bc1be19ecc056d48a6d4793f3"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3">GPU_PROFILER_ENV_COLOR</a> = 0x88C0D0</td></tr>
+<tr class="separator:a077b530bc1be19ecc056d48a6d4793f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fc6d9431cf5e2dd0075cc15774b6d0d" id="r_a5fc6d9431cf5e2dd0075cc15774b6d0d"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d">GPU_PROFILER_SCENE_COLOR</a> = 0xD08770</td></tr>
+<tr class="separator:a5fc6d9431cf5e2dd0075cc15774b6d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1f8369d455a6e5d2c482050201fcd1b" id="r_af1f8369d455a6e5d2c482050201fcd1b"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b">GPU_PROFILER_AUTO_EXPOSURE_COLOR</a> = 0xEBCB8B</td></tr>
+<tr class="separator:af1f8369d455a6e5d2c482050201fcd1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a689e67a9ac7c9833cea0e441ab41a482" id="r_a689e67a9ac7c9833cea0e441ab41a482"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a689e67a9ac7c9833cea0e441ab41a482">GPU_PROFILER_BLOOM_COLOR</a> = 0x5E81AC</td></tr>
+<tr class="separator:a689e67a9ac7c9833cea0e441ab41a482"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8514b41b0bfb22f696feac256ac0607" id="r_ac8514b41b0bfb22f696feac256ac0607"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#ac8514b41b0bfb22f696feac256ac0607">GPU_PROFILER_DOF_COLOR</a> = 0xA3BE8C</td></tr>
+<tr class="separator:ac8514b41b0bfb22f696feac256ac0607"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bc152ef4d2da90b79cdaebf10581816" id="r_a2bc152ef4d2da90b79cdaebf10581816"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816">GPU_PROFILER_MOTION_BLUR_COLOR</a> = 0xBF616A</td></tr>
+<tr class="separator:a2bc152ef4d2da90b79cdaebf10581816"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefa79da2c8228eec514a28467923a07d" id="r_aefa79da2c8228eec514a28467923a07d"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aefa79da2c8228eec514a28467923a07d">GPU_PROFILER_COMPOSITE_COLOR</a> = 0x81A1C1</td></tr>
+<tr class="separator:aefa79da2c8228eec514a28467923a07d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd0c592d103323ccce000e5d19984d4f" id="r_abd0c592d103323ccce000e5d19984d4f"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f">GPU_PROFILER_POSTPROCESS_COLOR</a> = 0xB48EAD</td></tr>
+<tr class="separator:abd0c592d103323ccce000e5d19984d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a388547b561eddbdc99ff020cf0563178" id="r_a388547b561eddbdc99ff020cf0563178"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178">GPU_PROFILER_UI_COLOR</a> = 0x4C566A</td></tr>
+<tr class="separator:a388547b561eddbdc99ff020cf0563178"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49240777a1bd99a5c407b803d454e768" id="r_a49240777a1bd99a5c407b803d454e768"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a49240777a1bd99a5c407b803d454e768">GPU_PROFILER_GI_SYNC_COLOR</a> = 0x8FBCBB</td></tr>
+<tr class="separator:a49240777a1bd99a5c407b803d454e768"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a623ee165a10838fc9e485ff1b11e3aeb" id="r_a623ee165a10838fc9e485ff1b11e3aeb"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a623ee165a10838fc9e485ff1b11e3aeb">GPU_PROFILER_GI_DEBUG_COLOR</a> = 0xB48EAD</td></tr>
+<tr class="separator:a623ee165a10838fc9e485ff1b11e3aeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb224a4d8f9ce3af64219e94ee4e55a8" id="r_aeb224a4d8f9ce3af64219e94ee4e55a8"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aeb224a4d8f9ce3af64219e94ee4e55a8">GPU_PROFILER_NBODY_COLOR</a> = 0xD8DEE9</td></tr>
+<tr class="separator:aeb224a4d8f9ce3af64219e94ee4e55a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad987218ea719efa5980a816a8f97a6a4" id="r_ad987218ea719efa5980a816a8f97a6a4"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#ad987218ea719efa5980a816a8f97a6a4">GPU_PROFILER_SHOCKWAVE_COLOR</a> = 0xE5A3C9</td></tr>
+<tr class="separator:ad987218ea719efa5980a816a8f97a6a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa59b1c944badb2c3f31ae476850cb92" id="r_aaa59b1c944badb2c3f31ae476850cb92"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92">GPU_PROFILER_WINDOW_DURATION_S</a> = 0.5F</td></tr>
+<tr class="separator:aaa59b1c944badb2c3f31ae476850cb92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c552f4e4a7d22fa4c0fed9fa5e83ad9" id="r_a6c552f4e4a7d22fa4c0fed9fa5e83ad9"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a6c552f4e4a7d22fa4c0fed9fa5e83ad9">GPU_PROFILER_WINDOW_TRANSITION_S</a> = 0.2F</td></tr>
+<tr class="separator:a6c552f4e4a7d22fa4c0fed9fa5e83ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38fa5cee53311a3ed73706c471efced4" id="r_a38fa5cee53311a3ed73706c471efced4"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4">GPU_PROFILER_ROW_HEIGHT</a> = 28.0F</td></tr>
+<tr class="separator:a38fa5cee53311a3ed73706c471efced4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a30b0408d8cfedb388bca9987b7d83122" name="a30b0408d8cfedb388bca9987b7d83122"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30b0408d8cfedb388bca9987b7d83122">&#9670;&#160;</a></span>GPU_STAGE_PROFILER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GPU_STAGE_PROFILER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">profiler_ptr, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">color&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <a class="code hl_struct" href="structGPUStageRAII.html">GPUStageRAII</a> _stage_raii##__LINE__                   \</div>
+<div class="line">        __attribute__((cleanup(<a class="code hl_function" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a>))) \</div>
+<div class="line">        __attribute__((unused)) = {profiler_ptr};        \</div>
+<div class="line">    gpu_profiler_start_stage(profiler_ptr, name, color)</div>
+<div class="ttc" id="agpu__profiler_8h_html_aaca3fdb25b304688a5aedf1a57d276d9"><div class="ttname"><a href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a></div><div class="ttdeci">static void gpu_stage_cleanup_raii(GPUStageRAII *stage_raii)</div><div class="ttdoc">Internal cleanup function for GPUStageRAII.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:168</div></div>
+<div class="ttc" id="astructGPUStageRAII_html"><div class="ttname"><a href="structGPUStageRAII.html">GPUStageRAII</a></div><div class="ttdoc">RAII container for automatic GPU stage management and Tracy zones.</div><div class="ttdef"><b>Definition</b> gpu_profiler.h:159</div></div>
+</div><!-- fragment -->
+<p>Scoped GPU profiling stage. Automatically ends on scope exit. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a80155586fa275b28773c9b203f52caba" name="a80155586fa275b28773c9b203f52caba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80155586fa275b28773c9b203f52caba">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a80155586fa275b28773c9b203f52cabaaa73413f46202d6fd3b0703d1603b037b" name="a80155586fa275b28773c9b203f52cabaaa73413f46202d6fd3b0703d1603b037b"></a>MAX_GPU_STAGES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a80155586fa275b28773c9b203f52cabaa8904315164a499e90a0eebcf569691ef" name="a80155586fa275b28773c9b203f52cabaa8904315164a499e90a0eebcf569691ef"></a>MAX_GPU_STAGE_NAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a80155586fa275b28773c9b203f52cabaa253a489f6b3470ff87bbe17d5f5e589d" name="a80155586fa275b28773c9b203f52cabaa253a489f6b3470ff87bbe17d5f5e589d"></a>GPU_QUERY_BUFFER_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a1b02eae0daab556a5ceadace03aad5e4" name="a1b02eae0daab556a5ceadace03aad5e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b02eae0daab556a5ceadace03aad5e4">&#9670;&#160;</a></span>gpu_profiler_begin_frame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_begin_frame </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Marks the beginning of a frame. Swaps buffers and processes previous results. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">profiler</td><td>Pointer to the profiler. </td></tr>
+    <tr><td class="paramname">frame_index</td><td>The current frame index. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_a1b02eae0daab556a5ceadace03aad5e4_cgraph.svg" width="372" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a99aa06bd6e69115f881711abc461984e" name="a99aa06bd6e69115f881711abc461984e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99aa06bd6e69115f881711abc461984e">&#9670;&#160;</a></span>gpu_profiler_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cleans up GPU resources. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">profiler</td><td>Pointer to the profiler. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_a99aa06bd6e69115f881711abc461984e_cgraph.svg" width="414" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ae819b47b90af9fa7965f5fc44331ac1d" name="ae819b47b90af9fa7965f5fc44331ac1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae819b47b90af9fa7965f5fc44331ac1d">&#9670;&#160;</a></span>gpu_profiler_end_stage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_end_stage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ends the current profiling stage. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">profiler</td><td>Pointer to the profiler. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_ae819b47b90af9fa7965f5fc44331ac1d_cgraph.svg" width="370" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a80772be366a911115ff01dc5d9bcd4f0" name="a80772be366a911115ff01dc5d9bcd4f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80772be366a911115ff01dc5d9bcd4f0">&#9670;&#160;</a></span>gpu_profiler_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the GPU profiler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">profiler</td><td>Pointer to the profiler. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_a80772be366a911115ff01dc5d9bcd4f0_cgraph.svg" width="499" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="abb8eabbef66554b6e1646f398037face" name="abb8eabbef66554b6e1646f398037face"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb8eabbef66554b6e1646f398037face">&#9670;&#160;</a></span>gpu_profiler_reset_samplers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_reset_samplers </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>current_time</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Resets all samplers for a new capture window. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_abb8eabbef66554b6e1646f398037face_cgraph.svg" width="376" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a44de4cea7056033e6c03683013cbcc02" name="a44de4cea7056033e6c03683013cbcc02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44de4cea7056033e6c03683013cbcc02">&#9670;&#160;</a></span>gpu_profiler_set_enabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_set_enabled </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enables or disables the profiler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">profiler</td><td>Pointer to the profiler. </td></tr>
+    <tr><td class="paramname">enabled</td><td>Whether to enable profiling. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aab4caa95e9c5f77266939ae13806b530" name="aab4caa95e9c5f77266939ae13806b530"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab4caa95e9c5f77266939ae13806b530">&#9670;&#160;</a></span>gpu_profiler_start_stage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gpu_profiler_start_stage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Starts a new profiling stage. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">profiler</td><td>Pointer to the profiler. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the stage (must be persistent or copied). </td></tr>
+    <tr><td class="paramname">color</td><td>Hex color for visualization (e.g., 0xFF0000). </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_aab4caa95e9c5f77266939ae13806b530_cgraph.svg" width="374" height="184"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aaca3fdb25b304688a5aedf1a57d276d9" name="aaca3fdb25b304688a5aedf1a57d276d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaca3fdb25b304688a5aedf1a57d276d9">&#9670;&#160;</a></span>gpu_stage_cleanup_raii()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gpu_stage_cleanup_raii </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structGPUStageRAII.html">GPUStageRAII</a> *&#160;</td>
+          <td class="paramname"><em>stage_raii</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Internal cleanup function for <a class="el" href="structGPUStageRAII.html" title="RAII container for automatic GPU stage management and Tracy zones.">GPUStageRAII</a>. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h_aaca3fdb25b304688a5aedf1a57d276d9_cgraph.svg" width="592" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="af1f8369d455a6e5d2c482050201fcd1b" name="af1f8369d455a6e5d2c482050201fcd1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1f8369d455a6e5d2c482050201fcd1b">&#9670;&#160;</a></span>GPU_PROFILER_AUTO_EXPOSURE_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_AUTO_EXPOSURE_COLOR = 0xEBCB8B</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a689e67a9ac7c9833cea0e441ab41a482" name="a689e67a9ac7c9833cea0e441ab41a482"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a689e67a9ac7c9833cea0e441ab41a482">&#9670;&#160;</a></span>GPU_PROFILER_BLOOM_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_BLOOM_COLOR = 0x5E81AC</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aefa79da2c8228eec514a28467923a07d" name="aefa79da2c8228eec514a28467923a07d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefa79da2c8228eec514a28467923a07d">&#9670;&#160;</a></span>GPU_PROFILER_COMPOSITE_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_COMPOSITE_COLOR = 0x81A1C1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac8514b41b0bfb22f696feac256ac0607" name="ac8514b41b0bfb22f696feac256ac0607"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8514b41b0bfb22f696feac256ac0607">&#9670;&#160;</a></span>GPU_PROFILER_DOF_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_DOF_COLOR = 0xA3BE8C</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a077b530bc1be19ecc056d48a6d4793f3" name="a077b530bc1be19ecc056d48a6d4793f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a077b530bc1be19ecc056d48a6d4793f3">&#9670;&#160;</a></span>GPU_PROFILER_ENV_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_ENV_COLOR = 0x88C0D0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a623ee165a10838fc9e485ff1b11e3aeb" name="a623ee165a10838fc9e485ff1b11e3aeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a623ee165a10838fc9e485ff1b11e3aeb">&#9670;&#160;</a></span>GPU_PROFILER_GI_DEBUG_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_GI_DEBUG_COLOR = 0xB48EAD</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a49240777a1bd99a5c407b803d454e768" name="a49240777a1bd99a5c407b803d454e768"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49240777a1bd99a5c407b803d454e768">&#9670;&#160;</a></span>GPU_PROFILER_GI_SYNC_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_GI_SYNC_COLOR = 0x8FBCBB</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2bc152ef4d2da90b79cdaebf10581816" name="a2bc152ef4d2da90b79cdaebf10581816"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bc152ef4d2da90b79cdaebf10581816">&#9670;&#160;</a></span>GPU_PROFILER_MOTION_BLUR_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_MOTION_BLUR_COLOR = 0xBF616A</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeb224a4d8f9ce3af64219e94ee4e55a8" name="aeb224a4d8f9ce3af64219e94ee4e55a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb224a4d8f9ce3af64219e94ee4e55a8">&#9670;&#160;</a></span>GPU_PROFILER_NBODY_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_NBODY_COLOR = 0xD8DEE9</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abd0c592d103323ccce000e5d19984d4f" name="abd0c592d103323ccce000e5d19984d4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd0c592d103323ccce000e5d19984d4f">&#9670;&#160;</a></span>GPU_PROFILER_POSTPROCESS_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_POSTPROCESS_COLOR = 0xB48EAD</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a38fa5cee53311a3ed73706c471efced4" name="a38fa5cee53311a3ed73706c471efced4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38fa5cee53311a3ed73706c471efced4">&#9670;&#160;</a></span>GPU_PROFILER_ROW_HEIGHT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GPU_PROFILER_ROW_HEIGHT = 28.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fc6d9431cf5e2dd0075cc15774b6d0d" name="a5fc6d9431cf5e2dd0075cc15774b6d0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fc6d9431cf5e2dd0075cc15774b6d0d">&#9670;&#160;</a></span>GPU_PROFILER_SCENE_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_SCENE_COLOR = 0xD08770</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad987218ea719efa5980a816a8f97a6a4" name="ad987218ea719efa5980a816a8f97a6a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad987218ea719efa5980a816a8f97a6a4">&#9670;&#160;</a></span>GPU_PROFILER_SHOCKWAVE_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_SHOCKWAVE_COLOR = 0xE5A3C9</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abb09d067ee2fcb5f5d5ed2d6c0ac4261" name="abb09d067ee2fcb5f5d5ed2d6c0ac4261"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb09d067ee2fcb5f5d5ed2d6c0ac4261">&#9670;&#160;</a></span>GPU_PROFILER_TOTAL_FRAME_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_TOTAL_FRAME_COLOR = 0xECEFF4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a388547b561eddbdc99ff020cf0563178" name="a388547b561eddbdc99ff020cf0563178"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a388547b561eddbdc99ff020cf0563178">&#9670;&#160;</a></span>GPU_PROFILER_UI_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int GPU_PROFILER_UI_COLOR = 0x4C566A</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaa59b1c944badb2c3f31ae476850cb92" name="aaa59b1c944badb2c3f31ae476850cb92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa59b1c944badb2c3f31ae476850cb92">&#9670;&#160;</a></span>GPU_PROFILER_WINDOW_DURATION_S</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GPU_PROFILER_WINDOW_DURATION_S = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c552f4e4a7d22fa4c0fed9fa5e83ad9" name="a6c552f4e4a7d22fa4c0fed9fa5e83ad9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c552f4e4a7d22fa4c0fed9fa5e83ad9">&#9670;&#160;</a></span>GPU_PROFILER_WINDOW_TRANSITION_S</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GPU_PROFILER_WINDOW_TRANSITION_S = 0.2F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="gpu__profiler_8h.html">gpu_profiler.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
