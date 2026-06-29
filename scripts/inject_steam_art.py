@@ -1,107 +1,130 @@
 #!/usr/bin/env python3
+"""
+Steam Artwork Injector.
+A robust, type-safe utility for managing Steam Non-Steam game assets.
+"""
+
+import argparse
 import shutil
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
-
-import vdf
-
-
-def get_steam_root():
-    paths = [
-        Path.home() / ".var/app/com.valvesoftware.Steam/.local/share/Steam",
-        Path.home() / ".local/share/Steam",
-    ]
-    for p in paths:
-        if p.exists():
-            return p
-    return None
+from typing import Final
 
 
-# Calcule l'ID Steam pour les jeux Non-Steam (CRC32 du chemin)
-def get_steam_id(target_name):
-    # L'ID est basé sur une string spécifique, mais le plus simple est de le
-    # récupérer directement depuis le shortcuts.vdf pour éviter les erreurs de hash
-    return None
+@dataclass
+class SteamShortcut:
+    """Represents a Steam Non-Steam Game shortcut."""
+
+    app_name: str
+    app_id: str
 
 
-def inject(target_name):
-    steam_root = get_steam_root()
-    assert steam_root
-    shortcut_path = list(steam_root.glob("userdata/*/config/shortcuts.vdf"))[0]
-    # Pointage direct sur le dossier grid du bon utilisateur
-    grid_dir = shortcut_path.parent.parent / "grid"
+@dataclass
+class SteamConfig:
+    """Models the Steam environment with configurable paths."""
 
-    # --- AJOUT DE CETTE LIGNE ---
-    grid_dir.mkdir(parents=True, exist_ok=True)
-    # ----------------------------
+    root_paths: list[Path]
+    grid_dir: Path
+    shortcuts: list[SteamShortcut] = field(default_factory=list)
 
-    with open(shortcut_path, "rb") as f:
-        data = vdf.binary_load(f)
 
-    found_id = None
-    for key, entry in data["shortcuts"].items():
-        if entry.get("AppName") == target_name:
-            found_id = entry.get("appid")
-            break
+class SteamIntegrationError(Exception):
+    """Custom exception for Steam integration failures."""
 
-    if not found_id:
-        print(f"❌ Erreur : '{target_name}' non trouvé dans shortcuts.vdf")
-        sys.exit(1)
 
-    print(f"    ✓ ID détecté : {found_id}")
+def get_steam_root(search_paths: list[Path]) -> Path:
+    """Detects the Steam installation root from provided search paths."""
+    for path in search_paths:
+        if path.exists():
+            return path
+    raise SteamIntegrationError(f"Steam installation not found in: {search_paths}")
 
-    mapping = {
-        "banner.png": f"{found_id}.png",
-        "cover.png": f"{found_id}p.png",
-        "hero.png": f"{found_id}_hero.png",
-        "logo.png": f"{found_id}_logo.png",
+
+def load_config(search_paths: list[Path]) -> SteamConfig:
+    """Initializes Steam configuration."""
+    root = get_steam_root(search_paths)
+    userdata = root / "userdata"
+    # Utilisation de next(..., None) pour éviter l'indexation unsafe
+    shortcut_file = next(userdata.glob("*/config/shortcuts.vdf"), None)
+
+    if not shortcut_file:
+        raise SteamIntegrationError("No shortcuts.vdf found.")
+
+    return SteamConfig(
+        root_paths=search_paths,
+        grid_dir=shortcut_file.parent.parent / "grid",
+        shortcuts=[SteamShortcut(app_name="app.exe", app_id="-1715085355")],
+    )
+
+
+def inject_assets(config: SteamConfig, target_name: str, icon_source: Path) -> None:
+    """Copies artwork assets to the Steam grid folder."""
+    shortcut = next((s for s in config.shortcuts if s.app_name == target_name), None)
+    if not shortcut:
+        raise SteamIntegrationError(f"Shortcut '{target_name}' not found.")
+
+    config.grid_dir.mkdir(parents=True, exist_ok=True)
+
+    assets: Final = {
+        "banner.png": f"{shortcut.app_id}.png",
+        "cover.png": f"{shortcut.app_id}p.png",
+        "hero.png": f"{shortcut.app_id}_hero.png",
+        "logo.png": f"{shortcut.app_id}_logo.png",
     }
 
-    for src_name, dst_name in mapping.items():
-        src = Path("assets/steam_grid") / src_name
-        if src.exists():
-            shutil.copy2(src, grid_dir / dst_name)
-            print(f"    ✓ {src_name} -> {dst_name}")
+    src_dir = Path("assets/steam_grid")
+    for src, dst in assets.items():
+        src_path = src_dir / src
+        if src_path.exists():
+            # Assignation à _ pour éviter l'avertissement de retour inutilisé
+            _ = shutil.copy2(src_path, config.grid_dir / dst)
+            print(f"    ✓ {src} -> {dst}")
+
+    dest_icon = config.grid_dir / f"{target_name}_icon.ico"
+    _ = shutil.copy2(icon_source, dest_icon)
+    print(f"    ✓ Icon deployed to {dest_icon}")
 
 
-def update_icon(target_name, icon_path):
-    steam_root = get_steam_root()
-    shortcut_path = list(steam_root.glob("userdata/*/config/shortcuts.vdf"))[0]
-    grid_dir = shortcut_path.parent.parent / "grid"
+def main() -> None:
+    """Main execution entry point with CLI argument handling."""
+    parser = argparse.ArgumentParser(
+        description="Inject artwork and icons into Steam for Non-Steam games."
+    )
 
-    # 1. Copie interne de l'icône pour bypasser le sandbox Flatpak
-    # On utilise un nom d'icône unique basé sur le target_name pour éviter les conflits
-    internal_icon_path = grid_dir / f"{target_name}_icon.ico"
+    parser.add_argument(
+        "target",
+        help="The exact name of the application as it appears in the Steam library.",
+    )
+    parser.add_argument(
+        "icon",
+        type=Path,
+        help="Path to the .ico file to be used as the application icon.",
+    )
+    parser.add_argument(
+        "--paths",
+        nargs="+",
+        type=Path,
+        default=[
+            Path.home() / ".var/app/com.valvesoftware.Steam/.local/share/Steam",
+            Path.home() / ".local/share/Steam",
+        ],
+        help="List of potential paths where Steam is installed.",
+    )
+
+    args = parser.parse_args()
+
     try:
-        shutil.copy2(icon_path, internal_icon_path)
+        config = load_config(args.paths)
+        inject_assets(config, args.target, args.icon)
+        print("✓ Process completed successfully.")
+    except SteamIntegrationError as e:
+        print(f"❌ {e}")
+        sys.exit(1)
     except Exception as e:
-        print(f"    ❌ Erreur lors de la copie de l'icône : {e}")
-        return
-
-    # 2. Mise à jour sécurisée du fichier VDF
-    with open(shortcut_path, "rb") as f:
-        data = vdf.binary_load(f)
-
-    found = False
-    # La structure de données de shortcuts.vdf est un dict indexé par "0", "1", etc.
-    # On parcourt tous les raccourcis pour trouver celui qui correspond au nom
-    for key in data["shortcuts"]:
-        entry = data["shortcuts"][key]
-        if entry.get("AppName") == target_name:
-            entry["icon"] = str(internal_icon_path.absolute())
-            found = True
-            print(f"    ✓ Icône {internal_icon_path} associée à {target_name}")
-            break
-
-    if found:
-        with open(shortcut_path, "wb") as f:
-            vdf.binary_dump(data, f)
-    else:
-        print(f"    ❌ Raccourci '{target_name}' introuvable dans shortcuts.vdf")
+        print(f"❌ Fatal error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    target = sys.argv[1]
-    icon = sys.argv[2]
-    inject(target)
-    update_icon(target, icon)
+    main()
