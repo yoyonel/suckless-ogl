@@ -7,7 +7,6 @@
 #include "platform/platform_fs.h"
 #include "platform/platform_utils.h"
 #include "tracy_manager.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char** argv)
@@ -16,12 +15,6 @@ int main(int argc, char** argv)
 	if (argc > 0) {
 		platform_setup_working_dir(argv[0]);
 	}
-
-	// 2. Redirection des logs (maintenant qu'on est dans le bon dossier !)
-	FILE* dummy_err = freopen("suckless_crash.log", "w", stderr);
-	FILE* dummy_out = freopen("suckless_output.log", "w", stdout);
-	(void)dummy_err;
-	(void)dummy_out;
 
 	tracy_manager_init_global();
 
