@@ -54,6 +54,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 # uv pip install --system nécessite aussi de casser explicitement la protection PEP 668
 RUN uv pip install --system --break-system-packages --no-cache \
+    basedpyright \
     clang-format==22.1.5 \
     ruff \
     pytest \
