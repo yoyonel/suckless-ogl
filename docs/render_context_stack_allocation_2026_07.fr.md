@@ -120,3 +120,26 @@ Une recette `just` a été ajoutée pour compiler n'importe quel fichier source 
 just asm src/app.c
 ```
 Cette commande génère un fichier `src/app.c.s` qui peut être inspecté directement.
+
+---
+
+## 5. Outils Recommandés pour l'Analyse d'Assembleur et de Compilation
+
+Pour inspecter les sorties assembleurs et les associer au code source C, les outils suivants sont fortement recommandés :
+
+1. **Compiler Explorer (Godbolt.org)** :
+   * **Fonctionnalités** : IDE interactif en ligne qui fait correspondre directement les lignes de code C/C++ à des blocs d'instructions assembleurs colorés. Permet de changer dynamiquement de compilateur (GCC, Clang, MSVC) et d'options de build.
+   * **Usage** : Très efficace pour tester des algorithmes isolés et étudier le comportement d'optimisation des compilateurs.
+2. **Entrelacement du Code Source Local (`objdump`)** :
+   * **Fonctionnalités** : Outil standard intégré aux systèmes Linux.
+   * **Usage** : Compiler en mode débogage ou avec les informations de débogage activées (`-g` ou `RelWithDebInfo`) et lancer :
+     ```bash
+     objdump -S --demangle build/app | less
+     ```
+     Cette commande affiche le code source C d'origine directement au-dessus des instructions assembleurs correspondantes.
+3. **Le mode TUI de GDB** :
+   * **Fonctionnalités** : Interface utilisateur textuelle intégrée à GDB.
+   * **Usage** : Lancer GDB et exécuter `layout split` pour observer côte à côte le code source C et l'assembleur désassemblé pendant l'exécution en temps réel.
+4. **Suites de Décompilation & Rétro-ingénierie (Ghidra / Cutter)** :
+   * **Ghidra** : Suite logicielle open-source gratuite développée par la NSA. Offre une excellente synchronisation entre le code décompilé et le graphe d'instructions désassemblées.
+   * **Cutter** : Interface graphique moderne pour Radare2. Propose des vues graphiques du flux d'exécution et du pseudo-code décompilé proche du C.
