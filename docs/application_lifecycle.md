@@ -1217,8 +1217,8 @@ Here's an estimate of VRAM consumption at steady state:
 | `src/material.c` | Material library (JSON loading) |
 | `include/sphere_types.h` | Canonical `SphereInstance` type definition |
 | `src/instanced_rendering.c` | VAO/VBO instanced draw management |
-| `src/billboard_rendering.c` | Billboard quads for transparent spheres |
-| `src/billboard_sorting.c` | CPU/GPU transparency sorting |
+| `src/billboard_renderer.c` | Billboard quads for transparent spheres |
+| `src/billboard_sorter.c` | CPU/GPU transparency sorting |
 | `src/async_loader.c` | Background I/O thread (pthread) |
 | `src/camera.c` | Orbit camera, fixed-timestep physics |
 | `src/gl_debug.c` | OpenGL debug message callback |

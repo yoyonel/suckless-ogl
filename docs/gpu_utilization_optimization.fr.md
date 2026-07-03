@@ -123,8 +123,8 @@ Ajout de marqueurs CPU `PROFILE_ZONE` aux points de synchronisation clés :
 |:---|:---|:---|
 | `"GPU Query Readback (sync)"` | `gpu_profiler.c` | Mesurer la boucle bloquante `glGetQueryObjectui64v` |
 | `"GI Probe Sync (buffer upload)"` | `scene.c` | `glBufferSubData` SSBO + packing texture 3D pour les sondes GI |
-| `"GPU Sort: SSBO Upload"` | `billboard_sorting.c` | Transfert des données d'instances vers le GPU |
-| `"GPU Sort: Compute Dispatch"` | `billboard_sorting.c` | Chaîne complète dispatch + barrières |
+| `"GPU Sort: SSBO Upload"` | `billboard_sorter.c` | Transfert des données d'instances vers le GPU |
+| `"GPU Sort: Compute Dispatch"` | `billboard_sorter.c` | Chaîne complète dispatch + barrières |
 | `"PostProcess UBO Upload"` | `postprocess.c` | Détection de sync implicite `glBufferSubData` |
 
 ## Phase 2 : Réordonnancement de la Boucle Principale (**Testé — Invalidé**)

@@ -2,36 +2,33 @@
 
 Ce document décrit l'architecture de rendu des sphères PBR avec tri Back-to-Front et anti-aliasing analytique.
 
-## Architecture : BillboardSorter
-
-La classe `BillboardSorter` gère le tri des sphères pour le rendu correct de la transparence.
+La structure `BillboardSorter` gère le tri des sphères (CPU/GPU) pour le rendu correct de la transparence.
 
 ```c
 typedef struct {
-    SphereInstance* instances;    // Données des instances (position, matériau)
-    float* depths;                // Profondeurs pré-calculées
-    uint32_t* sorted_indices;     // Indices triés (Back-to-Front)
-    uint32_t count;
+    BillboardSortEntry* entries;      // Scratchpad de tri CPU (index & depth)
+    BillboardSortEntry* entries_aux;  // Tampon auxiliaire pour le tri Radix
+    SphereInstance* temp_instances;   // Tampon CPU temporaire pour les instances réordonnées
+    int min_capacity;
+    int cpu_capacity;
+    int ssbo_capacity;
+
+    GLuint compute_program;           // Shader compute pour le tri bitonique GPU
+    GLuint instance_ssbo;             // SSBO contenant les instances triées ou brutes
+    GLuint indices_ssbo;              // SSBO d'indices pour le tri GPU
+    GLuint temp_ssbo;                 // SSBO temporaire pour le tri bitonique
 } BillboardSorter;
 ```
 
-## Tri Back-to-Front
-
 Pour le rendu correct des sphères semi-transparentes (Algorithme du Peintre) :
 
-1. Calculer la profondeur dans l'espace caméra pour chaque sphère
+1. Calculer la distance au carré par rapport à la caméra pour chaque sphère
 2. Trier les sphères par profondeur décroissante (arrière → avant)
-3. Rendre dans l'ordre trié
+3. Rendre dans l'ordre trié via les SSBOs ou VBOs
 
 ```c
-// Calcul des profondeurs
-for (uint32_t i = 0; i < sorter->count; i++) {
-    vec3 pos_view = mat4_transform_point(view_matrix, sorter->instances[i].position);
-    sorter->depths[i] = -pos_view.z; // Négatif car l'axe Z est tourné en espace vue
-}
-
-// Tri (voir gpu_sorting.md pour les algorithmes)
-billboard_sorter_sort(sorter, sort_backend);
+// Tri via BillboardSorter (CPU Radix, CPU QuickSort ou GPU Bitonic Compute)
+billboard_sorter_sort(sorter, instances, count, camera_pos, sorting_mode);
 ```
 
 ## Anti-aliasing analytique via discriminant
@@ -65,19 +62,11 @@ float aa_width = fwidth(discriminant) * AA_SCALE;
 float coverage = smoothstep(-aa_width, aa_width, discriminant);
 ```
 
-## Rendu instancié
-
-Les sphères sont rendues en une seule passe via `glDrawArraysInstanced` :
+Le rendu et l'upload GPU des données triées sont encapsulés dans le composant `BillboardRenderer` via la fonction `billboard_renderer_draw`, qui utilise les paramètres découplés `BillboardRenderParams` :
 
 ```c
-// Mettre à jour le VBO des instances avec les données triées
-glBindBuffer(GL_ARRAY_BUFFER, icosphere_vbo);
-glBufferSubData(GL_ARRAY_BUFFER, 0,
-                sorter->count * sizeof(SphereInstance),
-                sorter->sorted_instances);
-
-// Un seul draw call pour toutes les sphères
-glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, sorter->count);
+// Rendu instancié via BillboardRenderer
+billboard_renderer_draw(&renderer, profiler, &params);
 ```
 
 ## Interaction avec le frustum culling

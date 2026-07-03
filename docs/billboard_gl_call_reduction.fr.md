@@ -248,9 +248,9 @@ intermédiaires.
 | Fichier | Rôle |
 |---------|------|
 | `src/scene.c` | `scene_render_billboards()` — upload UBO, bind textures, bind SSBO |
-| `src/billboard_rendering.c` | `billboard_group_update_from_buffer()` — copie VBO legacy (debug uniquement) |
-| `src/billboard_rendering.c` | `billboard_group_draw()` — bind VAO, état cull, draw call |
-| `src/billboard_sorting.c` | `billboard_sorter_sort_gpu()` — dispatch compute |
+| `src/billboard_renderer.c` | `billboard_group_update_from_buffer()` — copie VBO legacy (debug uniquement) |
+| `src/billboard_renderer.c` | `billboard_group_draw()` — bind VAO, état cull, draw call |
+| `src/billboard_sorter.c` | `billboard_sorter_sort_gpu()` — dispatch compute |
 | `shaders/billboard_instance_ssbo.glsl` | **Nouveau** — SSBO SphereInstance pour lecture directe vertex (`binding = 2`) |
 | `shaders/billboard_ubo.glsl` | Définition bloc UBO partagé (`binding = 1`) |
 | `shaders/pbr_ibl_billboard.vert` | Vertex shader — fetch SSBO via `gl_InstanceID` |
