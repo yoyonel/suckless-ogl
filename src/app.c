@@ -140,6 +140,81 @@ static void app_render_ui_trampoline(void* user_data)
 	app_render_ui((const App*)user_data);
 }
 
+static void app_update_camera(App* app)
+{
+	PROFILE_ZONE(camera_ctx, "Camera Physics");
+	GamepadActions gp_actions = {false, false, false};
+	if (app->input->camera_enabled) {
+		gamepad_input_poll(&app->input->gamepad, &gp_actions);
+	}
+	if (gp_actions.env_next || gp_actions.env_prev) {
+		AppInputContext env_ctx = {
+		    .window = app->win.handle,
+		    .scene = app->scene,
+		    .env_mgr = app->env_mgr,
+		    .notifier = &app->notifier,
+		    .async_loader = app->async_loader,
+		};
+		if (gp_actions.env_next) {
+			app_handle_env_input(&env_ctx, GLFW_PRESS, 0,
+			                     GLFW_KEY_PAGE_UP);
+		}
+		if (gp_actions.env_prev) {
+			app_handle_env_input(&env_ctx, GLFW_PRESS, 0,
+			                     GLFW_KEY_PAGE_DOWN);
+		}
+	}
+	if (gp_actions.camera_reset) {
+		camera_init(&app->input->camera, DEFAULT_CAMERA_DISTANCE,
+		            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
+		app->scene->config.env_lod = DEFAULT_ENV_LOD;
+		action_notifier_push(&app->notifier, "Camera & LOD Reset",
+		                     NOTIF_DUR_LONG);
+	}
+	app->input->camera.physics_accumulator += (float)app->delta_time;
+	while (app->input->camera.physics_accumulator >=
+	       app->input->camera.fixed_timestep) {
+		camera_build_keyboard_input(&app->input->camera);
+		camera_apply_gamepad(&app->input->camera, &app->input->gamepad);
+		camera_fixed_update(&app->input->camera);
+		app->input->camera.physics_accumulator -=
+		    app->input->camera.fixed_timestep;
+	}
+
+	float alpha = app->input->camera.rotation_smoothing;
+	app->input->camera.yaw +=
+	    (app->input->camera.yaw_target - app->input->camera.yaw) * alpha;
+	app->input->camera.pitch +=
+	    (app->input->camera.pitch_target - app->input->camera.pitch) *
+	    alpha;
+	camera_update_vectors(&app->input->camera);
+	PROFILE_ZONE_END(camera_ctx);
+}
+
+static void app_update_mesh_subdivisions(App* app, int* last_subdiv)
+{
+	if (app->scene->config.subdivisions != *last_subdiv) {
+		PROFILE_ZONE(ico_ctx, "Icosphere Regen");
+		icosphere_generate(&app->scene->geometry,
+		                   app->scene->config.subdivisions);
+		scene_update_gpu_buffers(app->scene);
+
+#ifdef USE_SSBO_RENDERING
+		ssbo_group_bind_mesh(&app->scene->ssbo_group,
+		                     app->scene->gpu->icosphere_vbo,
+		                     app->scene->gpu->icosphere_nbo,
+		                     app->scene->gpu->icosphere_ebo);
+#else
+		instanced_group_bind_mesh(&app->scene->instanced_group,
+		                          app->scene->gpu->icosphere_vbo,
+		                          app->scene->gpu->icosphere_nbo,
+		                          app->scene->gpu->icosphere_ebo);
+#endif
+		*last_subdiv = app->scene->config.subdivisions;
+		PROFILE_ZONE_END(ico_ctx);
+	}
+}
+
 void app_run(App* app)
 {
 	int last_subdiv = -1;
@@ -206,89 +281,9 @@ void app_run(App* app)
 			PROFILE_ZONE_END(ui_notif_ctx);
 		}
 
-		{
-			PROFILE_ZONE(camera_ctx, "Camera Physics");
-			GamepadActions gp_actions = {false, false, false};
-			if (app->input->camera_enabled) {
-				gamepad_input_poll(&app->input->gamepad,
-				                   &gp_actions);
-			}
-			if (gp_actions.env_next || gp_actions.env_prev) {
-				AppInputContext env_ctx = {
-				    .window = app->win.handle,
-				    .scene = app->scene,
-				    .env_mgr = app->env_mgr,
-				    .notifier = &app->notifier,
-				    .async_loader = app->async_loader,
-				};
-				if (gp_actions.env_next) {
-					app_handle_env_input(&env_ctx,
-					                     GLFW_PRESS, 0,
-					                     GLFW_KEY_PAGE_UP);
-				}
-				if (gp_actions.env_prev) {
-					app_handle_env_input(
-					    &env_ctx, GLFW_PRESS, 0,
-					    GLFW_KEY_PAGE_DOWN);
-				}
-			}
-			if (gp_actions.camera_reset) {
-				camera_init(&app->input->camera,
-				            DEFAULT_CAMERA_DISTANCE,
-				            DEFAULT_CAMERA_YAW,
-				            DEFAULT_CAMERA_PITCH);
-				app->scene->config.env_lod = DEFAULT_ENV_LOD;
-				action_notifier_push(&app->notifier,
-				                     "Camera & LOD Reset",
-				                     NOTIF_DUR_LONG);
-			}
-			app->input->camera.physics_accumulator +=
-			    (float)app->delta_time;
-			while (app->input->camera.physics_accumulator >=
-			       app->input->camera.fixed_timestep) {
-				camera_build_keyboard_input(
-				    &app->input->camera);
-				camera_apply_gamepad(&app->input->camera,
-				                     &app->input->gamepad);
-				camera_fixed_update(&app->input->camera);
-				app->input->camera.physics_accumulator -=
-				    app->input->camera.fixed_timestep;
-			}
+		app_update_camera(app);
 
-			float alpha = app->input->camera.rotation_smoothing;
-			app->input->camera.yaw +=
-			    (app->input->camera.yaw_target -
-			     app->input->camera.yaw) *
-			    alpha;
-			app->input->camera.pitch +=
-			    (app->input->camera.pitch_target -
-			     app->input->camera.pitch) *
-			    alpha;
-			camera_update_vectors(&app->input->camera);
-			PROFILE_ZONE_END(camera_ctx);
-		}
-
-		if (app->scene->config.subdivisions != last_subdiv) {
-			PROFILE_ZONE(ico_ctx, "Icosphere Regen");
-			icosphere_generate(&app->scene->geometry,
-			                   app->scene->config.subdivisions);
-			scene_update_gpu_buffers(app->scene);
-
-#ifdef USE_SSBO_RENDERING
-			ssbo_group_bind_mesh(&app->scene->ssbo_group,
-			                     app->scene->gpu->icosphere_vbo,
-			                     app->scene->gpu->icosphere_nbo,
-			                     app->scene->gpu->icosphere_ebo);
-#else
-			instanced_group_bind_mesh(
-			    &app->scene->instanced_group,
-			    app->scene->gpu->icosphere_vbo,
-			    app->scene->gpu->icosphere_nbo,
-			    app->scene->gpu->icosphere_ebo);
-#endif
-			last_subdiv = app->scene->config.subdivisions;
-			PROFILE_ZONE_END(ico_ctx);
-		}
+		app_update_mesh_subdivisions(app, &last_subdiv);
 
 		{
 			PROFILE_ZONE(nbody_ctx, "NBody Physics");
