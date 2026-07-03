@@ -1,5 +1,7 @@
 var postprocess__input_8c =
 [
+    [ "cycle_banding_styles", "postprocess__input_8c.html#ada0face5026be2c6577dee60ba1e6d11", null ],
+    [ "cycle_lut_styles", "postprocess__input_8c.html#abe8584af868e00a3712e75de364ce237", null ],
     [ "handle_ae_path_toggle", "postprocess__input_8c.html#ab724a1467783d1a0c32042f2ebe9a8f0", null ],
     [ "handle_auto_exposure_key", "postprocess__input_8c.html#ab5c5e3bd95f2a6bdd9c714a9f1e56fc8", null ],
     [ "handle_exposure_input", "postprocess__input_8c.html#abfa07d9865ce43b54938a67359d48a4a", null ],

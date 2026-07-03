@@ -1,5 +1,13 @@
 var NAVTREEINDEX11 =
 {
+"structNBodyParticle.html#aaeabc9ca1d0edd705c910aea71dd6b43":[5,0,79,2],
+"structNBodyParticle.html#aaeee593c8e3fb1c4bafe90ebb2c5ad1d":[5,0,79,3],
+"structNBodyParticle.html#afeacf89c79010fa4287e84d9d1e4ce5e":[5,0,79,4],
+"structNBodySim.html":[5,0,80],
+"structNBodySim.html#a27ace004d1c3b31296f8e42d7aca98cd":[5,0,80,5],
+"structNBodySim.html#a2f01c53ef7678287ffc0a784415248fd":[5,0,80,1],
+"structNBodySim.html#a853adc6d46d93bba8728cfdc350f485b":[5,0,80,6],
+"structNBodySim.html#a8ab28ed426bf008abdf122806930be2f":[5,0,80,8],
 "structNBodySim.html#a92427533fd2b09bc5e12bca9276e9a85":[5,0,80,0],
 "structNBodySim.html#aa6b5e12d1552407be8270b31c0308e56":[5,0,80,2],
 "structNBodySim.html#abb02795634aa7a885c486be8172f2dc7":[5,0,80,3],
@@ -241,13 +249,5 @@ var NAVTREEINDEX11 =
 "structSceneGPUResources.html#a02c10eeafea9b8dfe56b7a79820d41a9":[5,0,98,13],
 "structSceneGPUResources.html#a119621177c42192c2fb863cab38aae84":[5,0,98,16],
 "structSceneGPUResources.html#a1262225aadf5e83be86251c29d025e56":[5,0,98,5],
-"structSceneGPUResources.html#a16a0947a8194c3d1836c4f05cb0e9ac3":[5,0,98,23],
-"structSceneGPUResources.html#a19bef946526b4a58d05046e869f490b9":[5,0,98,19],
-"structSceneGPUResources.html#a1c14dcd5d4e7a7c6c48e09fc739ab6a0":[5,0,98,7],
-"structSceneGPUResources.html#a30b01c0ee13abe7c9f36926dc5f9c4cd":[5,0,98,14],
-"structSceneGPUResources.html#a3be0d5781beff46ca7791032d6f242b9":[5,0,98,20],
-"structSceneGPUResources.html#a3cca1b2684a5a4baac7e7dacf7698997":[5,0,98,24],
-"structSceneGPUResources.html#a3fe915e5ed8ac30655f635954805aac4":[5,0,98,6],
-"structSceneGPUResources.html#a42e974fa623b1f07520a3007ba43a6a0":[5,0,98,10],
-"structSceneGPUResources.html#a6009e9d67c40898fc788af0cb50fb49f":[5,0,98,3]
+"structSceneGPUResources.html#a16a0947a8194c3d1836c4f05cb0e9ac3":[5,0,98,23]
 };

@@ -18,7 +18,7 @@ var searchData=
   ['cleanup_5fgl_5fdebug_5fgroup_15',['cleanup_gl_debug_group',['../gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc',1,'gl_common.h']]],
   ['cleanup_5fgl_5ftexture_16',['cleanup_gl_texture',['../gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33',1,'gl_common.h']]],
   ['cleanup_5fgl_5fuse_5fprogram_17',['cleanup_gl_use_program',['../gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447',1,'gl_common.h']]],
-  ['cli_5fhandle_5fargs_18',['cli_handle_args',['../cli_8h.html#ade80bb1e3d8493bc52be073640a39288',1,'cli_handle_args(int argc, char *argv[]):&#160;cli.c'],['../cli_8c.html#ade80bb1e3d8493bc52be073640a39288',1,'cli_handle_args(int argc, char *argv[]):&#160;cli.c']]],
+  ['cli_5fhandle_5fargs_18',['cli_handle_args',['../cli_8c.html#ade80bb1e3d8493bc52be073640a39288',1,'cli_handle_args(int argc, char *argv[]):&#160;cli.c'],['../cli_8h.html#ade80bb1e3d8493bc52be073640a39288',1,'cli_handle_args(int argc, char *argv[]):&#160;cli.c']]],
   ['cmp_5funiform_5fentry_19',['cmp_uniform_entry',['../shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d',1,'shader.c']]],
   ['compare_5fsphere_5fentries_20',['compare_sphere_entries',['../billboard__sorter_8c.html#a57be5e118fd5533df2275e84d89e1843',1,'billboard_sorter.c']]],
   ['compare_5fstrings_21',['compare_strings',['../scene__init_8c.html#a8af94b56d6cef5f5143fd60907cb02f9',1,'scene_init.c']]],
@@ -42,5 +42,7 @@ var searchData=
   ['create_5ffont_5fatlas_39',['create_font_atlas',['../ui_8c.html#adea4af1dfed2a306c55f45c26e117280',1,'ui.c']]],
   ['ctx_5fadd_5fbuffer_40',['ctx_add_buffer',['../shader_8c.html#a66f86edf5f10c44d07a691cd2c138f35',1,'shader.c']]],
   ['ctx_5fadd_5fchunk_41',['ctx_add_chunk',['../shader_8c.html#acf4c6444de4fe1143933a96b4bc54baa',1,'shader.c']]],
-  ['ctx_5ffree_42',['ctx_free',['../shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c',1,'shader.c']]]
+  ['ctx_5ffree_42',['ctx_free',['../shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c',1,'shader.c']]],
+  ['cycle_5fbanding_5fstyles_43',['cycle_banding_styles',['../postprocess__input_8c.html#ada0face5026be2c6577dee60ba1e6d11',1,'postprocess_input.c']]],
+  ['cycle_5flut_5fstyles_44',['cycle_lut_styles',['../postprocess__input_8c.html#abe8584af868e00a3712e75de364ce237',1,'postprocess_input.c']]]
 ];

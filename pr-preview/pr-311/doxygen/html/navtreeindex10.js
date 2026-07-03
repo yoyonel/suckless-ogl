@@ -1,5 +1,13 @@
 var NAVTREEINDEX10 =
 {
+"structGPUProfiler.html":[5,0,52],
+"structGPUProfiler.html#a120420e2f3b927e34e1694b16dec4a7a":[5,0,52,6],
+"structGPUProfiler.html#a16c180a6bf8f3f47dcbf02deeeea6c5e":[5,0,52,4],
+"structGPUProfiler.html#a56882ff9250097d7543563e49c2db015":[5,0,52,8],
+"structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be":[5,0,52,1],
+"structGPUProfiler.html#a9688da7d8807aa34438338fc92140896":[5,0,52,2],
+"structGPUProfiler.html#aa37b69615626569fb9356bcfc9cc7d3a":[5,0,52,7],
+"structGPUProfiler.html#aaa8d623ed515dd6d83dd378e87aefc64":[5,0,52,0],
 "structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a":[5,0,52,9],
 "structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d":[5,0,52,5],
 "structGPUProfiler.html#acde8b71047ac0475cf647cb5206d488a":[5,0,52,3],
@@ -241,13 +249,5 @@ var NAVTREEINDEX10 =
 "structNBodyParticle.html#a0bd6984b691a41be877efaf0cd94c5d5":[5,0,79,6],
 "structNBodyParticle.html#a137b35bac4e57f5624ae4ed9a58ea1bc":[5,0,79,5],
 "structNBodyParticle.html#a52807eee90ac25dcb7df211610dc18f7":[5,0,79,1],
-"structNBodyParticle.html#a562713ac6e3cd427e26d63afe0a10db6":[5,0,79,0],
-"structNBodyParticle.html#aaeabc9ca1d0edd705c910aea71dd6b43":[5,0,79,2],
-"structNBodyParticle.html#aaeee593c8e3fb1c4bafe90ebb2c5ad1d":[5,0,79,3],
-"structNBodyParticle.html#afeacf89c79010fa4287e84d9d1e4ce5e":[5,0,79,4],
-"structNBodySim.html":[5,0,80],
-"structNBodySim.html#a27ace004d1c3b31296f8e42d7aca98cd":[5,0,80,5],
-"structNBodySim.html#a2f01c53ef7678287ffc0a784415248fd":[5,0,80,1],
-"structNBodySim.html#a853adc6d46d93bba8728cfdc350f485b":[5,0,80,6],
-"structNBodySim.html#a8ab28ed426bf008abdf122806930be2f":[5,0,80,8]
+"structNBodyParticle.html#a562713ac6e3cd427e26d63afe0a10db6":[5,0,79,0]
 };

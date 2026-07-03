@@ -548,6 +548,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#code-analysis-srp-refactoring-report-july-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Analysis &amp; SRP Refactoring Report (July 2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-transitions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -954,6 +965,34 @@
     
   
     Cache Locality vs Decoupling (May 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_analysis_report_2026_07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Analysis (July 2026)
   
 
     
@@ -4624,6 +4663,25 @@ FRAG --&gt; DS_TEX[Downsample Tex R32F]
 COMP --&gt; DS_TEX
 DS_TEX --&gt; ADAPT["CS: Adaptation 1x1"]
 ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
+<h2 id="code-analysis-srp-refactoring-report-july-2026"><a href="../code_analysis_report_2026_07/">Code Analysis &amp; SRP Refactoring Report (July 2026)</a><a class="headerlink" href="#code-analysis-srp-refactoring-report-july-2026" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../code_analysis_report_2026_07/#why-does-it-exist" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Why does it exist?</a> : <span style="opacity: 0.6; font-size: 0.85em;">This function is a Type Erasure Trampoline (Adapter Pattern) designed to enforce Separation of Concerns (SoC) and prevent circular dependencies.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+App[app.c / app.h &lt;br/&gt;&lt;i&gt;High-level Orchestrator&lt;/i&gt;]
+Renderer[renderer.c / renderer.h &lt;br/&gt;&lt;i&gt;Low-level Render Pipeline&lt;/i&gt;]
+AppUI[app_ui.c / app_ui.h &lt;br/&gt;&lt;i&gt;Dear ImGui User Interface&lt;/i&gt;]
+App --&gt;|includes| Renderer
+App --&gt;|includes| AppUI
+AppUI --&gt;|takes const App*| App
+Renderer -.-&gt;|Callback via RenderUIFn| App
+style Renderer fill:#1a1b26,stroke:#f7768e,stroke-width:2px;
+style App fill:#1a1b26,stroke:#7aa2f7,stroke-width:2px;</code></pre>
 
   </div>
 </div>
