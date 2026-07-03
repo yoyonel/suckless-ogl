@@ -1,4 +1,4 @@
-# Guide d'Analyse des Compilateurs & Shaders (Juillet 2026)
+# Guide d'Analyse de la Compilation & de l'Assembleur (Juillet 2026)
 
 **Date** : 3 juillet 2026
 **Statut** : Guide de Référence
@@ -195,4 +195,4 @@ cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
 objdump -S --demangle build/app | less
 ```
-Cela affiche les instructions C d'origine entrelacées directement au-dessus de leurs blocs d'assembleur compilés.
+Cette commande affiche le code source C d'origine directement au-dessus des instructions assembleurs correspondantes.

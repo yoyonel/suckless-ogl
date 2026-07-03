@@ -1,4 +1,4 @@
-# Compiler & Shader Analysis Guides (July 2026)
+# Compilation & Assembly Analysis Guide (July 2026)
 
 **Date**: July 3, 2026
 **Status**: Reference Guide
