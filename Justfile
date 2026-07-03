@@ -683,6 +683,10 @@ build-tracy-server:
 
 # Run Tracy Server (auto-detects free port, override with TRACY_PORT=N)
 tracy-server:
+    @if [ ! -f ./deps/tracy/profiler/build/tracy-profiler ]; then \
+        echo "⚠️  [TRACY] tracy-profiler non trouvé. Lancement de build-tracy-server..."; \
+        just build-tracy-server; \
+    fi
     @if [ "{{ tracy_port }}" = "NONE" ]; then echo "❌ [ERREUR] Aucun port libre trouvé dans la plage 8086-8100 pour Tracy."; exit 1; fi
     @echo "🔍 [TRACY] Port dynamique disponible trouvé : {{ tracy_port }}"
     @echo "🚀 [TRACY] Démarrage du Profiler (UI) en écoute sur 127.0.0.1:{{ tracy_port }}..."
