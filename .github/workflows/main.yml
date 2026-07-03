@@ -29,7 +29,7 @@ jobs:
       image: ghcr.io/${{ github.repository }}-ci:latest
       options: --user root
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
@@ -88,7 +88,7 @@ jobs:
     env:
       EXTRA_CMAKE_FLAGS: ""
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -163,7 +163,7 @@ jobs:
       image: ghcr.io/${{ github.repository }}-ci:latest
       options: --user root # <--- LA LIGNE MAGIQUE
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -214,7 +214,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -230,7 +230,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci-windows:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -261,7 +261,7 @@ jobs:
     env:
       EXTRA_CMAKE_FLAGS: ""
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
@@ -290,7 +290,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: preview-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download Documentation Artifact
         if: github.event.action != 'closed'
@@ -321,7 +321,7 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # 1. On récupère le site complet (MkDocs + Doxygen intégrés)
       - name: Download Documentation
@@ -357,7 +357,7 @@ jobs:
     env:
       EXTRA_CMAKE_FLAGS: ""
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build
         run: |
           git config --global --add safe.directory '*'
@@ -383,7 +383,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci-windows:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build Windows Release
         run: |
           git config --global --add safe.directory '*'
@@ -402,7 +402,7 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Nécessaire pour les tags
 
