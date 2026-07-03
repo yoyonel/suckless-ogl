@@ -235,7 +235,7 @@ jobs:
           submodules: recursive
 
       - name: Cache CMake build (Windows cross-compile)
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: build-test-win
           key: ${{ runner.os }}-win-build-${{ hashFiles('src/**/*.c', 'include/**/*.h', 'tests/**/*.c', 'CMakeLists.txt', 'toolchain-mingw.cmake') }}
