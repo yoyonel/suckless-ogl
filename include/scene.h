@@ -2,8 +2,7 @@
 #define SCENE_H
 
 #include "app_settings.h"
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
 #include "scene_config.h"
@@ -30,13 +29,13 @@ typedef struct Scene {
 	IcosphereGeometry geometry; /**< High-poly sphere mesh data. */
 	InstancedGroup
 	    instanced_group; /**< Managed buffers for opaque spheres. */
-	BillboardGroup billboard_group; /**< Managed buffers for billboards. */
+	BillboardRenderer billboard_renderer; /**< Managed buffers and renderer
+	                                         for billboards. */
 #ifdef USE_SSBO_RENDERING
 	SSBOGroup ssbo_group; /**< SSBO rendering context. */
 #endif
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	BillboardSorter billboard_sorter; /**< Sorter for alpha blending. */
 	SphereInstance*
 	    billboard_instances;      /**< Persistent array for sorting. */
 	int billboard_instance_count; /**< Active billboard count. */

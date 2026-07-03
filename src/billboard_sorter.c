@@ -1,10 +1,16 @@
-#include "billboard_sorting.h"
+/**
+ * @file billboard_sorter.c
+ * @brief Back-to-front sorting for transparent billboard geometry.
+ */
 
-#include "gl_common.h" /* For SIMD_ALIGNMENT */
+#include "billboard_sorter.h"
+
+#include "gl_common.h"
 #include "gl_debug.h"
 #include "log.h"
 #include "platform/platform_utils.h"
 #include "profiler.h"
+#include "scene_config.h"
 #include "shader.h"
 #include "sphere_types.h"
 #include <cglm/types.h>
@@ -19,19 +25,15 @@ enum { EXPECTED_SPHERE_INSTANCE_SIZE = 128 };
 _Static_assert(sizeof(SphereInstance) == EXPECTED_SPHERE_INSTANCE_SIZE,
                "SphereInstance size must match GLSL std430 layout (128 B)");
 
-enum { WORKGROUP_SIZE = 1024 };
-
-enum { DEFAULT_MIN_CAPACITY = 64 };
-
-enum { MAX_SINGLE_PASS_COUNT = 1024 };
-
-enum { RADIX_BITS_PER_PASS = 8 };
-
-enum { RADIX_BUCKETS = 256 };
-
-enum { RADIX_SHIFT_LIMIT = 32 };
-
-enum { RADIX_MASK = 0xFFU };
+enum {
+	WORKGROUP_SIZE = 1024,
+	DEFAULT_MIN_CAPACITY = 64,
+	MAX_SINGLE_PASS_COUNT = 1024,
+	RADIX_BITS_PER_PASS = 8,
+	RADIX_BUCKETS = 256,
+	RADIX_SHIFT_LIMIT = 32,
+	RADIX_MASK = 0xFF
+};
 
 static const uint32_t FLOAT_SIGN_MASK = 0x80000000U;
 static const uint32_t FLOAT_COMPLEMENT_MASK = 0xFFFFFFFFU;
@@ -161,14 +163,13 @@ void billboard_sorter_init(BillboardSorter* sorter, int initial_capacity)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->sorted_instance_ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	/* --- AJOUT DES LABELS POUR RENDERDOC --- */
+	/* --- OBJECT LABELS FOR RENDERDOC --- */
 	glObjectLabel(GL_BUFFER, sorter->instance_ssbo, -1,
 	              "SSBO_Instances_Unsorted");
 	glObjectLabel(GL_BUFFER, sorter->index_ssbo, -1,
 	              "SSBO_Sort_Entries_Keys");
 	glObjectLabel(GL_BUFFER, sorter->sorted_instance_ssbo, -1,
 	              "SSBO_Instances_Sorted");
-	/* --------------------------------------- */
 
 	sorter->ssbo_capacity = 0;
 	sorter->min_capacity =
@@ -270,7 +271,7 @@ GLuint billboard_sorter_sort_gpu(BillboardSorter* sorter,
 	unsigned int u_count_pot = (unsigned int)count_pot;
 
 	/* --- OPTIMIZATION: Single-Pass Shared Memory Sort --- */
-	if (u_count_pot <= MAX_SINGLE_PASS_COUNT) {
+	if (u_count_pot <= (unsigned int)MAX_SINGLE_PASS_COUNT) {
 		if (sorter->loc_stage >= 0) {
 			glUniform1ui(sorter->loc_stage,
 			             3U); /* Stage 3: Single Pass */
@@ -288,7 +289,8 @@ GLuint billboard_sorter_sort_gpu(BillboardSorter* sorter,
 	}
 
 	unsigned int num_groups =
-	    (u_count_pot + WORKGROUP_SIZE - 1U) / WORKGROUP_SIZE;
+	    (u_count_pot + (unsigned int)WORKGROUP_SIZE - 1U) /
+	    (unsigned int)WORKGROUP_SIZE;
 
 	/* 4a. PREPARE Stage (u_stage = 0): Compute depths and fill indices */
 	if (sorter->loc_stage >= 0) {
@@ -503,4 +505,22 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
 
 	/* 5. Upload to GPU */
 	return upload_sorted_to_ssbo(sorter, count);
+}
+
+GLuint billboard_sorter_sort(BillboardSorter* sorter,
+                             const SphereInstance* instances, int count,
+                             const vec3 camera_pos, SortingMode mode)
+{
+	switch (mode) {
+		case SORTING_MODE_CPU_QSORT:
+			return billboard_sorter_sort_cpu(sorter, instances,
+			                                 count, camera_pos);
+		case SORTING_MODE_CPU_RADIX:
+			return billboard_sorter_sort_cpu_radix(
+			    sorter, instances, count, camera_pos);
+		case SORTING_MODE_GPU_BITONIC:
+		default:
+			return billboard_sorter_sort_gpu(sorter, instances,
+			                                 count, camera_pos);
+	}
 }

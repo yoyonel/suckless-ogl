@@ -11,7 +11,7 @@
  */
 
 #include "gl_common.h"
-#include "sphere_types.h" /* SH_TEXTURE_COUNT */
+#include "light_probes.h" /* SH_TEXTURE_COUNT */
 
 /**
  * @struct InstancedUniforms

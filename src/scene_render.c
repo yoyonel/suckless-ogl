@@ -1,6 +1,5 @@
 #include "app_settings.h"
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "bool_utils.h"
 #include "gl_debug.h"
 #include "glad/glad.h"
@@ -120,126 +119,6 @@ static void scene_bind_ibl_textures(Scene* scene)
 	}
 }
 
-static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
-                                    vec3 camera_pos, mat4 previous_view_proj,
-                                    int width, int height)
-{
-	Shader* current_shader = scene->shaders->pbr_billboard;
-	shader_use(current_shader);
-
-	scene_bind_ibl_textures(scene);
-
-	/* Upload all per-frame uniforms via UBO (binding = 1) */
-	{
-		BillboardUBO ubo = {0};
-		glm_mat4_copy(proj, (vec4*)ubo.projection);
-		glm_mat4_copy(view, (vec4*)ubo.view);
-		glm_mat4_copy(previous_view_proj,
-		              (vec4*)ubo.previous_view_proj);
-		glm_vec3_copy(camera_pos, ubo.cam_pos);
-		ubo.debug_mode = scene->config.pbr_debug_mode;
-		ubo.screen_size[0] = (float)width;
-		ubo.screen_size[1] = (float)height;
-		glm_vec3_copy(scene->lighting.probe_grid.aabb_min,
-		              ubo.probe_grid_min);
-		ubo.gi_mode = (int32_t)scene->config.gi_mode;
-		glm_vec3_copy(scene->lighting.probe_grid.aabb_max,
-		              ubo.probe_grid_max);
-		ubo.specular_aa_enabled =
-		    BOOL_TO_INT(scene->config.specular_aa_enabled);
-		ubo.probe_grid_dim[0] = scene->lighting.probe_grid.grid_dim[0];
-		ubo.probe_grid_dim[1] = scene->lighting.probe_grid.grid_dim[1];
-		ubo.probe_grid_dim[2] = scene->lighting.probe_grid.grid_dim[2];
-		ubo.aa_mode = scene->config.aa_mode;
-
-		if (scene->gpu->billboard_ubo_ptr) {
-			*(BillboardUBO*)scene->gpu->billboard_ubo_ptr = ubo;
-		}
-	}
-
-	scene_bind_probe_textures(scene);
-
-	/* Debug Visualization Constants */
-	const float debug_fill_alpha = 0.10F;
-	const float debug_box_alpha = 0.5F;
-	const float debug_offset_fill = 1.0F;
-	const float debug_offset_line = -2.0F;
-
-	billboard_group_draw(&scene->billboard_group);
-
-	if (scene->config.pbr_debug_mode == 0 && scene->config.wireframe) {
-		/* Wireframe Overlay */
-		/* Enable Depth Test but disable Depth Write to overlay
-		 * correctly */
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-
-		shader_use(scene->shaders->debug_line);
-		shader_set_mat4_loc(scene->shaders->debug_uniforms.projection,
-		                    (float*)proj);
-		shader_set_mat4_loc(scene->shaders->debug_uniforms.view,
-		                    (float*)view);
-
-		/* 0. Transparent Fill (Instance Albedo) */
-		/* Push fill back to avoid z-fighting with outlines */
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(debug_offset_fill, debug_offset_fill);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		/* Disable stipple, Enable Billboard Mode, Enable Instance Color
-		 */
-		shader_set_int_loc(scene->shaders->debug_uniforms.u_stippled,
-		                   0);
-		shader_set_int_loc(
-		    scene->shaders->debug_uniforms.u_billboard_mode, 1);
-		shader_set_int_loc(
-		    scene->shaders->debug_uniforms.u_use_instance_col, 1);
-		/* Alpha 0.10 for transparency */
-		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
-		shader_set_vec4_loc(scene->shaders->debug_uniforms.u_color,
-		                    color_fill);
-		billboard_group_draw_debug_fill(&scene->billboard_group);
-		glDisable(GL_BLEND);
-		glDisable(GL_POLYGON_OFFSET_FILL);
-
-		/* 1. Quad Outline (Solid Green/White) */
-		/* Pull outlines forward */
-		glEnable(GL_POLYGON_OFFSET_LINE);
-		glPolygonOffset(debug_offset_line, debug_offset_line);
-
-		/* Disable stipple, Enable Billboard Mode, Disable Instance
-		 * Color */
-		shader_set_int_loc(scene->shaders->debug_uniforms.u_stippled,
-		                   0);
-		shader_set_int_loc(
-		    scene->shaders->debug_uniforms.u_billboard_mode, 1);
-		shader_set_int_loc(
-		    scene->shaders->debug_uniforms.u_use_instance_col, 0);
-		float color_quad[4] = {0.0F, 1.0F, 0.0F, 1.0F};
-		shader_set_vec4_loc(scene->shaders->debug_uniforms.u_color,
-		                    color_quad);
-		billboard_group_draw_debug_quads(&scene->billboard_group);
-
-		/* 2. Bounding Box (Dotted/Stippled Red/Yellow) */
-		/* Enable stipple, Disable Billboard Mode */
-		shader_set_int_loc(scene->shaders->debug_uniforms.u_stippled,
-		                   1);
-		shader_set_int_loc(
-		    scene->shaders->debug_uniforms.u_billboard_mode, 0);
-		float color_box[4] = {1.0F, 1.0F, 0.0F, debug_box_alpha};
-		shader_set_vec4_loc(scene->shaders->debug_uniforms.u_color,
-		                    color_box);
-		billboard_group_draw_debug_boxes(&scene->billboard_group);
-
-		glDisable(GL_POLYGON_OFFSET_LINE);
-
-		/* Restore Depth State */
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
-	}
-}
-
 static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
                                    vec3 camera_pos, mat4 previous_view_proj)
 {
@@ -353,68 +232,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 		if (scene->config.billboard_mode) {
 			gl_debug_push_group("Billboard_Sort_And_Render");
-			GLuint sorted_ssbo = 0;
 
-			/* 1. Sorting Pass (CPU or GPU) */
-			{
-				GPU_STAGE_PROFILER(
-				    profiler, "Sphere Sort",
-				    GPU_PROFILER_MOTION_BLUR_COLOR);
-
-				switch (scene->config.sorting_mode) {
-					case SORTING_MODE_CPU_QSORT:
-						sorted_ssbo =
-						    billboard_sorter_sort_cpu(
-						        &scene
-						             ->billboard_sorter,
-						        scene
-						            ->billboard_instances,
-						        scene
-						            ->billboard_instance_count,
-						        camera_pos);
-						break;
-					case SORTING_MODE_CPU_RADIX:
-						sorted_ssbo =
-						    billboard_sorter_sort_cpu_radix(
-						        &scene
-						             ->billboard_sorter,
-						        scene
-						            ->billboard_instances,
-						        scene
-						            ->billboard_instance_count,
-						        camera_pos);
-						break;
-					case SORTING_MODE_GPU_BITONIC:
-					default:
-						sorted_ssbo =
-						    billboard_sorter_sort_gpu(
-						        &scene
-						             ->billboard_sorter,
-						        scene
-						            ->billboard_instances,
-						        scene
-						            ->billboard_instance_count,
-						        camera_pos);
-						break;
-				}
-			}
-
-			/* Tier 4: Sorted SSBO already bound at binding 2 by
-			 * sort functions — vertex shader reads it directly
-			 * via gl_InstanceID (no VBO copy needed). */
-			scene->billboard_group.instance_count =
-			    scene->billboard_instance_count;
-
-			/* Legacy VBO copy only for debug wireframe overlay
-			 * (debug_line_shader reads per-SphereInstance
-			 * attributes) */
-			if (scene->config.wireframe) {
-				billboard_group_update_from_buffer(
-				    &scene->billboard_group, sorted_ssbo,
-				    scene->billboard_instance_count);
-			}
-
-			/* 2. Actual Billboard Rendering */
+			/* Billboard Sorting and Rendering */
 			{
 				GPU_STAGE_PROFILER(profiler, "Billboard Render",
 				                   GPU_PROFILER_SCENE_COLOR);
@@ -424,9 +243,49 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 				            GL_ONE_MINUS_SRC_ALPHA);
 				glDisablei(GL_BLEND, 1);
 
-				scene_render_billboards(
-				    scene, view, proj, camera_pos,
-				    previous_view_proj, width, height);
+				/* Bind textures first */
+				scene_bind_ibl_textures(scene);
+				scene_bind_probe_textures(scene);
+
+				/* Populate params */
+				BillboardRenderParams params = {0};
+				glm_mat4_copy(proj, params.projection);
+				glm_mat4_copy(view, params.view);
+				glm_mat4_copy(previous_view_proj,
+				              params.previous_view_proj);
+				glm_vec3_copy(camera_pos, params.camera_pos);
+				params.pbr_debug_mode =
+				    scene->config.pbr_debug_mode;
+				params.screen_size[0] = (float)width;
+				params.screen_size[1] = (float)height;
+				glm_vec3_copy(
+				    scene->lighting.probe_grid.aabb_min,
+				    params.probe_grid_min);
+				glm_vec3_copy(
+				    scene->lighting.probe_grid.aabb_max,
+				    params.probe_grid_max);
+				params.probe_grid_dim[0] =
+				    scene->lighting.probe_grid.grid_dim[0];
+				params.probe_grid_dim[1] =
+				    scene->lighting.probe_grid.grid_dim[1];
+				params.probe_grid_dim[2] =
+				    scene->lighting.probe_grid.grid_dim[2];
+				params.gi_mode = (int32_t)scene->config.gi_mode;
+				params.specular_aa_enabled =
+				    scene->config.specular_aa_enabled;
+				params.aa_mode = scene->config.aa_mode;
+				params.wireframe = scene->config.wireframe;
+				params.sorting_mode =
+				    scene->config.sorting_mode;
+				params.instances = scene->billboard_instances;
+				params.instance_count =
+				    scene->billboard_instance_count;
+
+				billboard_renderer_draw(
+				    &scene->billboard_renderer, &params,
+				    scene->shaders->pbr_billboard->program,
+				    scene->shaders->debug_line->program,
+				    scene->gpu->billboard_ubo_ptr);
 
 				glDisablei(GL_BLEND, 0);
 			}

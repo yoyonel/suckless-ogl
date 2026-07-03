@@ -1,14 +1,13 @@
 /**
- * @file billboard_sorting.h
- * @brief Back-to-front sorting for transparent geometry.
- *
- * This module provides an efficient sorting mechanism for sphere instances,
- * which is required for correct alpha blending of billboarded spheres.
+ * @file billboard_sorter.h
+ * @brief Back-to-front sorting for transparent billboard geometry.
  */
 
-#ifndef BILLBOARD_SORTING_H
-#define BILLBOARD_SORTING_H
+#ifndef BILLBOARD_SORTER_H
+#define BILLBOARD_SORTER_H
 
+#include "gl_common.h"
+#include "scene_config.h"
 #include "sphere_types.h"
 #include <cglm/cglm.h>
 
@@ -62,10 +61,6 @@ void billboard_sorter_cleanup(BillboardSorter* sorter);
 
 /**
  * @brief Sorts the array of instances Back-to-Front (descending depth) on GPU.
- *
- * Uploads instances to an SSBO, sorts them using a compute shader, and
- * prepares them for rendering.
- *
  * @param sorter      Memory context.
  * @param instances   Pointer to the array of instances to upload.
  * @param count       Active element count.
@@ -78,9 +73,6 @@ GLuint billboard_sorter_sort_gpu(BillboardSorter* sorter,
 
 /**
  * @brief Sorts the array of instances Back-to-Front (descending depth) on CPU.
- *
- * Uses qsort on the host and uploads the result to the SSBO.
- *
  * @param sorter      Memory context.
  * @param instances   Array of instances (will be copied and sorted internally).
  * @param count       Active element count.
@@ -104,4 +96,17 @@ GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
                                        const SphereInstance* instances,
                                        int count, const vec3 camera_pos);
 
-#endif /* BILLBOARD_SORTING_H */
+/**
+ * @brief Dispatches the sorting task using the specified SortingMode.
+ * @param sorter      Memory context.
+ * @param instances   Array of instances.
+ * @param count       Active element count.
+ * @param camera_pos  World-space viewer position.
+ * @param mode        Sorting algorithm choice.
+ * @return The SSBO handle containing the sorted instances.
+ */
+GLuint billboard_sorter_sort(BillboardSorter* sorter,
+                             const SphereInstance* instances, int count,
+                             const vec3 camera_pos, SortingMode mode);
+
+#endif /* BILLBOARD_SORTER_H */
