@@ -12,6 +12,9 @@ var searchData=
   ['appprofiling_9',['AppProfiling',['../structAppProfiling.html',1,'']]],
   ['appuioverlay_10',['AppUIOverlay',['../structAppUIOverlay.html',1,'']]],
   ['appwindow_11',['AppWindow',['../structAppWindow.html',1,'']]],
-  ['asyncloader_12',['AsyncLoader',['../structAsyncLoader.html',1,'']]],
-  ['asyncrequest_13',['AsyncRequest',['../structAsyncRequest.html',1,'']]]
+  ['assethandle_12',['AssetHandle',['../structAssetHandle.html',1,'']]],
+  ['assetregistryentry_13',['AssetRegistryEntry',['../structAssetRegistryEntry.html',1,'']]],
+  ['asyncbackendinterface_14',['AsyncBackendInterface',['../structAsyncBackendInterface.html',1,'']]],
+  ['asyncloader_15',['AsyncLoader',['../structAsyncLoader.html',1,'']]],
+  ['asyncrequest_16',['AsyncRequest',['../structAsyncRequest.html',1,'']]]
 ];

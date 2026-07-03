@@ -548,6 +548,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#code-analysis-srp-refactoring-report-july-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Analysis &amp; SRP Refactoring Report (July 2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-transitions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -636,6 +647,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#multi-draw-indirect-mdi-refactoring-study" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Draw Indirect (MDI) Refactoring Study
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#neon-trail-rendering" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -706,6 +728,17 @@
     <span class="md-ellipsis">
       
         UI Visual Parameters Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modern-vertex-attribute-binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modern Vertex Attribute Binding
       
     </span>
   </a>
@@ -932,6 +965,34 @@
     
   
     Cache Locality vs Decoupling (May 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_analysis_report_2026_07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Analysis (July 2026)
   
 
     
@@ -2016,6 +2077,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../vertex_attrib_binding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vertex Attrib Binding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../shader_optimization/" class="md-nav__link">
         
   
@@ -2373,6 +2462,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_draw_indirect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Draw Indirect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2472,6 +2589,62 @@
     
   
     Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../packaging_windows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Windows / Steam / Proton Packaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steam_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam Integration
   
 
     
@@ -3332,7 +3505,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+      <a href="../fix_lint_bazzite_paths.md" class="md-nav__link">
         
   
   
@@ -3368,6 +3541,62 @@
     
   
     PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../render_context_stack_allocation_2026_07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Render Context Stack Allocation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compilation_assembly_analysis_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compilation &amp; Assembly Analysis Guide
   
 
     
@@ -4494,6 +4723,25 @@ ADAPT --&gt; EXP[Exposure Tex]</code></pre>
   </div>
 </div>
 
+<h2 id="code-analysis-srp-refactoring-report-july-2026"><a href="../code_analysis_report_2026_07/">Code Analysis &amp; SRP Refactoring Report (July 2026)</a><a class="headerlink" href="#code-analysis-srp-refactoring-report-july-2026" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../code_analysis_report_2026_07/#why-does-it-exist" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Why does it exist?</a> : <span style="opacity: 0.6; font-size: 0.85em;">This function is a Type Erasure Trampoline (Adapter Pattern) designed to enforce Separation of Concerns (SoC) and prevent circular dependencies.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+App[app.c / app.h &lt;br/&gt;&lt;i&gt;High-level Orchestrator&lt;/i&gt;]
+Renderer[renderer.c / renderer.h &lt;br/&gt;&lt;i&gt;Low-level Render Pipeline&lt;/i&gt;]
+AppUI[app_ui.c / app_ui.h &lt;br/&gt;&lt;i&gt;Dear ImGui User Interface&lt;/i&gt;]
+App --&gt;|includes| Renderer
+App --&gt;|includes| AppUI
+AppUI --&gt;|takes const App*| App
+Renderer -.-&gt;|Callback via RenderUIFn| App
+style Renderer fill:#1a1b26,stroke:#f7768e,stroke-width:2px;
+style App fill:#1a1b26,stroke:#7aa2f7,stroke-width:2px;</code></pre>
+
+  </div>
+</div>
+
 <h2 id="environment-transitions"><a href="../env_transitions/">Environment Transitions</a><a class="headerlink" href="#environment-transitions" title="Permanent link">¶</a></h2>
 <div class="diagram-item">
   <a href="../env_transitions/#state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">Transitions are governed by a state machine in `src/appenv.c`.</span>
@@ -4783,6 +5031,18 @@ C[Curved Blur \nRE Engine / SF6] --&gt;|Sampling along a circular arc| D(Anime/M
   </div>
 </div>
 
+<h2 id="multi-draw-indirect-mdi-refactoring-study"><a href="../multi_draw_indirect/">Multi-Draw Indirect (MDI) Refactoring Study</a><a class="headerlink" href="#multi-draw-indirect-mdi-refactoring-study" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../multi_draw_indirect/#4-action-plan-atomic-steps" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4. Action Plan (Atomic Steps)</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+A[Step 1: Geometry Atlas &amp; Basic DIB] --&gt; B[Step 2: MDI Pipeline for Spheres]
+B --&gt; C[Step 3: Dynamic MDI with Frustum Culling]</code></pre>
+
+  </div>
+</div>
+
 <h2 id="neon-trail-rendering"><a href="../neon_trails/">Neon Trail Rendering</a><a class="headerlink" href="#neon-trail-rendering" title="Permanent link">¶</a></h2>
 <div class="diagram-item">
   <a href="../neon_trails/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">Each change displays an on-screen notification with the current value.</span>
@@ -5060,6 +5320,33 @@ D -- Enters New Key --&gt; B</code></pre>
   </div>
 </div>
 
+<h2 id="modern-vertex-attribute-binding"><a href="../vertex_attrib_binding/">Modern Vertex Attribute Binding</a><a class="headerlink" href="#modern-vertex-attribute-binding" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../vertex_attrib_binding/#the-modern-opengl-43-approach" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">The Modern OpenGL 4.3+ Approach</a> : <span style="opacity: 0.6; font-size: 0.85em;">3. Buffer Binding: `glBindVertexBuffer` binds a physical GPU buffer (VBO) to a logical binding point, providing the start offset and the stride.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+classDef buffer fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7,stroke-width:2
+classDef slot fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+classDef bindpoint fill:#1a1b26,stroke:#e0af68,color:#e0af68
+VBO_Geom[Geometry VBO]:::buffer
+VBO_Inst[Instance VBO]:::buffer
+BP_0[Binding Point 0&lt;br/&gt;Stride: 3*sizeof(float)]:::bindpoint
+BP_1[Binding Point 1&lt;br/&gt;Stride: sizeof(SphereInstance)]:::bindpoint
+Attr_0[Attribute 0: Position]:::slot
+Attr_1[Attribute 1: Normals]:::slot
+Attr_2[Attribute 2: Albedo]:::slot
+Attr_3[Attribute 3: Metallic]:::slot
+VBO_Geom --&gt;|glBindVertexBuffer| BP_0
+VBO_Inst --&gt;|glBindVertexBuffer| BP_1
+Attr_0 --&gt;|glVertexAttribBinding| BP_0
+Attr_1 --&gt;|glVertexAttribBinding| BP_0
+Attr_2 --&gt;|glVertexAttribBinding| BP_1
+Attr_3 --&gt;|glVertexAttribBinding| BP_1</code></pre>
+
+  </div>
+</div>
+
 
 
 
@@ -5079,7 +5366,7 @@ D -- Enters New Key --&gt; B</code></pre>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 26, 2026 17:00:45 UTC">April 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 25, 2026 20:55:38 UTC">June 25, 2026</span>
   </span>
 
     

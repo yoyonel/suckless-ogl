@@ -20,7 +20,7 @@
 <!-- Node2 -->
 <g id="Node000002" class="node">
 <title>Node2</title>
-<g id="a_Node000002"><a xlink:href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a" target="_top" xlink:title="Cancels the current request if it is waiting for a PBO.">
+<g id="a_Node000002"><a xlink:href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a" target="_top" xlink:title="Cancel a loading request waiting for PBO input.">
 <polygon fill="white" stroke="#666666" points="313,-167 195,-167 195,-148 313,-148 313,-167"/>
 <text text-anchor="middle" x="254" y="-155" font-family="Helvetica,sans-Serif" font-size="10.00">async_loader_cancel</text>
 </a>
@@ -38,7 +38,7 @@
 <!-- Node3 -->
 <g id="Node000003" class="node">
 <title>Node3</title>
-<g id="a_Node000003"><a xlink:href="async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" target="_top" xlink:title="Polls the loader for any completed requests.">
+<g id="a_Node000003"><a xlink:href="async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" target="_top" xlink:title="Poll the status of the current request.">
 <polygon fill="white" stroke="#666666" points="306,-130 202,-130 202,-111 306,-111 306,-130"/>
 <text text-anchor="middle" x="254" y="-118" font-family="Helvetica,sans-Serif" font-size="10.00">async_loader_poll</text>
 </a>
@@ -56,7 +56,7 @@
 <!-- Node4 -->
 <g id="Node000004" class="node">
 <title>Node4</title>
-<g id="a_Node000004"><a xlink:href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" target="_top" xlink:title="Provides a mapped PBO pointer to the async loader for conversion.">
+<g id="a_Node000004"><a xlink:href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" target="_top" xlink:title="Provide the mapped memory address and GL buffer ID for PBO writing.">
 <polygon fill="white" stroke="#666666" points="327,-93 181,-93 181,-74 327,-74 327,-93"/>
 <text text-anchor="middle" x="254" y="-81" font-family="Helvetica,sans-Serif" font-size="10.00">async_loader_provide_pbo</text>
 </a>

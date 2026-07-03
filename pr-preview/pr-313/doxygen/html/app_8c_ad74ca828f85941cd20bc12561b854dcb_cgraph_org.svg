@@ -112,7 +112,7 @@
 <!-- Node3 -->
 <g id="Node000003" class="node">
 <title>Node3</title>
-<g id="a_Node000003"><a xlink:href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a" target="_top" xlink:title="Cancels the current request if it is waiting for a PBO.">
+<g id="a_Node000003"><a xlink:href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a" target="_top" xlink:title="Cancel a loading request waiting for PBO input.">
 <polygon fill="white" stroke="#666666" points="423,-771.5 305,-771.5 305,-752.5 423,-752.5 423,-771.5"/>
 <text text-anchor="middle" x="364" y="-759.5" font-family="Helvetica,sans-Serif" font-size="10.00">async_loader_cancel</text>
 </a>
@@ -130,7 +130,7 @@
 <!-- Node4 -->
 <g id="Node000004" class="node">
 <title>Node4</title>
-<g id="a_Node000004"><a xlink:href="async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" target="_top" xlink:title="Polls the loader for any completed requests.">
+<g id="a_Node000004"><a xlink:href="async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" target="_top" xlink:title="Poll the status of the current request.">
 <polygon fill="white" stroke="#666666" points="416,-734.5 312,-734.5 312,-715.5 416,-715.5 416,-734.5"/>
 <text text-anchor="middle" x="364" y="-722.5" font-family="Helvetica,sans-Serif" font-size="10.00">async_loader_poll</text>
 </a>
@@ -148,7 +148,7 @@
 <!-- Node5 -->
 <g id="Node000005" class="node">
 <title>Node5</title>
-<g id="a_Node000005"><a xlink:href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" target="_top" xlink:title="Provides a mapped PBO pointer to the async loader for conversion.">
+<g id="a_Node000005"><a xlink:href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" target="_top" xlink:title="Provide the mapped memory address and GL buffer ID for PBO writing.">
 <polygon fill="white" stroke="#666666" points="437,-882.5 291,-882.5 291,-863.5 437,-863.5 437,-882.5"/>
 <text text-anchor="middle" x="364" y="-870.5" font-family="Helvetica,sans-Serif" font-size="10.00">async_loader_provide_pbo</text>
 </a>
@@ -239,7 +239,7 @@
 <!-- Node12 -->
 <g id="Node000012" class="node">
 <title>Node12</title>
-<g id="a_Node000012"><a xlink:href="texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3" target="_top" xlink:title="Finalizes HDR upload from a PBO (Unmap &#45;&gt; Upload &#45;&gt; Mipmaps).">
+<g id="a_Node000012"><a xlink:href="texture_8c.html#a248f9778a106f6a6d303c5d706738e99" target="_top" xlink:title="Finalizes HDR upload from a PBO (Unmap &#45;&gt; Upload &#45;&gt; Mipmaps).">
 <polygon fill="white" stroke="#666666" points="419.5,-660 308.5,-660 308.5,-630 419.5,-630 419.5,-660"/>
 <text text-anchor="start" x="316.5" y="-648" font-family="Helvetica,sans-Serif" font-size="10.00">texture_upload_hdr</text>
 <text text-anchor="middle" x="364" y="-637" font-family="Helvetica,sans-Serif" font-size="10.00">_from_pbo</text>
@@ -276,7 +276,7 @@
 <!-- Node13 -->
 <g id="Node000013" class="node">
 <title>Node13</title>
-<g id="a_Node000013"><a xlink:href="texture_8c.html#ae4fa58847422e51db4b6960239724bf2" target="_top" xlink:title=" ">
+<g id="a_Node000013"><a xlink:href="texture_8c.html#a11ce172df808eae87ff075956f11e0e8" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="632,-676.5 473,-676.5 473,-657.5 632,-657.5 632,-676.5"/>
 <text text-anchor="middle" x="552.5" y="-664.5" font-family="Helvetica,sans-Serif" font-size="10.00">texture_allocate_storage_hdr</text>
 </a>
@@ -294,7 +294,7 @@
 <!-- Node14 -->
 <g id="Node000014" class="node">
 <title>Node14</title>
-<g id="a_Node000014"><a xlink:href="texture_8c.html#a87a5326d68a2497f0b4bd7afbca69139" target="_top" xlink:title=" ">
+<g id="a_Node000014"><a xlink:href="texture_8c.html#a35694e68e7796084e723cd719f7f1285" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="630.5,-639.5 474.5,-639.5 474.5,-620.5 630.5,-620.5 630.5,-639.5"/>
 <text text-anchor="middle" x="552.5" y="-627.5" font-family="Helvetica,sans-Serif" font-size="10.00">texture_reuse_or_create_hdr</text>
 </a>
@@ -312,7 +312,7 @@
 <!-- Node15 -->
 <g id="Node000015" class="node">
 <title>Node15</title>
-<g id="a_Node000015"><a xlink:href="texture_8c.html#aba2936ced854edf19507c84b2e008b88" target="_top" xlink:title="Check if an existing texture matches the expected HDR format.">
+<g id="a_Node000015"><a xlink:href="texture_8c.html#af0be6cd9be3963a59f28769b690e2635" target="_top" xlink:title="Check if an existing texture matches the expected HDR format.">
 <polygon fill="white" stroke="#666666" points="804,-707.5 684,-707.5 684,-688.5 804,-688.5 804,-707.5"/>
 <text text-anchor="middle" x="744" y="-695.5" font-family="Helvetica,sans-Serif" font-size="10.00">texture_matches_hdr</text>
 </a>

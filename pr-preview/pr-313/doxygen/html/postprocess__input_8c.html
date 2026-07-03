@@ -241,12 +241,17 @@ $(document).ready(function(){initNavTree('postprocess__input_8c.html',''); initR
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="postprocess__input_8h_source.html">postprocess_input.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="action__notifier_8h_source.html">action_notifier.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="effect__benchmark_8h_source.html">effect_benchmark.h</a>&quot;</code><br />
 <code>#include &quot;effects/fx_auto_exposure.h&quot;</code><br />
+<code>#include &quot;effects/fx_bloom.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="postprocess__internal_8h_source.html">postprocess_internal.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__presets_8h_source.html">postprocess_presets.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for postprocess_input.c:</div>
@@ -256,9 +261,9 @@ Include dependency graph for postprocess_input.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a1be3860693af99a6c1da72580097294c" id="r_a1be3860693af99a6c1da72580097294c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="postprocess__input_8c.html#a1be3860693af99a6c1da72580097294ca4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
+<tr class="memitem:afb730582952b7ceec73d7dc9bf7bef39" id="r_afb730582952b7ceec73d7dc9bf7bef39"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="postprocess__input_8c.html#afb730582952b7ceec73d7dc9bf7bef39a4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
  }</td></tr>
-<tr class="separator:a1be3860693af99a6c1da72580097294c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:afb730582952b7ceec73d7dc9bf7bef39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -268,6 +273,10 @@ Functions</h2></td></tr>
 <tr class="separator:a1f3eda4aedf72f7b25dffa279ef567ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfa07d9865ce43b54938a67359d48a4a" id="r_abfa07d9865ce43b54938a67359d48a4a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#abfa07d9865ce43b54938a67359d48a4a">handle_exposure_input</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int key)</td></tr>
 <tr class="separator:abfa07d9865ce43b54938a67359d48a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada0face5026be2c6577dee60ba1e6d11" id="r_ada0face5026be2c6577dee60ba1e6d11"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#ada0face5026be2c6577dee60ba1e6d11">cycle_banding_styles</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx)</td></tr>
+<tr class="separator:ada0face5026be2c6577dee60ba1e6d11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe8584af868e00a3712e75de364ce237" id="r_abe8584af868e00a3712e75de364ce237"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#abe8584af868e00a3712e75de364ce237">cycle_lut_styles</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods)</td></tr>
+<tr class="separator:abe8584af868e00a3712e75de364ce237"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33527b2006eed0f72f45a3b4e7227838" id="r_a33527b2006eed0f72f45a3b4e7227838"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#a33527b2006eed0f72f45a3b4e7227838">handle_preset_input</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int key, int mods)</td></tr>
 <tr class="separator:a33527b2006eed0f72f45a3b4e7227838"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39d78a9fa6647267f4e54013be2ba57a" id="r_a39d78a9fa6647267f4e54013be2ba57a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#a39d78a9fa6647267f4e54013be2ba57a">handle_fxaa_input</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods)</td></tr>
@@ -276,13 +285,15 @@ Functions</h2></td></tr>
 <tr class="separator:ab724a1467783d1a0c32042f2ebe9a8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5c5e3bd95f2a6bdd9c714a9f1e56fc8" id="r_ab5c5e3bd95f2a6bdd9c714a9f1e56fc8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#ab5c5e3bd95f2a6bdd9c714a9f1e56fc8">handle_auto_exposure_key</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods)</td></tr>
 <tr class="separator:ab5c5e3bd95f2a6bdd9c714a9f1e56fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7103ebe5e27e3f45734c6d09e99aae08" id="r_a7103ebe5e27e3f45734c6d09e99aae08"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#a7103ebe5e27e3f45734c6d09e99aae08">postprocess_cycle_bloom_debug</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:a7103ebe5e27e3f45734c6d09e99aae08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac314e0acb97710d2d9177593506123a4" id="r_ac314e0acb97710d2d9177593506123a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#ac314e0acb97710d2d9177593506123a4">postprocess_input_handle_key</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int key, int mods)</td></tr>
 <tr class="memdesc:ac314e0acb97710d2d9177593506123a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles key input events related to post-processing.  <br /></td></tr>
 <tr class="separator:ac314e0acb97710d2d9177593506123a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a1be3860693af99a6c1da72580097294c" name="a1be3860693af99a6c1da72580097294c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1be3860693af99a6c1da72580097294c">&#9670;&#160;</a></span>anonymous enum</h2>
+<a id="afb730582952b7ceec73d7dc9bf7bef39" name="afb730582952b7ceec73d7dc9bf7bef39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb730582952b7ceec73d7dc9bf7bef39">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -293,12 +304,84 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1be3860693af99a6c1da72580097294ca4a400d8a348b628422a6de4f19fa7bce" name="a1be3860693af99a6c1da72580097294ca4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afb730582952b7ceec73d7dc9bf7bef39a4a400d8a348b628422a6de4f19fa7bce" name="afb730582952b7ceec73d7dc9bf7bef39a4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ada0face5026be2c6577dee60ba1e6d11" name="ada0face5026be2c6577dee60ba1e6d11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada0face5026be2c6577dee60ba1e6d11">&#9670;&#160;</a></span>cycle_banding_styles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cycle_banding_styles </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__input_8c_ada0face5026be2c6577dee60ba1e6d11_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="abe8584af868e00a3712e75de364ce237" name="abe8584af868e00a3712e75de364ce237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe8584af868e00a3712e75de364ce237">&#9670;&#160;</a></span>cycle_lut_styles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cycle_lut_styles </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__input_8c_abe8584af868e00a3712e75de364ce237_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
 <a id="ab724a1467783d1a0c32042f2ebe9a8f0" name="ab724a1467783d1a0c32042f2ebe9a8f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab724a1467783d1a0c32042f2ebe9a8f0">&#9670;&#160;</a></span>handle_ae_path_toggle()</h2>
 
@@ -496,6 +579,37 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__input_8c_a33527b2006eed0f72f45a3b4e7227838_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a7103ebe5e27e3f45734c6d09e99aae08" name="a7103ebe5e27e3f45734c6d09e99aae08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7103ebe5e27e3f45734c6d09e99aae08">&#9670;&#160;</a></span>postprocess_cycle_bloom_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const char * postprocess_cycle_bloom_debug </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__input_8c_a7103ebe5e27e3f45734c6d09e99aae08_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>

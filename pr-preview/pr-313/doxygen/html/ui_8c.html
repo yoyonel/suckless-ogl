@@ -235,7 +235,6 @@ $(document).ready(function(){initNavTree('ui_8c.html',''); initResizable(); });
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -255,6 +254,7 @@ $(document).ready(function(){initNavTree('ui_8c.html',''); initResizable(); });
 <code>#include &lt;cglm/types.h&gt;</code><br />
 <code>#include &lt;cglm/vec3.h&gt;</code><br />
 <code>#include &lt;stb_truetype.h&gt;</code><br />
+<code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -263,11 +263,6 @@ Include dependency graph for ui.c:</div>
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c__incl.svg" width="100%" height="492"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIQuad.html">UIQuad</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ad3f72dd84eefcfe643a0a210388d8d27" id="r_ad3f72dd84eefcfe643a0a210388d8d27"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27">FontAtlasConfig</a> { <a class="el" href="ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27aa0f4026de0fe5858c7c8199069825526">FONT_ATLAS_SIZE</a> = 512
@@ -281,19 +276,32 @@ Enumerations</h2></td></tr>
 , <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4">FLOATS_PER_VERTEX</a> = 12
  }</td></tr>
 <tr class="separator:aa36b7f9e66f38c879887c8f0996c33e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe601f67c59d4182d4066926a0add30c" id="r_afe601f67c59d4182d4066926a0add30c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30c">VertexID</a> { <br />
+&#160;&#160;<a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30ca18b7324dac6bc5433a16c50bcd9a6a0e">VERTEX_0</a> = 0
+, <a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30ca54fa375ac50feb53bb736662ba21b4e6">VERTEX_1</a>
+, <a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30ca7ea7269c86edde254d6ab0568474e8d1">VERTEX_2</a>
+, <a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30cad57116d0ee6c51004883bf1057f347a1">VERTEX_3</a>
+, <br />
+&#160;&#160;<a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30ca11672fddd7a2ac99d896612910591bc5">VERTEX_4</a>
+, <a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30ca600607423881e7e6fc446cf7f1065c30">VERTEX_5</a>
+<br />
+ }</td></tr>
+<tr class="separator:afe601f67c59d4182d4066926a0add30c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a05f2c5e6678bcb2f958195dcab774062" id="r_a05f2c5e6678bcb2f958195dcab774062"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a05f2c5e6678bcb2f958195dcab774062">setup_ui_render_state</a> (void)</td></tr>
 <tr class="separator:a05f2c5e6678bcb2f958195dcab774062"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a288a4c20fc565627f3c5d04024dfe73e" id="r_a288a4c20fc565627f3c5d04024dfe73e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a288a4c20fc565627f3c5d04024dfe73e">push_batch_quad</a> (<a class="el" href="structUIVertex.html">UIVertex</a> *out_vert, float left, float right, float top, float bottom, float tex_u0, float tex_v0, float tex_u1, float tex_v1, float col_r, float col_g, float col_b, float col_a, float mode, float param_w, float param_h, float radius)</td></tr>
+<tr class="separator:a288a4c20fc565627f3c5d04024dfe73e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adea4af1dfed2a306c55f45c26e117280" id="r_adea4af1dfed2a306c55f45c26e117280"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#adea4af1dfed2a306c55f45c26e117280">create_font_atlas</a> (unsigned char *font_buffer, float font_size, <a class="el" href="structUIContext.html">UIContext</a> *ui_context)</td></tr>
 <tr class="separator:adea4af1dfed2a306c55f45c26e117280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38379b82fe44d3fc5826c8a9ed606cf5" id="r_a38379b82fe44d3fc5826c8a9ed606cf5"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a38379b82fe44d3fc5826c8a9ed606cf5">setup_vertex_buffers</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context)</td></tr>
 <tr class="separator:a38379b82fe44d3fc5826c8a9ed606cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2542a31c87c66c322c255f6110d7b273" id="r_a2542a31c87c66c322c255f6110d7b273"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a2542a31c87c66c322c255f6110d7b273">prepare_batch</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, GLuint texture)</td></tr>
 <tr class="separator:a2542a31c87c66c322c255f6110d7b273"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f543873f648c1c65a3cce1db844d95a" id="r_a6f543873f648c1c65a3cce1db844d95a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structUIQuad.html">UIQuad</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a6f543873f648c1c65a3cce1db844d95a">make_glyph_quad</a> (const <a class="el" href="structGlyphInfo.html">GlyphInfo</a> *glyph, float render_x, float render_y, float scale, const vec3 color, float alpha)</td></tr>
-<tr class="separator:a6f543873f648c1c65a3cce1db844d95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75ea2ac8802dd70abd3eb8002e42f8ea" id="r_a75ea2ac8802dd70abd3eb8002e42f8ea"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a75ea2ac8802dd70abd3eb8002e42f8ea">make_glyph_quad</a> (const <a class="el" href="structGlyphInfo.html">GlyphInfo</a> *glyph, float render_x, float render_y, float scale, const vec3 color, float alpha, <a class="el" href="structUIVertex.html">UIVertex</a> *out_vertices)</td></tr>
+<tr class="separator:a75ea2ac8802dd70abd3eb8002e42f8ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad120cc592f289ed7dd085d8d90b9a712" id="r_ad120cc592f289ed7dd085d8d90b9a712"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#ad120cc592f289ed7dd085d8d90b9a712">ui_init</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, const char *font_path, float font_size)</td></tr>
 <tr class="memdesc:ad120cc592f289ed7dd085d8d90b9a712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the UI system.  <br /></td></tr>
 <tr class="separator:ad120cc592f289ed7dd085d8d90b9a712"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -366,6 +374,18 @@ Variables</h2></td></tr>
 <tr class="separator:a42d60159b1f7fbfbff679ea27494cfdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa091a07662c10c5d3b8eaaf4774d7ab5" id="r_aa091a07662c10c5d3b8eaaf4774d7ab5"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aa091a07662c10c5d3b8eaaf4774d7ab5">UI_QUAD_MIN</a> = 0.0F</td></tr>
 <tr class="separator:aa091a07662c10c5d3b8eaaf4774d7ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ebbbf2c276e18d60893b6a0162946c1" id="r_a2ebbbf2c276e18d60893b6a0162946c1"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a2ebbbf2c276e18d60893b6a0162946c1">UI_MODE_SOLID</a> = 0.0F</td></tr>
+<tr class="separator:a2ebbbf2c276e18d60893b6a0162946c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceed7ba2d31b6eb329659b328a36c8bf" id="r_aceed7ba2d31b6eb329659b328a36c8bf"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aceed7ba2d31b6eb329659b328a36c8bf">UI_MODE_TEXT</a> = 1.0F</td></tr>
+<tr class="separator:aceed7ba2d31b6eb329659b328a36c8bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7a4de40fb021ae12eed00ab4bb0146f" id="r_af7a4de40fb021ae12eed00ab4bb0146f"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#af7a4de40fb021ae12eed00ab4bb0146f">UI_MODE_ROUNDED</a> = 2.0F</td></tr>
+<tr class="separator:af7a4de40fb021ae12eed00ab4bb0146f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15185b23bfab68e92e7d778881b9fbf7" id="r_a15185b23bfab68e92e7d778881b9fbf7"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a15185b23bfab68e92e7d778881b9fbf7">UI_MODE_TEXTURED</a> = 3.0F</td></tr>
+<tr class="separator:a15185b23bfab68e92e7d778881b9fbf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac905219effb90c29ba46c0a22def5c73" id="r_ac905219effb90c29ba46c0a22def5c73"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#ac905219effb90c29ba46c0a22def5c73">UI_MODE_BLOOM</a> = 4.0F</td></tr>
+<tr class="separator:ac905219effb90c29ba46c0a22def5c73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8be286ee999925f53f00322739134fbe" id="r_a8be286ee999925f53f00322739134fbe"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a8be286ee999925f53f00322739134fbe">UI_MODE_GLOW</a> = 5.0F</td></tr>
+<tr class="separator:a8be286ee999925f53f00322739134fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada114a43ba5ef5da89f16bfd867c8065" id="r_ada114a43ba5ef5da89f16bfd867c8065"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGLStateBackup.html">GLStateBackup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#ada114a43ba5ef5da89f16bfd867c8065">g_ui_saved_state</a></td></tr>
 <tr class="separator:ada114a43ba5ef5da89f16bfd867c8065"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -405,6 +425,28 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98" name="aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98"></a>VERTEX_COMPONENTS&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa" name="aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa"></a>VERTICES_PER_QUAD&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4" name="aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4"></a>FLOATS_PER_VERTEX&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="afe601f67c59d4182d4066926a0add30c" name="afe601f67c59d4182d4066926a0add30c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe601f67c59d4182d4066926a0add30c">&#9670;&#160;</a></span>VertexID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="ui_8c.html#afe601f67c59d4182d4066926a0add30c">VertexID</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afe601f67c59d4182d4066926a0add30ca18b7324dac6bc5433a16c50bcd9a6a0e" name="afe601f67c59d4182d4066926a0add30ca18b7324dac6bc5433a16c50bcd9a6a0e"></a>VERTEX_0&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afe601f67c59d4182d4066926a0add30ca54fa375ac50feb53bb736662ba21b4e6" name="afe601f67c59d4182d4066926a0add30ca54fa375ac50feb53bb736662ba21b4e6"></a>VERTEX_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afe601f67c59d4182d4066926a0add30ca7ea7269c86edde254d6ab0568474e8d1" name="afe601f67c59d4182d4066926a0add30ca7ea7269c86edde254d6ab0568474e8d1"></a>VERTEX_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afe601f67c59d4182d4066926a0add30cad57116d0ee6c51004883bf1057f347a1" name="afe601f67c59d4182d4066926a0add30cad57116d0ee6c51004883bf1057f347a1"></a>VERTEX_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afe601f67c59d4182d4066926a0add30ca11672fddd7a2ac99d896612910591bc5" name="afe601f67c59d4182d4066926a0add30ca11672fddd7a2ac99d896612910591bc5"></a>VERTEX_4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="afe601f67c59d4182d4066926a0add30ca600607423881e7e6fc446cf7f1065c30" name="afe601f67c59d4182d4066926a0add30ca600607423881e7e6fc446cf7f1065c30"></a>VERTEX_5&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -452,8 +494,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a6f543873f648c1c65a3cce1db844d95a" name="a6f543873f648c1c65a3cce1db844d95a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f543873f648c1c65a3cce1db844d95a">&#9670;&#160;</a></span>make_glyph_quad()</h2>
+<a id="a75ea2ac8802dd70abd3eb8002e42f8ea" name="a75ea2ac8802dd70abd3eb8002e42f8ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75ea2ac8802dd70abd3eb8002e42f8ea">&#9670;&#160;</a></span>make_glyph_quad()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -462,7 +504,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="structUIQuad.html">UIQuad</a> make_glyph_quad </td>
+          <td class="memname">static void make_glyph_quad </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structGlyphInfo.html">GlyphInfo</a> *&#160;</td>
           <td class="paramname"><em>glyph</em>, </td>
@@ -495,7 +537,13 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>alpha</em>&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structUIVertex.html">UIVertex</a> *&#160;</td>
+          <td class="paramname"><em>out_vertices</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -509,6 +557,11 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ui_8c_a75ea2ac8802dd70abd3eb8002e42f8ea_cgraph.svg" width="334" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>
@@ -550,6 +603,132 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a2542a31c87c66c322c255f6110d7b273_cgraph.svg" width="100%" height="370"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+
+</div>
+</div>
+<a id="a288a4c20fc565627f3c5d04024dfe73e" name="a288a4c20fc565627f3c5d04024dfe73e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a288a4c20fc565627f3c5d04024dfe73e">&#9670;&#160;</a></span>push_batch_quad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void push_batch_quad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIVertex.html">UIVertex</a> *&#160;</td>
+          <td class="paramname"><em>out_vert</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>left</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>right</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>top</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>bottom</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tex_u0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tex_v0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tex_u1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tex_v1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>col_r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>col_g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>col_b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>col_a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>param_w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>param_h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -602,11 +781,6 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="ui_8c_a38379b82fe44d3fc5826c8a9ed606cf5_cgraph.svg" width="356" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
@@ -777,7 +951,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_aab1c4d3b72a5751443624afa0b882801_cgraph.svg" width="100%" height="431"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_aab1c4d3b72a5751443624afa0b882801_cgraph.svg" width="100%" height="468"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -860,7 +1034,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a58a7b78e7956c02bde43fa68449deb66_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a58a7b78e7956c02bde43fa68449deb66_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -931,7 +1105,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_ae939146f2938232fc48f970745ecf26a_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_ae939146f2938232fc48f970745ecf26a_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1008,7 +1182,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a092e3880109fbbe26972f6c5e3866c17_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a092e3880109fbbe26972f6c5e3866c17_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1091,7 +1265,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af4b8d38bd43df2b9b59611b054408f74_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af4b8d38bd43df2b9b59611b054408f74_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1227,7 +1401,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_aa12b42bbbbca85f3404c48a9534aa7ac_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_aa12b42bbbbca85f3404c48a9534aa7ac_cgraph.svg" width="100%" height="487"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1298,7 +1472,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a74067bc67d31c6d82fa3b548a3729670_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a74067bc67d31c6d82fa3b548a3729670_cgraph.svg" width="100%" height="487"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1375,7 +1549,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_acb75a0a726f807c7362e0d26a2c8e74b_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_acb75a0a726f807c7362e0d26a2c8e74b_cgraph.svg" width="100%" height="487"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1468,7 +1642,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_ab36623b8b8e36a7938c53db20b6f54bc_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_ab36623b8b8e36a7938c53db20b6f54bc_cgraph.svg" width="100%" height="488"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1721,7 +1895,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a741fab59d05880f3bf5362d101833451_cgraph.svg" width="100%" height="450"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a741fab59d05880f3bf5362d101833451_cgraph.svg" width="100%" height="487"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1842,6 +2016,138 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">const size_t MAX_FONT_FILE_SIZE = 10 * 1024 * 1024</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac905219effb90c29ba46c0a22def5c73" name="ac905219effb90c29ba46c0a22def5c73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac905219effb90c29ba46c0a22def5c73">&#9670;&#160;</a></span>UI_MODE_BLOOM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float UI_MODE_BLOOM = 4.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8be286ee999925f53f00322739134fbe" name="a8be286ee999925f53f00322739134fbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8be286ee999925f53f00322739134fbe">&#9670;&#160;</a></span>UI_MODE_GLOW</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float UI_MODE_GLOW = 5.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af7a4de40fb021ae12eed00ab4bb0146f" name="af7a4de40fb021ae12eed00ab4bb0146f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7a4de40fb021ae12eed00ab4bb0146f">&#9670;&#160;</a></span>UI_MODE_ROUNDED</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float UI_MODE_ROUNDED = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2ebbbf2c276e18d60893b6a0162946c1" name="a2ebbbf2c276e18d60893b6a0162946c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ebbbf2c276e18d60893b6a0162946c1">&#9670;&#160;</a></span>UI_MODE_SOLID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float UI_MODE_SOLID = 0.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aceed7ba2d31b6eb329659b328a36c8bf" name="aceed7ba2d31b6eb329659b328a36c8bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aceed7ba2d31b6eb329659b328a36c8bf">&#9670;&#160;</a></span>UI_MODE_TEXT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float UI_MODE_TEXT = 1.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a15185b23bfab68e92e7d778881b9fbf7" name="a15185b23bfab68e92e7d778881b9fbf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15185b23bfab68e92e7d778881b9fbf7">&#9670;&#160;</a></span>UI_MODE_TEXTURED</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float UI_MODE_TEXTURED = 3.0F</td>
         </tr>
       </table>
   </td>
