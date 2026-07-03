@@ -398,7 +398,7 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 | `nbody.c` | 486 | Simulation N-body (CPU + compute) |
 | `scene_init.c` | 476 | Création des ressources scène |
 | `app.c` | 474 | Orchestrateur (boucle principale) |
-| `billboard_sorting.c` | 472 | Tri en profondeur des billboards |
+| `billboard_sorter.c` | 472 | Tri en profondeur des billboards |
 | `ibl_coordinator.c` | 443 | Machine d'état IBL |
 | `async_loader.c` | 422 | Chargement HDR asynchrone |
 

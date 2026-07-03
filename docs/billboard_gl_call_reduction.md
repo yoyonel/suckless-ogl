@@ -255,9 +255,9 @@ is consumed directly by the vertex shader without intermediate copies.
 | File | Role |
 |------|------|
 | `src/scene.c` | `scene_render_billboards()` — UBO upload, texture binding, SSBO bind |
-| `src/billboard_rendering.c` | `billboard_group_update_from_buffer()` — legacy VBO copy (debug only) |
-| `src/billboard_rendering.c` | `billboard_group_draw()` — VAO bind, cull state, draw call |
-| `src/billboard_sorting.c` | `billboard_sorter_sort_gpu()` — compute dispatch |
+| `src/billboard_renderer.c` | `billboard_group_update_from_buffer()` — legacy VBO copy (debug only) |
+| `src/billboard_renderer.c` | `billboard_group_draw()` — VAO bind, cull state, draw call |
+| `src/billboard_sorter.c` | `billboard_sorter_sort_gpu()` — compute dispatch |
 | `shaders/billboard_instance_ssbo.glsl` | **New**: SphereInstance SSBO for direct vertex shader read (`binding = 2`) |
 | `shaders/billboard_ubo.glsl` | Shared UBO block definition (`binding = 1`) |
 | `shaders/pbr_ibl_billboard.vert` | Vertex shader — SSBO fetch via `gl_InstanceID` |

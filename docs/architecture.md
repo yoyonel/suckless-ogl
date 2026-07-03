@@ -431,7 +431,7 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 | `nbody.c` | 486 | N-body simulation (CPU + compute) |
 | `scene_init.c` | 476 | Scene resource creation |
 | `app.c` | 474 | Orchestrator (main loop) |
-| `billboard_sorting.c` | 472 | Billboard depth sort |
+| `billboard_sorter.c` | 472 | Billboard depth sort |
 | `ibl_coordinator.c` | 443 | IBL state machine |
 | `async_loader.c` | 422 | Async HDR loading |
 

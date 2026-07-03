@@ -8,14 +8,14 @@ This document details the "High Quality" rendering implementation for sphere ins
 To correctly handle Transparency Alpha Blending (`GL_SRC_ALPHA`, `GL_ONE_MINUS_SRC_ALPHA`), objects must be drawn from furthest to closest (Back-to-Front) relative to the camera.
 
 ### BillboardSorter Architecture
-The sorting system is encapsulated in the `billboard_sorting` module (`src/billboard_sorting.c`).
+The sorting system is encapsulated in the dedicated `BillboardSorter` component (`include/billboard_sorter.h` / `src/billboard_sorter.c`).
 
 1.  **Data**:
-    -   Instances (`SphereInstance`) are stored contiguously.
-    -   An intermediate structure `BillboardSortEntry` contains `{ index, depth }` for each sphere.
+    -   Instances (`SphereInstance`) are stored contiguously in the scene/renderer.
+    -   `BillboardSorter` allocates and manages CPU sorting scratchpads (`entries` of type `BillboardSortEntry` containing `{ original_index, depth }`, `entries_aux` for Radix Sort, and `temp_instances` for reordered CPU buffers) as well as GPU compute resources (compute shader programs, uniforms cache, and sort buffers) for GPU Bitonic Sort.
 2.  **Algorithm**:
     -   Each frame, the squared distance (`glm_vec3_distance2`) between the camera and each sphere is calculated.
-    -   Standard `qsort` is used to sort `BillboardSortEntry` keys by descending depth (Back-to-Front).
+    -   Standard `qsort` or CPU Radix Sort is used to sort `BillboardSortEntry` keys by descending depth (Back-to-Front).
     -   A temporary sorted instance buffer is reconstructed.
 3.  **SIMD Optimization**:
     -   Instance buffers are allocated via `aligned_alloc` with 64-byte alignment (`SIMD_ALIGNMENT`) to optimize memory access and enable potential AVX vectorization.
@@ -23,9 +23,8 @@ The sorting system is encapsulated in the `billboard_sorting` module (`src/billb
 ### Rendering Pipeline
 If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is active (Key `T`):
 1.  **Skybox Render** (First, depth write).
-2.  **CPU Sort** of spheres via `billboard_sorter_sort`.
-3.  **Upload** sorted data via `glBufferSubData`.
-4.  **Draw** spheres with Blending enabled and Depth Write **disabled** (Read-Only).
+2.  **Decoupled Sort** via `billboard_sorter_sort(&renderer->sorter, instances, count, camera_pos, mode)`.
+3.  **Upload & Draw** via `billboard_renderer_draw(&renderer, profiler, &params)`. The renderer binds instance storage buffers, configures PBR uniforms, and draws spheres with Blending enabled and Depth Write **disabled** (Read-Only).
 
 ### Ray-Tracing Diagram
 

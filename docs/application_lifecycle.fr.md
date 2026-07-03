@@ -1217,8 +1217,8 @@ Voici une estimation de la consommation VRAM en régime stationnaire :
 | `src/material.c` | Bibliothèque matériaux (chargement JSON) |
 | `include/sphere_types.h` | Définition canonique du type `SphereInstance` |
 | `src/instanced_rendering.c` | Gestion VAO/VBO draw instancié |
-| `src/billboard_rendering.c` | Quads billboard pour sphères transparentes |
-| `src/billboard_sorting.c` | Tri transparence CPU/GPU |
+| `src/billboard_renderer.c` | Quads billboard pour sphères transparentes |
+| `src/billboard_sorter.c` | Tri transparence CPU/GPU |
 | `src/async_loader.c` | Thread I/O arrière-plan (pthread) |
 | `src/camera.c` | Caméra orbitale, physique pas fixe |
 | `src/gl_debug.c` | Callback messages debug OpenGL |
