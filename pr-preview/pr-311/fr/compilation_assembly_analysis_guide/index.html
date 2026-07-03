@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head>
+<!DOCTYPE html><html lang="fr" class="no-js"><head>
     
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -17,25 +17,25 @@
       
       
         
-          <link rel="alternate" href="./" hreflang="en">
+          <link rel="alternate" href="../../compilation_assembly_analysis_guide/" hreflang="en">
         
-          <link rel="alternate" href="../fr/compiler_shader_analysis_guide/" hreflang="fr">
+          <link rel="alternate" href="./" hreflang="fr">
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Compiler &amp; Shader Analysis Guides - Suckless OGL</title>
+        <title>Compilation &amp; Assembly Analysis Guide - Suckless OGL</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -54,15 +54,15 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
     
     
-  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
@@ -91,8 +91,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#compiler-shader-analysis-guides-july-2026" class="md-skip">
-          Skip to content
+        <a href="#guide-danalyse-de-la-compilation-de-lassembleur-juillet-2026" class="md-skip">
+          Aller au contenu
         </a>
       
     </div>
@@ -106,8 +106,8 @@
   
 
 <header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Suckless OGL" class="md-header__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../" title="Suckless OGL" class="md-header__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Compiler &amp; Shader Analysis Guides
+              Compilation &amp; Assembly Analysis Guide
             
           </span>
         </div>
@@ -167,20 +167,20 @@
       <div class="md-header__option">
   <div class="md-select">
     
-    <button class="md-header__button md-icon" aria-label="Select language">
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
     </button>
     <div class="md-select__inner">
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="./" hreflang="en" class="md-select__link">
+            <a href="../../compilation_assembly_analysis_guide/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="../fr/compiler_shader_analysis_guide/" hreflang="fr" class="md-select__link">
+            <a href="./" hreflang="fr" class="md-select__link">
               Français
             </a>
           </li>
@@ -201,16 +201,16 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
       </label>
-      <nav class="md-search__options" aria-label="Search">
+      <nav class="md-search__options" aria-label="Recherche">
         
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
         </button>
@@ -221,7 +221,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Initializing search
+            Initialisation de la recherche
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -233,7 +233,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/yoyonel/suckless-ogl" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/yoyonel/suckless-ogl" title="Aller au dépôt" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
@@ -271,7 +271,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Suckless OGL" class="md-nav__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+    <a href="../" title="Suckless OGL" class="md-nav__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
@@ -281,7 +281,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/yoyonel/suckless-ogl" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/yoyonel/suckless-ogl" title="Aller au dépôt" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
@@ -301,14 +301,14 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Home
+    Accueil
   
 
     
@@ -796,7 +796,7 @@
   <span class="md-ellipsis">
     
   
-    Rendering
+    Rendu
   
 
     
@@ -812,7 +812,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Rendering
+    Rendu
   
 
           </label>
@@ -1524,7 +1524,7 @@
   <span class="md-ellipsis">
     
   
-    Controls &amp; Input
+    Contrôles &amp; Entrées
   
 
     
@@ -1540,7 +1540,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Controls &amp; Input
+    Contrôles &amp; Entrées
   
 
           </label>
@@ -1720,7 +1720,7 @@
   <span class="md-ellipsis">
     
   
-    Optimization
+    Optimisation
   
 
     
@@ -1736,7 +1736,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Optimization
+    Optimisation
   
 
           </label>
@@ -3120,7 +3120,7 @@
   <span class="md-ellipsis">
     
   
-    Technical Notes
+    Notes Techniques
   
 
     
@@ -3136,7 +3136,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Technical Notes
+    Notes Techniques
   
 
           </label>
@@ -3205,7 +3205,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fix_lint_bazzite_paths.md" class="md-nav__link">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
         
   
   
@@ -3305,7 +3305,7 @@
   <span class="md-ellipsis">
     
   
-    Compiler &amp; Shader Analysis Guides
+    Compilation &amp; Assembly Analysis Guide
   
 
     
@@ -3323,7 +3323,7 @@
   <span class="md-ellipsis">
     
   
-    Compiler &amp; Shader Analysis Guides
+    Compilation &amp; Assembly Analysis Guide
   
 
     
@@ -3335,7 +3335,7 @@
       
         
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
   
   
   
@@ -3344,7 +3344,7 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Table of contents
+      Table des matières
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
@@ -3361,10 +3361,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#scenario-a-verifying-avx2fma-vectorization-n-body-physics" class="md-nav__link">
+  <a href="#scenario-a-verification-de-la-vectorisation-avx2fma-n-body-physics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scenario A: Verifying AVX2/FMA Vectorization (N-Body Physics)
+        Scénario A : Vérification de la Vectorisation AVX2/FMA (N-Body Physics)
       
     </span>
   </a>
@@ -3372,10 +3372,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#scenario-b-verifying-uniform-structure-padding-ubo-alignment" class="md-nav__link">
+  <a href="#scenario-b-verification-de-lalignement-des-structures-ubo-ssbo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scenario B: Verifying Uniform Structure Padding (UBO Alignment)
+        Scénario B : Vérification de l'Alignement des Structures (UBO / SSBO)
       
     </span>
   </a>
@@ -3383,10 +3383,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#scenario-c-offline-shader-validation-glsl-compiler" class="md-nav__link">
+  <a href="#scenario-c-validation-des-shaders-en-mode-hors-ligne-glslspir-v" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scenario C: Offline Shader Validation (GLSL compiler)
+        Scénario C : Validation des Shaders en Mode Hors-Ligne (GLSL/SPIR-V)
       
     </span>
   </a>
@@ -3411,10 +3411,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#how-to-profile-glsl-shaders" class="md-nav__link">
+  <a href="#comment-profiler-des-shaders-glsl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How to Profile GLSL Shaders
+        Comment Profiler des Shaders GLSL
       
     </span>
   </a>
@@ -3427,22 +3427,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-local-cli-alternatives" class="md-nav__link">
+  <a href="#3-alternatives-locales-en-ligne-de-commande" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Local CLI Alternatives
+        3. Alternatives Locales en Ligne de Commande
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Local CLI Alternatives">
+    <nav class="md-nav" aria-label="3. Alternatives Locales en Ligne de Commande">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#assembly-generation-via-just" class="md-nav__link">
+  <a href="#generation-assembleur-via-just" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Assembly Generation via Just
+        Génération Assembleur via Just
       
     </span>
   </a>
@@ -3450,10 +3450,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#source-interleaving-objdump" class="md-nav__link">
+  <a href="#entrelacement-du-code-source-objdump" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Source Interleaving (objdump)
+        Entrelacement du Code Source (objdump)
       
     </span>
   </a>
@@ -3572,14 +3572,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../doxygen/html/index.html" class="md-nav__link">
+      <a href="../../doxygen/html/index.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    API Reference
+    Référence API
   
 
     
@@ -3619,7 +3619,7 @@
   <span class="md-ellipsis">
     
   
-    Reports
+    Rapports
   
 
     
@@ -3635,7 +3635,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Reports
+    Rapports
   
 
           </label>
@@ -3648,7 +3648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/index.html" class="md-nav__link">
+      <a href="../../coverage/index.html" class="md-nav__link">
         
   
   
@@ -3676,7 +3676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/visual_tests/index.html" class="md-nav__link">
+      <a href="../../coverage/visual_tests/index.html" class="md-nav__link">
         
   
   
@@ -3721,7 +3721,7 @@
 
 
   
-    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/compiler_shader_analysis_guide.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/compilation_assembly_analysis_guide.fr.md" title="Editer cette page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
     </a>
@@ -3729,20 +3729,20 @@
   
 
 
-<h1 id="compiler-shader-analysis-guides-july-2026">Compiler &amp; Shader Analysis Guides (July 2026)<a class="headerlink" href="#compiler-shader-analysis-guides-july-2026" title="Permanent link">¶</a></h1>
-<p><strong>Date</strong>: July 3, 2026
-<strong>Status</strong>: Reference Guide</p>
-<p>This guide provides concrete, step-by-step instructions for utilizing <strong>Compiler Explorer (Godbolt.org)</strong> and <strong>NVIDIA Nsight Graphics (Shader Profiler)</strong> to audit and optimize CPU and GPU execution in the <code>suckless-ogl</code> codebase.</p>
+<h1 id="guide-danalyse-de-la-compilation-de-lassembleur-juillet-2026">Guide d'Analyse de la Compilation &amp; de l'Assembleur (Juillet 2026)<a class="headerlink" href="#guide-danalyse-de-la-compilation-de-lassembleur-juillet-2026" title="Permanent link">¶</a></h1>
+<p><strong>Date</strong> : 3 juillet 2026
+<strong>Statut</strong> : Guide de Référence</p>
+<p>Ce guide fournit des instructions concrètes et étape par étape pour utiliser <strong>Compiler Explorer (Godbolt.org)</strong> et <strong>NVIDIA Nsight Graphics (Shader Profiler)</strong> afin d'auditer et d'optimiser l'exécution CPU et GPU dans la base de code <code>suckless-ogl</code>.</p>
 <hr>
 <h2 id="1-compiler-explorer-godboltorg">1. Compiler Explorer (Godbolt.org)<a class="headerlink" href="#1-compiler-explorer-godboltorg" title="Permanent link">¶</a></h2>
-<p>Compiler Explorer is an interactive tool to analyze compiler assembly outputs and verify optimizations (such as AVX2 auto-vectorization, structural padding, and instruction counts).</p>
-<h3 id="scenario-a-verifying-avx2fma-vectorization-n-body-physics">Scenario A: Verifying AVX2/FMA Vectorization (N-Body Physics)<a class="headerlink" href="#scenario-a-verifying-avx2fma-vectorization-n-body-physics" title="Permanent link">¶</a></h3>
-<p>To verify if the hot loop of the N-Body gravity calculations is correctly vectorized without assembly overhead:</p>
+<p>Compiler Explorer est un outil interactif permettant d'analyser le code assembleur généré par les compilateurs et de valider les optimisations (telles que l'auto-vectorisation AVX2, le padding des structures et le nombre d'instructions).</p>
+<h3 id="scenario-a-verification-de-la-vectorisation-avx2fma-n-body-physics">Scénario A : Vérification de la Vectorisation AVX2/FMA (N-Body Physics)<a class="headerlink" href="#scenario-a-verification-de-la-vectorisation-avx2fma-n-body-physics" title="Permanent link">¶</a></h3>
+<p>Pour vérifier si la boucle critique des calculs de gravité N-Body est correctement vectorisée sans surcharge d'assemblage :</p>
 <ol>
-<li><strong>Open Godbolt</strong>: Go to <a href="https://godbolt.org">godbolt.org</a>.</li>
-<li><strong>Configure Language</strong>: Set the source language dropdown on the left to <strong>C</strong>.</li>
-<li><strong>Configure Compiler</strong>: Set the compiler on the right to <strong>x86-64 gcc 14.2</strong> (or higher).</li>
-<li><strong>Paste Code</strong>: Copy and paste the following self-contained N-Body simulation snippet into the editor:
+<li><strong>Ouvrir Godbolt</strong> : Allez sur <a href="https://godbolt.org">godbolt.org</a>.</li>
+<li><strong>Configurer le Langage</strong> : Définissez le menu déroulant du langage source à gauche sur <strong>C</strong>.</li>
+<li><strong>Configurer le Compilateur</strong> : Définissez le compilateur à droite sur <strong>x86-64 gcc 14.2</strong> (ou supérieur).</li>
+<li><strong>Coller le Code</strong> : Copiez et collez le snippet autonome de simulation N-Body suivant dans l'éditeur :
    <div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;math.h&gt;</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">typedef</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">dvec3</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
@@ -3808,17 +3808,17 @@
 </span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="p">}</span>
 </span></code></pre></div></li>
-<li><strong>Set Flags</strong>:</li>
-<li>Saisissez <code>-O3 -march=haswell -ffast-math</code> in the Compiler Options text box.</li>
-<li><strong>Analyze Assembly</strong>:</li>
-<li>Look at the generated assembly pane. You should see instructions like <code>vfmadd213pd</code> (Fused Multiply-Add) and packed operations <code>vmulpd</code>, <code>vaddpd</code> using 256-bit <code>%ymm</code> registers.</li>
-<li>Try changing the options to <code>-O1</code> or removing <code>-ffast-math</code> to see how the compiler drops down to scalar math instructions (<code>mulsd</code>, <code>addsd</code>).</li>
+<li><strong>Définir les Options de Build</strong> :</li>
+<li>Saisissez <code>-O3 -march=haswell -ffast-math</code> dans la zone de texte Compiler Options.</li>
+<li><strong>Analyser l'Assembleur</strong> :</li>
+<li>Regardez le panneau d'assembleur généré. Vous devriez voir des instructions comme <code>vfmadd213pd</code> (Fused Multiply-Add) et des opérations packées <code>vmulpd</code>, <code>vaddpd</code> utilisant des registres 256 bits <code>%ymm</code>.</li>
+<li>Essayez de changer les options pour <code>-O1</code> ou de supprimer <code>-ffast-math</code> pour voir comment le compilateur revient à des instructions mathématiques scalaires (<code>mulsd</code>, <code>addsd</code>).</li>
 </ol>
 <hr>
-<h3 id="scenario-b-verifying-uniform-structure-padding-ubo-alignment">Scenario B: Verifying Uniform Structure Padding (UBO Alignment)<a class="headerlink" href="#scenario-b-verifying-uniform-structure-padding-ubo-alignment" title="Permanent link">¶</a></h3>
-<p>When copying structures from C to OpenGL Uniform Buffer Objects (UBOs) or Shader Storage Buffer Objects (SSBOs), memory layout must match GLSL alignment standards (<code>std140</code>/<code>std430</code>).</p>
+<h3 id="scenario-b-verification-de-lalignement-des-structures-ubo-ssbo">Scénario B : Vérification de l'Alignement des Structures (UBO / SSBO)<a class="headerlink" href="#scenario-b-verification-de-lalignement-des-structures-ubo-ssbo" title="Permanent link">¶</a></h3>
+<p>Lors de la copie de structures de C vers des Uniform Buffer Objects (UBO) ou des Shader Storage Buffer Objects (SSBO) OpenGL, la disposition mémoire doit correspondre aux normes d'alignement GLSL (<code>std140</code>/<code>std430</code>).</p>
 <ol>
-<li><strong>Paste Code</strong>:
+<li><strong>Coller le Code</strong> :
    <div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stddef.h&gt;</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
@@ -3833,18 +3833,18 @@
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
 </span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="k">_Static_assert</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">PostProcessUniforms</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="s">"Incorrect alignment!"</span><span class="p">);</span>
 </span></code></pre></div></li>
-<li><strong>Observe compiler behavior</strong>:</li>
-<li>Select <strong>x86-64 gcc 14.2</strong> (Linux) and <strong>x64 msvc v19.latest</strong> (Windows).</li>
-<li>Check if both compilers pass the static assertion or introduce padding bytes at the end of the structure.</li>
-<li>Modify the structure members (e.g., adding <code>double</code> or <code>vec4</code> equivalents) and inspect the assembly for the returned size in <code>get_struct_size</code>.</li>
+<li><strong>Observer le Comportement du Compilateur</strong> :</li>
+<li>Sélectionnez <strong>x86-64 gcc 14.2</strong> (Linux) et <strong>x64 msvc v19.latest</strong> (Windows).</li>
+<li>Vérifiez si les deux compilateurs passent l'assertion statique ou introduisent des octets de padding à la fin de la structure.</li>
+<li>Modifiez les membres de la structure (par exemple, en ajoutant des équivalents <code>double</code> ou <code>vec4</code>) et inspectez l'assembleur pour voir la taille retournée dans <code>get_struct_size</code>.</li>
 </ol>
 <hr>
-<h3 id="scenario-c-offline-shader-validation-glsl-compiler">Scenario C: Offline Shader Validation (GLSL compiler)<a class="headerlink" href="#scenario-c-offline-shader-validation-glsl-compiler" title="Permanent link">¶</a></h3>
-<p>To verify if GLSL syntax is correct and inspect compiler-independent SPIR-V assembly:</p>
+<h3 id="scenario-c-validation-des-shaders-en-mode-hors-ligne-glslspir-v">Scénario C : Validation des Shaders en Mode Hors-Ligne (GLSL/SPIR-V)<a class="headerlink" href="#scenario-c-validation-des-shaders-en-mode-hors-ligne-glslspir-v" title="Permanent link">¶</a></h3>
+<p>Pour vérifier si la syntaxe GLSL est correcte et inspecter l'assembleur SPIR-V :</p>
 <ol>
-<li><strong>Configure Language</strong>: Set the source language dropdown on the left to <strong>GLSL</strong>.</li>
-<li><strong>Configure Compiler</strong>: Select <strong>glslangValidator</strong> (or <strong>dxc</strong>).</li>
-<li><strong>Paste GLSL Compute Shader</strong>:
+<li><strong>Configurer le Langage</strong> : Définissez le menu déroulant du langage source à gauche sur <strong>GLSL</strong>.</li>
+<li><strong>Configurer le Compilateur</strong> : Sélectionnez <strong>glslangValidator</strong> (ou <strong>dxc</strong>).</li>
+<li><strong>Coller le Compute Shader GLSL</strong> :
    <div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#version 450</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">layout</span><span class="p">(</span><span class="n">local_size_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">256</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="p">;</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
@@ -3863,53 +3863,53 @@
 </span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="n">positions</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">velocities</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deltaTime</span><span class="p">;</span>
 </span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">}</span>
 </span></code></pre></div></li>
-<li><strong>Inspect SPIR-V</strong>: Review the resulting SPIR-V assembly instructions (like <code>OpAccessChain</code>, <code>OpFMul</code>, <code>OpFAdd</code>) to inspect variables and logic layout.</li>
+<li><strong>Inspecter SPIR-V</strong> : Examinez les instructions assembleurs SPIR-V générées (telles que <code>OpAccessChain</code>, <code>OpFMul</code>, <code>OpFAdd</code>) pour contrôler l'organisation des variables et de la logique de calcul.</li>
 </ol>
 <hr>
 <h2 id="2-nvidia-nsight-graphics-shader-profiler">2. NVIDIA Nsight Graphics (Shader Profiler)<a class="headerlink" href="#2-nvidia-nsight-graphics-shader-profiler" title="Permanent link">¶</a></h2>
-<p>NVIDIA Nsight Graphics is a premium UI/UX GPU profiling tool. While Godbolt validates compilation, Nsight Graphics measures real hardware bottlenecks on the GPU.</p>
-<h3 id="how-to-profile-glsl-shaders">How to Profile GLSL Shaders<a class="headerlink" href="#how-to-profile-glsl-shaders" title="Permanent link">¶</a></h3>
+<p>NVIDIA Nsight Graphics est un outil de profilage de GPU haut de gamme. Alors que Godbolt valide la compilation, Nsight Graphics mesure les goulots d'étranglement matériels réels sur le GPU.</p>
+<h3 id="comment-profiler-des-shaders-glsl">Comment Profiler des Shaders GLSL<a class="headerlink" href="#comment-profiler-des-shaders-glsl" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Prepare Release Binary</strong>:</li>
-<li>Build the project using:
+<li><strong>Préparer le Binaire Release</strong> :</li>
+<li>Compilez le projet en utilisant :
      <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cmake<span class="w"> </span>-B<span class="w"> </span>build-release<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>build-release<span class="w"> </span>--parallel
 </span></code></pre></div></li>
-<li><strong>Configure Nsight Graphics</strong>:</li>
-<li>Open <strong>NVIDIA Nsight Graphics</strong>.</li>
-<li>Set <strong>Application Executable</strong> to the path of your compiled binary (<code>build-release/app</code>).</li>
-<li>Set <strong>Working Directory</strong> to the root of the project.</li>
-<li>Under <strong>Activity</strong>, select <strong>GPU Trace</strong> (for overall hardware bottlenecks) or <strong>Frame Debugger</strong> (for debugging frame drawing).</li>
-<li>Click <strong>Launch</strong>.</li>
-<li><strong>Capture &amp; Analyze</strong>:</li>
-<li>Run the simulation, and click <strong>Generate GPU Trace</strong> (or press <code>F11</code>).</li>
-<li>Once the trace finishes, navigate to the <strong>Shader Pipelines</strong> tab.</li>
-<li>Locate the pipeline representing your compute shader (e.g. <code>nbody.comp</code>).</li>
-<li><strong>Locating Hot Spots &amp; Warp Stalls</strong>:</li>
-<li>Double-click the compute shader to open the <strong>Shader Profiler</strong> view.</li>
-<li>Go to the <strong>Hot Spots</strong> tab. Nsight Graphics overlays the GLSL code with matching execution counters.</li>
-<li>Inspect the <strong>Top Stall</strong> column to see why the shader is waiting:<ul>
-<li><code>TEXTHR</code> (Texture Throashing/Fetch): The shader is stalled waiting for memory operations or texture cache lookups.</li>
-<li><code>NOTSEL</code> (Not Selected): Execution pipelines are busy, waiting for scheduler resources.</li>
-<li><code>IMCMIS</code> (Instruction Cache Miss): The shader code cache is missed, indicating complex branch structures.</li>
-<li><code>MATHATH</code> (Math Latency): ALU pipelines are saturated by complex math (FMA, transcendentals).</li>
+<li><strong>Configurer Nsight Graphics</strong> :</li>
+<li>Ouvrez <strong>NVIDIA Nsight Graphics</strong>.</li>
+<li>Définissez <strong>Application Executable</strong> sur le chemin de votre binaire compilé (<code>build-release/app</code>).</li>
+<li>Définissez <strong>Working Directory</strong> sur la racine du projet.</li>
+<li>Sous <strong>Activity</strong>, sélectionnez <strong>GPU Trace</strong> (pour les goulots d'étranglement matériels globaux) ou <strong>Frame Debugger</strong> (pour le débogage du rendu des frames).</li>
+<li>Cliquez sur <strong>Launch</strong>.</li>
+<li><strong>Capturer &amp; Analyser</strong> :</li>
+<li>Exécutez la simulation et cliquez sur <strong>Generate GPU Trace</strong> (ou appuyez sur <code>F11</code>).</li>
+<li>Une fois le tracé terminé, accédez à l'onglet <strong>Shader Pipelines</strong>.</li>
+<li>Localisez le pipeline représentant votre compute shader (par exemple <code>nbody.comp</code>).</li>
+<li><strong>Localiser les Hot Spots &amp; Warp Stalls</strong> :</li>
+<li>Double-cliquez sur le compute shader pour ouvrir la vue <strong>Shader Profiler</strong>.</li>
+<li>Allez dans l'onglet <strong>Hot Spots</strong>. Nsight Graphics superpose le code GLSL avec des compteurs d'exécution correspondants.</li>
+<li>Inspectez la colonne <strong>Top Stall</strong> pour voir pourquoi le shader attend :<ul>
+<li><code>TEXTHR</code> (Texture Throashing/Fetch) : Le shader est bloqué en attente d'opérations mémoire ou de lectures de cache de texture.</li>
+<li><code>NOTSEL</code> (Not Selected) : Les pipelines d'exécution sont occupés, en attente de ressources de planification du GPU.</li>
+<li><code>IMCMIS</code> (Instruction Cache Miss) : Le cache du code du shader a subi un échec, indiquant des structures de branchement complexes.</li>
+<li><code>MATHATH</code> (Math Latency) : Les pipelines ALU sont saturés par des calculs mathématiques complexes (FMA, transcendantes).</li>
 </ul>
 </li>
 </ol>
 <hr>
-<h2 id="3-local-cli-alternatives">3. Local CLI Alternatives<a class="headerlink" href="#3-local-cli-alternatives" title="Permanent link">¶</a></h2>
-<h3 id="assembly-generation-via-just">Assembly Generation via Just<a class="headerlink" href="#assembly-generation-via-just" title="Permanent link">¶</a></h3>
-<p>To quickly inspect assembly locally without pushing code to Godbolt, run:
+<h2 id="3-alternatives-locales-en-ligne-de-commande">3. Alternatives Locales en Ligne de Commande<a class="headerlink" href="#3-alternatives-locales-en-ligne-de-commande" title="Permanent link">¶</a></h2>
+<h3 id="generation-assembleur-via-just">Génération Assembleur via Just<a class="headerlink" href="#generation-assembleur-via-just" title="Permanent link">¶</a></h3>
+<p>Pour inspecter rapidement l'assembleur localement sans envoyer de code sur Godbolt, lancez :
 </p><div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>just<span class="w"> </span>asm<span class="w"> </span>src/app.c
 </span></code></pre></div>
-This generates <code>src/app.c.s</code> locally in Release mode with native architecture flags but LTO disabled.<p></p>
-<h3 id="source-interleaving-objdump">Source Interleaving (<code>objdump</code>)<a class="headerlink" href="#source-interleaving-objdump" title="Permanent link">¶</a></h3>
-<p>To view your C code side-by-side with generated assembly on your local terminal:
+Cela génère <code>src/app.c.s</code> localement en mode Release avec les drapeaux d'architecture native mais la LTO désactivée.<p></p>
+<h3 id="entrelacement-du-code-source-objdump">Entrelacement du Code Source (<code>objdump</code>)<a class="headerlink" href="#entrelacement-du-code-source-objdump" title="Permanent link">¶</a></h3>
+<p>Pour afficher votre code C côte à côte avec l'assembleur généré dans votre terminal local :
 </p><div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>RelWithDebInfo
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>cmake<span class="w"> </span>--build<span class="w"> </span>build
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>objdump<span class="w"> </span>-S<span class="w"> </span>--demangle<span class="w"> </span>build/app<span class="w"> </span><span class="p">|</span><span class="w"> </span>less
 </span></code></pre></div>
-This displays C source statements directly interleaved above their compiled assembly blocks.<p></p>
+Cette commande affiche le code source C d'origine directement au-dessus des instructions assembleurs correspondantes.<p></p>
 
 
 
@@ -3927,10 +3927,10 @@ This displays C source statements directly interleaved above their compiled asse
     
       
   <span class="md-source-file__fact">
-    <span class="md-icon" title="Last update">
+    <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 3, 2026 19:33:58 UTC">July 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="3 juillet 2026 19:33:58 UTC">3 juillet 2026</span>
   </span>
 
     
@@ -3954,7 +3954,7 @@ This displays C source statements directly interleaved above their compiled asse
           <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
-  Back to top
+  Retour en haut de la page
 </button>
         
       </main>
@@ -3986,16 +3986,16 @@ This displays C source statements directly interleaved above their compiled asse
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="../assets/javascripts/lang_switcher.js"></script>
+        <script src="../../assets/javascripts/lang_switcher.js"></script>
       
-        <script src="../assets/javascripts/mathjax.js"></script>
+        <script src="../../assets/javascripts/mathjax.js"></script>
       
-        <script src="../assets/javascripts/mermaid_config.js"></script>
+        <script src="../../assets/javascripts/mermaid_config.js"></script>
       
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
       
