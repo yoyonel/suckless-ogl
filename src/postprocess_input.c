@@ -64,6 +64,81 @@ static void handle_exposure_input(const PostProcessInputContext* ctx, int key)
 	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_SHORT);
 }
 
+static void cycle_banding_styles(const PostProcessInputContext* ctx)
+{
+	const PostProcessPreset* banding_presets[] = {
+	    &PRESET_POSTERIZED,  /* 1. Posterization */
+	    &PRESET_RETRO,       /* 2. Dithered */
+	    &PRESET_ANALOG,      /* 3. Perceptual */
+	    &PRESET_CHANNEL_GFX, /* 4. Channel */
+	    &PRESET_BLUEPRINT    /* 5. Blueprint */
+	};
+	const char* banding_names[] = {
+	    "Posterization (Pop Art)", "Retro Computing (Dithered)",
+	    "Analog (Perceptual)", "CGA/VGA Style (Channel)",
+	    "Blueprint (Luminance)"};
+	int num_styles =
+	    (int)(sizeof(banding_presets) / sizeof(banding_presets[0]));
+
+	/* Check if banding is currently off, if so, start at
+	   idx 0. Else cycle to next. */
+	if (!postprocess_is_enabled(ctx->postprocess, POSTFX_BANDING)) {
+		ctx->postprocess->banding_preset_idx = 0;
+	} else {
+		ctx->postprocess->banding_preset_idx =
+		    (ctx->postprocess->banding_preset_idx + 1) % num_styles;
+	}
+
+	postprocess_apply_preset(
+	    ctx->postprocess,
+	    banding_presets[ctx->postprocess->banding_preset_idx]);
+	LOG_INFO("suckless-ogl.postprocess", "Banding Style [%d/%d]: %s",
+	         ctx->postprocess->banding_preset_idx + 1, num_styles,
+	         banding_names[ctx->postprocess->banding_preset_idx]);
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(
+	    buf, sizeof(buf), "Banding: %s",
+	    banding_names[ctx->postprocess->banding_preset_idx]);
+	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_LONG);
+}
+
+static void cycle_lut_styles(const PostProcessInputContext* ctx, int mods)
+{
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
+		int* lut_idx_ptr = &ctx->postprocess->lut3d_fx.current_lut_idx;
+		const char* luts[] = {"assets/luts/sony_scinetone.cube",
+		                      "assets/luts/sony_venice.cube",
+		                      "assets/luts/kodak_vision3.cube",
+		                      "assets/luts/fuji_eternal.cube",
+		                      "assets/luts/teal_orange.cube",
+		                      "assets/luts/vintage.cube",
+		                      "assets/luts/sony_a7siii_poc.cube"};
+		const char* names[] = {"Sony S-Cinetone", "Sony Venice Look",
+		                       "Kodak Vision3",   "Fujifilm Eternal",
+		                       "Teal & Orange",   "Vintage Film",
+		                       "Alpha 7S III POC"};
+		int count = (int)(sizeof(luts) / sizeof(luts[0]));
+		*lut_idx_ptr = (*lut_idx_ptr + 1) % count;
+
+		if (postprocess_load_lut3d(ctx->postprocess,
+		                           luts[*lut_idx_ptr]) == 0) {
+			postprocess_enable(ctx->postprocess, POSTFX_LUT3D);
+			action_notifier_push(ctx->notifier, names[*lut_idx_ptr],
+			                     NOTIF_DUR_SHORT);
+			LOG_INFO("suckless-ogl.input", "Loaded LUT: %s",
+			         names[*lut_idx_ptr]);
+		}
+	} else {
+		postprocess_apply_preset(ctx->postprocess, &PRESET_SONY_A7SIII);
+		postprocess_load_lut3d(ctx->postprocess,
+		                       "assets/luts/sony_scinetone.cube");
+		LOG_INFO("suckless-ogl.input", "Style: Sony Alpha 7S III");
+		action_notifier_push(ctx->notifier, "Style: Sony A7S III",
+		                     NOTIF_DUR_LONG);
+	}
+}
+
 static void handle_preset_input(const PostProcessInputContext* ctx, int key,
                                 int mods)
 {
@@ -120,52 +195,9 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key,
 			                     "Style: B&W Contrast",
 			                     NOTIF_DUR_LONG);
 			break;
-		case GLFW_KEY_7: { /* Style Cycle: All Banding Styles */
-			const PostProcessPreset* banding_presets[] = {
-			    &PRESET_POSTERIZED,  /* 1. Posterization */
-			    &PRESET_RETRO,       /* 2. Dithered */
-			    &PRESET_ANALOG,      /* 3. Perceptual */
-			    &PRESET_CHANNEL_GFX, /* 4. Channel */
-			    &PRESET_BLUEPRINT    /* 5. Blueprint */
-			};
-			const char* banding_names[] = {
-			    "Posterization (Pop Art)",
-			    "Retro Computing (Dithered)", "Analog (Perceptual)",
-			    "CGA/VGA Style (Channel)", "Blueprint (Luminance)"};
-			int num_styles = sizeof(banding_presets) /
-			                 sizeof(banding_presets[0]);
-
-			/* Check if banding is currently off, if so, start at
-			   idx 0. Else cycle to next. */
-			if (!postprocess_is_enabled(ctx->postprocess,
-			                            POSTFX_BANDING)) {
-				ctx->postprocess->banding_preset_idx = 0;
-			} else {
-				ctx->postprocess->banding_preset_idx =
-				    (ctx->postprocess->banding_preset_idx + 1) %
-				    num_styles;
-			}
-
-			postprocess_apply_preset(
-			    ctx->postprocess,
-			    banding_presets[ctx->postprocess
-			                        ->banding_preset_idx]);
-			LOG_INFO("suckless-ogl.postprocess",
-			         "Banding Style [%d/%d]: %s",
-			         ctx->postprocess->banding_preset_idx + 1,
-			         num_styles,
-			         banding_names[ctx->postprocess
-			                           ->banding_preset_idx]);
-
-			char buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(
-			    buf, sizeof(buf), "Banding: %s",
-			    banding_names[ctx->postprocess
-			                      ->banding_preset_idx]);
-			action_notifier_push(ctx->notifier, buf,
-			                     NOTIF_DUR_LONG);
+		case GLFW_KEY_7: /* Style Cycle: All Banding Styles */
+			cycle_banding_styles(ctx);
 			break;
-		}
 		case GLFW_KEY_8:
 			if (ctx->effect_bench &&
 			    !effect_benchmark_is_running(ctx->effect_bench)) {
@@ -190,50 +222,7 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key,
 			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_F8: /* Preset: Sony A7S III / Cycle LUTs */
-			if (check_flag(mods, GLFW_MOD_SHIFT)) {
-				int* lut_idx_ptr =
-				    &ctx->postprocess->lut3d_fx.current_lut_idx;
-				const char* luts[] = {
-				    "assets/luts/sony_scinetone.cube",
-				    "assets/luts/sony_venice.cube",
-				    "assets/luts/kodak_vision3.cube",
-				    "assets/luts/fuji_eternal.cube",
-				    "assets/luts/teal_orange.cube",
-				    "assets/luts/vintage.cube",
-				    "assets/luts/sony_a7siii_poc.cube"};
-				const char* names[] = {
-				    "Sony S-Cinetone", "Sony Venice Look",
-				    "Kodak Vision3",   "Fujifilm Eternal",
-				    "Teal & Orange",   "Vintage Film",
-				    "Alpha 7S III POC"};
-				int count =
-				    (int)(sizeof(luts) / sizeof(luts[0]));
-				*lut_idx_ptr = (*lut_idx_ptr + 1) % count;
-
-				if (postprocess_load_lut3d(
-				        ctx->postprocess, luts[*lut_idx_ptr]) ==
-				    0) {
-					postprocess_enable(ctx->postprocess,
-					                   POSTFX_LUT3D);
-					action_notifier_push(
-					    ctx->notifier, names[*lut_idx_ptr],
-					    NOTIF_DUR_SHORT);
-					LOG_INFO("suckless-ogl.input",
-					         "Loaded LUT: %s",
-					         names[*lut_idx_ptr]);
-				}
-			} else {
-				postprocess_apply_preset(ctx->postprocess,
-				                         &PRESET_SONY_A7SIII);
-				postprocess_load_lut3d(
-				    ctx->postprocess,
-				    "assets/luts/sony_scinetone.cube");
-				LOG_INFO("suckless-ogl.input",
-				         "Style: Sony Alpha 7S III");
-				action_notifier_push(ctx->notifier,
-				                     "Style: Sony A7S III",
-				                     NOTIF_DUR_LONG);
-			}
+			cycle_lut_styles(ctx, mods);
 			break;
 		case GLFW_KEY_F10:
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
