@@ -3403,6 +3403,56 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#4-assembly-verification-empirical-proof" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Assembly Verification &amp; Empirical Proof
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Assembly Verification &amp; Empirical Proof">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-non-lto-assembly-code-generation-o3-fno-lto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Non-LTO Assembly Code Generation (-O3 -fno-lto)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-lto-optimization-inlining-in-production-o3-flto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. LTO Optimization &amp; Inlining in Production (-O3 -flto)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-visualizing-reproducing-with-just" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Visualizing &amp; Reproducing with Just
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3736,6 +3786,39 @@
 <li><strong>Design B: Pass parameters as individual arguments</strong></li>
 <li><em>Disadvantage</em>: <code>renderer_draw_frame(app-&gt;scene, app-&gt;postprocess, ...)</code> would require 15+ arguments. This makes code unmaintainable and violates ABI guidelines (which only allow up to 6 register arguments; the rest are pushed to the stack anyway, causing more overhead than a clean struct pointer).</li>
 </ul>
+<hr>
+<h2 id="4-assembly-verification-empirical-proof">4. Assembly Verification &amp; Empirical Proof<a class="headerlink" href="#4-assembly-verification-empirical-proof" title="Permanent link">¶</a></h2>
+<h3 id="a-non-lto-assembly-code-generation-o3-fno-lto">A. Non-LTO Assembly Code Generation (<code>-O3 -fno-lto</code>)<a class="headerlink" href="#a-non-lto-assembly-code-generation-o3-fno-lto" title="Permanent link">¶</a></h3>
+<p>By compiling <code>src/app.c</code> in Release mode while disabling Link-Time Optimization (<code>-fno-lto</code>), we can observe how the compiler instantiates and passes the stack structure:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a># 1. Load the stack struct address into %r13 (rctx starts at -272(%rbp))
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>leaq    -272(%rbp), %r13
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a># 2. AVX Vectorized Copy Operations (writes multiple pointers in single instructions)
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>vmovq   (%r15), %xmm5                            # Load app-&gt;scene
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>vpinsrq $1, 8(%r15), %xmm5, %xmm1                # Pack scene &amp; postprocess into %xmm1
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>vmovdqa %ymm0, -240(%rbp)                        # Write 32 bytes (4 pointers) to stack
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>vmovdqa %ymm1, -272(%rbp)                        # Write another 32 bytes
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>...
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a># 3. Copy the struct address into %rdi (1st parameter register in AMD64 ABI)
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>movq    %r13, %rdi
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a># 4. Call the drawing routine
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>call    renderer_draw_frame@PLT
+</span></code></pre></div>
+<ul>
+<li><strong>Pass-by-Reference</strong>: The struct address is moved to <code>%rdi</code> and passed directly, resulting in zero structure-copy overhead on calls.</li>
+<li><strong>Vectorized Initialization</strong>: The compiler groups the 64-bit pointers and uses AVX vector registers (<code>%ymm</code> / <code>%xmm</code>) to write to stack locations in single instructions, executing in just a few CPU cycles.</li>
+</ul>
+<h3 id="b-lto-optimization-inlining-in-production-o3-flto">B. LTO Optimization &amp; Inlining in Production (<code>-O3 -flto</code>)<a class="headerlink" href="#b-lto-optimization-inlining-in-production-o3-flto" title="Permanent link">¶</a></h3>
+<p>In the final linked binary (<code>build-release/app</code>), Link-Time Optimization merges translation units:
+* <strong>Symbol Table Audit</strong>: Running <code>objdump -t build-release/app | grep renderer_draw_frame</code> yields <strong>no results</strong>. The function symbol has been completely eliminated from the executable's <code>.text</code> section.
+* <strong>Inlining</strong>: <code>renderer_draw_frame</code> and its sub-calls are fully inlined into the main orchestrator loop. The final <code>app_run</code> function expands to <code>18,894 bytes</code> of optimized instructions.
+* <strong>Result</strong>: The temporary wrapper structure <code>RenderContext</code> is <strong>completely optimized away</strong>; its fields map directly to registers or inline instructions.</p>
+<h3 id="c-visualizing-reproducing-with-just">C. Visualizing &amp; Reproducing with Just<a class="headerlink" href="#c-visualizing-reproducing-with-just" title="Permanent link">¶</a></h3>
+<p>A <code>just</code> recipe has been added to compile any C source file to optimized AVX2 assembly without LTO for manual verification:
+</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>just<span class="w"> </span>asm<span class="w"> </span>src/app.c
+</span></code></pre></div>
+This generates <code>src/app.c.s</code>, which can be inspected directly.<p></p>
 
 
 
@@ -3756,7 +3839,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 3, 2026 18:59:50 UTC">July 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 3, 2026 19:11:03 UTC">July 3, 2026</span>
   </span>
 
     
