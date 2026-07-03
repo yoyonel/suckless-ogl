@@ -2,6 +2,12 @@ var env__manager_8h =
 [
     [ "EnvManager", "structEnvManager.html", "structEnvManager" ],
     [ "APP_ENV_MGR_DESCRIPTOR", "env__manager_8h.html#a198ea67400c8073a04b09e5e1e29944a", null ],
+    [ "EnvMapLoadingState", "env__manager_8h.html#a30670e07b17a5784613c8a4e6d4ec108", [
+      [ "EML_STOP", "env__manager_8h.html#a30670e07b17a5784613c8a4e6d4ec108a8a02ce256188cf5ff94fb98d6fdbd873", null ],
+      [ "EML_UPLOAD_HDR_FROM_PBO", "env__manager_8h.html#a30670e07b17a5784613c8a4e6d4ec108aec38fb3d9df5d85f1075080a5a1a89c4", null ],
+      [ "EML_MIPMAP", "env__manager_8h.html#a30670e07b17a5784613c8a4e6d4ec108ac648af0fd55bd40839aa140275126b84", null ],
+      [ "EML_START_IBL", "env__manager_8h.html#a30670e07b17a5784613c8a4e6d4ec108a881ffb1e3e067f3dae8f8bfba5ff9308", null ]
+    ] ],
     [ "env_manager_load", "env__manager_8h.html#ad4d555f76a7025a1376e21ab6fb077ce", null ],
     [ "env_manager_process_loading_step", "env__manager_8h.html#aca14ba762de723629de8d921ffc52cdd", null ],
     [ "env_manager_render_overlay", "env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61", null ],

@@ -1,5 +1,10 @@
 var log_8c =
 [
+    [ "LOG_MUTEX_INIT", "log_8c.html#a7e48a080df5925ca429a14aad3ae1fa2", null ],
+    [ "LOG_MUTEX_LOCK", "log_8c.html#a63199fe1c2aabd267771afa2ffc4228a", null ],
+    [ "LOG_MUTEX_TYPE", "log_8c.html#a25ed385b5999ff952d0ca3ef14130540", null ],
+    [ "LOG_MUTEX_UNLOCK", "log_8c.html#a392af00ed55a34821e5c74b2d92c8505", null ],
+    [ "LOG_PLATFORM_POSIX", "log_8c.html#a319b7e59753905eaa37fd00fbc4d3956", null ],
     [ "level_to_string", "log_8c.html#a008707c8596c7f48969d541cf5a6fa30", null ],
     [ "log_get_level", "log_8c.html#ae5099953981ab6c18721857fd2f8d6fc", null ],
     [ "log_init", "log_8c.html#a8cbf849de9da0b561bc201d34343e63b", null ],

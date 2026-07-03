@@ -242,18 +242,25 @@ $(document).ready(function(){initNavTree('light__probes_8c.html',''); initResiza
   <div class="headertitle"><div class="title">light_probes.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;glad/glad.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="light__probes_8h_source.html">light_probes.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="light__probes_8h_source.html">light_probes.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
 <code>#include &quot;platform/platform_utils.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="sh__math_8h_source.html">sh_math.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sphere__types_8h_source.html">sphere_types.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;cglm/affine-pre.h&gt;</code><br />
+<code>#include &lt;cglm/affine.h&gt;</code><br />
+<code>#include &lt;cglm/mat4.h&gt;</code><br />
+<code>#include &lt;cglm/types.h&gt;</code><br />
+<code>#include &lt;cglm/vec3.h&gt;</code><br />
 <code>#include &lt;float.h&gt;</code><br />
 <code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -290,12 +297,12 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:af715e26dfffd1f8de1c18449e2770cff" id="r_af715e26dfffd1f8de1c18449e2770cff"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffadd736b70ac73170b9644d6fe7dbdd6ba">GI_DEBUG_PROBE_VERTICES</a> = 6
-, <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffaf1db8d5cb9170cc48e50f01378675bc2">GI_WIRE_CUBE_VERTICES</a> = 24
-, <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffafe2fed8b2ca9113062d05bbf50f6e6b8">GI_LOG_BUF_SIZE</a> = 128
-, <a class="el" href="light__probes_8c.html#af715e26dfffd1f8de1c18449e2770cffa18b0bd55142c07ceea2c4d99755af444">GI_SMALL_LOG_BUF_SIZE</a> = 64
+<tr class="memitem:a157d5577a5b2f5986037d0d09c7dc77d" id="r_a157d5577a5b2f5986037d0d09c7dc77d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77dadd736b70ac73170b9644d6fe7dbdd6ba">GI_DEBUG_PROBE_VERTICES</a> = 6
+, <a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77daf1db8d5cb9170cc48e50f01378675bc2">GI_WIRE_CUBE_VERTICES</a> = 24
+, <a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77dafe2fed8b2ca9113062d05bbf50f6e6b8">GI_LOG_BUF_SIZE</a> = 128
+, <a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77da18b0bd55142c07ceea2c4d99755af444">GI_SMALL_LOG_BUF_SIZE</a> = 64
  }</td></tr>
-<tr class="separator:af715e26dfffd1f8de1c18449e2770cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a157d5577a5b2f5986037d0d09c7dc77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -472,8 +479,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="af715e26dfffd1f8de1c18449e2770cff" name="af715e26dfffd1f8de1c18449e2770cff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af715e26dfffd1f8de1c18449e2770cff">&#9670;&#160;</a></span>anonymous enum</h2>
+<a id="a157d5577a5b2f5986037d0d09c7dc77d" name="a157d5577a5b2f5986037d0d09c7dc77d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a157d5577a5b2f5986037d0d09c7dc77d">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -484,10 +491,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffadd736b70ac73170b9644d6fe7dbdd6ba" name="af715e26dfffd1f8de1c18449e2770cffadd736b70ac73170b9644d6fe7dbdd6ba"></a>GI_DEBUG_PROBE_VERTICES&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffaf1db8d5cb9170cc48e50f01378675bc2" name="af715e26dfffd1f8de1c18449e2770cffaf1db8d5cb9170cc48e50f01378675bc2"></a>GI_WIRE_CUBE_VERTICES&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffafe2fed8b2ca9113062d05bbf50f6e6b8" name="af715e26dfffd1f8de1c18449e2770cffafe2fed8b2ca9113062d05bbf50f6e6b8"></a>GI_LOG_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffa18b0bd55142c07ceea2c4d99755af444" name="af715e26dfffd1f8de1c18449e2770cffa18b0bd55142c07ceea2c4d99755af444"></a>GI_SMALL_LOG_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a157d5577a5b2f5986037d0d09c7dc77dadd736b70ac73170b9644d6fe7dbdd6ba" name="a157d5577a5b2f5986037d0d09c7dc77dadd736b70ac73170b9644d6fe7dbdd6ba"></a>GI_DEBUG_PROBE_VERTICES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a157d5577a5b2f5986037d0d09c7dc77daf1db8d5cb9170cc48e50f01378675bc2" name="a157d5577a5b2f5986037d0d09c7dc77daf1db8d5cb9170cc48e50f01378675bc2"></a>GI_WIRE_CUBE_VERTICES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a157d5577a5b2f5986037d0d09c7dc77dafe2fed8b2ca9113062d05bbf50f6e6b8" name="a157d5577a5b2f5986037d0d09c7dc77dafe2fed8b2ca9113062d05bbf50f6e6b8"></a>GI_LOG_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a157d5577a5b2f5986037d0d09c7dc77da18b0bd55142c07ceea2c4d99755af444" name="a157d5577a5b2f5986037d0d09c7dc77da18b0bd55142c07ceea2c4d99755af444"></a>GI_SMALL_LOG_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

@@ -241,6 +241,7 @@ $(document).ready(function(){initNavTree('app_8c.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="adaptive__sampler_8h_source.html">adaptive_sampler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__input_8h_source.html">app_input.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__input__state_8h_source.html">app_input_state.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__profiling_8h_source.html">app_profiling.h</a>&quot;</code><br />
@@ -250,9 +251,14 @@ $(document).ready(function(){initNavTree('app_8c.html',''); initResizable(); });
 <code>#include &quot;async/async_coordinator.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="bool__utils_8h_source.html">bool_utils.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera__input_8h_source.html">camera_input.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="env__manager_8h_source.html">env_manager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gamepad__input_8h_source.html">gamepad_input.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="icosphere_8h_source.html">icosphere.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="lum__histogram_8h_source.html">lum_histogram.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__internal_8h_source.html">postprocess_internal.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="renderer_8h_source.html">renderer.h</a>&quot;</code><br />
@@ -280,6 +286,10 @@ Functions</h2></td></tr>
 <tr class="separator:a201c8d0c1a848c34571be7266d0f691d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad930f5a0c57a18192b5eb14c21fb649b" id="r_ad930f5a0c57a18192b5eb14c21fb649b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#ad930f5a0c57a18192b5eb14c21fb649b">app_render_ui_trampoline</a> (void *user_data)</td></tr>
 <tr class="separator:ad930f5a0c57a18192b5eb14c21fb649b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad953ac04f37b70e204508b3aa248a5b0" id="r_ad953ac04f37b70e204508b3aa248a5b0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#ad953ac04f37b70e204508b3aa248a5b0">app_update_camera</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ad953ac04f37b70e204508b3aa248a5b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06458eaa601fb921b99db371c422c018" id="r_a06458eaa601fb921b99db371c422c018"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a06458eaa601fb921b99db371c422c018">app_update_mesh_subdivisions</a> (<a class="el" href="structApp.html">App</a> *app, int *last_subdiv)</td></tr>
+<tr class="separator:a06458eaa601fb921b99db371c422c018"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d3b9d4294ec4a01762c962902b9063d" id="r_a1d3b9d4294ec4a01762c962902b9063d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a1d3b9d4294ec4a01762c962902b9063d">app_run</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="memdesc:a1d3b9d4294ec4a01762c962902b9063d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enters the main application rendering and event loop.  <br /></td></tr>
 <tr class="separator:a1d3b9d4294ec4a01762c962902b9063d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -417,7 +427,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app_8c_a0b5bbc89b63f7215c81ff5256d8ad832_cgraph.svg" width="100%" height="403"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app_8c_a0b5bbc89b63f7215c81ff5256d8ad832_cgraph.svg" width="100%" height="438"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -503,6 +513,78 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="ad953ac04f37b70e204508b3aa248a5b0" name="ad953ac04f37b70e204508b3aa248a5b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad953ac04f37b70e204508b3aa248a5b0">&#9670;&#160;</a></span>app_update_camera()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_update_camera </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app_8c_ad953ac04f37b70e204508b3aa248a5b0_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a06458eaa601fb921b99db371c422c018" name="a06458eaa601fb921b99db371c422c018"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06458eaa601fb921b99db371c422c018">&#9670;&#160;</a></span>app_update_mesh_subdivisions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_update_mesh_subdivisions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>last_subdiv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app_8c_a06458eaa601fb921b99db371c422c018_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a6fb26f2c8f3e06d95c9dbaf1ad1473c2" name="a6fb26f2c8f3e06d95c9dbaf1ad1473c2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6fb26f2c8f3e06d95c9dbaf1ad1473c2">&#9670;&#160;</a></span>APP_SUBSYSTEM_TABLE</h2>
@@ -533,11 +615,11 @@ Here is the call graph for this function:</div>
 <div class="ttc" id="aapp__input__state_8h_html_a2b62faef4c1ec9fe33bf1ca2b2b56222"><div class="ttname"><a href="app__input__state_8h.html#a2b62faef4c1ec9fe33bf1ca2b2b56222">APP_INPUT_DESCRIPTOR</a></div><div class="ttdeci">#define APP_INPUT_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> app_input_state.h:47</div></div>
 <div class="ttc" id="aapp__profiling_8h_html_a5fee8336e1933c1b39fd2840a6f244d3"><div class="ttname"><a href="app__profiling_8h.html#a5fee8336e1933c1b39fd2840a6f244d3">APP_PROFILING_DESCRIPTOR</a></div><div class="ttdeci">#define APP_PROFILING_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> app_profiling.h:53</div></div>
 <div class="ttc" id="aapp__window_8h_html_a6151210b4434fba5b69189b207890a6c"><div class="ttname"><a href="app__window_8h.html#a6151210b4434fba5b69189b207890a6c">APP_WINDOW_DESCRIPTOR</a></div><div class="ttdeci">#define APP_WINDOW_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> app_window.h:28</div></div>
-<div class="ttc" id="aasync__loader_8h_html_a1acfe8a071c91afc6fa14a5e9297cbf2"><div class="ttname"><a href="async__loader_8h.html#a1acfe8a071c91afc6fa14a5e9297cbf2">APP_ASYNC_LOADER_DESCRIPTOR</a></div><div class="ttdeci">#define APP_ASYNC_LOADER_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> async_loader.h:117</div></div>
-<div class="ttc" id="aenv__manager_8h_html_a198ea67400c8073a04b09e5e1e29944a"><div class="ttname"><a href="env__manager_8h.html#a198ea67400c8073a04b09e5e1e29944a">APP_ENV_MGR_DESCRIPTOR</a></div><div class="ttdeci">#define APP_ENV_MGR_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> env_manager.h:111</div></div>
+<div class="ttc" id="aasync__loader_8h_html_a1acfe8a071c91afc6fa14a5e9297cbf2"><div class="ttname"><a href="async__loader_8h.html#a1acfe8a071c91afc6fa14a5e9297cbf2">APP_ASYNC_LOADER_DESCRIPTOR</a></div><div class="ttdeci">#define APP_ASYNC_LOADER_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> async_loader.h:179</div></div>
+<div class="ttc" id="aenv__manager_8h_html_a198ea67400c8073a04b09e5e1e29944a"><div class="ttname"><a href="env__manager_8h.html#a198ea67400c8073a04b09e5e1e29944a">APP_ENV_MGR_DESCRIPTOR</a></div><div class="ttdeci">#define APP_ENV_MGR_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> env_manager.h:119</div></div>
 <div class="ttc" id="alum__histogram_8h_html_a3d9c1fccaf95b9beae927cd49a6f011f"><div class="ttname"><a href="lum__histogram_8h.html#a3d9c1fccaf95b9beae927cd49a6f011f">APP_LUM_HISTOGRAM_DESCRIPTOR</a></div><div class="ttdeci">#define APP_LUM_HISTOGRAM_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> lum_histogram.h:11</div></div>
 <div class="ttc" id="apostprocess_8h_html_ac5c4d3602d447ab45ac9523357a60c54"><div class="ttname"><a href="postprocess_8h.html#ac5c4d3602d447ab45ac9523357a60c54">APP_POSTPROCESS_DESCRIPTOR</a></div><div class="ttdeci">#define APP_POSTPROCESS_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> postprocess.h:52</div></div>
-<div class="ttc" id="ascene_8h_html_a9c4b25e96e70d9112b5ee4b88dc182a9"><div class="ttname"><a href="scene_8h.html#a9c4b25e96e70d9112b5ee4b88dc182a9">APP_SCENE_DESCRIPTOR</a></div><div class="ttdeci">#define APP_SCENE_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> scene.h:122</div></div>
+<div class="ttc" id="ascene_8h_html_a9c4b25e96e70d9112b5ee4b88dc182a9"><div class="ttname"><a href="scene_8h.html#a9c4b25e96e70d9112b5ee4b88dc182a9">APP_SCENE_DESCRIPTOR</a></div><div class="ttdeci">#define APP_SCENE_DESCRIPTOR</div><div class="ttdef"><b>Definition</b> scene.h:121</div></div>
 </div><!-- fragment -->
 </div>
 </div>

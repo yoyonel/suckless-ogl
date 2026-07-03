@@ -280,9 +280,6 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa5345e02a1dff1e859ff556bcf670b2d" id="r_aa5345e02a1dff1e859ff556bcf670b2d"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa5345e02a1dff1e859ff556bcf670b2d">utils_buffer_offset</a> (size_t offset)</td></tr>
-<tr class="memdesc:aa5345e02a1dff1e859ff556bcf670b2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets.  <br /></td></tr>
-<tr class="separator:aa5345e02a1dff1e859ff556bcf670b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d506638d7043eb273a2a357591d3086" id="r_a6d506638d7043eb273a2a357591d3086"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a6d506638d7043eb273a2a357591d3086">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
 <tr class="memdesc:a6d506638d7043eb273a2a357591d3086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <br /></td></tr>
 <tr class="separator:a6d506638d7043eb273a2a357591d3086"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -826,33 +823,6 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="aa5345e02a1dff1e859ff556bcf670b2d" name="aa5345e02a1dff1e859ff556bcf670b2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5345e02a1dff1e859ff556bcf670b2d">&#9670;&#160;</a></span>utils_buffer_offset()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void * utils_buffer_offset </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>offset</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">offset</td><td>The byte offset to cast. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A void pointer representing the offset. </dd></dl>
 
 </div>
 </div>

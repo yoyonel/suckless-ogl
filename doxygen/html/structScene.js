@@ -1,9 +1,8 @@
 var structScene =
 [
-    [ "billboard_group", "structScene.html#a1108ce3d3c22801c2a346c2d42d93ee8", null ],
     [ "billboard_instance_count", "structScene.html#af58fde44bbb9f0e202f59b83a84a23a2", null ],
     [ "billboard_instances", "structScene.html#a65c37f45fdff12f5bbf091fa4f12885e", null ],
-    [ "billboard_sorter", "structScene.html#a8949bc9a64e5b8a7d13af728ef12b1d7", null ],
+    [ "billboard_renderer", "structScene.html#ab54b94b59d7f353701e1808e68cf2fa0", null ],
     [ "config", "structScene.html#a827038edcfb92362594bd4789dfb756d", null ],
     [ "current_hdr_index", "structScene.html#a49964588aac3d2398c4f589c1c9f2d0a", null ],
     [ "geometry", "structScene.html#ad301901a87741c2b2ad7660c752877bd", null ],

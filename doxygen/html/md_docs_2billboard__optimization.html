@@ -231,18 +231,18 @@ $(document).ready(function(){initNavTree('md_docs_2billboard__optimization.html'
   <div class="headertitle"><div class="title">Exact Sphere AABB Optimization</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md0"></a> This document explains the mathematical method used to calculate the optimal screen-space bounding box (AABB) for sphere rendering.</p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md2"></a> This document explains the mathematical method used to calculate the optimal screen-space bounding box (AABB) for sphere rendering.</p>
 <p><img src="images/sphere_aabb_optimization_projective.png" alt="Projective Geometry Concept" class="inline"/></p>
 <p><img src="images/billboard_aabb_geometry.png" alt="Exact AABB Geometry" class="inline"/></p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<h1><a class="anchor" id="autotoc_md3"></a>
 The Problem</h1>
 <p>When rendering spheres using ray-casting on a billboard (a generic quad), we want the quad to be as small as possible to minimize <b>fragment shader overdraw</b>.</p>
 <p>A naive approach (projecting the center and adding the radius) fails because of <b>perspective distortion</b>. As a sphere moves to the edge of the field of view, its projection becomes an ellipse. A fixed-size quad would either be too large (wasteful) or too small (clipping the sphere).</p>
-<h1><a class="anchor" id="autotoc_md2"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 The Exact Solution: Tangent Planes</h1>
 <p>Instead of trying to project the sphere itself, we calculate the <b>viewing cone</b> that perfectly encompasses the sphere. This is equivalent to finding the planes passing through the camera origin (0,0,0) that are <b>tangent</b> to the sphere.</p>
 <p>We solve this problem in 2D, independently for the X (width) and Y (height) axes.</p>
-<h2><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md5"></a>
 Geometry (XZ Plane)</h2>
 <p>Consider the top-down view (XZ plane) shown in the diagram above:</p>
 <ul>
@@ -255,7 +255,7 @@ Geometry (XZ Plane)</h2>
 <p class="formulaDsp">
 \[ L = \sqrt{d^2 - r^2} \]
 </p>
-<h2><a class="anchor" id="autotoc_md4"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Finding Tangent Normals (Without Trigonometry)</h2>
 <p>We can find the normal vectors of the tangent lines using simple 2D vector rotation. The tangent lines are rotated relative to the center vector \(\vec{C}\) by the angle \(\alpha\). By observing the similar triangles, we can derive the tangent direction vectors directly from \(C\), \(r\), and \(L\):</p>
 <p class="formulaDsp">
@@ -265,7 +265,7 @@ Finding Tangent Normals (Without Trigonometry)</h2>
 \[ n_{z1} = \frac{C_z \cdot L + C_x \cdot r}{d^2} \]
 </p>
 <p>(And symmetrically for the second tangent).</p>
-<h2><a class="anchor" id="autotoc_md5"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Projection to NDC</h2>
 <p>Once we have the normal vector \((n_x, n_z)\) of a tangent line (which represents a ray from the camera), we project it to Normalized Device Coordinates (NDC) using the projection matrix elements.</p>
 <p>For a standard perspective projection matrix \(P\):</p>
@@ -278,7 +278,7 @@ Projection to NDC</h2>
 </li>
 </ul>
 <p>This gives us the exact screen-space coordinate of the edge of the sphere. We calculate the min/max of both tangents to find the AABB width. The same logic applies to the Y axis.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Implementation Results</h1>
 <p>This method provides a <b>pixel-perfect bounding box</b>:</p>
 <ul>
@@ -286,10 +286,10 @@ Implementation Results</h1>
 <li><b>Correct Perspective</b>: Handles elliptical distortion at screen edges perfectly.</li>
 <li><b>Efficient</b>: Uses only square roots and basic arithmetic, avoiding expensive trigonometric functions (<code>acos</code>, <code>atan</code>).</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Robustness Handling</h1>
 <p>To ensure stability in all scenarios, two special cases are handled:</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 1. Camera Plane Singularity</h2>
 <p>When the sphere intersects the camera plane ( \(Z=0\)), the tangent formulas can produce singularities or "wrap-around" artifacts where points behind the camera are projected inverted onto the screen.</p>
 <p><b>Solution</b>: If a tangent point lies behind the camera ( \(n_z \ge 0\)), its projected screen coordinate is clamped to infinity ( \(\pm 10000.0\)) in the correct direction. This ensures the quad extends to the screen edge.</p>
@@ -300,7 +300,7 @@ Robustness Handling</h1>
 <div class="line"><span class="comment">// ✅ After: explicit ternary, no zero case</span></div>
 <div class="line">p1 = (nx1 &gt;= 0.0 ? 1.0 : -1.0) * 10000.0;</div>
 </div><!-- fragment --><p>This singularity occurs when the tangent line is exactly axis-aligned ( \(n_x = 0\)), which is geometrically possible for a sphere centered on the view axis.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 2. Back-Projection Culling</h2>
 <p>Spheres located entirely behind the camera can mathematically project to valid screen coordinates (inverted).</p>
 <p><b>Solution</b>: These are explicitly culled in the Vertex <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> by checking if the sphere's <b>nearest point</b> along the view axis is behind the camera:</p>
@@ -318,7 +318,7 @@ Robustness Handling</h1>
 <div class="line"> │  │  ●  │  but sphere extends in front</div>
 <div class="line"> │  │     │  nearest point = z - r = -1.5</div>
 <div class="line"> │  └─────┘</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md12"></a>
 3. Conservative Depth</h2>
 <p>To ensure correct Z-buffering when the sphere intersects other geometry (e.g. a wall or floor passing through it), the billboard quad is positioned at the sphere's <b>frontmost plane</b> ( \(Z_{nearest} = Z_{view} + R\)) rather than its center. This ensures the quad is drawn <em>before</em> any intersecting geometry that might be inside the sphere, safeguarding against incorrect occlusion. The Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> then outputs the precise per-pixel depth (<code>gl_FragDepth</code>) to carve out the true spherical shape.</p>
 <p>The nearest Z is clamped to stay in front of the near plane. The near plane distance is now <b>derived dynamically</b> from the projection matrix instead of being hardcoded:</p>
@@ -349,7 +349,7 @@ z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1}
 \]
 </p>
 <p>This eliminates the coupling between the shader and the CPU-side <code>NEAR_PLANE</code> constant, making the code robust to near plane changes.</p>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 4. Numerical Stability: Avoiding Silhouette Jitter</h2>
 <p>When using ray-casting on billboards, it is critical that attributes constant across the sphere (center, radius, material) are passed using the **<code>flat</code>** interpolation qualifier.</p>
 <p>By default, OpenGL performs perspective-correct interpolation. Even if all four vertices of a billboard share the same value (e.g., \(Radius = 1.0\)), floating-point precision errors during interpolation can cause values to fluctuate slightly across the quad (e.g., \(0.9999999\) or \(1.0000001\)). At the sphere's silhouette, where the intersection test is highly sensitive (discriminant near zero), these micro-variations produce **"rainbow dots"** or noise artifacts.</p>
@@ -357,7 +357,7 @@ z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1}
 <ul>
 <li><b>See also</b>: <a href="https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Interpolation_qualifiers">Flat Interpolation (Khronos Wiki)</a> and <a href="https://www.khronos.org/opengl/wiki/Primitive#Provoking_vertex">Provoking Vertex (Khronos Wiki)</a>.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 5. Inside-Sphere Epsilon Robustness</h2>
 <p>When the camera is inside or very near the sphere surface, the shader switches to a full-screen quad for ray-casting. The detection threshold uses an <b>additive + multiplicative</b> epsilon to handle all sphere scales:</p>
 <div class="fragment"><div class="line"><span class="comment">// ❌ Before: purely multiplicative — fails for tiny spheres</span></div>
@@ -378,10 +378,10 @@ z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1}
 <td class="markdownTableBodyCenter">\(r = 0.001\)   </td><td class="markdownTableBodyCenter">\(5 \times 10^{-9}\)   </td><td class="markdownTableBodyCenter">\(10^{-4}\) ✅   </td></tr>
 </table>
 <p>For large spheres, the multiplicative term dominates. For very small spheres (e.g. particle systems), the additive floor \(10^{-4}\) prevents false-negative detection caused by float32 precision limits.</p>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 6. Code Structure: Shared Projection Scale Factors</h2>
 <p>The projection matrix diagonal elements <code>sx = projection[0][0]</code> and <code>sy = projection[1][1]</code> are used in both the inside-sphere and normal projection branches. They are now extracted <b>once</b> before the branch chain, eliminating code duplication and making the dependency explicit.</p>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 7. The Mesh vs. Math Paradox (Understanding Diff Maps)</h2>
 <p>When comparing this optimized billboard rendering to a traditional triangle-based sphere (Reference), a "diff map" will often show persistent colored rings around the silhouettes. This is <b>expected</b> and proves the accuracy of the mathematical approach:</p>
 <ol type="1">
@@ -389,20 +389,20 @@ z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1}
 <li><b>Anti-Aliasing Clash:</b> Our shader uses <b>Analytical Edge Smoothing</b> (Soft Edges). Standard mesh rendering uses hardware rasterization. The transition from 100% to 0% opacity differs slightly, producing residuals in difference maps.</li>
 <li><b>Normal Continuity:</b> Ray-casted normals are perfectly continuous, while mesh normals (even when smoothed) depend on the underlying vertex interpolation.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md15"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 References</h1>
 <ul>
 <li><b>Mara, M., McGuire, M., &amp; Luebke, D. (2013).</b> <em>2D Polyhedral Bounds of a Clipped, Perspective-Projected 3D Sphere</em>. Journal of Computer Graphics Techniques (JCGT). <a href="https://jcgt.org/published/0002/02/05/">PDF Reference</a></li>
 </ul>
 <p>See <code><a class="el" href="pbr__ibl__billboard_8vert.html">shaders/pbr_ibl_billboard.vert</a></code> for the GLSL implementation.</p>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md18"></a>
 Visual Illustration</h2>
 <p>The following image (from Mara et al.) demonstrates how the spherical projection creates an elliptical footprint on the screen, which our exact AABB calculation perfectly bounds:</p>
 <p><img src="images/perspective_projection_grid.png" alt="Perspective Projection Grid" class="inline"/></p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md18"></a>
+<h1><a class="anchor" id="autotoc_md20"></a>
 Changelog</h1>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md21"></a>
 2026-02-08 — Robustness Audit &amp; Fixes</h2>
 <p>Five corrections applied to <code><a class="el" href="projection__utils_8glsl.html">projection_utils.glsl</a></code> following a mathematical audit of <code>computeBillboardSphere</code>:</p>
 <table class="markdownTable">
