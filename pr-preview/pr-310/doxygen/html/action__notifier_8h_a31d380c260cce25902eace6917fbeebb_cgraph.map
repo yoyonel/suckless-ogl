@@ -1,17 +1,34 @@
 <map id="action_notifier_draw" name="action_notifier_draw">
-<area shape="rect" id="node1" title="Renders active notifications to the screen." alt="" coords="5,81,160,108"/>
-<area shape="rect" id="node2" href="$ui_8h.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="208,81,337,108"/>
-<area shape="rect" id="node3" href="$ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b" title="Draws text with custom alpha transparency and a scale factor." alt="" coords="385,81,540,108"/>
-<area shape="rect" id="node4" href="$ui_8c.html#a6f543873f648c1c65a3cce1db844d95a" title=" " alt="" coords="588,5,728,32"/>
-<area shape="rect" id="node5" href="$ui_8c.html#a2542a31c87c66c322c255f6110d7b273" title=" " alt="" coords="601,107,715,133"/>
-<area shape="rect" id="node11" href="$ui_8c.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="619,56,697,83"/>
-<area shape="rect" id="node14" href="$ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="625,157,691,184"/>
-<area shape="rect" id="node6" href="$ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd" title="Flushes the current UI batch to the GPU." alt="" coords="829,107,901,133"/>
-<area shape="rect" id="node7" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="1001,81,1136,108"/>
-<area shape="rect" id="node10" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="1021,132,1117,159"/>
-<area shape="rect" id="node8" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="1184,74,1336,115"/>
-<area shape="rect" id="node9" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1384,81,1533,108"/>
-<area shape="rect" id="node12" href="$render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="776,56,953,83"/>
-<area shape="rect" id="node13" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="781,5,948,32"/>
-<area shape="rect" id="node15" href="$render__utils_8h.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="789,158,941,199"/>
+<area shape="rect" id="Node000001" title="Renders active notifications to the screen." alt="" coords="5,117,160,143"/>
+<area shape="rect" id="Node000002" href="$ui_8c.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="208,117,337,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,127,194,127,194,133,160,133"/>
+<area shape="rect" id="Node000003" href="$ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b" title="Draws text with custom alpha transparency and a scale factor." alt="" coords="385,117,540,143"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="337,127,372,127,372,133,337,133"/>
+<area shape="rect" id="Node000004" href="$ui_8c.html#a75ea2ac8802dd70abd3eb8002e42f8ea" title=" " alt="" coords="588,19,728,44"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="488,115,618,48,620,53,490,120"/>
+<area shape="rect" id="Node000006" href="$ui_8c.html#a2542a31c87c66c322c255f6110d7b273" title=" " alt="" coords="601,141,715,167"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="540,137,587,143,586,148,540,142"/>
+<area shape="rect" id="Node000012" href="$ui_8c.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="619,92,697,117"/>
+<area shape="poly" id="edge11_Node000003_Node000012" title=" " alt="" coords="540,117,605,109,606,114,540,123"/>
+<area shape="rect" id="Node000015" href="$ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="625,191,691,216"/>
+<area shape="poly" id="edge14_Node000003_Node000015" title=" " alt="" coords="496,140,589,177,613,186,611,191,587,182,494,145"/>
+<area shape="rect" id="Node000005" href="$ui_8c.html#a288a4c20fc565627f3c5d04024dfe73e" title=" " alt="" coords="797,5,932,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="728,24,783,21,784,26,729,29"/>
+<area shape="rect" id="Node000007" href="$ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd" title="Flushes the current UI batch to the GPU." alt="" coords="829,153,901,179"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="716,155,815,160,815,166,715,160"/>
+<area shape="rect" id="Node000008" href="$shader_8c.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="1001,129,1136,155"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="901,159,987,149,988,154,901,164"/>
+<area shape="rect" id="Node000011" href="$shader_8c.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="1021,179,1117,204"/>
+<area shape="poly" id="edge10_Node000007_Node000011" title=" " alt="" coords="901,168,1008,181,1007,186,901,173"/>
+<area shape="rect" id="Node000009" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="1184,122,1336,162"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="1137,139,1170,139,1170,145,1137,145"/>
+<area shape="rect" id="Node000010" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1384,129,1533,155"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="1337,139,1370,139,1370,145,1337,145"/>
+<area shape="rect" id="Node000013" href="$render__utils_8c.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="776,55,953,80"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="696,95,780,80,781,85,697,100"/>
+<area shape="rect" id="Node000014" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="781,104,948,129"/>
+<area shape="poly" id="edge13_Node000012_Node000014" title=" " alt="" coords="697,104,768,108,767,114,697,110"/>
+<area shape="poly" id="edge16_Node000015_Node000007" title=" " alt="" coords="690,195,815,172,815,177,691,200"/>
+<area shape="rect" id="Node000016" href="$render__utils_8c.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="789,203,941,243"/>
+<area shape="poly" id="edge15_Node000015_Node000016" title=" " alt="" coords="691,204,775,212,775,217,691,209"/>
 </map>

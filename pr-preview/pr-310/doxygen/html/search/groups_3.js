@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['luminance_20histogram_4738',['Luminance Histogram',['../group__Histogram.html',1,'']]]
+  ['environment_20lighting_0',['Environment &amp; Lighting',['../group__Environment.html',1,'']]]
 ];

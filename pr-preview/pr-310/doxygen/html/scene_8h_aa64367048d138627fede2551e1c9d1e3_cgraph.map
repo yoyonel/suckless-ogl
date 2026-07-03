@@ -1,13 +1,23 @@
 <map id="scene_nbody_update" name="scene_nbody_update">
-<area shape="rect" id="node1" title="Advances the N&#45;body simulation by one frame." alt="" coords="5,208,164,235"/>
-<area shape="rect" id="node2" href="$instanced__rendering_8h.html#a5a080d716887f7858b0d9b745b078448" title="Updates the instance VBO with new data (e.g., N&#45;body positions)." alt="" coords="217,5,399,32"/>
-<area shape="rect" id="node3" href="$nbody_8h.html#a020022b8382ea053ca31222c03c7d1de" title="Returns the number of active bodies." alt="" coords="241,56,375,83"/>
-<area shape="rect" id="node4" href="$nbody_8h.html#a6e554a86943358e558879e7073cb72b8" title="Advances the simulation by the given wall&#45;clock delta time." alt="" coords="259,107,357,133"/>
-<area shape="rect" id="node5" href="$nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4" title="Smoothly transitions time_scale toward target_time_scale." alt="" coords="212,157,404,184"/>
-<area shape="rect" id="node6" href="$nbody_8h.html#acdce6fe24ec0f0cdb5ecc44872197b49" title="Writes current body positions and materials into a SphereInstance array." alt="" coords="223,208,393,235"/>
-<area shape="rect" id="node7" href="$utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332" title="memcpy wrapper with bounds checking." alt="" coords="251,259,365,285"/>
-<area shape="rect" id="node8" href="$shockwave_8h.html#a11c9519d13e6bc82854ece26481eaf62" title="Registers a new shockwave at the given position." alt="" coords="242,309,374,336"/>
-<area shape="rect" id="node9" href="$shockwave_8h.html#ae354ed9f7f35b2086cfdccab13fe4558" title="Removes expired shockwaves based on current simulation time." alt="" coords="235,360,381,387"/>
-<area shape="rect" id="node10" href="$trail__renderer_8h.html#a7e1c8078c51686832375c5f3f520b3e6" title="Records current positions from the simulation." alt="" coords="229,411,387,437"/>
-<area shape="rect" id="node11" href="$trail__renderer_8c.html#af1eccac3f78736179a8ef47f95ee1a65" title=" " alt="" coords="452,411,537,437"/>
+<area shape="rect" id="Node000001" title="Advances the N&#45;body simulation by one frame." alt="" coords="5,203,164,228"/>
+<area shape="rect" id="Node000002" href="$instanced__rendering_8c.html#a5a080d716887f7858b0d9b745b078448" title="Updates the instance VBO with new data (e.g., N&#45;body positions)." alt="" coords="217,5,399,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,201,105,169,131,125,167,79,210,40,220,34,223,39,214,44,171,82,136,128,110,171,94,204"/>
+<area shape="rect" id="Node000003" href="$nbody_8h.html#a020022b8382ea053ca31222c03c7d1de" title="Returns the number of active bodies." alt="" coords="241,55,375,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="93,201,139,147,173,115,211,89,227,81,230,86,213,94,176,120,143,150,97,204"/>
+<area shape="rect" id="Node000004" href="$nbody_8h.html#a6e554a86943358e558879e7073cb72b8" title="Advances the simulation by the given wall&#45;clock delta time." alt="" coords="259,104,357,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="102,200,150,169,211,138,245,127,247,132,213,143,153,174,105,205"/>
+<area shape="rect" id="Node000005" href="$nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4" title="Smoothly transitions time_scale toward target_time_scale." alt="" coords="212,153,404,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="142,200,236,179,237,184,143,205"/>
+<area shape="rect" id="Node000006" href="$nbody_8h.html#acdce6fe24ec0f0cdb5ecc44872197b49" title="Writes current body positions and materials into a SphereInstance array." alt="" coords="223,203,393,228"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="164,213,209,213,209,218,164,218"/>
+<area shape="rect" id="Node000007" href="$utils_8c.html#abeb736cfb3c1a73ff0b6c3fabc20b332" title="memcpy wrapper with bounds checking." alt="" coords="251,252,365,277"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="143,225,238,247,237,252,142,231"/>
+<area shape="rect" id="Node000008" href="$shockwave_8c.html#a11c9519d13e6bc82854ece26481eaf62" title="Registers a new shockwave at the given position." alt="" coords="242,301,374,327"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="106,226,153,256,213,286,237,295,235,300,211,291,151,260,103,230"/>
+<area shape="rect" id="Node000009" href="$shockwave_8c.html#ae354ed9f7f35b2086cfdccab13fe4558" title="Removes expired shockwaves based on current simulation time." alt="" coords="235,351,381,376"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="98,227,144,280,176,310,213,336,230,344,227,348,211,340,173,314,140,283,94,230"/>
+<area shape="rect" id="Node000010" href="$trail__renderer_8c.html#a899dfdc5391f2b4f698bc193cb3d1a14" title="Records current positions from the simulation." alt="" coords="229,400,387,425"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="94,227,110,260,136,303,171,347,214,385,226,392,223,397,210,389,167,351,132,306,106,262,89,230"/>
+<area shape="rect" id="Node000011" href="$trail__renderer_8c.html#af1eccac3f78736179a8ef47f95ee1a65" title=" " alt="" coords="452,400,537,425"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="387,410,438,410,438,415,387,415"/>
 </map>

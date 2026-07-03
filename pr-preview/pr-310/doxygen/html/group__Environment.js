@@ -1,10 +1,6 @@
 var group__Environment =
 [
     [ "EnvTransitionMode", "group__Environment.html#ga9ae155b103e5528d5cb4530cf6ec8d28", [
-      [ "MIN_SUBDIV", "group__Geometry.html#ggabc6126af1d45847bc59afa0aa3216b04a6abbd2a2e390ed49e79692e2cd617e7e", null ],
-      [ "MAX_SUBDIV", "group__Geometry.html#ggabc6126af1d45847bc59afa0aa3216b04ac846edb36b9f557d22d6a1166f02f344", null ],
-      [ "CUBEMAP_SIZE", "group__Geometry.html#ggabc6126af1d45847bc59afa0aa3216b04a036c97bdde295b409aad7e7ffd60a1ae", null ],
-      [ "INITIAL_SUBDIVISIONS", "group__Geometry.html#ggabc6126af1d45847bc59afa0aa3216b04a4dcc3f43b13b159296f85b7d6d293a4b", null ],
       [ "ENV_TRANSITION_CROSSFADE", "group__Environment.html#gga9ae155b103e5528d5cb4530cf6ec8d28a3f2f834e9d5775c48a95cbd342b8a74e", null ],
       [ "ENV_TRANSITION_BLACK_SCREEN", "group__Environment.html#gga9ae155b103e5528d5cb4530cf6ec8d28a8b2c4d2e91ae66cad88a3080870b6ba8", null ]
     ] ],

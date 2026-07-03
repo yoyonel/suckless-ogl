@@ -2,7 +2,7 @@ var scene_8h =
 [
     [ "Scene", "structScene.html", "structScene" ],
     [ "APP_SCENE_DESCRIPTOR", "scene_8h.html#a9c4b25e96e70d9112b5ee4b88dc182a9", null ],
-    [ "aa_mode_to_string", "scene_8h.html#ad63ee708be73ae184d1233ad69cf077f", null ],
+    [ "aa_mode_to_string", "scene_8h.html#a7436193527addd579fa9956c83b1cb05", null ],
     [ "scene_cleanup", "scene_8h.html#a544a31d29501a2854aee06c6011ec62d", null ],
     [ "scene_init", "scene_8h.html#ab37b3774644a51065a47e884ffc5e649", null ],
     [ "scene_nbody_update", "scene_8h.html#aa64367048d138627fede2551e1c9d1e3", null ],

@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['vec3array_5ffree_3291',['vec3array_free',['../icosphere_8h.html#ad4ff3644bfe858f66d74316bbf80c39a',1,'vec3array_free(Vec3Array *array):&#160;icosphere.c'],['../icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a',1,'vec3array_free(Vec3Array *array):&#160;icosphere.c']]],
-  ['vec3array_5finit_3292',['vec3array_init',['../icosphere_8h.html#ac300d42875ee9e7db317f5f3bdedd91d',1,'vec3array_init(Vec3Array *array):&#160;icosphere.c'],['../icosphere_8c.html#ac300d42875ee9e7db317f5f3bdedd91d',1,'vec3array_init(Vec3Array *array):&#160;icosphere.c']]],
-  ['vec3array_5fpush_3293',['vec3array_push',['../icosphere_8h.html#a38fc23a56f4c687ecb08e3dde52b2b5d',1,'vec3array_push(Vec3Array *array, vec3 vertex):&#160;icosphere.c'],['../icosphere_8c.html#a38fc23a56f4c687ecb08e3dde52b2b5d',1,'vec3array_push(Vec3Array *array, vec3 vertex):&#160;icosphere.c']]]
+  ['window_5fcreate_0',['window_create',['../window_8h.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c'],['../window_8c.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c']]],
+  ['window_5fdestroy_1',['window_destroy',['../window_8h.html#ad31b45f175d070f99c1a82cb93b2c82d',1,'window_destroy(GLFWwindow *window):&#160;window.c'],['../window_8c.html#ad31b45f175d070f99c1a82cb93b2c82d',1,'window_destroy(GLFWwindow *window):&#160;window.c']]]
 ];

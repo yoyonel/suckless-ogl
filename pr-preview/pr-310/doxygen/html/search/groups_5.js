@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['renderer_20configuration_4741',['Renderer Configuration',['../group__Renderer.html',1,'']]]
+  ['histogram_0',['Luminance Histogram',['../group__Histogram.html',1,'']]]
 ];

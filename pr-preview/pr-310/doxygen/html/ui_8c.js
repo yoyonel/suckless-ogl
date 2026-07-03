@@ -1,6 +1,5 @@
 var ui_8c =
 [
-    [ "UIQuad", "structUIQuad.html", "structUIQuad" ],
     [ "FontAtlasConfig", "ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27", [
       [ "FONT_ATLAS_SIZE", "ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27aa0f4026de0fe5858c7c8199069825526", null ],
       [ "FONT_FIRST_CHAR", "ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27a116ff0645ada6fcc090c80ab2fbe527b", null ],
@@ -12,9 +11,18 @@ var ui_8c =
       [ "VERTICES_PER_QUAD", "ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa", null ],
       [ "FLOATS_PER_VERTEX", "ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4", null ]
     ] ],
+    [ "VertexID", "ui_8c.html#afe601f67c59d4182d4066926a0add30c", [
+      [ "VERTEX_0", "ui_8c.html#afe601f67c59d4182d4066926a0add30ca18b7324dac6bc5433a16c50bcd9a6a0e", null ],
+      [ "VERTEX_1", "ui_8c.html#afe601f67c59d4182d4066926a0add30ca54fa375ac50feb53bb736662ba21b4e6", null ],
+      [ "VERTEX_2", "ui_8c.html#afe601f67c59d4182d4066926a0add30ca7ea7269c86edde254d6ab0568474e8d1", null ],
+      [ "VERTEX_3", "ui_8c.html#afe601f67c59d4182d4066926a0add30cad57116d0ee6c51004883bf1057f347a1", null ],
+      [ "VERTEX_4", "ui_8c.html#afe601f67c59d4182d4066926a0add30ca11672fddd7a2ac99d896612910591bc5", null ],
+      [ "VERTEX_5", "ui_8c.html#afe601f67c59d4182d4066926a0add30ca600607423881e7e6fc446cf7f1065c30", null ]
+    ] ],
     [ "create_font_atlas", "ui_8c.html#adea4af1dfed2a306c55f45c26e117280", null ],
-    [ "make_glyph_quad", "ui_8c.html#a6f543873f648c1c65a3cce1db844d95a", null ],
+    [ "make_glyph_quad", "ui_8c.html#a75ea2ac8802dd70abd3eb8002e42f8ea", null ],
     [ "prepare_batch", "ui_8c.html#a2542a31c87c66c322c255f6110d7b273", null ],
+    [ "push_batch_quad", "ui_8c.html#a288a4c20fc565627f3c5d04024dfe73e", null ],
     [ "setup_ui_render_state", "ui_8c.html#a05f2c5e6678bcb2f958195dcab774062", null ],
     [ "setup_vertex_buffers", "ui_8c.html#a38379b82fe44d3fc5826c8a9ed606cf5", null ],
     [ "ui_begin", "ui_8c.html#a5356c389352db784027765ad0ef3aca5", null ],
@@ -40,6 +48,12 @@ var ui_8c =
     [ "FONT_BASELINE_OFFSET", "ui_8c.html#a9d2c975bbb987bab349a6efe804a88cc", null ],
     [ "g_ui_saved_state", "ui_8c.html#ada114a43ba5ef5da89f16bfd867c8065", null ],
     [ "MAX_FONT_FILE_SIZE", "ui_8c.html#a5ef7672ec0be8cbe08dfecd7dad395a7", null ],
+    [ "UI_MODE_BLOOM", "ui_8c.html#ac905219effb90c29ba46c0a22def5c73", null ],
+    [ "UI_MODE_GLOW", "ui_8c.html#a8be286ee999925f53f00322739134fbe", null ],
+    [ "UI_MODE_ROUNDED", "ui_8c.html#af7a4de40fb021ae12eed00ab4bb0146f", null ],
+    [ "UI_MODE_SOLID", "ui_8c.html#a2ebbbf2c276e18d60893b6a0162946c1", null ],
+    [ "UI_MODE_TEXT", "ui_8c.html#aceed7ba2d31b6eb329659b328a36c8bf", null ],
+    [ "UI_MODE_TEXTURED", "ui_8c.html#a15185b23bfab68e92e7d778881b9fbf7", null ],
     [ "UI_QUAD_MIN", "ui_8c.html#aa091a07662c10c5d3b8eaaf4774d7ab5", null ],
     [ "UI_QUAD_POS_HALF", "ui_8c.html#a895be99a8fe46f071860fd021e113463", null ],
     [ "UI_QUAD_TEX_MAX", "ui_8c.html#a42d60159b1f7fbfbff679ea27494cfdf", null ]
