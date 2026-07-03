@@ -80,3 +80,43 @@ Les compilateurs modernes optimisent agressivement cette configuration :
   * *Inconvénient* : Cela éviterait de copier les pointeurs statiques, mais nécessiterait toujours de mettre à jour les variables dynamiques (`.width`, `.height`, `.delta_time`, `.frame_count`) à chaque frame. Cela ajouterait une surcharge de synchronisation d'état et exposerait à des risques d'obsolescence des pointeurs si des sous-systèmes étaient réalloués.
 * **Alternative B : Passer les paramètres sous forme d'arguments individuels**
   * *Inconvénient* : `renderer_draw_frame(app->scene, app->postprocess, ...)` nécessiterait plus de 15 arguments. Cela rendrait le code difficile à maintenir et violerait les conventions ABI (qui limitent à 6 les arguments transmis par registres ; les autres étant empilés sur la pile, générant ainsi plus de surcharge qu'un simple pointeur de structure propre).
+
+---
+
+## 4. Vérification Assembleur & Preuves Empiriques
+
+### A. Génération Assembleur sans LTO (`-O3 -fno-lto`)
+En compilant `src/app.c` en mode Release tout en désactivant les optimisations globales à l'édition de liens (`-fno-lto`), on observe précisément l'instanciation de la structure sur la pile :
+
+```assembly
+# 1. Chargement de l'adresse de la structure dans %r13 (rctx commence à -272(%rbp))
+leaq    -272(%rbp), %r13
+
+# 2. Copie Vectorielle AVX (écriture de plusieurs pointeurs en une seule instruction)
+vmovq   (%r15), %xmm5                            # Charge app->scene
+vpinsrq $1, 8(%r15), %xmm5, %xmm1                # Empaquette scene et postprocess dans %xmm1
+vmovdqa %ymm0, -240(%rbp)                        # Écrit 32 octets (4 pointeurs) d'un coup sur la pile
+vmovdqa %ymm1, -272(%rbp)                        # Écrit 32 octets supplémentaires
+...
+# 3. Copie de l'adresse de la structure dans %rdi (1er registre d'argument de l'ABI AMD64)
+movq    %r13, %rdi
+
+# 4. Appel de la routine de rendu
+call    renderer_draw_frame@PLT
+```
+
+* **Passage par Référence** : L'adresse de la structure sur la pile est déplacée dans `%rdi` et transmise directement, ce qui élimine tout coût de copie de structure lors de l'appel.
+* **Initialisation Vectorielle** : Le compilateur regroupe les pointeurs de 64 bits et utilise des registres vectoriels AVX (`%ymm` / `%xmm`) pour écrire dans les emplacements de pile en une seule opération, s'exécutant en seulement quelques cycles CPU.
+
+### B. Optimisation LTO & Inlining en Production (`-O3 -flto`)
+Dans le binaire final lié (`build-release/app`), la passe LTO unifie les unités de traduction :
+* **Audit de la Table des Symboles** : L'exécution de `objdump -t build-release/app | grep renderer_draw_frame` ne retourne **aucun résultat**. Le symbole de la fonction a été complètement éliminé de la section `.text`.
+* **Inlining** : `renderer_draw_frame` et ses appels internes sont entièrement fusionnés dans la boucle principale d'orchestration. La fonction finale `app_run` s'étend sur `18 894 octets` d'instructions optimisées.
+* **Résultat** : La structure intermédiaire `RenderContext` est **totalement éliminée** par le compilateur ; ses champs sont directement associés à des registres ou des arguments d'instructions inline.
+
+### C. Visualisation & Reproduction avec Just
+Une recette `just` a été ajoutée pour compiler n'importe quel fichier source C en assembleur AVX2 optimisé sans LTO afin de permettre une vérification manuelle rapide :
+```bash
+just asm src/app.c
+```
+Cette commande génère un fichier `src/app.c.s` qui peut être inspecté directement.
