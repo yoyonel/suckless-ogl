@@ -1,0 +1,360 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/scene_uniforms.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('scene__uniforms_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">scene_uniforms.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="scene__uniforms_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SCENE_UNIFORMS_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SCENE_UNIFORMS_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="light__probes_8h.html">light_probes.h</a>&quot;</span> <span class="comment">/* SH_TEXTURE_COUNT */</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html">   21</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b">   22</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b">irradiance_map</a>;        </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a5a3e26736c34743ba517f700b78fd4de">   23</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a5a3e26736c34743ba517f700b78fd4de">prefilter_map</a>;         </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#aed60e73ab4b1454b9e741961cf9702b0">   24</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#aed60e73ab4b1454b9e741961cf9702b0">brdf_lut</a>;              </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a10826da1a338e48552f1a5f1b4018e45">   25</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a10826da1a338e48552f1a5f1b4018e45">debug_mode</a>;            </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#ae648ba531f6396451ca7479f4fc5d8b4">   26</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#ae648ba531f6396451ca7479f4fc5d8b4">cam_pos</a>;               </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#af9b84adb504164380adc9e590a44e483">   27</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#af9b84adb504164380adc9e590a44e483">projection</a>;            </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a7d5908f5c55f06578e403dbcd1a81335">   28</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a7d5908f5c55f06578e403dbcd1a81335">view</a>;                  </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a6b1d1e34510fd3dd708d1bd099a87d16">   29</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a6b1d1e34510fd3dd708d1bd099a87d16">previous_view_proj</a>;    </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#ac822ab03edf6759741926077ec4bb10c">   30</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#ac822ab03edf6759741926077ec4bb10c">probe_grid_min</a>;        </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a2952ba1e2f6ff96435d0ef6c4805c4e7">   31</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a2952ba1e2f6ff96435d0ef6c4805c4e7">probe_grid_max</a>;        </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a226af0bd8fc9414c2e5296ecc5b9b45f">   32</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a226af0bd8fc9414c2e5296ecc5b9b45f">probe_grid_dim</a>;        </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a0d2135c208d13dbd10c9dfe31b577309">   33</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a0d2135c208d13dbd10c9dfe31b577309">gi_mode</a>;               </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a2c1edcb9dffd7aab175cb74aaa95fca4">   34</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a2c1edcb9dffd7aab175cb74aaa95fca4">u_specular_aa_enabled</a>; </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a4337c339a6d36f1ff526419f8cde95ff">   35</a></span>    GLint <a class="code hl_variable" href="structInstancedUniforms.html#a4337c339a6d36f1ff526419f8cde95ff">u_aa_mode</a>;             </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    GLint</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structInstancedUniforms.html#a45102246fffcb58399776dd6405d1ab4">   37</a></span>        sh_textures[<a class="code hl_enumvalue" href="light__probes_8h.html#aae05225933a42f81e7c4a9fb286596f9a5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]; </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>} <a class="code hl_struct" href="structInstancedUniforms.html">InstancedUniforms</a>;</div>
+</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="foldopen" id="foldopen00044" data-start="{" data-end="};">
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structDebugUniforms.html">   44</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structDebugUniforms.html#aee47c024df55254c5e44129172962190">   45</a></span>    GLint <a class="code hl_variable" href="structDebugUniforms.html#aee47c024df55254c5e44129172962190">projection</a>;         </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structDebugUniforms.html#a0d687aac6362eef26e35209a4c479467">   46</a></span>    GLint <a class="code hl_variable" href="structDebugUniforms.html#a0d687aac6362eef26e35209a4c479467">view</a>;               </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structDebugUniforms.html#a30458f2537177ab4180de406edd3c869">   47</a></span>    GLint <a class="code hl_variable" href="structDebugUniforms.html#a30458f2537177ab4180de406edd3c869">u_stippled</a>;         </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structDebugUniforms.html#a263903058ce0179a966cf4040456494a">   48</a></span>    GLint <a class="code hl_variable" href="structDebugUniforms.html#a263903058ce0179a966cf4040456494a">u_billboard_mode</a>;   </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structDebugUniforms.html#ae6d734c0354fa0449a0acc52bdb796ee">   49</a></span>    GLint <a class="code hl_variable" href="structDebugUniforms.html#ae6d734c0354fa0449a0acc52bdb796ee">u_use_instance_col</a>; </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structDebugUniforms.html#ad720803bbc1ccb5a22eca52eefd3d3c4">   50</a></span>    GLint <a class="code hl_variable" href="structDebugUniforms.html#ad720803bbc1ccb5a22eca52eefd3d3c4">u_color</a>;            </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>} <a class="code hl_struct" href="structDebugUniforms.html">DebugUniforms</a>;</div>
+</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="scene__uniforms_8h.html#a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556">   58</a></span><span class="keyword">enum</span> { <a class="code hl_enumvalue" href="scene__uniforms_8h.html#a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a> = 16 };</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="foldopen" id="foldopen00060" data-start="{" data-end="};">
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structBillboardUBO.html">   60</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#ad10c12cf4b25e5194cdb03605528f042">   61</a></span>    <span class="keywordtype">float</span> projection[<a class="code hl_enumvalue" href="scene__uniforms_8h.html#a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a>]; </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#ab32909fea72a6992de76af04132a0335">   62</a></span>    <span class="keywordtype">float</span> view[<a class="code hl_enumvalue" href="scene__uniforms_8h.html#a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a>];       </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a88eab662214618362fea810fb6a74d5e">   63</a></span>    <span class="keywordtype">float</span> previous_view_proj[<a class="code hl_enumvalue" href="scene__uniforms_8h.html#a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a>]; </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#acf190a461d7a836a8145c058d7e03fbc">   65</a></span>    <span class="keywordtype">float</span> cam_pos[3];            </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a8185459a1f68cde217a4f9bc739b6d5a">   66</a></span>    int32_t <a class="code hl_variable" href="structBillboardUBO.html#a8185459a1f68cde217a4f9bc739b6d5a">debug_mode</a>;          </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a12b17eef385b58c3e2574cfe9045bef3">   67</a></span>    <span class="keywordtype">float</span> screen_size[2];        </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#af3b1234dd0530df28612f5af45ff6e33">   68</a></span>    <span class="keywordtype">float</span> _pad0[2];              </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a9e31f253fb1cf3c4b9b23ce81934c9d2">   69</a></span>    <span class="keywordtype">float</span> probe_grid_min[3];     </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a19ff206c04f6712a92eca2476916d701">   70</a></span>    int32_t <a class="code hl_variable" href="structBillboardUBO.html#a19ff206c04f6712a92eca2476916d701">gi_mode</a>;             </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#aa630f13f2c4b0a638a1ecd589906723e">   71</a></span>    <span class="keywordtype">float</span> probe_grid_max[3];     </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb">   72</a></span>    int32_t <a class="code hl_variable" href="structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb">specular_aa_enabled</a>; </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#ab3975b1dc1dbdfd133b9c74399e3c12d">   73</a></span>    int32_t probe_grid_dim[3];   </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a5ac5f87d3dc10dca8a8bb5041489513f">   74</a></span>    int32_t <a class="code hl_variable" href="structBillboardUBO.html#a5ac5f87d3dc10dca8a8bb5041489513f">aa_mode</a>;             </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a3a43aba00c2857f4987c81fb4b3a683e">   75</a></span>    <span class="keywordtype">float</span> grid_to_idx_scale[3];  </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="structBillboardUBO.html#a7c8d8cd42559ed9c03b96b5f2771c4bc">   76</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structBillboardUBO.html#a7c8d8cd42559ed9c03b96b5f2771c4bc">_pad1</a>;                 </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>} <a class="code hl_define" href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">GL_UBO_ALIGNED</a> <a class="code hl_struct" href="structBillboardUBO.html">BillboardUBO</a>;</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><a class="code hl_define" href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">GL_ASSERT_UBO_ALIGNMENT</a>(<a class="code hl_struct" href="structBillboardUBO.html">BillboardUBO</a>);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="foldopen" id="foldopen00087" data-start="{" data-end="};">
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="structBillboardUniforms.html">   87</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    GLint</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structBillboardUniforms.html#a21361381527b46bd31aa0a6807a51bc2">   89</a></span>        sh_textures[<a class="code hl_enumvalue" href="light__probes_8h.html#aae05225933a42f81e7c4a9fb286596f9a5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]; </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>} <a class="code hl_struct" href="structBillboardUniforms.html">BillboardUniforms</a>;</div>
+</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="preprocessor">#endif </span><span class="comment">/* SCENE_UNIFORMS_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="agl__common_8h_html_a1ecc4ae37fb4080a41e0c8b7e7b84cbd"><div class="ttname"><a href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">GL_ASSERT_UBO_ALIGNMENT</a></div><div class="ttdeci">#define GL_ASSERT_UBO_ALIGNMENT(type)</div><div class="ttdoc">Compile-time assertion that a UBO struct meets AVX alignment. Place after the typedef to catch miscon...</div><div class="ttdef"><b>Definition</b> gl_common.h:172</div></div>
+<div class="ttc" id="agl__common_8h_html_a5f8ac9d31ca569461fe7a38ba64b50cb"><div class="ttname"><a href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">GL_UBO_ALIGNED</a></div><div class="ttdeci">#define GL_UBO_ALIGNED</div><div class="ttdoc">Attribute to apply on UBO typedef to enforce AVX alignment. Usage: } GL_UBO_ALIGNED MyUBOType;.</div><div class="ttdef"><b>Definition</b> gl_common.h:165</div></div>
+<div class="ttc" id="alight__probes_8h_html"><div class="ttname"><a href="light__probes_8h.html">light_probes.h</a></div></div>
+<div class="ttc" id="alight__probes_8h_html_aae05225933a42f81e7c4a9fb286596f9a5d6ff6546c5072f21b7dca2a5b52752e"><div class="ttname"><a href="light__probes_8h.html#aae05225933a42f81e7c4a9fb286596f9a5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a></div><div class="ttdeci">@ SH_TEXTURE_COUNT</div><div class="ttdef"><b>Definition</b> light_probes.h:14</div></div>
+<div class="ttc" id="ascene__uniforms_8h_html_a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556"><div class="ttname"><a href="scene__uniforms_8h.html#a0ed680fdb405e7195d9f14032851eebba6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a></div><div class="ttdeci">@ MAT4_FLOAT_COUNT</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:58</div></div>
+<div class="ttc" id="astructBillboardUBO_html"><div class="ttname"><a href="structBillboardUBO.html">BillboardUBO</a></div><div class="ttdoc">GPU-side uniform buffer for billboard rendering (std140 layout).</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:60</div></div>
+<div class="ttc" id="astructBillboardUBO_html_a19ff206c04f6712a92eca2476916d701"><div class="ttname"><a href="structBillboardUBO.html#a19ff206c04f6712a92eca2476916d701">BillboardUBO::gi_mode</a></div><div class="ttdeci">int32_t gi_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:70</div></div>
+<div class="ttc" id="astructBillboardUBO_html_a5ac5f87d3dc10dca8a8bb5041489513f"><div class="ttname"><a href="structBillboardUBO.html#a5ac5f87d3dc10dca8a8bb5041489513f">BillboardUBO::aa_mode</a></div><div class="ttdeci">int32_t aa_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:74</div></div>
+<div class="ttc" id="astructBillboardUBO_html_a7c8d8cd42559ed9c03b96b5f2771c4bc"><div class="ttname"><a href="structBillboardUBO.html#a7c8d8cd42559ed9c03b96b5f2771c4bc">BillboardUBO::_pad1</a></div><div class="ttdeci">float _pad1</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:76</div></div>
+<div class="ttc" id="astructBillboardUBO_html_a8185459a1f68cde217a4f9bc739b6d5a"><div class="ttname"><a href="structBillboardUBO.html#a8185459a1f68cde217a4f9bc739b6d5a">BillboardUBO::debug_mode</a></div><div class="ttdeci">int32_t debug_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:66</div></div>
+<div class="ttc" id="astructBillboardUBO_html_ad2dd948396000eeb5fb29c89b3d077cb"><div class="ttname"><a href="structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb">BillboardUBO::specular_aa_enabled</a></div><div class="ttdeci">int32_t specular_aa_enabled</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:72</div></div>
+<div class="ttc" id="astructBillboardUniforms_html"><div class="ttname"><a href="structBillboardUniforms.html">BillboardUniforms</a></div><div class="ttdoc">Cached uniform locations for billboard rendering.</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:87</div></div>
+<div class="ttc" id="astructDebugUniforms_html"><div class="ttname"><a href="structDebugUniforms.html">DebugUniforms</a></div><div class="ttdoc">Cached uniform locations for debug line rendering.</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:44</div></div>
+<div class="ttc" id="astructDebugUniforms_html_a0d687aac6362eef26e35209a4c479467"><div class="ttname"><a href="structDebugUniforms.html#a0d687aac6362eef26e35209a4c479467">DebugUniforms::view</a></div><div class="ttdeci">GLint view</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:46</div></div>
+<div class="ttc" id="astructDebugUniforms_html_a263903058ce0179a966cf4040456494a"><div class="ttname"><a href="structDebugUniforms.html#a263903058ce0179a966cf4040456494a">DebugUniforms::u_billboard_mode</a></div><div class="ttdeci">GLint u_billboard_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:48</div></div>
+<div class="ttc" id="astructDebugUniforms_html_a30458f2537177ab4180de406edd3c869"><div class="ttname"><a href="structDebugUniforms.html#a30458f2537177ab4180de406edd3c869">DebugUniforms::u_stippled</a></div><div class="ttdeci">GLint u_stippled</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:47</div></div>
+<div class="ttc" id="astructDebugUniforms_html_ad720803bbc1ccb5a22eca52eefd3d3c4"><div class="ttname"><a href="structDebugUniforms.html#ad720803bbc1ccb5a22eca52eefd3d3c4">DebugUniforms::u_color</a></div><div class="ttdeci">GLint u_color</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:50</div></div>
+<div class="ttc" id="astructDebugUniforms_html_ae6d734c0354fa0449a0acc52bdb796ee"><div class="ttname"><a href="structDebugUniforms.html#ae6d734c0354fa0449a0acc52bdb796ee">DebugUniforms::u_use_instance_col</a></div><div class="ttdeci">GLint u_use_instance_col</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:49</div></div>
+<div class="ttc" id="astructDebugUniforms_html_aee47c024df55254c5e44129172962190"><div class="ttname"><a href="structDebugUniforms.html#aee47c024df55254c5e44129172962190">DebugUniforms::projection</a></div><div class="ttdeci">GLint projection</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:45</div></div>
+<div class="ttc" id="astructInstancedUniforms_html"><div class="ttname"><a href="structInstancedUniforms.html">InstancedUniforms</a></div><div class="ttdoc">Cached uniform locations for PBR instanced rendering.</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:21</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a0d2135c208d13dbd10c9dfe31b577309"><div class="ttname"><a href="structInstancedUniforms.html#a0d2135c208d13dbd10c9dfe31b577309">InstancedUniforms::gi_mode</a></div><div class="ttdeci">GLint gi_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:33</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a10826da1a338e48552f1a5f1b4018e45"><div class="ttname"><a href="structInstancedUniforms.html#a10826da1a338e48552f1a5f1b4018e45">InstancedUniforms::debug_mode</a></div><div class="ttdeci">GLint debug_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:25</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a226af0bd8fc9414c2e5296ecc5b9b45f"><div class="ttname"><a href="structInstancedUniforms.html#a226af0bd8fc9414c2e5296ecc5b9b45f">InstancedUniforms::probe_grid_dim</a></div><div class="ttdeci">GLint probe_grid_dim</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:32</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a2952ba1e2f6ff96435d0ef6c4805c4e7"><div class="ttname"><a href="structInstancedUniforms.html#a2952ba1e2f6ff96435d0ef6c4805c4e7">InstancedUniforms::probe_grid_max</a></div><div class="ttdeci">GLint probe_grid_max</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:31</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a2c1edcb9dffd7aab175cb74aaa95fca4"><div class="ttname"><a href="structInstancedUniforms.html#a2c1edcb9dffd7aab175cb74aaa95fca4">InstancedUniforms::u_specular_aa_enabled</a></div><div class="ttdeci">GLint u_specular_aa_enabled</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:34</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a4337c339a6d36f1ff526419f8cde95ff"><div class="ttname"><a href="structInstancedUniforms.html#a4337c339a6d36f1ff526419f8cde95ff">InstancedUniforms::u_aa_mode</a></div><div class="ttdeci">GLint u_aa_mode</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:35</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a5a3e26736c34743ba517f700b78fd4de"><div class="ttname"><a href="structInstancedUniforms.html#a5a3e26736c34743ba517f700b78fd4de">InstancedUniforms::prefilter_map</a></div><div class="ttdeci">GLint prefilter_map</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:23</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a6b1d1e34510fd3dd708d1bd099a87d16"><div class="ttname"><a href="structInstancedUniforms.html#a6b1d1e34510fd3dd708d1bd099a87d16">InstancedUniforms::previous_view_proj</a></div><div class="ttdeci">GLint previous_view_proj</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:29</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a7d5908f5c55f06578e403dbcd1a81335"><div class="ttname"><a href="structInstancedUniforms.html#a7d5908f5c55f06578e403dbcd1a81335">InstancedUniforms::view</a></div><div class="ttdeci">GLint view</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:28</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_a9dc453c6b3f382ea9fd87f58a5b6320b"><div class="ttname"><a href="structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b">InstancedUniforms::irradiance_map</a></div><div class="ttdeci">GLint irradiance_map</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:22</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_ac822ab03edf6759741926077ec4bb10c"><div class="ttname"><a href="structInstancedUniforms.html#ac822ab03edf6759741926077ec4bb10c">InstancedUniforms::probe_grid_min</a></div><div class="ttdeci">GLint probe_grid_min</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:30</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_ae648ba531f6396451ca7479f4fc5d8b4"><div class="ttname"><a href="structInstancedUniforms.html#ae648ba531f6396451ca7479f4fc5d8b4">InstancedUniforms::cam_pos</a></div><div class="ttdeci">GLint cam_pos</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:26</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_aed60e73ab4b1454b9e741961cf9702b0"><div class="ttname"><a href="structInstancedUniforms.html#aed60e73ab4b1454b9e741961cf9702b0">InstancedUniforms::brdf_lut</a></div><div class="ttdeci">GLint brdf_lut</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:24</div></div>
+<div class="ttc" id="astructInstancedUniforms_html_af9b84adb504164380adc9e590a44e483"><div class="ttname"><a href="structInstancedUniforms.html#af9b84adb504164380adc9e590a44e483">InstancedUniforms::projection</a></div><div class="ttdeci">GLint projection</div><div class="ttdef"><b>Definition</b> scene_uniforms.h:27</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="scene__uniforms_8h.html">scene_uniforms.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

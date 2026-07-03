@@ -1,0 +1,892 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/async_loader.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('async__loader_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">async_loader.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="asset__manager_8h_source.html">asset_manager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="async__backend_8h_source.html">async_backend.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="tracy__manager_8h_source.html">tracy_manager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__profiling_8h_source.html">app_profiling.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for async_loader.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncLoader.html">AsyncLoader</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a6374e46a70774e488a1ef33cb66a5414" id="r_a6374e46a70774e488a1ef33cb66a5414"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a6374e46a70774e488a1ef33cb66a5414">transition_tracy_state</a>(s)&#160;&#160;&#160;	<a class="el" href="tracy__manager_8h.html#adc9e196a3269007d3a737cb578d9215a">tracy_manager_async_transition</a>(loader-&gt;tracy_mgr, s)</td></tr>
+<tr class="separator:a6374e46a70774e488a1ef33cb66a5414"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afeedc868310865204c7be3df933c55d0" id="r_afeedc868310865204c7be3df933c55d0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#afeedc868310865204c7be3df933c55d0">cleanup_tracy_states</a>()&#160;&#160;&#160;<a class="el" href="tracy__manager_8h.html#abef5b166b9ef3196d68766af4c562a54">tracy_manager_async_end</a>(loader-&gt;tracy_mgr)</td></tr>
+<tr class="separator:afeedc868310865204c7be3df933c55d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a176d1e0504916b9fa61b60d9411f0704" id="r_a176d1e0504916b9fa61b60d9411f0704"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a176d1e0504916b9fa61b60d9411f0704">async_perform_conversion</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a176d1e0504916b9fa61b60d9411f0704"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the actual format conversion (e.g., float -&gt; half float) into the PBO.  <br /></td></tr>
+<tr class="separator:a176d1e0504916b9fa61b60d9411f0704"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3daf084e0a84b2d72110a4391c98f229" id="r_a3daf084e0a84b2d72110a4391c98f229"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a3daf084e0a84b2d72110a4391c98f229">async_cleanup_payload</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a3daf084e0a84b2d72110a4391c98f229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys backend-specific payload allocations.  <br /></td></tr>
+<tr class="separator:a3daf084e0a84b2d72110a4391c98f229"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1086f10126d93ec8b7d4f325cde9003c" id="r_a1086f10126d93ec8b7d4f325cde9003c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a1086f10126d93ec8b7d4f325cde9003c">async_wait_and_convert</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a1086f10126d93ec8b7d4f325cde9003c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Worker thread wait loop for PBO allocation from the main thread.  <br /></td></tr>
+<tr class="separator:a1086f10126d93ec8b7d4f325cde9003c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5b6766430a194fa9f2c45d037729200" id="r_ac5b6766430a194fa9f2c45d037729200"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#ac5b6766430a194fa9f2c45d037729200">async_handle_io</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, const char *path_to_load)</td></tr>
+<tr class="memdesc:ac5b6766430a194fa9f2c45d037729200"><td class="mdescLeft">&#160;</td><td class="mdescRight">Heavy-lifting disk IO loading phase.  <br /></td></tr>
+<tr class="separator:ac5b6766430a194fa9f2c45d037729200"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a390839e4ad145609522e9b52a23899c7" id="r_a390839e4ad145609522e9b52a23899c7"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a390839e4ad145609522e9b52a23899c7">async_worker_func</a> (void *arg)</td></tr>
+<tr class="memdesc:a390839e4ad145609522e9b52a23899c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread entry point for the background worker.  <br /></td></tr>
+<tr class="separator:a390839e4ad145609522e9b52a23899c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0330860c0daf9333351d3e5204501c6" id="r_aa0330860c0daf9333351d3e5204501c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#aa0330860c0daf9333351d3e5204501c6">async_loader_create</a> (struct <a class="el" href="structTracyManager.html">TracyManager</a> *mgr)</td></tr>
+<tr class="memdesc:aa0330860c0daf9333351d3e5204501c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the asynchronous loader subsystem.  <br /></td></tr>
+<tr class="separator:aa0330860c0daf9333351d3e5204501c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f4ca9abf78e333d8d7ca5762db31564" id="r_a8f4ca9abf78e333d8d7ca5762db31564"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a8f4ca9abf78e333d8d7ca5762db31564">async_loader_destroy</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a8f4ca9abf78e333d8d7ca5762db31564"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tear down the asynchronous loader subsystem.  <br /></td></tr>
+<tr class="separator:a8f4ca9abf78e333d8d7ca5762db31564"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00365ec79acc7bbcf44a12cd81a1393a" id="r_a00365ec79acc7bbcf44a12cd81a1393a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a00365ec79acc7bbcf44a12cd81a1393a">async_loader_request</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, const <a class="el" href="structAssetHandle.html">AssetHandle</a> *asset)</td></tr>
+<tr class="memdesc:a00365ec79acc7bbcf44a12cd81a1393a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a new asset to be loaded asynchronously.  <br /></td></tr>
+<tr class="separator:a00365ec79acc7bbcf44a12cd81a1393a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6de1e12f1acee74c563ec68d926092eb" id="r_a6de1e12f1acee74c563ec68d926092eb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb">async_loader_poll</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, <a class="el" href="structAsyncRequest.html">AsyncRequest</a> *out_req)</td></tr>
+<tr class="memdesc:a6de1e12f1acee74c563ec68d926092eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Poll the status of the current request.  <br /></td></tr>
+<tr class="separator:a6de1e12f1acee74c563ec68d926092eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c550b2e0e880d9be179ada62e3d99e3" id="r_a5c550b2e0e880d9be179ada62e3d99e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3">async_loader_provide_pbo</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, void *mapped_ptr, GLuint pbo_id)</td></tr>
+<tr class="memdesc:a5c550b2e0e880d9be179ada62e3d99e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provide the mapped memory address and GL buffer ID for PBO writing.  <br /></td></tr>
+<tr class="separator:a5c550b2e0e880d9be179ada62e3d99e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9ef6b50fc1358023da343b3b6d281a" id="r_a7a9ef6b50fc1358023da343b3b6d281a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a">async_loader_cancel</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a7a9ef6b50fc1358023da343b3b6d281a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancel a loading request waiting for PBO input.  <br /></td></tr>
+<tr class="separator:a7a9ef6b50fc1358023da343b3b6d281a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0156f7f57cd9d249e3f0f73a8877082" id="r_af0156f7f57cd9d249e3f0f73a8877082"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#af0156f7f57cd9d249e3f0f73a8877082">async_loader_subsys_init</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:af0156f7f57cd9d249e3f0f73a8877082"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade98bf6dc7e452f0bdbd19dc72cc4706" id="r_ade98bf6dc7e452f0bdbd19dc72cc4706"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#ade98bf6dc7e452f0bdbd19dc72cc4706">async_loader_subsys_cleanup</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ade98bf6dc7e452f0bdbd19dc72cc4706"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="afeedc868310865204c7be3df933c55d0" name="afeedc868310865204c7be3df933c55d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afeedc868310865204c7be3df933c55d0">&#9670;&#160;</a></span>cleanup_tracy_states</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define cleanup_tracy_states</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="tracy__manager_8h.html#abef5b166b9ef3196d68766af4c562a54">tracy_manager_async_end</a>(loader-&gt;tracy_mgr)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6374e46a70774e488a1ef33cb66a5414" name="a6374e46a70774e488a1ef33cb66a5414"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6374e46a70774e488a1ef33cb66a5414">&#9670;&#160;</a></span>transition_tracy_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define transition_tracy_state</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">s</td><td>)</td>
+          <td>&#160;&#160;&#160;	<a class="el" href="tracy__manager_8h.html#adc9e196a3269007d3a737cb578d9215a">tracy_manager_async_transition</a>(loader-&gt;tracy_mgr, s)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a3daf084e0a84b2d72110a4391c98f229" name="a3daf084e0a84b2d72110a4391c98f229"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3daf084e0a84b2d72110a4391c98f229">&#9670;&#160;</a></span>async_cleanup_payload()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void async_cleanup_payload </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Destroys backend-specific payload allocations. </p>
+<p>Invokes the active format backend's cleanup function to free CPU allocations loaded during the IO phase.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Pointer to the <a class="el" href="structAsyncLoader.html">AsyncLoader</a> instance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Concurrency constraints:</p><ul>
+<li>PRECONDITION: request_mutex MUST be HELD on entry.</li>
+<li>POSTCONDITION: request_mutex is HELD on exit. </li>
+</ul>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a3daf084e0a84b2d72110a4391c98f229_cgraph.svg" width="611" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ac5b6766430a194fa9f2c45d037729200" name="ac5b6766430a194fa9f2c45d037729200"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5b6766430a194fa9f2c45d037729200">&#9670;&#160;</a></span>async_handle_io()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void async_handle_io </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path_to_load</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Heavy-lifting disk IO loading phase. </p>
+<p>Loads the asset payload from disk into temporary CPU memory. This is executed entirely outside the request_mutex to keep disk latency from blocking the main thread.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Pointer to the <a class="el" href="structAsyncLoader.html">AsyncLoader</a> instance. </td></tr>
+    <tr><td class="paramname">path_to_load</td><td>Absolute or relative path to the asset on disk.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Concurrency constraints:</p><ul>
+<li>PRECONDITION: request_mutex MUST NOT be held on entry (called without lock).</li>
+<li>POSTCONDITION: request_mutex is HELD on exit.</li>
+<li>State on entry: ASYNC_LOADING.</li>
+<li>State on exit: ASYNC_WAITING_FOR_PBO (success) or ASYNC_FAILED (failure). </li>
+</ul>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_ac5b6766430a194fa9f2c45d037729200_cgraph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a7a9ef6b50fc1358023da343b3b6d281a" name="a7a9ef6b50fc1358023da343b3b6d281a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9ef6b50fc1358023da343b3b6d281a">&#9670;&#160;</a></span>async_loader_cancel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_cancel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cancel a loading request waiting for PBO input. </p>
+<p>Aborts the current request if it is still waiting for the main thread to provide a PBO.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Loader instance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>State transitions:</p><ul>
+<li>Expected Input State: ASYNC_WAITING_FOR_PBO.</li>
+<li>On success: Transits to ASYNC_FAILED, signals the worker thread to cleanup.</li>
+<li>If called in any other state (e.g. ASYNC_CONVERTING): Ignored to prevent data corruption.</li>
+</ul>
+<p>Concurrency: Thread-safe. Acquires request_mutex. </p>
+
+</div>
+</div>
+<a id="aa0330860c0daf9333351d3e5204501c6" name="aa0330860c0daf9333351d3e5204501c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0330860c0daf9333351d3e5204501c6">&#9670;&#160;</a></span>async_loader_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> * async_loader_create </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structTracyManager.html">TracyManager</a> *&#160;</td>
+          <td class="paramname"><em>mgr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize the asynchronous loader subsystem. </p>
+<p>Allocates resources, initializes synchronization primitives (mutex, condvar), and spawns the background worker thread.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mgr</td><td>Tracy profiler manager instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A new <a class="el" href="structAsyncLoader.html">AsyncLoader</a> instance on success, NULL on failure.</dd></dl>
+<p>Concurrency: Thread-safe. Lock initialized inside. Initial state: ASYNC_IDLE. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_aa0330860c0daf9333351d3e5204501c6_cgraph.svg" width="100%" height="401"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a8f4ca9abf78e333d8d7ca5762db31564" name="a8f4ca9abf78e333d8d7ca5762db31564"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f4ca9abf78e333d8d7ca5762db31564">&#9670;&#160;</a></span>async_loader_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Tear down the asynchronous loader subsystem. </p>
+<p>Signals the worker thread to exit, waits for its completion (joins it), releases any pending resources/requests, and destroys synchronization primitives.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Loader instance to destroy. Can be NULL (no-op).</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Concurrency: Safe to call from the main thread during cleanup. Post-condition: Mutex/condvar are destroyed and memory is freed. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a8f4ca9abf78e333d8d7ca5762db31564_cgraph.svg" width="100%" height="364"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a6de1e12f1acee74c563ec68d926092eb" name="a6de1e12f1acee74c563ec68d926092eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6de1e12f1acee74c563ec68d926092eb">&#9670;&#160;</a></span>async_loader_poll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool async_loader_poll </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structAsyncRequest.html">AsyncRequest</a> *&#160;</td>
+          <td class="paramname"><em>out_req</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Poll the status of the current request. </p>
+<p>Checks if the request is ready for GPU upload, waiting for PBO allocation, or has failed. This is meant to be called periodically from the main thread.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Loader instance. </td></tr>
+    <tr><td class="paramname">out_req</td><td>Destination structure to copy the request snapshot if ready/waiting. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if a state transition needs handling (READY, WAITING_FOR_PBO, FAILED), false otherwise.</dd></dl>
+<p>State transitions:</p><ul>
+<li>Expected Input State: Any state.</li>
+<li>If current state is ASYNC_READY: Copies request, resets state to ASYNC_IDLE, returns true.</li>
+<li>If current state is ASYNC_FAILED: Copies request, resets state to ASYNC_IDLE, returns true.</li>
+<li>If current state is ASYNC_WAITING_FOR_PBO: Copies request, state remains ASYNC_WAITING_FOR_PBO, returns true.</li>
+<li>For any other state: Returns false (no action needed yet).</li>
+</ul>
+<p>Concurrency: Thread-safe. Acquires request_mutex. </p>
+
+</div>
+</div>
+<a id="a5c550b2e0e880d9be179ada62e3d99e3" name="a5c550b2e0e880d9be179ada62e3d99e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c550b2e0e880d9be179ada62e3d99e3">&#9670;&#160;</a></span>async_loader_provide_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_provide_pbo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>mapped_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>pbo_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provide the mapped memory address and GL buffer ID for PBO writing. </p>
+<p>Called by the main thread after detecting ASYNC_WAITING_FOR_PBO during poll. Maps the CPU pointer to the PBO and allows the worker to perform the conversion.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Loader instance. </td></tr>
+    <tr><td class="paramname">mapped_ptr</td><td>Pointer to the mapped buffer memory (CPU visible). </td></tr>
+    <tr><td class="paramname">pbo_id</td><td>OpenGL buffer object ID (or 0 for CPU-only malloc fallback).</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>State transitions:</p><ul>
+<li>Expected Input State: ASYNC_WAITING_FOR_PBO.</li>
+<li>On success: Transits to ASYNC_CONVERTING, signals the worker thread to resume.</li>
+<li>If called in any other state: Ignored (no-op).</li>
+</ul>
+<p>Concurrency: Thread-safe. Acquires request_mutex. </p>
+
+</div>
+</div>
+<a id="a00365ec79acc7bbcf44a12cd81a1393a" name="a00365ec79acc7bbcf44a12cd81a1393a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00365ec79acc7bbcf44a12cd81a1393a">&#9670;&#160;</a></span>async_loader_request()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool async_loader_request </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structAssetHandle.html">AssetHandle</a> *&#160;</td>
+          <td class="paramname"><em>asset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Request a new asset to be loaded asynchronously. </p>
+<p>Accepts a loading task if the loader is idle or finished with the previous one.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Loader instance. </td></tr>
+    <tr><td class="paramname">asset</td><td>Path and format metadata of the asset. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the request was accepted, false if the loader was busy or invalid.</dd></dl>
+<p>State transitions:</p><ul>
+<li>Expected Input State: ASYNC_IDLE, ASYNC_FAILED, or ASYNC_READY.</li>
+<li>On success: Transits to ASYNC_PENDING, signals the worker thread.</li>
+<li>On failure: State remains unchanged (loader is currently busy: ASYNC_LOADING, ASYNC_WAITING_FOR_PBO, ASYNC_CONVERTING).</li>
+</ul>
+<p>Concurrency: Thread-safe. Acquires request_mutex. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a00365ec79acc7bbcf44a12cd81a1393a_cgraph.svg" width="100%" height="420"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="ade98bf6dc7e452f0bdbd19dc72cc4706" name="ade98bf6dc7e452f0bdbd19dc72cc4706"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade98bf6dc7e452f0bdbd19dc72cc4706">&#9670;&#160;</a></span>async_loader_subsys_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_subsys_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_ade98bf6dc7e452f0bdbd19dc72cc4706_cgraph.svg" width="100%" height="364"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="af0156f7f57cd9d249e3f0f73a8877082" name="af0156f7f57cd9d249e3f0f73a8877082"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0156f7f57cd9d249e3f0f73a8877082">&#9670;&#160;</a></span>async_loader_subsys_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int async_loader_subsys_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_af0156f7f57cd9d249e3f0f73a8877082_cgraph.svg" width="100%" height="401"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a176d1e0504916b9fa61b60d9411f0704" name="a176d1e0504916b9fa61b60d9411f0704"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a176d1e0504916b9fa61b60d9411f0704">&#9670;&#160;</a></span>async_perform_conversion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void async_perform_conversion </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Performs the actual format conversion (e.g., float -&gt; half float) into the PBO. </p>
+<p>Runs the format-specific backend conversion. Since writing to mapped PBO memory can be slow, the request mutex is released during the conversion process to keep the main thread from stalling.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Pointer to the <a class="el" href="structAsyncLoader.html">AsyncLoader</a> instance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Concurrency constraints:</p><ul>
+<li>PRECONDITION: request_mutex MUST be HELD on entry.</li>
+<li>POSTCONDITION: request_mutex is HELD on exit.</li>
+<li>Mutex is temporarily released during backend-&gt;convert().</li>
+<li>Expected state on entry: ASYNC_CONVERTING.</li>
+<li>State on exit: ASYNC_READY. </li>
+</ul>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a176d1e0504916b9fa61b60d9411f0704_cgraph.svg" width="631" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a1086f10126d93ec8b7d4f325cde9003c" name="a1086f10126d93ec8b7d4f325cde9003c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1086f10126d93ec8b7d4f325cde9003c">&#9670;&#160;</a></span>async_wait_and_convert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void async_wait_and_convert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Worker thread wait loop for PBO allocation from the main thread. </p>
+<p>Blocks the worker thread until the main thread allocates a PBO, maps it, and calls <a class="el" href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" title="Provide the mapped memory address and GL buffer ID for PBO writing.">async_loader_provide_pbo()</a> (which transitions state to ASYNC_CONVERTING and signals request_cond).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>Pointer to the <a class="el" href="structAsyncLoader.html">AsyncLoader</a> instance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Concurrency constraints:</p><ul>
+<li>PRECONDITION: request_mutex MUST be HELD on entry.</li>
+<li>POSTCONDITION: request_mutex is HELD on exit.</li>
+<li>Temporarily releases the mutex during pthread_cond_wait().</li>
+<li>Expected state on entry: ASYNC_WAITING_FOR_PBO.</li>
+<li>State on exit: ASYNC_READY (success) or ASYNC_FAILED (cancel/shutdown). </li>
+</ul>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a1086f10126d93ec8b7d4f325cde9003c_cgraph.svg" width="100%" height="364"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a390839e4ad145609522e9b52a23899c7" name="a390839e4ad145609522e9b52a23899c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a390839e4ad145609522e9b52a23899c7">&#9670;&#160;</a></span>async_worker_func()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void * async_worker_func </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Thread entry point for the background worker. </p>
+<p>Handles the main execution loop, waiting passively for submitted requests, coordinating IO and conversion task dispatches.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arg</td><td>Opaque pointer to the <a class="el" href="structAsyncLoader.html">AsyncLoader</a> instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NULL. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a390839e4ad145609522e9b52a23899c7_cgraph.svg" width="100%" height="401"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="async__loader_8c.html">async_loader.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
