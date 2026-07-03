@@ -969,28 +969,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#architecture-billboardsorter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architecture : BillboardSorter
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tri-back-to-front" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tri Back-to-Front
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#anti-aliasing-analytique-via-discriminant" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1015,17 +993,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rendu-instancie" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Rendu instancié
-      
-    </span>
-  </a>
   
 </li>
       
@@ -3613,30 +3580,29 @@
 
 <h1 id="rendu-des-spheres">Rendu des sphères<a class="headerlink" href="#rendu-des-spheres" title="Permanent link">¶</a></h1>
 <p>Ce document décrit l'architecture de rendu des sphères PBR avec tri Back-to-Front et anti-aliasing analytique.</p>
-<h2 id="architecture-billboardsorter">Architecture : BillboardSorter<a class="headerlink" href="#architecture-billboardsorter" title="Permanent link">¶</a></h2>
-<p>La classe <code>BillboardSorter</code> gère le tri des sphères pour le rendu correct de la transparence.</p>
+<p>La structure <code>BillboardSorter</code> gère le tri des sphères (CPU/GPU) pour le rendu correct de la transparence.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">SphereInstance</span><span class="o">*</span><span class="w"> </span><span class="n">instances</span><span class="p">;</span><span class="w">    </span><span class="c1">// Données des instances (position, matériau)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">depths</span><span class="p">;</span><span class="w">                </span><span class="c1">// Profondeurs pré-calculées</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">sorted_indices</span><span class="p">;</span><span class="w">     </span><span class="c1">// Indices triés (Back-to-Front)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span><span class="w"> </span><span class="n">BillboardSorter</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">BillboardSortEntry</span><span class="o">*</span><span class="w"> </span><span class="n">entries</span><span class="p">;</span><span class="w">      </span><span class="c1">// Scratchpad de tri CPU (index &amp; depth)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">BillboardSortEntry</span><span class="o">*</span><span class="w"> </span><span class="n">entries_aux</span><span class="p">;</span><span class="w">  </span><span class="c1">// Tampon auxiliaire pour le tri Radix</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">SphereInstance</span><span class="o">*</span><span class="w"> </span><span class="n">temp_instances</span><span class="p">;</span><span class="w">   </span><span class="c1">// Tampon CPU temporaire pour les instances réordonnées</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">min_capacity</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">cpu_capacity</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ssbo_capacity</span><span class="p">;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">GLuint</span><span class="w"> </span><span class="n">compute_program</span><span class="p">;</span><span class="w">           </span><span class="c1">// Shader compute pour le tri bitonique GPU</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="n">GLuint</span><span class="w"> </span><span class="n">instance_ssbo</span><span class="p">;</span><span class="w">             </span><span class="c1">// SSBO contenant les instances triées ou brutes</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="n">GLuint</span><span class="w"> </span><span class="n">indices_ssbo</span><span class="p">;</span><span class="w">              </span><span class="c1">// SSBO d'indices pour le tri GPU</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="n">GLuint</span><span class="w"> </span><span class="n">temp_ssbo</span><span class="p">;</span><span class="w">                 </span><span class="c1">// SSBO temporaire pour le tri bitonique</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">}</span><span class="w"> </span><span class="n">BillboardSorter</span><span class="p">;</span>
 </span></code></pre></div>
-<h2 id="tri-back-to-front">Tri Back-to-Front<a class="headerlink" href="#tri-back-to-front" title="Permanent link">¶</a></h2>
 <p>Pour le rendu correct des sphères semi-transparentes (Algorithme du Peintre) :</p>
 <ol>
-<li>Calculer la profondeur dans l'espace caméra pour chaque sphère</li>
+<li>Calculer la distance au carré par rapport à la caméra pour chaque sphère</li>
 <li>Trier les sphères par profondeur décroissante (arrière → avant)</li>
-<li>Rendre dans l'ordre trié</li>
+<li>Rendre dans l'ordre trié via les SSBOs ou VBOs</li>
 </ol>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Calcul des profondeurs</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">sorter</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">vec3</span><span class="w"> </span><span class="n">pos_view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mat4_transform_point</span><span class="p">(</span><span class="n">view_matrix</span><span class="p">,</span><span class="w"> </span><span class="n">sorter</span><span class="o">-&gt;</span><span class="n">instances</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">position</span><span class="p">);</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">sorter</span><span class="o">-&gt;</span><span class="n">depths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">pos_view</span><span class="p">.</span><span class="n">z</span><span class="p">;</span><span class="w"> </span><span class="c1">// Négatif car l'axe Z est tourné en espace vue</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// Tri (voir gpu_sorting.md pour les algorithmes)</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">billboard_sorter_sort</span><span class="p">(</span><span class="n">sorter</span><span class="p">,</span><span class="w"> </span><span class="n">sort_backend</span><span class="p">);</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Tri via BillboardSorter (CPU Radix, CPU QuickSort ou GPU Bitonic Compute)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">billboard_sorter_sort</span><span class="p">(</span><span class="n">sorter</span><span class="p">,</span><span class="w"> </span><span class="n">instances</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="n">camera_pos</span><span class="p">,</span><span class="w"> </span><span class="n">sorting_mode</span><span class="p">);</span>
 </span></code></pre></div>
 <h2 id="anti-aliasing-analytique-via-discriminant">Anti-aliasing analytique via discriminant<a class="headerlink" href="#anti-aliasing-analytique-via-discriminant" title="Permanent link">¶</a></h2>
 <p>L'intersection d'un rayon avec une sphère peut être détectée analytiquement via le discriminant de l'équation quadratique. Pour les sphères, cela permet un AA sub-pixel sans MSAA :</p>
@@ -3661,16 +3627,9 @@
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kt">float</span><span class="w"> </span><span class="n">aa_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fwidth</span><span class="p">(</span><span class="n">discriminant</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">AA_SCALE</span><span class="p">;</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kt">float</span><span class="w"> </span><span class="n">coverage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smoothstep</span><span class="p">(</span><span class="o">-</span><span class="n">aa_width</span><span class="p">,</span><span class="w"> </span><span class="n">aa_width</span><span class="p">,</span><span class="w"> </span><span class="n">discriminant</span><span class="p">);</span>
 </span></code></pre></div>
-<h2 id="rendu-instancie">Rendu instancié<a class="headerlink" href="#rendu-instancie" title="Permanent link">¶</a></h2>
-<p>Les sphères sont rendues en une seule passe via <code>glDrawArraysInstanced</code> :</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Mettre à jour le VBO des instances avec les données triées</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">glBindBuffer</span><span class="p">(</span><span class="n">GL_ARRAY_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="n">icosphere_vbo</span><span class="p">);</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">glBufferSubData</span><span class="p">(</span><span class="n">GL_ARRAY_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">                </span><span class="n">sorter</span><span class="o">-&gt;</span><span class="n">count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">SphereInstance</span><span class="p">),</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">                </span><span class="n">sorter</span><span class="o">-&gt;</span><span class="n">sorted_instances</span><span class="p">);</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">// Un seul draw call pour toutes les sphères</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">glDrawArraysInstanced</span><span class="p">(</span><span class="n">GL_TRIANGLE_STRIP</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">sorter</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">);</span>
+<p>Le rendu et l'upload GPU des données triées sont encapsulés dans le composant <code>BillboardRenderer</code> via la fonction <code>billboard_renderer_draw</code>, qui utilise les paramètres découplés <code>BillboardRenderParams</code> :</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Rendu instancié via BillboardRenderer</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">billboard_renderer_draw</span><span class="p">(</span><span class="o">&amp;</span><span class="n">renderer</span><span class="p">,</span><span class="w"> </span><span class="n">profiler</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">params</span><span class="p">);</span>
 </span></code></pre></div>
 <h2 id="interaction-avec-le-frustum-culling">Interaction avec le frustum culling<a class="headerlink" href="#interaction-avec-le-frustum-culling" title="Permanent link">¶</a></h2>
 <p>Avant le rendu, les sphères en dehors du frustum sont éliminées via les AABB calculées dans l'espace NDC (voir <a href="../billboard_optimization/">billboard_optimization.md</a>) :</p>
@@ -3704,7 +3663,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 avril 2026 13:27:32 UTC">26 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="3 juillet 2026 15:57:03 UTC">3 juillet 2026</span>
   </span>
 
     

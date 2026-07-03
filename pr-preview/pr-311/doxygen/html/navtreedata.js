@@ -80,18 +80,18 @@ var NAVTREEINDEX =
 [
 "../../index.html",
 "app__ui__layout_8h.html#a2b4046580b310d59959c6e0aebe6df17",
-"camera_8h.html#aa6af90fbafcc281c7c546b1468369a9f",
-"gl__common_8h.html#acc0369d2f808530b4d51126a46d96bb0",
-"group__Environment.html#ga42cce2777f68380c5d6bc70f328d7b86",
-"lum__histogram_8h.html#a27eba0a626a2aea79cee3b7070977e10",
-"postprocess_8h.html#aa84256eef04459c5acf3b67987da736b",
-"pp__shader__state_8h_source.html",
-"shockwave_8c.html#a11c9519d13e6bc82854ece26481eaf62",
-"structAsyncBackendInterface.html#ac0f18bb408b35052a3f29e760428a8c6",
-"structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342",
-"structPBRSpecUniforms.html#a306cd0ac8f5fe3b4841bd73beda16e13",
-"structSceneShaders.html#a2a856e01fa5b2fc633579910e471bd79",
-"trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8"
+"camera_8h.html#ab1530cd678f8f08a3a9d9e191360a0fb",
+"gl__common_8h.html#ad734625837606032212a5f0706243b60",
+"group__Environment.html#ga9ae155b103e5528d5cb4530cf6ec8d28",
+"lum__histogram_8h_source.html",
+"postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c",
+"profiler_8h.html",
+"shockwave_8c.html#ae354ed9f7f35b2086cfdccab13fe4558",
+"structAsyncLoader.html#a55f43e0bbe1c12882b51086002eb63dc",
+"structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a",
+"structNBodySim.html#a92427533fd2b09bc5e12bca9276e9a85",
+"structSceneGPUResources.html#a606a942238754b65ac83b0b165e1f9d0",
+"trail__renderer_8c.html#a719fea7db545da5964f03695903aeb37"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

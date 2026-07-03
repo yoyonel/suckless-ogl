@@ -1,8 +1,5 @@
 var NAVTREEINDEX7 =
 {
-"pp__shader__state_8h_source.html":[6,0,2,60],
-"pp__ubo_8h.html":[6,0,2,61],
-"pp__ubo_8h_source.html":[6,0,2,61],
 "profiler_8h.html":[6,0,2,62],
 "profiler_8h.html#a02e5f6ba30455bb2498056432fcbd2a2":[6,0,2,62,4],
 "profiler_8h.html#a0c67bcdda1b69cdadf6a350b998d1b6e":[6,0,2,62,10],
@@ -126,13 +123,12 @@ var NAVTREEINDEX7 =
 "scene__nbody_8c.html#a9a5aae4c13de3218ddecbd0e27985ca8":[6,0,4,56,1],
 "scene__nbody_8c.html#aa64367048d138627fede2551e1c9d1e3":[6,0,4,56,0],
 "scene__render_8c.html":[6,0,4,57],
-"scene__render_8c.html#a07d33cc6833b19b823bb6ecc235cdd54":[6,0,4,57,7],
-"scene__render_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2":[6,0,4,57,5],
+"scene__render_8c.html#a07d33cc6833b19b823bb6ecc235cdd54":[6,0,4,57,6],
+"scene__render_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2":[6,0,4,57,4],
 "scene__render_8c.html#a2dc48aafade2ded863fd19ad58fe6726":[6,0,4,57,3],
 "scene__render_8c.html#a7436193527addd579fa9956c83b1cb05":[6,0,4,57,0],
 "scene__render_8c.html#a7bd2995953630892fd2f63e154e471c7":[6,0,4,57,1],
-"scene__render_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a":[6,0,4,57,4],
-"scene__render_8c.html#a97b3fbf4a92687b0b76a08b452daa63e":[6,0,4,57,6],
+"scene__render_8c.html#a97b3fbf4a92687b0b76a08b452daa63e":[6,0,4,57,5],
 "scene__render_8c.html#ab592a43644107cc963b5ba9ba827cfad":[6,0,4,57,2],
 "scene__shaders_8h.html":[6,0,2,70],
 "scene__shaders_8h_source.html":[6,0,2,70],
@@ -249,5 +245,9 @@ var NAVTREEINDEX7 =
 "shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db":[6,0,2,75,13],
 "shader_8h_source.html":[6,0,2,75],
 "shockwave_8c.html":[6,0,4,60],
-"shockwave_8c.html#a09ec2ed179d54eaa2c607f25877243da":[6,0,4,60,0]
+"shockwave_8c.html#a09ec2ed179d54eaa2c607f25877243da":[6,0,4,60,0],
+"shockwave_8c.html#a11c9519d13e6bc82854ece26481eaf62":[6,0,4,60,2],
+"shockwave_8c.html#a2ff1ffa4e5b2602fece876905edc4f07":[6,0,4,60,8],
+"shockwave_8c.html#a44ca0f165a8e2f0832296cb3ffb4f591":[6,0,4,60,6],
+"shockwave_8c.html#a62fa17ef9c97f9ec82e7564c3b066377":[6,0,4,60,3]
 };

@@ -240,8 +240,7 @@ $(document).ready(function(){initNavTree('scene__render_8c.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="billboard__rendering_8h_source.html">billboard_rendering.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="billboard__sorting_8h_source.html">billboard_sorting.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="billboard__renderer_8h_source.html">billboard_renderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="bool__utils_8h_source.html">bool_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__debug_8h_source.html">gl_debug.h</a>&quot;</code><br />
 <code>#include &quot;glad/glad.h&quot;</code><br />
@@ -284,8 +283,6 @@ Functions</h2></td></tr>
 <tr class="separator:ab592a43644107cc963b5ba9ba827cfad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bd2995953630892fd2f63e154e471c7" id="r_a7bd2995953630892fd2f63e154e471c7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__render_8c.html#a7bd2995953630892fd2f63e154e471c7">scene_bind_ibl_textures</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="separator:a7bd2995953630892fd2f63e154e471c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93e3d35cbb4f25d0b5f7369726aafb9a" id="r_a93e3d35cbb4f25d0b5f7369726aafb9a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__render_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a">scene_render_billboards</a> (<a class="el" href="structScene.html">Scene</a> *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height)</td></tr>
-<tr class="separator:a93e3d35cbb4f25d0b5f7369726aafb9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145a7ef9d48d9aa108fd6bdb8050f1b2" id="r_a145a7ef9d48d9aa108fd6bdb8050f1b2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__render_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2">scene_render_instanced</a> (<a class="el" href="structScene.html">Scene</a> *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj)</td></tr>
 <tr class="separator:a145a7ef9d48d9aa108fd6bdb8050f1b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07d33cc6833b19b823bb6ecc235cdd54" id="r_a07d33cc6833b19b823bb6ecc235cdd54"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene__render_8c.html#a07d33cc6833b19b823bb6ecc235cdd54">stencil_begin_object_pass</a> (void)</td></tr>
@@ -455,77 +452,6 @@ Functions</h2></td></tr>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene__render_8c_a2dc48aafade2ded863fd19ad58fe6726_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
-</div>
-
-</div>
-</div>
-<a id="a93e3d35cbb4f25d0b5f7369726aafb9a" name="a93e3d35cbb4f25d0b5f7369726aafb9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93e3d35cbb4f25d0b5f7369726aafb9a">&#9670;&#160;</a></span>scene_render_billboards()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void scene_render_billboards </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
-          <td class="paramname"><em>scene</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">mat4&#160;</td>
-          <td class="paramname"><em>view</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">mat4&#160;</td>
-          <td class="paramname"><em>proj</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vec3&#160;</td>
-          <td class="paramname"><em>camera_pos</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">mat4&#160;</td>
-          <td class="paramname"><em>previous_view_proj</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="scene__render_8c_a93e3d35cbb4f25d0b5f7369726aafb9a_cgraph.svg" width="439" height="526"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>

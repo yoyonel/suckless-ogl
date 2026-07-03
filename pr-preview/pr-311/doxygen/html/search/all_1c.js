@@ -35,7 +35,7 @@ var searchData=
   ['tile_5fmax_5fshader_32',['tile_max_shader',['../structPPShaderState.html#a52865438e3fba9acb4cddb51322c2d01',1,'PPShaderState']]],
   ['time_33',['time',['../structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1',1,'PostProcessUBO::time'],['../structPostProcess.html#afb71aa02b237fe2666213becfa342d31',1,'PostProcess::time']]],
   ['time_5fbuf_5fsize_34',['TIME_BUF_SIZE',['../gpu__profiler__ui__layout_8h.html#af9bdc3014f3d54c426b6d2df10de4960aa3c09595391d094d235e7a7d12566308',1,'gpu_profiler_ui_layout.h']]],
-  ['time_5fbuffer_5fsize_35',['TIME_BUFFER_SIZE',['../log_8c.html#afccd240f973cf154952fb917c9209719aa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
+  ['time_5fbuffer_5fsize_35',['TIME_BUFFER_SIZE',['../log_8c.html#a1fb9092bcdeada2d206bdc74afbbe122aa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
   ['time_5fscale_36',['time_scale',['../structNBodySim.html#ac7a4642105968e2c0bde6b1399273849',1,'NBodySim']]],
   ['timeconversionfactors_37',['TimeConversionFactors',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eae',1,'perf_timer.c']]],
   ['timeline_5fui_38',['timeline_ui',['../structAppInputContext.html#a9a024b1267e74915dc2721e391913397',1,'AppInputContext::timeline_ui'],['../structAppProfiling.html#a85ce34173e74e7d74fc30ad76104745b',1,'AppProfiling::timeline_ui']]],

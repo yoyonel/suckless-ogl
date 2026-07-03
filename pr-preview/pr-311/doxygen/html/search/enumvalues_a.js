@@ -1,7 +1,7 @@
 var searchData=
 [
   ['label_5fbuffer_5fsize_0',['LABEL_BUFFER_SIZE',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaead72e90fe9b4eeb7dc493b20afcb824fe',1,'perf_timer.c']]],
-  ['log_5fbuf_1',['LOG_BUF',['../ktx__viewer_8c.html#af715e26dfffd1f8de1c18449e2770cffaaf6bf873b6bd957cd8042636ff9abfe1',1,'ktx_viewer.c']]],
+  ['log_5fbuf_1',['LOG_BUF',['../ktx__viewer_8c.html#ac205be2172292384dd687b5471a87eddaaf6bf873b6bd957cd8042636ff9abfe1',1,'ktx_viewer.c']]],
   ['log_5flevel_5fcritical_2',['LOG_LEVEL_CRITICAL',['../log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f',1,'log.h']]],
   ['log_5flevel_5fdebug_3',['LOG_LEVEL_DEBUG',['../log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177',1,'log.h']]],
   ['log_5flevel_5ferror_4',['LOG_LEVEL_ERROR',['../log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f',1,'log.h']]],

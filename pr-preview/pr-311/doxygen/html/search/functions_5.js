@@ -6,7 +6,7 @@ var searchData=
   ['find_5fregistry_5fentry_3',['find_registry_entry',['../asset__manager_8c.html#a7cec5a545ce7a21eb4a9423d953366d6',1,'asset_manager.c']]],
   ['find_5fshader_5fin_5fcache_4',['find_shader_in_cache',['../postprocess__shader_8c.html#aed006d7906b9c51301116c84de7e3de0',1,'postprocess_shader.c']]],
   ['float_5fto_5fhalf_5fsoft_5',['float_to_half_soft',['../simd__utils_8c.html#a839aa1475cc59c051f1e10be7ffe4b23',1,'simd_utils.c']]],
-  ['float_5fto_5fsortable_5fuint_6',['float_to_sortable_uint',['../billboard__sorting_8c.html#a5d5aab931453148c66e46823323759de',1,'billboard_sorting.c']]],
+  ['float_5fto_5fsortable_5fuint_6',['float_to_sortable_uint',['../billboard__sorter_8c.html#a5d5aab931453148c66e46823323759de',1,'billboard_sorter.c']]],
   ['format_5fmissed_5fframes_7',['format_missed_frames',['../app__metrics_8c.html#a6d0a8fe3b32e75dd8bd3e099ce114fda',1,'app_metrics.c']]],
   ['format_5frelative_5fpercentages_8',['format_relative_percentages',['../app__metrics_8c.html#a50ed697036e98c335b5bd41c5a8d8df4',1,'app_metrics.c']]],
   ['fps_5finit_9',['fps_init',['../fps_8h.html#a6502614d8abf01ccea0eacbf993a89c0',1,'fps_init(FpsCounter *fps, float decay, double log_interval):&#160;fps.c'],['../fps_8c.html#a6502614d8abf01ccea0eacbf993a89c0',1,'fps_init(FpsCounter *fps, float decay, double log_interval):&#160;fps.c']]],

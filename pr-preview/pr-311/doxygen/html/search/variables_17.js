@@ -15,9 +15,9 @@ var searchData=
   ['window_5fstart_5fframe_12',['window_start_frame',['../structAdaptiveSampler.html#a3cbc132e731af568472de68a8015c637',1,'AdaptiveSampler']]],
   ['window_5fstart_5ftime_13',['window_start_time',['../structAdaptiveSampler.html#a0e49d332095e73af87d1859ca8ae0b47',1,'AdaptiveSampler']]],
   ['wire_5fcube_5fvbo_14',['wire_cube_vbo',['../structSceneGPUResources.html#a3cca1b2684a5a4baac7e7dacf7698997',1,'SceneGPUResources']]],
-  ['wire_5fcube_5fvertex_5fcount_15',['WIRE_CUBE_VERTEX_COUNT',['../billboard__rendering_8c.html#a1981a837d663f92043ee566e92f32848',1,'billboard_rendering.c']]],
+  ['wire_5fcube_5fvertex_5fcount_15',['WIRE_CUBE_VERTEX_COUNT',['../billboard__renderer_8c.html#a1981a837d663f92043ee566e92f32848',1,'billboard_renderer.c']]],
   ['wire_5fquad_5fvbo_16',['wire_quad_vbo',['../structSceneGPUResources.html#a9301d244f480f9c2cbe3599cf4354a76',1,'SceneGPUResources']]],
-  ['wireframe_17',['wireframe',['../structSceneConfig.html#aaab6274f8b7ebe797e85dc47117e57bf',1,'SceneConfig']]],
+  ['wireframe_17',['wireframe',['../structBillboardRenderParams.html#a9c28cc44b0c436e1b9958a3b27af82a0',1,'BillboardRenderParams::wireframe'],['../structSceneConfig.html#aaab6274f8b7ebe797e85dc47117e57bf',1,'SceneConfig::wireframe']]],
   ['worker_5fthread_18',['worker_thread',['../structLightProbeGrid.html#a0156e32f129150cce4b021c39020cc2d',1,'LightProbeGrid::worker_thread'],['../structAsyncLoader.html#a06385b41f9a1c1f8a2f3152f76d57740',1,'AsyncLoader::worker_thread']]],
   ['world_5fup_19',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
   ['write_5findex_20',['write_index',['../structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a',1,'GPUProfiler']]]

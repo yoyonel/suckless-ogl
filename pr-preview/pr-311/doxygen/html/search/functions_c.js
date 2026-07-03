@@ -9,6 +9,6 @@ var searchData=
   ['nbody_5ftotal_5fenergy_6',['nbody_total_energy',['../nbody_8h.html#a785533e1f63e381530bfb5c3531238dc',1,'nbody.h']]],
   ['nbody_5fupdate_5ftime_5fscale_7',['nbody_update_time_scale',['../nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4',1,'nbody.h']]],
   ['nbody_5fwrite_5finstances_8',['nbody_write_instances',['../nbody_8h.html#acdce6fe24ec0f0cdb5ecc44872197b49',1,'nbody.h']]],
-  ['next_5fpow2_9',['next_pow2',['../billboard__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b',1,'billboard_sorting.c']]],
+  ['next_5fpow2_9',['next_pow2',['../billboard__sorter_8c.html#a8dcb764e029c15c8bb949432cdc6b88b',1,'billboard_sorter.c']]],
   ['normalize_5fvec3_10',['normalize_vec3',['../icosphere_8c.html#af48e051641689a72f684355046f4ff0f',1,'icosphere.c']]]
 ];
