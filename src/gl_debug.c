@@ -151,9 +151,8 @@ void setup_opengl_debug(void)
 		         "OpenGL Debug Callback initialized "
 		         "(Spam Filter Active)");
 	} else {
-		LOG_WARNING(LOG_TAG,
-		            "Debug Context NOT active - "
-		            "glDebugMessageCallback disabled");
+		LOG_INFO(LOG_TAG,
+		         "Standard OpenGL context active (Debug disabled)");
 	}
 }
 

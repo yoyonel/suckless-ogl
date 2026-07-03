@@ -1,5 +1,4 @@
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "gl_common.h"
 #include "ibl_coordinator.h"
 #include "icosphere.h"
@@ -93,10 +92,9 @@ void scene_cleanup(Scene* scene)
 		platform_aligned_free(scene->billboard_instances);
 		scene->billboard_instances = NULL;
 	}
-	billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
-	billboard_group_cleanup(&scene->billboard_group);
+	billboard_renderer_cleanup(&scene->billboard_renderer);
 	trail_renderer_cleanup(&scene->visuals->trail_renderer);
 	shockwave_renderer_cleanup(&scene->visuals->shockwave_renderer);
 #ifdef USE_SSBO_RENDERING

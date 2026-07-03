@@ -93,7 +93,7 @@ set(SOURCES
     src/async_backend_stb.c
     src/async_backend_ktx.c
     src/async_coordinator.c
-    src/billboard_rendering.c
+    src/billboard_renderer.c
     src/camera.c
     src/camera_input.c
     src/cli.c
@@ -138,7 +138,7 @@ set(SOURCES
     src/sh_math.c
     src/simd_utils.c
     src/skybox.c
-    src/billboard_sorting.c
+    src/billboard_sorter.c
     src/ssbo_rendering.c
     src/stb_image_impl.c
     src/texture.c

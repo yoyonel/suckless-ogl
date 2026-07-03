@@ -1,6 +1,5 @@
 #include "app_settings.h"
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "instanced_rendering.h"
 #include "nbody.h"
 #include "nbody_types.h"
@@ -59,7 +58,7 @@ void scene_toggle_nbody(Scene* scene)
 			            sizeof(SphereInstance) * (size_t)count);
 			scene->billboard_instance_count = count;
 		}
-		scene->billboard_group.instance_count = count;
+		scene->billboard_renderer.instance_count = count;
 #endif
 	} else {
 		/* Restore original material grid — clean up before re-init
@@ -71,10 +70,9 @@ void scene_toggle_nbody(Scene* scene)
 			platform_aligned_free(scene->billboard_instances);
 			scene->billboard_instances = NULL;
 		}
-		billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 		instanced_group_cleanup(&scene->instanced_group);
-		billboard_group_cleanup(&scene->billboard_group);
+		billboard_renderer_cleanup(&scene->billboard_renderer);
 		scene_init_instancing(scene);
 	}
 }
@@ -139,6 +137,6 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		            sizeof(SphereInstance) * (size_t)count);
 		scene->billboard_instance_count = count;
 	}
-	scene->billboard_group.instance_count = count;
+	scene->billboard_renderer.instance_count = count;
 #endif
 }

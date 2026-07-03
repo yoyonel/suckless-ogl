@@ -1,8 +1,7 @@
 #include "app.h"
 #include "app_settings.h"
 #include "asset_manager.h"
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
@@ -149,17 +148,16 @@ void scene_init_instancing(Scene* scene)
 		            sizeof(SphereInstance) * (size_t)total_count, data,
 		            sizeof(SphereInstance) * (size_t)total_count);
 		scene->billboard_instance_count = total_count;
-		billboard_sorter_init(&scene->billboard_sorter, total_count);
 	}
 #endif
 
 	instanced_group_bind_mesh(
 	    &scene->instanced_group, scene->gpu->icosphere_vbo,
 	    scene->gpu->icosphere_nbo, scene->gpu->icosphere_ebo);
-	billboard_group_init(&scene->billboard_group, data, total_count);
-	billboard_group_prepare(&scene->billboard_group, scene->gpu->quad_vbo,
-	                        scene->gpu->wire_quad_vbo,
-	                        scene->gpu->wire_cube_vbo);
+	billboard_renderer_init(&scene->billboard_renderer, total_count);
+	billboard_renderer_prepare(
+	    &scene->billboard_renderer, scene->gpu->quad_vbo,
+	    scene->gpu->wire_quad_vbo, scene->gpu->wire_cube_vbo);
 
 	/* Initialize Light Probe Grid with Scene Data */
 	light_probe_grid_set_scene(&scene->lighting.probe_grid, data,
@@ -248,7 +246,7 @@ static void scene_init_state(Scene* scene)
 	scene->config.show_probe_grid = false;
 	scene->gpu->billboard_ubo_ptr = NULL;
 
-	scene->billboard_sorter = (BillboardSorter){0};
+	scene->billboard_renderer = (BillboardRenderer){0};
 
 	scene->gpu->dummy_black_tex =
 	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);
