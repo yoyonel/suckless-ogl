@@ -120,3 +120,26 @@ A `just` recipe has been added to compile any C source file to optimized AVX2 as
 just asm src/app.c
 ```
 This generates `src/app.c.s`, which can be inspected directly.
+
+---
+
+## 5. Recommended Tools for Assembly & Compilation Analysis
+
+To inspect assembly outputs and map them back to C source code, the following tools are highly recommended:
+
+1. **Compiler Explorer (Godbolt.org)**:
+   * **Features**: Interactive online IDE that maps C/C++ lines directly to colored assembly blocks. Allows switching compilers (GCC, Clang, MSVC) and flags dynamically.
+   * **Usage**: Highly effective for testing isolated routines and viewing compiler optimization patterns.
+2. **Local Debugger with Source Interleaving (`objdump`)**:
+   * **Features**: Command-line tool built into most Linux systems.
+   * **Usage**: Compile with debug symbols (`-g` or `RelWithDebInfo`) and run:
+     ```bash
+     objdump -S --demangle build/app | less
+     ```
+     This overlays the original C source code directly above its corresponding assembly instructions.
+3. **GDB TUI mode**:
+   * **Features**: Built-in Text User Interface of GDB.
+   * **Usage**: Start GDB and run `layout split` to view C source and disassembled assembly instructions side-by-side during runtime.
+4. **Decompilation & Reverse Engineering Suites (Ghidra / Cutter)**:
+   * **Ghidra**: Free, NSA-developed open-source software suite. Offers excellent decompiler synchronization with the disassembly graph view.
+   * **Cutter**: Modern UI frontend for Radare2. Provides visual flow charts and decompiled C-like pseudocode.
