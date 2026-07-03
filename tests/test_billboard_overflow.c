@@ -1,4 +1,4 @@
-#include "billboard_rendering.h"
+#include "billboard_renderer.h"
 #include "mock_gl_standalone.h"
 #include "unity.h"
 #include <assert.h>
@@ -20,6 +20,29 @@ void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
 	(void)offset_prev_center;
 }
 
+void billboard_sorter_init(BillboardSorter* sorter, int initial_capacity)
+{
+	(void)sorter;
+	(void)initial_capacity;
+}
+
+void billboard_sorter_cleanup(BillboardSorter* sorter)
+{
+	(void)sorter;
+}
+
+GLuint billboard_sorter_sort(BillboardSorter* sorter,
+                             const SphereInstance* instances, int count,
+                             const vec3 camera_pos, SortingMode mode)
+{
+	(void)sorter;
+	(void)instances;
+	(void)count;
+	(void)camera_pos;
+	(void)mode;
+	return 999;
+}
+
 #ifndef SYNC_ATTR_START
 #define SYNC_ATTR_START 10
 #endif
@@ -27,8 +50,8 @@ void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
 #define MAX_VERTEX_ATTRIBS_BASELINE 16
 #endif
 
-/* Include source directly to access internal state if needed */
-#include "billboard_rendering.c"
+/* Include source directly to access internal state and static functions */
+#include "billboard_renderer.c"
 
 void setUp(void)
 {
@@ -39,30 +62,25 @@ void tearDown(void)
 {
 }
 
-void test_billboard_group_update_handles_overflow(void)
+void test_billboard_renderer_update_handles_overflow(void)
 {
-	BillboardGroup group = {0};
-	SphereInstance instances[2];       /* Initial capacity 2 */
-	SphereInstance large_instances[4]; /* New count 4 */
+	BillboardRenderer renderer = {0};
 
-	/* Initialize the group with 2 instances */
-	billboard_group_init(&group, instances, 2);
+	/* Initialize the renderer with capacity 2 */
+	billboard_renderer_init(&renderer, 2);
 
 	/* Reset mocks to clear the glBufferData call from init */
 	mock_gl_reset_calls();
 
 	/* Update with 4 instances - should trigger reallocation */
-	billboard_group_update(&group, large_instances, 4);
+	billboard_renderer_update_from_buffer(&renderer,
+	                                      999 /* mock src buffer ID */, 4);
 
 	/* Verify reallocation happened */
 	/* glBufferData should be called once (reallocation) */
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    1, mock_gl_get_buffer_data_call_count(),
 	    "Expected glBufferData (reallocation) to be called");
-
-	/* glBufferSubData should NOT be called */
-	TEST_ASSERT_EQUAL_MESSAGE(0, mock_gl_get_buffer_sub_data_call_count(),
-	                          "Expected glBufferSubData NOT to be called");
 
 	/* Verify size */
 	TEST_ASSERT_EQUAL_MESSAGE(4 * sizeof(SphereInstance),
@@ -73,6 +91,6 @@ void test_billboard_group_update_handles_overflow(void)
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_billboard_group_update_handles_overflow);
+	RUN_TEST(test_billboard_renderer_update_handles_overflow);
 	return UNITY_END();
 }

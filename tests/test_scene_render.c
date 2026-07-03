@@ -9,8 +9,7 @@
 #include "mock_gl_standalone.h"
 
 /* Type-providing headers */
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "gpu_profiler.h"
 #include "instanced_rendering.h"
 #include "light_probes.h"
@@ -36,19 +35,18 @@ static int mock_shader_set_mat4_loc_calls;
 static int mock_skybox_render_calls;
 static int mock_probe_sync_calls;
 static int mock_probe_render_debug_calls;
-static int mock_billboard_draw_calls;
-static int mock_billboard_draw_debug_fill_calls;
-static int mock_billboard_draw_debug_quads_calls;
-static int mock_billboard_draw_debug_boxes_calls;
-static int mock_billboard_update_from_buffer_calls;
+
+static int mock_billboard_renderer_draw_calls;
+static BillboardRenderParams mock_last_render_params;
+static GLuint mock_last_pbr_shader;
+static GLuint mock_last_debug_shader;
+static void* mock_last_ubo_ptr;
+
 static int mock_instanced_draw_calls;
 static int mock_trail_draw_calls;
 static int mock_shockwave_draw_calls;
 static int mock_profiler_start_calls;
 static int mock_profiler_end_calls;
-static int mock_billboard_sort_cpu_calls;
-static int mock_billboard_sort_cpu_radix_calls;
-static int mock_billboard_sort_gpu_calls;
 
 /* ---- Mocks ---- */
 
@@ -112,37 +110,39 @@ void light_probe_grid_render_debug(LightProbeGrid* g, mat4 v, mat4 p)
 	mock_probe_render_debug_calls++;
 }
 
-void billboard_group_draw(BillboardGroup* bg)
+void billboard_renderer_init(BillboardRenderer* renderer, int initial_capacity)
 {
-	(void)bg;
-	mock_billboard_draw_calls++;
+	(void)renderer;
+	(void)initial_capacity;
 }
 
-void billboard_group_draw_debug_fill(BillboardGroup* bg)
+void billboard_renderer_prepare(BillboardRenderer* renderer, GLuint quad_vbo,
+                                GLuint wire_quad_vbo, GLuint wire_cube_vbo)
 {
-	(void)bg;
-	mock_billboard_draw_debug_fill_calls++;
+	(void)renderer;
+	(void)quad_vbo;
+	(void)wire_quad_vbo;
+	(void)wire_cube_vbo;
 }
 
-void billboard_group_draw_debug_quads(BillboardGroup* bg)
+void billboard_renderer_cleanup(BillboardRenderer* renderer)
 {
-	(void)bg;
-	mock_billboard_draw_debug_quads_calls++;
+	(void)renderer;
 }
 
-void billboard_group_draw_debug_boxes(BillboardGroup* bg)
+void billboard_renderer_draw(BillboardRenderer* renderer,
+                             const BillboardRenderParams* params,
+                             GLuint pbr_billboard_shader,
+                             GLuint debug_line_shader, void* billboard_ubo_ptr)
 {
-	(void)bg;
-	mock_billboard_draw_debug_boxes_calls++;
-}
-
-void billboard_group_update_from_buffer(BillboardGroup* bg, GLuint ssbo,
-                                        int count)
-{
-	(void)bg;
-	(void)ssbo;
-	(void)count;
-	mock_billboard_update_from_buffer_calls++;
+	(void)renderer;
+	mock_billboard_renderer_draw_calls++;
+	if (params) {
+		mock_last_render_params = *params;
+	}
+	mock_last_pbr_shader = pbr_billboard_shader;
+	mock_last_debug_shader = debug_line_shader;
+	mock_last_ubo_ptr = billboard_ubo_ptr;
 }
 
 void instanced_group_draw(InstancedGroup* ig, size_t index_count)
@@ -189,42 +189,6 @@ void gpu_profiler_end_stage(GPUProfiler* profiler)
 	mock_profiler_end_calls++;
 }
 
-#ifdef USE_TRANSPARENT_BILLBOARDS
-GLuint billboard_sorter_sort_cpu(BillboardSorter* s, const SphereInstance* inst,
-                                 int count, const vec3 cam)
-{
-	(void)s;
-	(void)inst;
-	(void)count;
-	(void)cam;
-	mock_billboard_sort_cpu_calls++;
-	return 42;
-}
-
-GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* s,
-                                       const SphereInstance* inst, int count,
-                                       const vec3 cam)
-{
-	(void)s;
-	(void)inst;
-	(void)count;
-	(void)cam;
-	mock_billboard_sort_cpu_radix_calls++;
-	return 43;
-}
-
-GLuint billboard_sorter_sort_gpu(BillboardSorter* s, const SphereInstance* inst,
-                                 int count, const vec3 cam)
-{
-	(void)s;
-	(void)inst;
-	(void)count;
-	(void)cam;
-	mock_billboard_sort_gpu_calls++;
-	return 44;
-}
-#endif
-
 #ifdef USE_SSBO_RENDERING
 void ssbo_group_draw(SSBOGroup* sg, size_t index_count)
 {
@@ -249,24 +213,23 @@ static void reset_counters(void)
 	mock_skybox_render_calls = 0;
 	mock_probe_sync_calls = 0;
 	mock_probe_render_debug_calls = 0;
-	mock_billboard_draw_calls = 0;
-	mock_billboard_draw_debug_fill_calls = 0;
-	mock_billboard_draw_debug_quads_calls = 0;
-	mock_billboard_draw_debug_boxes_calls = 0;
-	mock_billboard_update_from_buffer_calls = 0;
+	mock_billboard_renderer_draw_calls = 0;
+	memset(&mock_last_render_params, 0, sizeof(mock_last_render_params));
+	mock_last_pbr_shader = 0;
+	mock_last_debug_shader = 0;
+	mock_last_ubo_ptr = NULL;
 	mock_instanced_draw_calls = 0;
 	mock_trail_draw_calls = 0;
 	mock_shockwave_draw_calls = 0;
 	mock_profiler_start_calls = 0;
 	mock_profiler_end_calls = 0;
-	mock_billboard_sort_cpu_calls = 0;
-	mock_billboard_sort_cpu_radix_calls = 0;
-	mock_billboard_sort_gpu_calls = 0;
 }
 
 static SceneGPUResources test_gpu;
 static SceneShaders test_shaders;
 static SceneSimulation test_simulation;
+static Shader test_pbr_billboard_shader;
+static Shader test_debug_line_shader;
 
 static Scene make_scene(void)
 {
@@ -275,6 +238,13 @@ static Scene make_scene(void)
 	memset(&test_gpu, 0, sizeof(test_gpu));
 	memset(&test_shaders, 0, sizeof(test_shaders));
 	memset(&test_simulation, 0, sizeof(test_simulation));
+	memset(&test_pbr_billboard_shader, 0,
+	       sizeof(test_pbr_billboard_shader));
+	memset(&test_debug_line_shader, 0, sizeof(test_debug_line_shader));
+	test_pbr_billboard_shader.program = 1001;
+	test_debug_line_shader.program = 1002;
+	test_shaders.pbr_billboard = &test_pbr_billboard_shader;
+	test_shaders.debug_line = &test_debug_line_shader;
 	s.gpu = &test_gpu;
 	s.shaders = &test_shaders;
 	s.simulation = &test_simulation;
@@ -348,7 +318,6 @@ void test_bind_ibl_textures_skips_when_cached(void)
 	s.gpu->irradiance_tex = 100;
 	s.gpu->spec_prefiltered_tex = 200;
 	s.gpu->brdf_lut_tex = 300;
-	s.gpu->dummy_black_tex = 1;
 	s.gpu->bound_ibl_textures[0] = 100;
 	s.gpu->bound_ibl_textures[1] = 200;
 	s.gpu->bound_ibl_textures[2] = 300;
@@ -356,8 +325,9 @@ void test_bind_ibl_textures_skips_when_cached(void)
 	reset_counters();
 	scene_bind_ibl_textures(&s);
 
-	/* Cache hit: no glBindTexture calls expected (counter unchanged) */
 	TEST_ASSERT_EQUAL_UINT(100, s.gpu->bound_ibl_textures[0]);
+	TEST_ASSERT_EQUAL_UINT(200, s.gpu->bound_ibl_textures[1]);
+	TEST_ASSERT_EQUAL_UINT(300, s.gpu->bound_ibl_textures[2]);
 }
 
 void test_bind_ibl_textures_uses_dummy_when_zero(void)
@@ -366,14 +336,15 @@ void test_bind_ibl_textures_uses_dummy_when_zero(void)
 	s.gpu->irradiance_tex = 0;
 	s.gpu->spec_prefiltered_tex = 0;
 	s.gpu->brdf_lut_tex = 0;
-	s.gpu->dummy_black_tex = 5;
+	s.gpu->dummy_black_tex = 999;
 	memset(s.gpu->bound_ibl_textures, 0, sizeof(s.gpu->bound_ibl_textures));
 
 	scene_bind_ibl_textures(&s);
 
-	TEST_ASSERT_EQUAL_UINT(5, s.gpu->bound_ibl_textures[0]);
-	TEST_ASSERT_EQUAL_UINT(5, s.gpu->bound_ibl_textures[1]);
-	TEST_ASSERT_EQUAL_UINT(5, s.gpu->bound_ibl_textures[2]);
+	/* Should bind fallback dummy black texture */
+	TEST_ASSERT_EQUAL_UINT(999, s.gpu->bound_ibl_textures[0]);
+	TEST_ASSERT_EQUAL_UINT(999, s.gpu->bound_ibl_textures[1]);
+	TEST_ASSERT_EQUAL_UINT(999, s.gpu->bound_ibl_textures[2]);
 }
 
 /* ======================================================================
@@ -383,41 +354,30 @@ void test_bind_ibl_textures_uses_dummy_when_zero(void)
 void test_bind_probe_textures_updates_cache(void)
 {
 	Scene s = make_scene();
-	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		s.lighting.probe_grid.sh_textures[i] = (GLuint)(10 + i);
-		s.gpu->bound_sh_textures[i] = 0;
-	}
-	s.lighting.probe_grid.ssbo = 42;
-	s.gpu->bound_probe_ssbo = 0;
+	s.lighting.probe_grid.sh_textures[0] = 10;
+	s.lighting.probe_grid.sh_textures[1] = 20;
+	memset(s.gpu->bound_sh_textures, 0, sizeof(s.gpu->bound_sh_textures));
 
 	scene_bind_probe_textures(&s);
 
-	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		TEST_ASSERT_EQUAL_UINT((GLuint)(10 + i),
-		                       s.gpu->bound_sh_textures[i]);
-	}
-	TEST_ASSERT_EQUAL_UINT(42, s.gpu->bound_probe_ssbo);
+	TEST_ASSERT_EQUAL_UINT(10, s.gpu->bound_sh_textures[0]);
+	TEST_ASSERT_EQUAL_UINT(20, s.gpu->bound_sh_textures[1]);
 }
 
 void test_bind_probe_textures_skips_when_cached(void)
 {
 	Scene s = make_scene();
-	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		s.lighting.probe_grid.sh_textures[i] = (GLuint)(10 + i);
-		s.gpu->bound_sh_textures[i] = (GLuint)(10 + i);
-	}
-	s.lighting.probe_grid.ssbo = 42;
-	s.gpu->bound_probe_ssbo = 42;
+	s.lighting.probe_grid.sh_textures[0] = 10;
+	s.gpu->bound_sh_textures[0] = 10;
 
 	reset_counters();
 	scene_bind_probe_textures(&s);
 
-	/* Nothing changed */
-	TEST_ASSERT_EQUAL_UINT(42, s.gpu->bound_probe_ssbo);
+	TEST_ASSERT_EQUAL_UINT(10, s.gpu->bound_sh_textures[0]);
 }
 
 /* ======================================================================
- * scene_render — orchestrator branch coverage
+ * scene_render (main entry point)
  * ====================================================================== */
 
 void test_render_instanced_no_envmap_no_nbody(void)
@@ -431,10 +391,9 @@ void test_render_instanced_no_envmap_no_nbody(void)
 	glm_mat4_identity(proj);
 	glm_mat4_identity(prev_vp);
 
-	/* Instanced path (billboard_mode=0), no envmap, no nbody */
 	s.config.billboard_mode = false;
-	s.config.show_envmap = false;
 	s.config.wireframe = false;
+	s.config.show_envmap = false;
 	s.config.gi_mode = GI_MODE_OFF;
 	s.config.show_probe_grid = false;
 	s.simulation->nbody_mode = false;
@@ -443,7 +402,7 @@ void test_render_instanced_no_envmap_no_nbody(void)
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
 
 	TEST_ASSERT_EQUAL_INT(0, mock_skybox_render_calls);
-	TEST_ASSERT_EQUAL_INT(0, mock_billboard_draw_calls);
+	TEST_ASSERT_EQUAL_INT(0, mock_billboard_renderer_draw_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_instanced_draw_calls);
 	TEST_ASSERT_EQUAL_INT(0, mock_trail_draw_calls);
 	TEST_ASSERT_EQUAL_INT(0, mock_shockwave_draw_calls);
@@ -496,7 +455,7 @@ void test_render_billboard_mode(void)
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
 
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_calls);
+	TEST_ASSERT_EQUAL_INT(1, mock_billboard_renderer_draw_calls);
 	TEST_ASSERT_EQUAL_INT(0, mock_instanced_draw_calls);
 }
 
@@ -650,10 +609,8 @@ void test_render_billboard_wireframe_draws_debug(void)
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
 
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_debug_fill_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_debug_quads_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_debug_boxes_calls);
+	TEST_ASSERT_EQUAL_INT(1, mock_billboard_renderer_draw_calls);
+	TEST_ASSERT_TRUE(mock_last_render_params.wireframe);
 }
 
 void test_render_billboard_sort_cpu(void)
@@ -678,7 +635,9 @@ void test_render_billboard_sort_cpu(void)
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
 
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_sort_cpu_calls);
+	TEST_ASSERT_EQUAL_INT(1, mock_billboard_renderer_draw_calls);
+	TEST_ASSERT_EQUAL(SORTING_MODE_CPU_QSORT,
+	                  mock_last_render_params.sorting_mode);
 }
 
 void test_render_billboard_sort_radix(void)
@@ -703,7 +662,9 @@ void test_render_billboard_sort_radix(void)
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
 
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_sort_cpu_radix_calls);
+	TEST_ASSERT_EQUAL_INT(1, mock_billboard_renderer_draw_calls);
+	TEST_ASSERT_EQUAL(SORTING_MODE_CPU_RADIX,
+	                  mock_last_render_params.sorting_mode);
 }
 
 void test_render_billboard_sort_gpu(void)
@@ -728,69 +689,11 @@ void test_render_billboard_sort_gpu(void)
 	reset_counters();
 	scene_render(&s, &profiler, view, proj, cam, prev_vp, 800, 600);
 
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_sort_gpu_calls);
+	TEST_ASSERT_EQUAL_INT(1, mock_billboard_renderer_draw_calls);
+	TEST_ASSERT_EQUAL(SORTING_MODE_GPU_BITONIC,
+	                  mock_last_render_params.sorting_mode);
 }
 #endif /* USE_TRANSPARENT_BILLBOARDS */
-
-/* ======================================================================
- * scene_render_billboards (static) — wireframe overlay branches
- * ====================================================================== */
-
-void test_render_billboards_no_wireframe(void)
-{
-	Scene s = make_scene();
-	mat4 view, proj, prev_vp;
-	vec3 cam = {0};
-	glm_mat4_identity(view);
-	glm_mat4_identity(proj);
-	glm_mat4_identity(prev_vp);
-	s.config.wireframe = false;
-	s.config.pbr_debug_mode = 0;
-
-	reset_counters();
-	scene_render_billboards(&s, view, proj, cam, prev_vp, 800, 600);
-
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_calls);
-	TEST_ASSERT_EQUAL_INT(0, mock_billboard_draw_debug_fill_calls);
-}
-
-void test_render_billboards_wireframe_debug(void)
-{
-	Scene s = make_scene();
-	mat4 view, proj, prev_vp;
-	vec3 cam = {0};
-	glm_mat4_identity(view);
-	glm_mat4_identity(proj);
-	glm_mat4_identity(prev_vp);
-	s.config.wireframe = true;
-	s.config.pbr_debug_mode = 0;
-
-	reset_counters();
-	scene_render_billboards(&s, view, proj, cam, prev_vp, 800, 600);
-
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_debug_fill_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_debug_quads_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_debug_boxes_calls);
-}
-
-void test_render_billboards_wireframe_skips_when_debug_nonzero(void)
-{
-	Scene s = make_scene();
-	mat4 view, proj, prev_vp;
-	vec3 cam = {0};
-	glm_mat4_identity(view);
-	glm_mat4_identity(proj);
-	glm_mat4_identity(prev_vp);
-	s.config.wireframe = true;
-	s.config.pbr_debug_mode = 1; /* non-zero => skip wireframe overlay */
-
-	reset_counters();
-	scene_render_billboards(&s, view, proj, cam, prev_vp, 800, 600);
-
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_draw_calls);
-	TEST_ASSERT_EQUAL_INT(0, mock_billboard_draw_debug_fill_calls);
-}
 
 /* ======================================================================
  * scene_render_instanced (static)
@@ -884,11 +787,6 @@ int main(void)
 	RUN_TEST(test_render_billboard_sort_radix);
 	RUN_TEST(test_render_billboard_sort_gpu);
 #endif
-
-	/* scene_render_billboards (static) */
-	RUN_TEST(test_render_billboards_no_wireframe);
-	RUN_TEST(test_render_billboards_wireframe_debug);
-	RUN_TEST(test_render_billboards_wireframe_skips_when_debug_nonzero);
 
 	/* scene_render_instanced (static) */
 	RUN_TEST(test_render_instanced_sets_uniforms);

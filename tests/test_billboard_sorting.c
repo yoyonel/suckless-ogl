@@ -1,4 +1,4 @@
-#include "billboard_sorting.h"
+#include "billboard_sorter.h"
 #include "platform/platform_utils.h"
 #include "unity.h"
 #include <cglm/cglm.h>

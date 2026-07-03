@@ -1,4 +1,4 @@
-#include "billboard_sorting.h"
+#include "billboard_sorter.h"
 #include "mock_gl_standalone.h"  // For mock_gl_reset_calls if needed
 #include <cglm/vec3.h>           // For vec3
 #include <stdio.h>

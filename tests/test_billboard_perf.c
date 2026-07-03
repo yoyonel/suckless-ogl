@@ -1,13 +1,12 @@
 #include <glad/glad.h>
 
-#include "billboard_rendering.h"
+#include "billboard_renderer.h"
+#include "shader.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
-
-// Mock Shader struct since we need Shader* type but not full functionality
-#include "shader.h"
 
 static GLFWwindow* window;
 
@@ -38,16 +37,37 @@ void tearDown(void)
 
 void test_billboard_debug_perf(void)
 {
-	// Setup dummy BillboardGroup
-	BillboardGroup group = {0};
-	group.instance_count = 100;
+	/* Setup BillboardRenderer */
+	BillboardRenderer renderer = {0};
+	billboard_renderer_init(&renderer, 100);
 
-	// Create a real VAO to be safe
-	glGenVertexArrays(1, &group.vao);
+	/* Pre-fill geometry buffers with dummy VBOs to satisfy internal assets
+	 * logic */
+	GLuint dummy_vbo;
+	glGenBuffers(1, &dummy_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, dummy_vbo);
+	glBufferData(GL_ARRAY_BUFFER, 1024, NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// Create a dummy shader program
+	billboard_renderer_prepare(&renderer, dummy_vbo, dummy_vbo, dummy_vbo);
+
+	/* Generate dummy instances */
+	SphereInstance* instances = calloc(100, sizeof(SphereInstance));
+	for (int i = 0; i < 100; ++i) {
+		instances[i].model[0][0] = 1.0f;
+		instances[i].model[1][1] = 1.0f;
+		instances[i].model[2][2] = 1.0f;
+		instances[i].model[3][3] = 1.0f;
+	}
+
+	BillboardRenderParams params = {0};
+	params.instances = instances;
+	params.instance_count = 100;
+	params.wireframe = true;
+	params.sorting_mode = SORTING_MODE_CPU_QSORT;
+
+	/* Create a dummy shader program */
 	GLuint program = glCreateProgram();
-	// Create a dummy vertex and fragment shader to make it valid
 	const char* vs_source =
 	    "#version 330 core\nvoid main(){gl_Position=vec4(0.0);}";
 	const char* fs_source =
@@ -65,32 +85,31 @@ void test_billboard_debug_perf(void)
 	glAttachShader(program, fs);
 	glLinkProgram(program);
 
-	Shader shader;
-	shader.program = program;
-	shader.entries = NULL;
-	shader.entry_count = 0;
-	shader.entry_capacity = 0;
-	shader.name = "TestShader";
-
-	// Warmup
+	/* Warmup */
 	glUseProgram(program);
-	for (int i = 0; i < 100; ++i) {
-		billboard_group_draw_debug_fill(&group);
+	for (int i = 0; i < 10; ++i) {
+		billboard_renderer_draw(&renderer, &params, program, program,
+		                        NULL);
 	}
 
-	// Measure
+	/* Measure */
 	double start = glfwGetTime();
-	for (int i = 0; i < 100000; ++i) {
-		billboard_group_draw_debug_fill(&group);
+	for (int i = 0; i < 1000; ++i) {
+		billboard_renderer_draw(&renderer, &params, program, program,
+		                        NULL);
 	}
 	double end = glfwGetTime();
 
-	printf("OPTIMIZED TIME: %f seconds\n", end - start);
+	printf(
+	    "OPTIMIZED BILLBOARD DRAW TIME (1000 runs, 100 inst): %f seconds\n",
+	    end - start);
 
-	glDeleteVertexArrays(1, &group.vao);
+	glDeleteBuffers(1, &dummy_vbo);
 	glDeleteProgram(program);
 	glDeleteShader(vs);
 	glDeleteShader(fs);
+	billboard_renderer_cleanup(&renderer);
+	free(instances);
 }
 
 int main(void)
