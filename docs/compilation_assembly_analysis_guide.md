@@ -196,3 +196,24 @@ cmake --build build
 objdump -S --demangle build/app | less
 ```
 This displays C source statements directly interleaved above their compiled assembly blocks.
+
+### Real-time Source & Assembly Debugging via GDB TUI
+To debug, step through instructions, and see both C source code and disassembly side-by-side in real-time within the terminal:
+1. Compile the project in Debug mode:
+   ```bash
+   cmake -B build -DCMAKE_BUILD_TYPE=Debug
+   cmake --build build
+   ```
+2. Start GDB immediately in TUI split layout mode:
+   ```bash
+   gdb -ex "layout split" build/app
+   ```
+3. Control execution:
+   * Set a breakpoint: `break app_run`
+   * Run the app: `run`
+   * Scroll the source code using the Arrow Keys. To switch focus to the GDB console input window (so you can use Arrow Keys for command history), press `Ctrl+X` then `O`.
+   * Step instruction-by-instruction while watching the synchronized highlight in both panels:
+     * Step over C source line: `next` (or `n`)
+     * Step into C source line: `step` (or `s`)
+     * Step over assembly instruction: `nexti` (or `ni`)
+     * Step into assembly instruction: `stepi` (or `si`)

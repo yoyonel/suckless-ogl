@@ -196,3 +196,24 @@ cmake --build build
 objdump -S --demangle build/app | less
 ```
 Cette commande affiche le code source C d'origine directement au-dessus des instructions assembleurs correspondantes.
+
+### Débogage Temps-Réel Source & Assembleur via GDB TUI
+Pour déboguer, exécuter au pas-à-pas et observer côte à côte le code source C et l'assembleur désassemblé en temps réel directement dans votre terminal :
+1. Compilez le projet en mode Debug :
+   ```bash
+   cmake -B build -DCMAKE_BUILD_TYPE=Debug
+   cmake --build build
+   ```
+2. Lancez GDB directement en mode TUI avec la disposition découpée (split layout) :
+   ```bash
+   gdb -ex "layout split" build/app
+   ```
+3. Contrôlez l'exécution :
+   * Définir un point d'arrêt : `break app_run`
+   * Lancer l'application : `run`
+   * Faites défiler le code source avec les touches fléchées du clavier. Pour basculer le focus vers la console GDB (pour retrouver l'historique des commandes avec les flèches), appuyez sur `Ctrl+X` puis `O`.
+   * Avancez instruction par instruction tout en observant la synchronisation visuelle :
+     * Avancer d'une ligne de code C : `next` (ou `n`)
+     * Entrer dans une ligne de code C : `step` (ou `s`)
+     * Avancer d'une instruction assembleur : `nexti` (ou `ni`)
+     * Entrer dans une instruction assembleur : `stepi` (ou `si`)
