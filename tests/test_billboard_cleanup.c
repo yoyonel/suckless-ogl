@@ -4,16 +4,13 @@
 #include <stdlib.h>
 
 /* Include headers from the project */
-#include "billboard_rendering.h"
+#include "billboard_renderer.h"
 #include "mock_gl_standalone.h"
 #include "unity.h"
 
 /* -------------------------------------------------------------------------- */
-/*                             MOCK RENDER UTILS                              */
+/*                             MOCK DEPS                                      */
 /* -------------------------------------------------------------------------- */
-
-/* We need to mock functions called by billboard_rendering.c that are not in
- * GLAD and not covered by mock_gl_standalone.c */
 
 void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
                                                    GLsizei stride,
@@ -28,12 +25,29 @@ void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
 	(void)offset_prev_center;
 }
 
-/* -------------------------------------------------------------------------- */
-/*                        INCLUDE IMPLEMENTATION UNDER TEST                   */
-/* -------------------------------------------------------------------------- */
+void billboard_sorter_init(BillboardSorter* sorter, int initial_capacity)
+{
+	(void)sorter;
+	(void)initial_capacity;
+}
 
-/* Define SYNC_ATTR_START and MAX_VERTEX_ATTRIBS_BASELINE as they might be used
- */
+void billboard_sorter_cleanup(BillboardSorter* sorter)
+{
+	(void)sorter;
+}
+
+GLuint billboard_sorter_sort(BillboardSorter* sorter,
+                             const SphereInstance* instances, int count,
+                             const vec3 camera_pos, SortingMode mode)
+{
+	(void)sorter;
+	(void)instances;
+	(void)count;
+	(void)camera_pos;
+	(void)mode;
+	return 999;
+}
+
 #ifndef SYNC_ATTR_START
 #define SYNC_ATTR_START 10
 #endif
@@ -42,7 +56,7 @@ void render_utils_setup_sphere_instance_attributes(GLuint binding_point,
 #endif
 
 /* Include the source file directly to test it in isolation */
-#include "billboard_rendering.c"
+#include "billboard_renderer.c"
 
 /* -------------------------------------------------------------------------- */
 /*                                    TESTS                                   */
@@ -57,19 +71,18 @@ void tearDown(void)
 {
 }
 
-void test_billboard_group_cleanup_deletes_vbo(void)
+void test_billboard_renderer_cleanup_deletes_vbo(void)
 {
-	BillboardGroup group = {0};
-	SphereInstance instances[1] = {{{0}, {0}, 0}};
+	BillboardRenderer renderer = {0};
 
-	/* Initialize the group - this should create the VBO */
-	billboard_group_init(&group, instances, 1);
+	/* Initialize - this should create the VBO */
+	billboard_renderer_init(&renderer, 1);
 
 	TEST_ASSERT_EQUAL(mock_gl_get_generated_buffer_id(),
-	                  group.instance_vbo);
+	                  renderer.instance_vbo);
 
 	/* Cleanup */
-	billboard_group_cleanup(&group);
+	billboard_renderer_cleanup(&renderer);
 
 	/* Verify VBO was deleted */
 	TEST_ASSERT_EQUAL(1, mock_gl_get_delete_buffer_call_count());
@@ -77,35 +90,30 @@ void test_billboard_group_cleanup_deletes_vbo(void)
 	                  mock_gl_get_last_deleted_buffer());
 }
 
-void test_billboard_group_cleanup_resets_vbo_to_zero(void)
+void test_billboard_renderer_cleanup_resets_vbo_to_zero(void)
 {
-	BillboardGroup group = {0};
-	SphereInstance instances[1] = {{{0}, {0}, 0}};
+	BillboardRenderer renderer = {0};
 
-	billboard_group_init(&group, instances, 1);
-	billboard_group_cleanup(&group);
+	billboard_renderer_init(&renderer, 1);
+	billboard_renderer_cleanup(&renderer);
 
-	TEST_ASSERT_EQUAL(0, group.instance_vbo);
+	TEST_ASSERT_EQUAL(0, renderer.instance_vbo);
 }
 
-void test_billboard_group_cleanup_handles_uninitialized_group(void)
+void test_billboard_renderer_cleanup_handles_uninitialized(void)
 {
-	BillboardGroup group = {0};
-	/* group.instance_vbo is 0 */
+	BillboardRenderer renderer = {0};
+	/* renderer.instance_vbo is 0 */
 
-	/* Should be safe to call on zeroed group */
-	billboard_group_cleanup(&group);
-
-	/* Verify no delete called (last deleted should be 0) */
-	/* TEST_ASSERT_EQUAL(0, mock_gl_get_last_deleted_buffer()); */
-	/* We need an accessor for last deleted too if we want to check this. */
+	/* Should be safe to call on zeroed struct */
+	billboard_renderer_cleanup(&renderer);
 }
 
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_billboard_group_cleanup_deletes_vbo);
-	RUN_TEST(test_billboard_group_cleanup_resets_vbo_to_zero);
-	RUN_TEST(test_billboard_group_cleanup_handles_uninitialized_group);
+	RUN_TEST(test_billboard_renderer_cleanup_deletes_vbo);
+	RUN_TEST(test_billboard_renderer_cleanup_resets_vbo_to_zero);
+	RUN_TEST(test_billboard_renderer_cleanup_handles_uninitialized);
 	return UNITY_END();
 }

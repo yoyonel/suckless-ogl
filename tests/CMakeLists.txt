@@ -508,7 +508,7 @@ endif()
 # =============================================================================
 add_executable(test_benchmark_billboard_sorting
     test_benchmark_billboard_sorting.c
-    ${CMAKE_SOURCE_DIR}/src/billboard_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/billboard_sorter.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
@@ -569,7 +569,7 @@ add_executable(test_billboard_sorting
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
-    ${CMAKE_SOURCE_DIR}/src/billboard_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/billboard_sorter.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
@@ -596,7 +596,7 @@ add_executable(test_benchmark_billboard_sorting_perf
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
-    ${CMAKE_SOURCE_DIR}/src/billboard_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/billboard_sorter.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 target_sources(test_benchmark_billboard_sorting_perf PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)

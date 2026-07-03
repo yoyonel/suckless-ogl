@@ -9,8 +9,7 @@
 #include "mock_gl_standalone.h"
 
 /* Include type-providing headers BEFORE mock definitions */
-#include "billboard_rendering.h"
-#include "billboard_sorting.h"
+#include "billboard_renderer.h"
 #include "instanced_rendering.h"
 #include "nbody.h"
 #include "scene.h"
@@ -33,8 +32,7 @@ static int mock_shockwave_emit_calls;
 static int mock_shockwave_update_calls;
 static int mock_instanced_update_calls;
 static int mock_instanced_cleanup_calls;
-static int mock_billboard_cleanup_calls;
-static int mock_billboard_sorter_cleanup_calls;
+static int mock_billboard_renderer_cleanup_calls;
 static int mock_scene_init_instancing_calls;
 
 /* Control: make trail_renderer_init fail */
@@ -122,16 +120,10 @@ void instanced_group_cleanup(InstancedGroup* group)
 	mock_instanced_cleanup_calls++;
 }
 
-void billboard_group_cleanup(BillboardGroup* group)
+void billboard_renderer_cleanup(BillboardRenderer* renderer)
 {
-	(void)group;
-	mock_billboard_cleanup_calls++;
-}
-
-void billboard_sorter_cleanup(BillboardSorter* sorter)
-{
-	(void)sorter;
-	mock_billboard_sorter_cleanup_calls++;
+	(void)renderer;
+	mock_billboard_renderer_cleanup_calls++;
 }
 
 void scene_init_instancing(Scene* scene)
@@ -158,8 +150,7 @@ static void reset_mocks(void)
 	mock_shockwave_update_calls = 0;
 	mock_instanced_update_calls = 0;
 	mock_instanced_cleanup_calls = 0;
-	mock_billboard_cleanup_calls = 0;
-	mock_billboard_sorter_cleanup_calls = 0;
+	mock_billboard_renderer_cleanup_calls = 0;
 	mock_scene_init_instancing_calls = 0;
 	mock_trail_init_fail = false;
 	mock_shockwave_init_fail = false;
@@ -218,7 +209,7 @@ void test_toggle_nbody_disables_mode(void)
 	TEST_ASSERT_EQUAL_INT(1, mock_trail_cleanup_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_shockwave_cleanup_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_instanced_cleanup_calls);
-	TEST_ASSERT_EQUAL_INT(1, mock_billboard_cleanup_calls);
+	TEST_ASSERT_EQUAL_INT(1, mock_billboard_renderer_cleanup_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_scene_init_instancing_calls);
 }
 
