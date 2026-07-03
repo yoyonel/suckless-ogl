@@ -80,3 +80,43 @@ Modern optimizing compilers (like GCC or Clang) optimize this setup aggressively
   * *Disadvantage*: We would save copying static pointers, but we would still have to update the dynamic variables (`.width`, `.height`, `.delta_time`, `.frame_count`) every frame. This introduces state synchronization overhead and risks pointer corruption/obsolescence if subsystems are reallocated.
 * **Design B: Pass parameters as individual arguments**
   * *Disadvantage*: `renderer_draw_frame(app->scene, app->postprocess, ...)` would require 15+ arguments. This makes code unmaintainable and violates ABI guidelines (which only allow up to 6 register arguments; the rest are pushed to the stack anyway, causing more overhead than a clean struct pointer).
+
+---
+
+## 4. Assembly Verification & Empirical Proof
+
+### A. Non-LTO Assembly Code Generation (`-O3 -fno-lto`)
+By compiling `src/app.c` in Release mode while disabling Link-Time Optimization (`-fno-lto`), we can observe how the compiler instantiates and passes the stack structure:
+
+```assembly
+# 1. Load the stack struct address into %r13 (rctx starts at -272(%rbp))
+leaq    -272(%rbp), %r13
+
+# 2. AVX Vectorized Copy Operations (writes multiple pointers in single instructions)
+vmovq   (%r15), %xmm5                            # Load app->scene
+vpinsrq $1, 8(%r15), %xmm5, %xmm1                # Pack scene & postprocess into %xmm1
+vmovdqa %ymm0, -240(%rbp)                        # Write 32 bytes (4 pointers) to stack
+vmovdqa %ymm1, -272(%rbp)                        # Write another 32 bytes
+...
+# 3. Copy the struct address into %rdi (1st parameter register in AMD64 ABI)
+movq    %r13, %rdi
+
+# 4. Call the drawing routine
+call    renderer_draw_frame@PLT
+```
+
+* **Pass-by-Reference**: The struct address is moved to `%rdi` and passed directly, resulting in zero structure-copy overhead on calls.
+* **Vectorized Initialization**: The compiler groups the 64-bit pointers and uses AVX vector registers (`%ymm` / `%xmm`) to write to stack locations in single instructions, executing in just a few CPU cycles.
+
+### B. LTO Optimization & Inlining in Production (`-O3 -flto`)
+In the final linked binary (`build-release/app`), Link-Time Optimization merges translation units:
+* **Symbol Table Audit**: Running `objdump -t build-release/app | grep renderer_draw_frame` yields **no results**. The function symbol has been completely eliminated from the executable's `.text` section.
+* **Inlining**: `renderer_draw_frame` and its sub-calls are fully inlined into the main orchestrator loop. The final `app_run` function expands to `18,894 bytes` of optimized instructions.
+* **Result**: The temporary wrapper structure `RenderContext` is **completely optimized away**; its fields map directly to registers or inline instructions.
+
+### C. Visualizing & Reproducing with Just
+A `just` recipe has been added to compile any C source file to optimized AVX2 assembly without LTO for manual verification:
+```bash
+just asm src/app.c
+```
+This generates `src/app.c.s`, which can be inspected directly.

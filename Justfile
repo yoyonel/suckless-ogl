@@ -168,6 +168,14 @@ release:
 run-release: release
     @{{ build_dir }}/app
 
+# Compile a C file to AVX2 assembly (Release mode, no LTO, native)
+asm FILE:
+    @{{ distrobox }} gcc -O3 -DNDEBUG -std=gnu11 -fno-lto -march=native -mavx2 -mf16c \
+        -DBASISD_SUPPORT_ASTC=0 -DBASISD_SUPPORT_ATC=0 -DBASISD_SUPPORT_ETC2_EAC_A8=0 -DBASISD_SUPPORT_FXT1=0 -DBASISD_SUPPORT_PVRTC1=0 -DBASISD_SUPPORT_PVRTC2=0 -DGLFW_INCLUDE_NONE -DHAVE_GAMEMODE -DKHRONOS_STATIC -DKTX_FEATURE_KTX1 -DKTX_FEATURE_KTX2 -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -D_POSIX_C_SOURCE=200809L \
+        -Isrc -Isrc/nbody -Iinclude -Ideps/stb -Ideps/cjson -Ideps/glfw/include -I{{ build_dir }}/_deps/glad-build/include -Ideps/cglm/include -Ideps/libktx/lib/include -Ideps/libktx/lib/../external/dfdutils \
+        -S {{ FILE }} -o {{ FILE }}.s
+    @echo "Assembly output written to {{ FILE }}.s"
+
 # Build for Extreme Performance (Unity Build, Native, Aggressive Math)
 ultra-release:
     @{{ distrobox }} cmake -G "Unix Makefiles" -B build-ultra -DCMAKE_BUILD_TYPE=Release \
