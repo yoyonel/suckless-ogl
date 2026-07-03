@@ -80,23 +80,8 @@ int pp_create_framebuffer(PostProcess* post_processing)
 	return render_utils_check_framebuffer("PostProcess Scene FBO");
 }
 
-int postprocess_init(PostProcess* post_processing,
-                     GPUProfiler* external_profiler, int width, int height)
+static void postprocess_set_default_parameters(PostProcess* post_processing)
 {
-	*post_processing = (PostProcess){0};
-
-	post_processing->gpu_profiler = external_profiler;
-
-	post_processing->width = width;
-	post_processing->height = height;
-	post_processing->time = 0.0F;
-	post_processing->shaders.is_optimized = false;
-	post_processing->ubo_dirty = true;
-	post_processing->shaders.compiled_flags = ~0U;
-
-	post_processing->shaders.shader_cache_count = 0;
-	post_processing->banding_preset_idx = 0;
-
 	/* Paramètres par défaut */
 	post_processing->vignette.intensity = DEFAULT_VIGNETTE_INTENSITY;
 	post_processing->vignette.smoothness = DEFAULT_VIGNETTE_SMOOTHNESS;
@@ -146,50 +131,11 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->readback.current_exposure = 1.0F;
 	post_processing->readback.auto_threshold = 1.0F;
 
-	/* Initialisation Motion Blur */
-	if (!fx_motion_blur_init(&post_processing->motion_blur_fx,
-	                         &post_processing->motion_blur)) {
-		LOG_ERROR("suckless-ogl.postprocess",
-		          "Failed to create motion blur resources");
-		/* On continue quand même */
-	}
-	fx_motion_blur_resize(&post_processing->motion_blur_fx,
-	                      post_processing->width, post_processing->height);
-
-	/* Initialisation LUT Viz */
-	if (fx_lut_viz_init(&post_processing->lut_viz_fx) != 0) {
-		LOG_ERROR("suckless-ogl.postprocess",
-		          "Failed to create LUT viz resources");
-		/* On continue quand même */
-	}
-
 	/* Initialisation FXAA */
 	post_processing->fxaa.subpix = DEFAULT_FXAA_SUBPIX;
 	post_processing->fxaa.edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD;
 	post_processing->fxaa.edge_threshold_min =
 	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
-
-	/* Initialize Exposure PBOs */
-	glGenBuffers(2, post_processing->readback.exposure_pbo);
-	for (int i = 0; i < 2; i++) {
-		glBindBuffer(GL_PIXEL_PACK_BUFFER,
-		             post_processing->readback.exposure_pbo[i]);
-		glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL,
-		             GL_STREAM_READ);
-		post_processing->readback.exposure_sync[i] = NULL;
-	}
-
-	/* Initialize Histogram PBOs (64x64 floats) */
-	glGenBuffers(2, post_processing->readback.histogram_pbo);
-	for (int i = 0; i < 2; i++) {
-		glBindBuffer(GL_PIXEL_PACK_BUFFER,
-		             post_processing->readback.histogram_pbo[i]);
-		glBufferData(GL_PIXEL_PACK_BUFFER,
-		             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)),
-		             NULL, GL_STREAM_READ);
-		post_processing->readback.histogram_sync[i] = NULL;
-	}
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 	/* Initialisation Banding */
 	post_processing->banding.mode = BANDING_MODE_LINEAR;
@@ -216,6 +162,68 @@ int postprocess_init(PostProcess* post_processing,
 
 	/* Effets par défaut définis dans postprocess.h */
 	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
+
+	post_processing->lut3d.intensity = 1.0F;
+}
+
+int postprocess_init(PostProcess* post_processing,
+                     GPUProfiler* external_profiler, int width, int height)
+{
+	*post_processing = (PostProcess){0};
+
+	post_processing->gpu_profiler = external_profiler;
+
+	post_processing->width = width;
+	post_processing->height = height;
+	post_processing->time = 0.0F;
+	post_processing->shaders.is_optimized = false;
+	post_processing->ubo_dirty = true;
+	post_processing->shaders.compiled_flags = ~0U;
+
+	post_processing->shaders.shader_cache_count = 0;
+	post_processing->banding_preset_idx = 0;
+
+	/* Configurer les paramètres par défaut */
+	postprocess_set_default_parameters(post_processing);
+
+	/* Initialisation Motion Blur */
+	if (!fx_motion_blur_init(&post_processing->motion_blur_fx,
+	                         &post_processing->motion_blur)) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to create motion blur resources");
+		/* On continue quand même */
+	}
+	fx_motion_blur_resize(&post_processing->motion_blur_fx,
+	                      post_processing->width, post_processing->height);
+
+	/* Initialisation LUT Viz */
+	if (fx_lut_viz_init(&post_processing->lut_viz_fx) != 0) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to create LUT viz resources");
+		/* On continue quand même */
+	}
+
+	/* Initialize Exposure PBOs */
+	glGenBuffers(2, post_processing->readback.exposure_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             post_processing->readback.exposure_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL,
+		             GL_STREAM_READ);
+		post_processing->readback.exposure_sync[i] = NULL;
+	}
+
+	/* Initialize Histogram PBOs (64x64 floats) */
+	glGenBuffers(2, post_processing->readback.histogram_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             post_processing->readback.histogram_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER,
+		             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)),
+		             NULL, GL_STREAM_READ);
+		post_processing->readback.histogram_sync[i] = NULL;
+	}
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 	/* Créer le framebuffer */
 	if (!pp_create_framebuffer(post_processing)) {
@@ -294,7 +302,6 @@ int postprocess_init(PostProcess* post_processing,
 		          "Failed to create 3D LUT resources");
 		/* On continue quand même */
 	}
-	post_processing->lut3d.intensity = 1.0F;
 
 	LOG_INFO("suckless-ogl.postprocess",
 	         "Post-processing initialized (%dx%d)", width, height);
