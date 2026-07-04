@@ -5,6 +5,7 @@
 #include "app_input_state.h"
 #include "app_profiling.h"
 #include "camera_input.h"
+#include "gui.h"
 #include "postprocess_internal.h"
 #include "scene.h"
 #include "unity.h"
@@ -81,6 +82,13 @@ void setUp(void)
 	test_app->postprocess->active_effects = 0;
 	test_app->width = 640;
 	test_app->height = 480;
+
+	/* Allocate a stub Gui_C so app_toggle_gui can flip the visible flag.
+	 * We do NOT call gui_init() here (no full ImGui/GL stack needed for
+	 * input dispatch tests). internal_gui_ptr stays NULL, which means
+	 * gui_wants_keyboard/mouse return false — exactly the right behaviour
+	 * for a headless test without a real ImGui context. */
+	test_app->imgui = calloc(1, sizeof(*test_app->imgui));
 }
 
 void tearDown(void)
@@ -88,6 +96,7 @@ void tearDown(void)
 	if (test_app->win.handle) {
 		glfwDestroyWindow(test_app->win.handle);
 	}
+	free(test_app->imgui);
 	free(test_app->profiling);
 	free(test_app->input);
 	free(test_app->postprocess);

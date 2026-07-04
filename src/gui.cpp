@@ -1159,6 +1159,8 @@ extern "C" void gui_destroy(Gui_C* g)
 
 extern "C" bool gui_wants_keyboard(Gui_C* g)
 {
+	if (!g)
+		return false;
 	GuiState* state = static_cast<GuiState*>(g->internal_gui_ptr);
 	if (!state || !state->ctx || !g->visible)
 		return false;
@@ -1169,6 +1171,8 @@ extern "C" bool gui_wants_keyboard(Gui_C* g)
 
 extern "C" bool gui_wants_mouse(Gui_C* g)
 {
+	if (!g)
+		return false;
 	GuiState* state = static_cast<GuiState*>(g->internal_gui_ptr);
 	if (!state || !state->ctx || !g->visible)
 		return false;
