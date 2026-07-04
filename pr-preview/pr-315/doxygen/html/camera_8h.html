@@ -1,0 +1,885 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/camera.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('camera_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">camera.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>First-person camera module with realistic physics and head-bobbing.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;cglm/cglm.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for camera.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="camera_8h__incl.svg" width="222" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="camera_8h__dep__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="camera_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera.html">Camera</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a 3D camera with orientation, movement, and physical properties.  <a href="structCamera.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a2448b5f8820f41c06e72ed2527569b3c" id="r_a2448b5f8820f41c06e72ed2527569b3c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a2448b5f8820f41c06e72ed2527569b3c">DEFAULT_CAMERA_SPEED</a>&#160;&#160;&#160;15.0F</td></tr>
+<tr class="separator:a2448b5f8820f41c06e72ed2527569b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0081e2cd4ff7ef872b5f18f4a1b81e03" id="r_a0081e2cd4ff7ef872b5f18f4a1b81e03"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a0081e2cd4ff7ef872b5f18f4a1b81e03">DEFAULT_CAMERA_SENSITIVITY</a>&#160;&#160;&#160;0.15F</td></tr>
+<tr class="separator:a0081e2cd4ff7ef872b5f18f4a1b81e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abad8bee45fac1c0865c66d9ed7a8b37b" id="r_abad8bee45fac1c0865c66d9ed7a8b37b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#abad8bee45fac1c0865c66d9ed7a8b37b">DEFAULT_CAMERA_ZOOM</a>&#160;&#160;&#160;60.0F</td></tr>
+<tr class="separator:abad8bee45fac1c0865c66d9ed7a8b37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a286f1c31100b26fb1f6d616bf2dcb604" id="r_a286f1c31100b26fb1f6d616bf2dcb604"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a286f1c31100b26fb1f6d616bf2dcb604">DEFAULT_ZOOM_SPEED</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:a286f1c31100b26fb1f6d616bf2dcb604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb4c37062fe8dfb2f1958406eb8863ed" id="r_adb4c37062fe8dfb2f1958406eb8863ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#adb4c37062fe8dfb2f1958406eb8863ed">DEFAULT_SCROLL_SENSITIVITY</a>&#160;&#160;&#160;50.0F</td></tr>
+<tr class="separator:adb4c37062fe8dfb2f1958406eb8863ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4eb5a89937d9c9fb514446457d24d57" id="r_ab4eb5a89937d9c9fb514446457d24d57"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#ab4eb5a89937d9c9fb514446457d24d57">DEFAULT_MAX_PITCH</a>&#160;&#160;&#160;89.0F</td></tr>
+<tr class="separator:ab4eb5a89937d9c9fb514446457d24d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33463fa28ecfda9a7afb4fa571ae058a" id="r_a33463fa28ecfda9a7afb4fa571ae058a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a33463fa28ecfda9a7afb4fa571ae058a">DEFAULT_MIN_PITCH</a>&#160;&#160;&#160;-89.0F</td></tr>
+<tr class="separator:a33463fa28ecfda9a7afb4fa571ae058a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d9d25a633608f26d9b3f471d54f7a85" id="r_a1d9d25a633608f26d9b3f471d54f7a85"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a1d9d25a633608f26d9b3f471d54f7a85">DEFAULT_MAX_ALPHA</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:a1d9d25a633608f26d9b3f471d54f7a85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1530cd678f8f08a3a9d9e191360a0fb" id="r_ab1530cd678f8f08a3a9d9e191360a0fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#ab1530cd678f8f08a3a9d9e191360a0fb">DEFAULT_ACCELERATION</a>&#160;&#160;&#160;10.0F</td></tr>
+<tr class="separator:ab1530cd678f8f08a3a9d9e191360a0fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6af90fbafcc281c7c546b1468369a9f" id="r_aa6af90fbafcc281c7c546b1468369a9f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#aa6af90fbafcc281c7c546b1468369a9f">DEFAULT_FRICTION</a>&#160;&#160;&#160;0.85F</td></tr>
+<tr class="separator:aa6af90fbafcc281c7c546b1468369a9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ea673eb9cc74d05f8ddef371a019e8a" id="r_a6ea673eb9cc74d05f8ddef371a019e8a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a6ea673eb9cc74d05f8ddef371a019e8a">DEFAULT_ROTATION_SMOOTHING</a>&#160;&#160;&#160;0.18F</td></tr>
+<tr class="separator:a6ea673eb9cc74d05f8ddef371a019e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af05584dded9d53ee67bacbe2b16f5c01" id="r_af05584dded9d53ee67bacbe2b16f5c01"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#af05584dded9d53ee67bacbe2b16f5c01">DEFAULT_BOBBING_FREQUENCY</a>&#160;&#160;&#160;2.2F</td></tr>
+<tr class="separator:af05584dded9d53ee67bacbe2b16f5c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45db274ac303f18d569efb85b1e5a284" id="r_a45db274ac303f18d569efb85b1e5a284"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a45db274ac303f18d569efb85b1e5a284">DEFAULT_BOBBING_AMPLITUDE</a>&#160;&#160;&#160;0.0004F</td></tr>
+<tr class="separator:a45db274ac303f18d569efb85b1e5a284"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0027c02c243c7a98f75720a64d906b7" id="r_aa0027c02c243c7a98f75720a64d906b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#aa0027c02c243c7a98f75720a64d906b7">DEFAULT_MIN_VELOCITY_FOR_BOBBING</a>&#160;&#160;&#160;	0.5F</td></tr>
+<tr class="separator:aa0027c02c243c7a98f75720a64d906b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b99cda8dc39c208a7eb0c433fc54fd0" id="r_a6b99cda8dc39c208a7eb0c433fc54fd0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a6b99cda8dc39c208a7eb0c433fc54fd0">DEFAULT_BOBBING_RESET_SPEED</a>&#160;&#160;&#160;0.95F</td></tr>
+<tr class="separator:a6b99cda8dc39c208a7eb0c433fc54fd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44fc6216c4aa4dbaea8299798e3cc29f" id="r_a44fc6216c4aa4dbaea8299798e3cc29f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a44fc6216c4aa4dbaea8299798e3cc29f">DEFAULT_MIN_VELOCITY</a>&#160;&#160;&#160;0.01F</td></tr>
+<tr class="separator:a44fc6216c4aa4dbaea8299798e3cc29f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f666161077f533fbb99cdea46d22802" id="r_a7f666161077f533fbb99cdea46d22802"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a7f666161077f533fbb99cdea46d22802">DEFAULT_TARGET_FPS</a>&#160;&#160;&#160;60</td></tr>
+<tr class="separator:a7f666161077f533fbb99cdea46d22802"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e3038fdc7dbfe49dc7967731c8f0980" id="r_a1e3038fdc7dbfe49dc7967731c8f0980"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a1e3038fdc7dbfe49dc7967731c8f0980">DEFAULT_FIXED_TIMESTEP</a>&#160;&#160;&#160;	(1.0F / <a class="el" href="camera_8h.html#a7f666161077f533fbb99cdea46d22802">DEFAULT_TARGET_FPS</a>)</td></tr>
+<tr class="separator:a1e3038fdc7dbfe49dc7967731c8f0980"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa490f87bbe7d1b73db8c6f80987aa58" id="r_aaa490f87bbe7d1b73db8c6f80987aa58"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#aaa490f87bbe7d1b73db8c6f80987aa58">DEFAULT_MOUSE_SMOOTHING_FACTOR</a>&#160;&#160;&#160;0.1F</td></tr>
+<tr class="separator:aaa490f87bbe7d1b73db8c6f80987aa58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a0c924b5985fb3aa4ace810b139bd7018" id="r_a0c924b5985fb3aa4ace810b139bd7018"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a0c924b5985fb3aa4ace810b139bd7018">camera_init</a> (<a class="el" href="structCamera.html">Camera</a> *cam, float distance, float yaw, float pitch)</td></tr>
+<tr class="memdesc:a0c924b5985fb3aa4ace810b139bd7018"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the camera with default values.  <br /></td></tr>
+<tr class="separator:a0c924b5985fb3aa4ace810b139bd7018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa47646370ef1804643d987edb53fe2f7" id="r_aa47646370ef1804643d987edb53fe2f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#aa47646370ef1804643d987edb53fe2f7">camera_update_vectors</a> (<a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
+<tr class="memdesc:aa47646370ef1804643d987edb53fe2f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recalculates front, right, and up vectors from yaw and pitch.  <br /></td></tr>
+<tr class="separator:aa47646370ef1804643d987edb53fe2f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9ec3674fcdecefa4f1f1502def1463c" id="r_aa9ec3674fcdecefa4f1f1502def1463c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#aa9ec3674fcdecefa4f1f1502def1463c">camera_process_mouse</a> (<a class="el" href="structCamera.html">Camera</a> *cam, float xoffset, float yoffset)</td></tr>
+<tr class="memdesc:aa9ec3674fcdecefa4f1f1502def1463c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes mouse movement to update target orientation.  <br /></td></tr>
+<tr class="separator:aa9ec3674fcdecefa4f1f1502def1463c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a235bc4bcb5afde6245d7c7706d9df786" id="r_a235bc4bcb5afde6245d7c7706d9df786"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a235bc4bcb5afde6245d7c7706d9df786">camera_get_view_matrix</a> (<a class="el" href="structCamera.html">Camera</a> *cam, mat4 view)</td></tr>
+<tr class="memdesc:a235bc4bcb5afde6245d7c7706d9df786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates the 4x4 view matrix for this camera.  <br /></td></tr>
+<tr class="separator:a235bc4bcb5afde6245d7c7706d9df786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7359946256cd8193b91caa4b82bc20ec" id="r_a7359946256cd8193b91caa4b82bc20ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a7359946256cd8193b91caa4b82bc20ec">camera_process_scroll</a> (<a class="el" href="structCamera.html">Camera</a> *cam, float yoffset)</td></tr>
+<tr class="memdesc:a7359946256cd8193b91caa4b82bc20ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes mouse scroll events to apply physical impulse.  <br /></td></tr>
+<tr class="separator:a7359946256cd8193b91caa4b82bc20ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4acfb829aaddeadc9a6699a3a29acaf7" id="r_a4acfb829aaddeadc9a6699a3a29acaf7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7">camera_fixed_update</a> (<a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
+<tr class="memdesc:a4acfb829aaddeadc9a6699a3a29acaf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs one fixed-step physics update.  <br /></td></tr>
+<tr class="separator:a4acfb829aaddeadc9a6699a3a29acaf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa313d3e6d87244c9b1d7f3d379a3eed3" id="r_aa313d3e6d87244c9b1d7f3d379a3eed3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8h.html#aa313d3e6d87244c9b1d7f3d379a3eed3">camera_build_keyboard_input</a> (<a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
+<tr class="memdesc:aa313d3e6d87244c9b1d7f3d379a3eed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts boolean keyboard flags into move_input.  <br /></td></tr>
+<tr class="separator:aa313d3e6d87244c9b1d7f3d379a3eed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>First-person camera module with realistic physics and head-bobbing. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ab1530cd678f8f08a3a9d9e191360a0fb" name="ab1530cd678f8f08a3a9d9e191360a0fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1530cd678f8f08a3a9d9e191360a0fb">&#9670;&#160;</a></span>DEFAULT_ACCELERATION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_ACCELERATION&#160;&#160;&#160;10.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Physical push strength. </p>
+
+</div>
+</div>
+<a id="a45db274ac303f18d569efb85b1e5a284" name="a45db274ac303f18d569efb85b1e5a284"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45db274ac303f18d569efb85b1e5a284">&#9670;&#160;</a></span>DEFAULT_BOBBING_AMPLITUDE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BOBBING_AMPLITUDE&#160;&#160;&#160;0.0004F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Height of head-bob. </p>
+
+</div>
+</div>
+<a id="af05584dded9d53ee67bacbe2b16f5c01" name="af05584dded9d53ee67bacbe2b16f5c01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af05584dded9d53ee67bacbe2b16f5c01">&#9670;&#160;</a></span>DEFAULT_BOBBING_FREQUENCY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BOBBING_FREQUENCY&#160;&#160;&#160;2.2F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Waves per meter. </p>
+
+</div>
+</div>
+<a id="a6b99cda8dc39c208a7eb0c433fc54fd0" name="a6b99cda8dc39c208a7eb0c433fc54fd0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b99cda8dc39c208a7eb0c433fc54fd0">&#9670;&#160;</a></span>DEFAULT_BOBBING_RESET_SPEED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BOBBING_RESET_SPEED&#160;&#160;&#160;0.95F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Decay of bobbing offset. </p>
+
+</div>
+</div>
+<a id="a0081e2cd4ff7ef872b5f18f4a1b81e03" name="a0081e2cd4ff7ef872b5f18f4a1b81e03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0081e2cd4ff7ef872b5f18f4a1b81e03">&#9670;&#160;</a></span>DEFAULT_CAMERA_SENSITIVITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_CAMERA_SENSITIVITY&#160;&#160;&#160;0.15F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Mouse scaling. </p>
+
+</div>
+</div>
+<a id="a2448b5f8820f41c06e72ed2527569b3c" name="a2448b5f8820f41c06e72ed2527569b3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2448b5f8820f41c06e72ed2527569b3c">&#9670;&#160;</a></span>DEFAULT_CAMERA_SPEED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_CAMERA_SPEED&#160;&#160;&#160;15.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Units per second. </p>
+
+</div>
+</div>
+<a id="abad8bee45fac1c0865c66d9ed7a8b37b" name="abad8bee45fac1c0865c66d9ed7a8b37b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abad8bee45fac1c0865c66d9ed7a8b37b">&#9670;&#160;</a></span>DEFAULT_CAMERA_ZOOM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_CAMERA_ZOOM&#160;&#160;&#160;60.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default FOV. </p>
+
+</div>
+</div>
+<a id="a1e3038fdc7dbfe49dc7967731c8f0980" name="a1e3038fdc7dbfe49dc7967731c8f0980"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e3038fdc7dbfe49dc7967731c8f0980">&#9670;&#160;</a></span>DEFAULT_FIXED_TIMESTEP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FIXED_TIMESTEP&#160;&#160;&#160;	(1.0F / <a class="el" href="camera_8h.html#a7f666161077f533fbb99cdea46d22802">DEFAULT_TARGET_FPS</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Simulation step. </p>
+
+</div>
+</div>
+<a id="aa6af90fbafcc281c7c546b1468369a9f" name="aa6af90fbafcc281c7c546b1468369a9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6af90fbafcc281c7c546b1468369a9f">&#9670;&#160;</a></span>DEFAULT_FRICTION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FRICTION&#160;&#160;&#160;0.85F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Velocity decay per frame. </p>
+
+</div>
+</div>
+<a id="a1d9d25a633608f26d9b3f471d54f7a85" name="a1d9d25a633608f26d9b3f471d54f7a85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d9d25a633608f26d9b3f471d54f7a85">&#9670;&#160;</a></span>DEFAULT_MAX_ALPHA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_MAX_ALPHA&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Unused. </p>
+
+</div>
+</div>
+<a id="ab4eb5a89937d9c9fb514446457d24d57" name="ab4eb5a89937d9c9fb514446457d24d57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4eb5a89937d9c9fb514446457d24d57">&#9670;&#160;</a></span>DEFAULT_MAX_PITCH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_MAX_PITCH&#160;&#160;&#160;89.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Upward look limit. </p>
+
+</div>
+</div>
+<a id="a33463fa28ecfda9a7afb4fa571ae058a" name="a33463fa28ecfda9a7afb4fa571ae058a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33463fa28ecfda9a7afb4fa571ae058a">&#9670;&#160;</a></span>DEFAULT_MIN_PITCH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_MIN_PITCH&#160;&#160;&#160;-89.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Downward look limit. </p>
+
+</div>
+</div>
+<a id="a44fc6216c4aa4dbaea8299798e3cc29f" name="a44fc6216c4aa4dbaea8299798e3cc29f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44fc6216c4aa4dbaea8299798e3cc29f">&#9670;&#160;</a></span>DEFAULT_MIN_VELOCITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_MIN_VELOCITY&#160;&#160;&#160;0.01F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cutoff for full stop. </p>
+
+</div>
+</div>
+<a id="aa0027c02c243c7a98f75720a64d906b7" name="aa0027c02c243c7a98f75720a64d906b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0027c02c243c7a98f75720a64d906b7">&#9670;&#160;</a></span>DEFAULT_MIN_VELOCITY_FOR_BOBBING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_MIN_VELOCITY_FOR_BOBBING&#160;&#160;&#160;	0.5F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>threshold to trigger bobbing. </p>
+
+</div>
+</div>
+<a id="aaa490f87bbe7d1b73db8c6f80987aa58" name="aaa490f87bbe7d1b73db8c6f80987aa58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa490f87bbe7d1b73db8c6f80987aa58">&#9670;&#160;</a></span>DEFAULT_MOUSE_SMOOTHING_FACTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_MOUSE_SMOOTHING_FACTOR&#160;&#160;&#160;0.1F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Input lag simulation. </p>
+
+</div>
+</div>
+<a id="a6ea673eb9cc74d05f8ddef371a019e8a" name="a6ea673eb9cc74d05f8ddef371a019e8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ea673eb9cc74d05f8ddef371a019e8a">&#9670;&#160;</a></span>DEFAULT_ROTATION_SMOOTHING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_ROTATION_SMOOTHING&#160;&#160;&#160;0.18F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Orientation lerp factor. </p>
+
+</div>
+</div>
+<a id="adb4c37062fe8dfb2f1958406eb8863ed" name="adb4c37062fe8dfb2f1958406eb8863ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb4c37062fe8dfb2f1958406eb8863ed">&#9670;&#160;</a></span>DEFAULT_SCROLL_SENSITIVITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_SCROLL_SENSITIVITY&#160;&#160;&#160;50.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Scroll impulsiveness. </p>
+
+</div>
+</div>
+<a id="a7f666161077f533fbb99cdea46d22802" name="a7f666161077f533fbb99cdea46d22802"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f666161077f533fbb99cdea46d22802">&#9670;&#160;</a></span>DEFAULT_TARGET_FPS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_TARGET_FPS&#160;&#160;&#160;60</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reference for fixed updates. </p>
+
+</div>
+</div>
+<a id="a286f1c31100b26fb1f6d616bf2dcb604" name="a286f1c31100b26fb1f6d616bf2dcb604"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a286f1c31100b26fb1f6d616bf2dcb604">&#9670;&#160;</a></span>DEFAULT_ZOOM_SPEED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_ZOOM_SPEED&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>FOV adjustment rate. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aa313d3e6d87244c9b1d7f3d379a3eed3" name="aa313d3e6d87244c9b1d7f3d379a3eed3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa313d3e6d87244c9b1d7f3d379a3eed3">&#9670;&#160;</a></span>camera_build_keyboard_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_build_keyboard_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts boolean keyboard flags into move_input. </p>
+<p>Writes cam-&gt;move_input from cam-&gt;move_forward/backward/left/right/up/down. Values are binary (0 or ±1). Call before gamepad overlay and camera_fixed_update each physics step. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4acfb829aaddeadc9a6699a3a29acaf7" name="a4acfb829aaddeadc9a6699a3a29acaf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4acfb829aaddeadc9a6699a3a29acaf7">&#9670;&#160;</a></span>camera_fixed_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_fixed_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs one fixed-step physics update. </p>
+<p>Reads move_input to build target_velocity, then applies momentum, friction, and head-bobbing. move_input must be set before calling (via camera_build_keyboard_input and/or gamepad overlay). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a235bc4bcb5afde6245d7c7706d9df786" name="a235bc4bcb5afde6245d7c7706d9df786"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a235bc4bcb5afde6245d7c7706d9df786">&#9670;&#160;</a></span>camera_get_view_matrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_get_view_matrix </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mat4&#160;</td>
+          <td class="paramname"><em>view</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates the 4x4 view matrix for this camera. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">view</td><td>Matrix to populate. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0c924b5985fb3aa4ace810b139bd7018" name="a0c924b5985fb3aa4ace810b139bd7018"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c924b5985fb3aa4ace810b139bd7018">&#9670;&#160;</a></span>camera_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>distance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>yaw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>pitch</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the camera with default values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+    <tr><td class="paramname">distance</td><td>Initial forward offset (legacy). </td></tr>
+    <tr><td class="paramname">yaw</td><td>Initial horizontal rotation. </td></tr>
+    <tr><td class="paramname">pitch</td><td>Initial vertical rotation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="camera_8h_a0c924b5985fb3aa4ace810b139bd7018_cgraph.svg" width="336" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aa9ec3674fcdecefa4f1f1502def1463c" name="aa9ec3674fcdecefa4f1f1502def1463c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9ec3674fcdecefa4f1f1502def1463c">&#9670;&#160;</a></span>camera_process_mouse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_process_mouse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>xoffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>yoffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Processes mouse movement to update target orientation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+    <tr><td class="paramname">xoffset</td><td>Relative horizontal mouse movement. </td></tr>
+    <tr><td class="paramname">yoffset</td><td>Relative vertical mouse movement. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7359946256cd8193b91caa4b82bc20ec" name="a7359946256cd8193b91caa4b82bc20ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7359946256cd8193b91caa4b82bc20ec">&#9670;&#160;</a></span>camera_process_scroll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_process_scroll </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>yoffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Processes mouse scroll events to apply physical impulse. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+    <tr><td class="paramname">yoffset</td><td>Scroll amount along the y-axis. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa47646370ef1804643d987edb53fe2f7" name="aa47646370ef1804643d987edb53fe2f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa47646370ef1804643d987edb53fe2f7">&#9670;&#160;</a></span>camera_update_vectors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_update_vectors </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Recalculates front, right, and up vectors from yaw and pitch. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>Updates cam-&gt;front, cam-&gt;right, and cam-&gt;up. </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="camera_8h.html">camera.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="globals.html#index_a"><span>a</span></a></li>
+      <li><a href="globals_b.html#index_b"><span>b</span></a></li>
+      <li><a href="globals_c.html#index_c"><span>c</span></a></li>
+      <li><a href="globals_d.html#index_d"><span>d</span></a></li>
+      <li><a href="globals_e.html#index_e"><span>e</span></a></li>
+      <li><a href="globals_f.html#index_f"><span>f</span></a></li>
+      <li class="current"><a href="globals_g.html#index_g"><span>g</span></a></li>
+      <li><a href="globals_h.html#index_h"><span>h</span></a></li>
+      <li><a href="globals_i.html#index_i"><span>i</span></a></li>
+      <li><a href="globals_k.html#index_k"><span>k</span></a></li>
+      <li><a href="globals_l.html#index_l"><span>l</span></a></li>
+      <li><a href="globals_m.html#index_m"><span>m</span></a></li>
+      <li><a href="globals_n.html#index_n"><span>n</span></a></li>
+      <li><a href="globals_o.html#index_o"><span>o</span></a></li>
+      <li><a href="globals_p.html#index_p"><span>p</span></a></li>
+      <li><a href="globals_q.html#index_q"><span>q</span></a></li>
+      <li><a href="globals_r.html#index_r"><span>r</span></a></li>
+      <li><a href="globals_s.html#index_s"><span>s</span></a></li>
+      <li><a href="globals_t.html#index_t"><span>t</span></a></li>
+      <li><a href="globals_u.html#index_u"><span>u</span></a></li>
+      <li><a href="globals_v.html#index_v"><span>v</span></a></li>
+      <li><a href="globals_w.html#index_w"><span>w</span></a></li>
+      <li><a href="globals_x.html#index_x"><span>x</span></a></li>
+      <li><a href="globals_y.html#index_y"><span>y</span></a></li>
+      <li><a href="globals_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_g.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all functions, variables, defines, enums, and typedefs with links to the files they belong to:</div>
+
+<h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
+<li>g_backend_ktx&#160;:&#160;<a class="el" href="async__backend__ktx_8c.html#a4520141f433bcba5a830eee88cac059f">async_backend_ktx.c</a></li>
+<li>g_backend_stb&#160;:&#160;<a class="el" href="async__backend__stb_8c.html#af2d6fa59e43e59ba6f4d1c4fd1f24072">async_backend_stb.c</a></li>
+<li>g_log_callback&#160;:&#160;<a class="el" href="log_8c.html#a3614ab5bdd1c64935cb35097746a5338">log.c</a></li>
+<li>g_log_initialized&#160;:&#160;<a class="el" href="log_8c.html#a85e0d2f0365db22b9b91ccf8ee95889b">log.c</a></li>
+<li>g_log_level&#160;:&#160;<a class="el" href="log_8c.html#af9d04d44ddd24cd181c91561df230cee">log.c</a></li>
+<li>g_ui_saved_state&#160;:&#160;<a class="el" href="ui_8c.html#ada114a43ba5ef5da89f16bfd867c8065">ui.c</a></li>
+<li>gamepad_apply_deadzone()&#160;:&#160;<a class="el" href="gamepad__input_8c.html#a8918722fe2ae5795c45d1b192cfc7c0c">gamepad_input.c</a>, <a class="el" href="gamepad__input_8h.html#a8918722fe2ae5795c45d1b192cfc7c0c">gamepad_input.h</a></li>
+<li>GAMEPAD_AXIS_COUNT&#160;:&#160;<a class="el" href="gamepad__input_8h.html#a6eb3bb443b51d465ea1c57610cdb4948">gamepad_input.h</a></li>
+<li>GAMEPAD_BUTTON_COUNT&#160;:&#160;<a class="el" href="gamepad__input_8h.html#a77f74633e98fcd4fcd9adf16e60f8ce4">gamepad_input.h</a></li>
+<li>GAMEPAD_DEFAULT_DEADZONE&#160;:&#160;<a class="el" href="gamepad__input_8h.html#ae1c8af50202fe5ff8ad489923029c3dd">gamepad_input.h</a></li>
+<li>GAMEPAD_DEFAULT_LOOK_SENSITIVITY&#160;:&#160;<a class="el" href="gamepad__input_8h.html#a00f87c9f09cb242e136b9ffd54de528f">gamepad_input.h</a></li>
+<li>GAMEPAD_DEFAULT_MOVE_SENSITIVITY&#160;:&#160;<a class="el" href="gamepad__input_8h.html#aa35577c403247b9c2252e7db90317982">gamepad_input.h</a></li>
+<li>GAMEPAD_DEFAULT_TRIGGER_THRESHOLD&#160;:&#160;<a class="el" href="gamepad__input_8h.html#abac390dc28d403572beed18a02ccf125">gamepad_input.h</a></li>
+<li>gamepad_input_init()&#160;:&#160;<a class="el" href="gamepad__input_8h.html#a7675da2a057eba16844b2250a15a8f56">gamepad_input.h</a>, <a class="el" href="gamepad__input_8c.html#a7675da2a057eba16844b2250a15a8f56">gamepad_input.c</a></li>
+<li>gamepad_input_poll()&#160;:&#160;<a class="el" href="gamepad__input_8c.html#ae5e7070f32bd2ddff5493d970654dd30">gamepad_input.c</a>, <a class="el" href="gamepad__input_8h.html#ae5e7070f32bd2ddff5493d970654dd30">gamepad_input.h</a></li>
+<li>GAMEPAD_LAYOUT&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">app_ui_layout.h</a></li>
+<li>GAMEPAD_LAYOUT_COUNT&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe">app_ui_layout.h</a></li>
+<li>gamepad_poll_buttons()&#160;:&#160;<a class="el" href="gamepad__input_8c.html#aae85773763d5efa9eea04e6ea67b1362">gamepad_input.c</a></li>
+<li>gamepad_write_input()&#160;:&#160;<a class="el" href="gamepad__input_8h.html#afa50c87039ef832f969bafb592445eff">gamepad_input.h</a>, <a class="el" href="gamepad__input_8c.html#afa50c87039ef832f969bafb592445eff">gamepad_input.c</a></li>
+<li>get_active_binding()&#160;:&#160;<a class="el" href="app__ui_8c.html#ac728a2c6b8100d42540b7471262c7284">app_ui.c</a></li>
+<li>get_dir_from_path()&#160;:&#160;<a class="el" href="shader_8c.html#af175eada3763b4ece51e0344ee4a0da0">shader.c</a></li>
+<li>get_key_base_color()&#160;:&#160;<a class="el" href="app__ui_8c.html#a7db775acc267773a5d45a5afc6844eeb">app_ui.c</a></li>
+<li>get_midpoint()&#160;:&#160;<a class="el" href="icosphere_8c.html#a91438511f35ef99ee0e734ea745ea9ea">icosphere.c</a></li>
+<li>get_probe_irradiance()&#160;:&#160;<a class="el" href="sh__probe_8glsl.html#a90dd6fc14cc170aa54402a9aa987760a">sh_probe.glsl</a></li>
+<li>get_severity_str()&#160;:&#160;<a class="el" href="gl__debug_8c.html#a22abdd7e49d3c9bea4e9863a928035b2">gl_debug.c</a></li>
+<li>get_source_str()&#160;:&#160;<a class="el" href="gl__debug_8c.html#aa9eac2c8017909e5a005c6a881087367">gl_debug.c</a></li>
+<li>get_sphere_pos()&#160;:&#160;<a class="el" href="light__probes_8c.html#a338c4d4188abbbfc6646566d6e4465cf">light_probes.c</a></li>
+<li>get_sphere_radius()&#160;:&#160;<a class="el" href="light__probes_8c.html#ac2d94e4994527bae8373ac34109506d8">light_probes.c</a></li>
+<li>get_type_str()&#160;:&#160;<a class="el" href="gl__debug_8c.html#a5cd4fb2c820459638ede22ef0026093b">gl_debug.c</a></li>
+<li>getProjectedBounds()&#160;:&#160;<a class="el" href="projection__utils_8glsl.html#af1871360be1ffa5d2f5d821155d93c88">projection_utils.glsl</a></li>
+<li>GI_BOUNCE_SCALE&#160;:&#160;<a class="el" href="light__probes_8c.html#a58e005cf8b962a80a0964376dbec202b">light_probes.c</a></li>
+<li>GI_DEBUG_PROBE_VERTICES&#160;:&#160;<a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77dadd736b70ac73170b9644d6fe7dbdd6ba">light_probes.c</a></li>
+<li>GI_EPSILON&#160;:&#160;<a class="el" href="light__probes_8c.html#ada31c354822314d7a24f3506360adfbd">light_probes.c</a></li>
+<li>GI_HALF&#160;:&#160;<a class="el" href="light__probes_8c.html#ac304b4e77cc08a0e58d568419bc63491">light_probes.c</a></li>
+<li>GI_LOG_BUF_SIZE&#160;:&#160;<a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77dafe2fed8b2ca9113062d05bbf50f6e6b8">light_probes.c</a></li>
+<li>GI_MAX_DIST_RADII&#160;:&#160;<a class="el" href="light__probes_8c.html#ab93462b0ec98005b20ab155e72779d0d">light_probes.c</a></li>
+<li>GI_MIN_DIST_RADII&#160;:&#160;<a class="el" href="light__probes_8c.html#a914ef7f00117754d0910e9f0c7f60894">light_probes.c</a></li>
+<li>GI_MODE_3D_TEX&#160;:&#160;<a class="el" href="scene__config_8h.html#a77089f19a96b4dfc89e234b29626a85fa78c9618ee8bd96d6765e64fc81b86c0f">scene_config.h</a></li>
+<li>GI_MODE_COUNT&#160;:&#160;<a class="el" href="scene__config_8h.html#a77089f19a96b4dfc89e234b29626a85fa556fdef2df9e646f492f124faa2faecd">scene_config.h</a></li>
+<li>GI_MODE_OFF&#160;:&#160;<a class="el" href="scene__config_8h.html#a77089f19a96b4dfc89e234b29626a85fa9b40f870d3b7b4152e252bc8212abf8d">scene_config.h</a></li>
+<li>GI_MODE_SSBO&#160;:&#160;<a class="el" href="scene__config_8h.html#a77089f19a96b4dfc89e234b29626a85fac43ea93596533981819af745bb23626a">scene_config.h</a></li>
+<li>GI_SMALL_LOG_BUF_SIZE&#160;:&#160;<a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77da18b0bd55142c07ceea2c4d99755af444">light_probes.c</a></li>
+<li>GI_WIRE_CUBE_VERTICES&#160;:&#160;<a class="el" href="light__probes_8c.html#a157d5577a5b2f5986037d0d09c7dc77daf1db8d5cb9170cc48e50f01378675bc2">light_probes.c</a></li>
+<li>GI_ZERO&#160;:&#160;<a class="el" href="light__probes_8c.html#aedf6403f1f3fb1760777e3c196dca3d2">light_probes.c</a></li>
+<li>GIMode&#160;:&#160;<a class="el" href="scene__config_8h.html#a77089f19a96b4dfc89e234b29626a85f">scene_config.h</a></li>
+<li>GL_ASSERT_UBO_ALIGNMENT&#160;:&#160;<a class="el" href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">gl_common.h</a></li>
+<li>GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT&#160;:&#160;<a class="el" href="async__backend__ktx_8c.html#a9b5e680f5059381f82c024cb5b438dbc">async_backend_ktx.c</a></li>
+<li>gl_context_destroy()&#160;:&#160;<a class="el" href="ktx__viewer_8c.html#afdc909ef56ef5e879d5d4399de010f49">ktx_viewer.c</a></li>
+<li>gl_context_init()&#160;:&#160;<a class="el" href="ktx__viewer_8c.html#a4238621542edf21fe8351077a6897a62">ktx_viewer.c</a></li>
+<li>gl_debug_callback()&#160;:&#160;<a class="el" href="gl__debug_8c.html#a92c2ec42b6384cbe584117219166124a">gl_debug.c</a></li>
+<li>GL_DEBUG_POP&#160;:&#160;<a class="el" href="gl__common_8h.html#a3d7fc097a36ed065cc4c5813cb63c4a0">gl_common.h</a></li>
+<li>gl_debug_pop_group()&#160;:&#160;<a class="el" href="gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a">gl_debug.h</a>, <a class="el" href="gl__debug_8c.html#a25be2ee4e0a9571435ad48c51f93da8a">gl_debug.c</a></li>
+<li>GL_DEBUG_PUSH&#160;:&#160;<a class="el" href="gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812">gl_common.h</a></li>
+<li>gl_debug_push_group()&#160;:&#160;<a class="el" href="gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4">gl_debug.h</a>, <a class="el" href="gl__debug_8c.html#aab0f03e3f09521ffa3e714fd12c61cf4">gl_debug.c</a></li>
+<li>GL_SAFE_DELETE_BUFFER&#160;:&#160;<a class="el" href="gl__common_8h.html#aedc18d73b9271df253a8aa74a429088f">gl_common.h</a></li>
+<li>GL_SAFE_DELETE_BUFFERS&#160;:&#160;<a class="el" href="gl__common_8h.html#ab8ccf88806834695c45f7f30d868020a">gl_common.h</a></li>
+<li>GL_SAFE_DELETE_FRAMEBUFFER&#160;:&#160;<a class="el" href="gl__common_8h.html#a10cfad274967c1969dd686fa14ce7deb">gl_common.h</a></li>
+<li>GL_SAFE_DELETE_PROGRAM&#160;:&#160;<a class="el" href="gl__common_8h.html#acc0369d2f808530b4d51126a46d96bb0">gl_common.h</a></li>
+<li>GL_SAFE_DELETE_TEXTURE&#160;:&#160;<a class="el" href="gl__common_8h.html#ad734625837606032212a5f0706243b60">gl_common.h</a></li>
+<li>GL_SAFE_DELETE_VAO&#160;:&#160;<a class="el" href="gl__common_8h.html#ace3537fd305f55199d8725f41848be06">gl_common.h</a></li>
+<li>GL_SAFE_DELETE_VAOS&#160;:&#160;<a class="el" href="gl__common_8h.html#aac316bc6aa955deccf369fbc75312aa6">gl_common.h</a></li>
+<li>GL_SCOPE_DEBUG_GROUP&#160;:&#160;<a class="el" href="gl__common_8h.html#a5f71b6552f5675333cc18677cb881580">gl_common.h</a></li>
+<li>GL_SCOPE_USE_PROGRAM&#160;:&#160;<a class="el" href="gl__common_8h.html#a8dcb3273b1d51b8da3a2a6f3082a799f">gl_common.h</a></li>
+<li>gl_texture_destroy()&#160;:&#160;<a class="el" href="ktx__viewer_8c.html#a9e9ef64f64fbf87b1b0bc9dc6ebb7849">ktx_viewer.c</a></li>
+<li>gl_texture_upload_from_ktx()&#160;:&#160;<a class="el" href="ktx__viewer_8c.html#a507c2e8e7676c3e34832e2aeb6ea62f6">ktx_viewer.c</a></li>
+<li>GL_UBO_ALIGNED&#160;:&#160;<a class="el" href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">gl_common.h</a></li>
+<li>GL_UBO_ALIGNMENT&#160;:&#160;<a class="el" href="gl__common_8h.html#a80155586fa275b28773c9b203f52cabaa0178e01bb43e84986ca3cf7d7cdbb660">gl_common.h</a></li>
+<li>GLFW_INCLUDE_NONE&#160;:&#160;<a class="el" href="gamepad__input_8c.html#a088324ad8995e3eb76024e3e79083d48">gamepad_input.c</a></li>
+<li>GLFWwindow&#160;:&#160;<a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">window.h</a></li>
+<li>GLOBAL_DIM_MAX_FALLOFF&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#a3591dafcd6088d523404b946b512135e">app_ui_layout.h</a></li>
+<li>GLOBAL_DIM_SMOOTH_FACTOR&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#af7d0b37e844c1e81ca1babc84608f47a">app_ui_layout.h</a></li>
+<li>GLOW_HOVER_ALPHA&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#a74ff0575436fcd1a9b154650bc840442">app_ui_layout.h</a></li>
+<li>GLOW_MIX&#160;:&#160;<a class="el" href="shockwave_8frag.html#ad3ab0408e5e1ed1ebdcf04e7e2f0cfe1">shockwave.frag</a></li>
+<li>glsl&#160;:&#160;<a class="el" href="pbr__functions_8glsl.html#a99ce6de0c3904f6c8c3117cc92719b01">pbr_functions.glsl</a>, <a class="el" href="pbr__ibl__billboard_8frag.html#a45bb4c97466db7e116560434ff23499a">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__instanced_8frag.html#a45bb4c97466db7e116560434ff23499a">pbr_ibl_instanced.frag</a>, <a class="el" href="postprocess_8frag.html#a99ce6de0c3904f6c8c3117cc92719b01">postprocess.frag</a></li>
+<li>gp_axis_active()&#160;:&#160;<a class="el" href="app__ui_8c.html#a4fa733535e4b950624955b987ab1fbe7">app_ui.c</a></li>
+<li>GP_GLOW_BASE_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#aa757d8bd1a3d4fb06b9bf2046963de6a">app_ui.c</a></li>
+<li>GP_GLOW_SIDES&#160;:&#160;<a class="el" href="app__ui_8c.html#aedf6ee7fcafaa6149218b94f81b0b34b">app_ui.c</a></li>
+<li>GP_LAYOUT_COLS&#160;:&#160;<a class="el" href="app__ui_8c.html#a20b1ff518e5e14a017594a9c75438b19">app_ui.c</a></li>
+<li>GP_LAYOUT_ROWS&#160;:&#160;<a class="el" href="app__ui_8c.html#a31a731d480b2f7695594a443dc6a67db">app_ui.c</a></li>
+<li>gp_overlay_find_hovered()&#160;:&#160;<a class="el" href="app__ui_8c.html#a5bd46e2ed0be3adf716e027f818841ff">app_ui.c</a></li>
+<li>gp_overlay_poll_active()&#160;:&#160;<a class="el" href="app__ui_8c.html#a8e089cd73f85596832c1db598a3662aa">app_ui.c</a></li>
+<li>GP_ROW_BUMPERS&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec">app_ui_layout.h</a></li>
+<li>GP_ROW_FACE&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d">app_ui_layout.h</a></li>
+<li>GP_ROW_STICKS&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b">app_ui_layout.h</a></li>
+<li>GP_ROW_SYSTEM&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b">app_ui_layout.h</a></li>
+<li>GP_ROW_TRIGGERS&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6">app_ui_layout.h</a></li>
+<li>GP_SMALL_LABEL_SCALE&#160;:&#160;<a class="el" href="app__ui_8c.html#af6a4cd2b290e70b89a9b3ca96c6d8689">app_ui.c</a></li>
+<li>GP_TRIGGER_NORM&#160;:&#160;<a class="el" href="app__ui_8c.html#a8913760ddb525fced3aebc3519c7c8a7">app_ui.c</a></li>
+<li>GPU_ENTRY_SIZE&#160;:&#160;<a class="el" href="billboard__sorter_8c.html#a3a01d56be5ca4245c6ebd28f0b7458e6">billboard_sorter.c</a></li>
+<li>GPU_IDENTIFIER_RAW_BUF_SIZE&#160;:&#160;<a class="el" href="render__utils_8c.html#a7cc2e4244ca368f68e5746185eda6c4aa088b803bc4a6432888162268cf640155">render_utils.c</a></li>
+<li>GPU_MEASURE_LOG&#160;:&#160;<a class="el" href="perf__timer_8h.html#abd41b4ab68073a6cbd6723d5899061dc">perf_timer.h</a></li>
+<li>GPU_MEASURE_MS&#160;:&#160;<a class="el" href="perf__timer_8h.html#a3fb37d4b6578334d733d017b9b8a0673">perf_timer.h</a></li>
+<li>GPU_PROFILER_AUTO_EXPOSURE_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b">gpu_profiler.h</a></li>
+<li>gpu_profiler_begin_frame()&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler.h</a>, <a class="el" href="gpu__profiler_8c.html#a1b02eae0daab556a5ceadace03aad5e4">gpu_profiler.c</a></li>
+<li>GPU_PROFILER_BLOOM_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a689e67a9ac7c9833cea0e441ab41a482">gpu_profiler.h</a></li>
+<li>gpu_profiler_cleanup()&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler.h</a>, <a class="el" href="gpu__profiler_8c.html#a99aa06bd6e69115f881711abc461984e">gpu_profiler.c</a></li>
+<li>GPU_PROFILER_COMPOSITE_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#aefa79da2c8228eec514a28467923a07d">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_DOF_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#ac8514b41b0bfb22f696feac256ac0607">gpu_profiler.h</a></li>
+<li>gpu_profiler_end_stage()&#160;:&#160;<a class="el" href="gpu__profiler_8c.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler.c</a>, <a class="el" href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_ENV_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_GI_DEBUG_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a623ee165a10838fc9e485ff1b11e3aeb">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_GI_SYNC_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a49240777a1bd99a5c407b803d454e768">gpu_profiler.h</a></li>
+<li>gpu_profiler_init()&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler.h</a>, <a class="el" href="gpu__profiler_8c.html#a80772be366a911115ff01dc5d9bcd4f0">gpu_profiler.c</a></li>
+<li>GPU_PROFILER_MOTION_BLUR_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_NBODY_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#aeb224a4d8f9ce3af64219e94ee4e55a8">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_POSTPROCESS_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f">gpu_profiler.h</a></li>
+<li>gpu_profiler_reset_samplers()&#160;:&#160;<a class="el" href="gpu__profiler_8c.html#abb8eabbef66554b6e1646f398037face">gpu_profiler.c</a>, <a class="el" href="gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_ROW_HEIGHT&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_SCENE_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d">gpu_profiler.h</a></li>
+<li>gpu_profiler_set_enabled()&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler.h</a>, <a class="el" href="gpu__profiler_8c.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler.c</a></li>
+<li>GPU_PROFILER_SHOCKWAVE_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#ad987218ea719efa5980a816a8f97a6a4">gpu_profiler.h</a></li>
+<li>gpu_profiler_start_stage()&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler.h</a>, <a class="el" href="gpu__profiler_8c.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler.c</a></li>
+<li>GPU_PROFILER_TOTAL_FRAME_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261">gpu_profiler.h</a></li>
+<li>gpu_profiler_ui_cleanup()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8h.html#aa5843b14190f472881eb53b6aa0cb4f0">gpu_profiler_ui.h</a>, <a class="el" href="gpu__profiler__ui_8c.html#aa5843b14190f472881eb53b6aa0cb4f0">gpu_profiler_ui.c</a></li>
+<li>GPU_PROFILER_UI_COLOR&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178">gpu_profiler.h</a></li>
+<li>gpu_profiler_ui_compact_stages()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8c.html#a791c884d99ce17538fa4fd8d17a877c8">gpu_profiler_ui.c</a></li>
+<li>gpu_profiler_ui_draw()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8h.html#aa22e51dc6232ffd2f5740fc7ed56180a">gpu_profiler_ui.h</a>, <a class="el" href="gpu__profiler__ui_8c.html#aa22e51dc6232ffd2f5740fc7ed56180a">gpu_profiler_ui.c</a></li>
+<li>gpu_profiler_ui_init()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8h.html#aed68b1cca30d6c8812275e6756233fa8">gpu_profiler_ui.h</a>, <a class="el" href="gpu__profiler__ui_8c.html#aed68b1cca30d6c8812275e6756233fa8">gpu_profiler_ui.c</a></li>
+<li>gpu_profiler_ui_sync_stage()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8c.html#a15363df2f9d5c696e83a0077332cf845">gpu_profiler_ui.c</a></li>
+<li>gpu_profiler_ui_toggle_position()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8h.html#a5fc61f55cf3d2919113ecdcbc53ea5a3">gpu_profiler_ui.h</a>, <a class="el" href="gpu__profiler__ui_8c.html#a5fc61f55cf3d2919113ecdcbc53ea5a3">gpu_profiler_ui.c</a></li>
+<li>gpu_profiler_ui_toggle_visibility()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8h.html#a887925b2aff08e85f6c5028edc30ef98">gpu_profiler_ui.h</a>, <a class="el" href="gpu__profiler__ui_8c.html#a887925b2aff08e85f6c5028edc30ef98">gpu_profiler_ui.c</a></li>
+<li>gpu_profiler_ui_update()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8c.html#ac53c270cd512488caca074831008a6db">gpu_profiler_ui.c</a>, <a class="el" href="gpu__profiler__ui_8h.html#ac53c270cd512488caca074831008a6db">gpu_profiler_ui.h</a></li>
+<li>gpu_profiler_ui_update_visibility()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8c.html#a354e56ee6aaa3ae6e00da508876cb513">gpu_profiler_ui.c</a></li>
+<li>GPU_PROFILER_WINDOW_DURATION_S&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92">gpu_profiler.h</a></li>
+<li>GPU_PROFILER_WINDOW_TRANSITION_S&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a6c552f4e4a7d22fa4c0fed9fa5e83ad9">gpu_profiler.h</a></li>
+<li>GPU_QUERY_BUFFER_COUNT&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a6b7b47dd702d9e331586d485013fd1eaa253a489f6b3470ff87bbe17d5f5e589d">gpu_profiler.h</a></li>
+<li>gpu_stage_cleanup_raii()&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_profiler.h</a></li>
+<li>gpu_stage_move()&#160;:&#160;<a class="el" href="gpu__profiler__ui_8c.html#ab390637c15904dd866b0c2916eb948b0">gpu_profiler_ui.c</a></li>
+<li>GPU_STAGE_PROFILER&#160;:&#160;<a class="el" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">gpu_profiler.h</a></li>
+<li>gpu_timer_cleanup()&#160;:&#160;<a class="el" href="perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#ab77f03ea3adbd1c7e38aad5e9c51a48c">perf_timer.c</a></li>
+<li>gpu_timer_elapsed_ms()&#160;:&#160;<a class="el" href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">perf_timer.h</a>, <a class="el" href="perf__timer_8c.html#a248eca7078cf6b01ea1d0a65f3863774">perf_timer.c</a></li>
+<li>gpu_timer_start()&#160;:&#160;<a class="el" href="perf__timer_8c.html#ab590b4c19b3d254d82d940eca2bfdcab">perf_timer.c</a>, <a class="el" href="perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab">perf_timer.h</a></li>
+<li>gpu_timer_stop()&#160;:&#160;<a class="el" href="perf__timer_8h.html#a93662ba9f40c64c41997e746d07f135e">perf_timer.h</a></li>
+<li>gpu_usage_cleanup()&#160;:&#160;<a class="el" href="gpu__usage_8h.html#ad721ee9657a2311067270a1eb2650322">gpu_usage.h</a>, <a class="el" href="gpu__usage_8c.html#ad721ee9657a2311067270a1eb2650322">gpu_usage.c</a></li>
+<li>gpu_usage_get_load()&#160;:&#160;<a class="el" href="gpu__usage_8h.html#a24593696790917b4e4587190634ed65d">gpu_usage.h</a>, <a class="el" href="gpu__usage_8c.html#a24593696790917b4e4587190634ed65d">gpu_usage.c</a></li>
+<li>gpu_usage_init()&#160;:&#160;<a class="el" href="gpu__usage_8h.html#a2d0af5de4f732d0ebe37b0252b70fcd3">gpu_usage.h</a>, <a class="el" href="gpu__usage_8c.html#a2d0af5de4f732d0ebe37b0252b70fcd3">gpu_usage.c</a></li>
+<li>gpu_usage_is_available()&#160;:&#160;<a class="el" href="gpu__usage_8h.html#ac8f6cb11fff7656acd2a2739a8286a36">gpu_usage.h</a>, <a class="el" href="gpu__usage_8c.html#ac8f6cb11fff7656acd2a2739a8286a36">gpu_usage.c</a></li>
+<li>GPU_USAGE_MAX_FDS&#160;:&#160;<a class="el" href="gpu__usage_8h.html#adb49720dc49f7d4e4cf9adbf2948e409a3e6eb091de6b23f865e61b0e5b5ab472">gpu_usage.h</a></li>
+<li>GPU_USAGE_MAX_KEY_LEN&#160;:&#160;<a class="el" href="gpu__usage_8h.html#adb49720dc49f7d4e4cf9adbf2948e409a56afb59436e4309556f8dc003660d2bc">gpu_usage.h</a></li>
+<li>gpu_usage_update()&#160;:&#160;<a class="el" href="gpu__usage_8h.html#a1c9dedfc65533d5d96593b2f47a81d91">gpu_usage.h</a>, <a class="el" href="gpu__usage_8c.html#a1c9dedfc65533d5d96593b2f47a81d91">gpu_usage.c</a></li>
+<li>GRAPH_DIM_H&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#ab50bb5b41054d547f93c5cbbc217ff18">app_ui_layout.h</a></li>
+<li>GRAPH_DIM_W&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#a6c7a06dc2eb7bcdb23ad7ca03ecbe75b">app_ui_layout.h</a></li>
+<li>GRAPH_FONT_SIZE&#160;:&#160;<a class="el" href="gpu__profiler__ui__layout_8h.html#a14a7a1e3fc8aa75b82f200c05dcac492">gpu_profiler_ui_layout.h</a></li>
+<li>GRAPH_POS_X&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#a403a51757a9c45c7096d44c4d68736c5">app_ui_layout.h</a></li>
+<li>GRAPH_POS_Y_OFF&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#aeecd20cda3f7c87d60454435776fc666">app_ui_layout.h</a></li>
+<li>GRAPH_TEXT_COLOR&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#aaf76e00a44e28d6b60824890cf02af45">app_ui_layout.h</a></li>
+<li>GRAPH_TEXT_PADDING&#160;:&#160;<a class="el" href="app__ui__layout_8h.html#a5a809367fa495c92746f4f0eb3e07880">app_ui_layout.h</a></li>
+<li>GRAPH_WIDTH_RATIO&#160;:&#160;<a class="el" href="gpu__profiler__ui__layout_8h.html#aa129c3ed0d67ab9e10d392ae5b3d8e74">gpu_profiler_ui_layout.h</a></li>
+<li>GRAVITY_FACTOR&#160;:&#160;<a class="el" href="app__input_8c.html#a873901dcfa979699b2459b1965b5ed86">app_input.c</a></li>
+<li>GRAVITY_INV_FACTOR&#160;:&#160;<a class="el" href="app__input_8c.html#adf3d3bb2b4b1a18b6c1593a9c7f34968">app_input.c</a></li>
+<li>GRAVITY_MAX&#160;:&#160;<a class="el" href="app__input_8c.html#a2c2539cf5e6c40d09d617a58d40bb8ce">app_input.c</a></li>
+<li>GRAVITY_MIN_POSITIVE&#160;:&#160;<a class="el" href="app__input_8c.html#af392ba03999d7d176a6e2155c76dfc84">app_input.c</a></li>
+<li>gui_destroy()&#160;:&#160;<a class="el" href="gui_8h.html#ab6158fd2585e5bef311eea4f73cc3c10">gui.h</a></li>
+<li>gui_init()&#160;:&#160;<a class="el" href="gui_8h.html#a016aa7182777187bcf9dc49c4fc84284">gui.h</a></li>
+<li>gui_new_frame()&#160;:&#160;<a class="el" href="gui_8h.html#a2cac727f68b5f80f155369d5c1b2379c">gui.h</a></li>
+<li>gui_render()&#160;:&#160;<a class="el" href="gui_8h.html#abeca77f3badd84c18da84d8ca343565c">gui.h</a></li>
+<li>gui_toggle()&#160;:&#160;<a class="el" href="gui_8h.html#a0d346455e6f2b878f178a00bf470880d">gui.h</a></li>
+<li>gui_update()&#160;:&#160;<a class="el" href="gui_8h.html#a5a0f638a3f1e968c9af216e6a02bd19a">gui.h</a></li>
+<li>gui_wants_keyboard()&#160;:&#160;<a class="el" href="gui_8h.html#af9ec0f3b80ace8eee08fa35b5274933a">gui.h</a></li>
+<li>gui_wants_mouse()&#160;:&#160;<a class="el" href="gui_8h.html#a8e9eb4566fa184c123568d8729534d4d">gui.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

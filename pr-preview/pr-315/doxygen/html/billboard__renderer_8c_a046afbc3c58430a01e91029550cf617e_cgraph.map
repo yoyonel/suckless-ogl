@@ -1,0 +1,39 @@
+<map id="billboard_renderer_draw" name="billboard_renderer_draw">
+<area shape="rect" id="Node000001" title="Executes the sorting, UBO upload, and drawing commands for all billboards." alt="" coords="5,296,185,321"/>
+<area shape="rect" id="Node000002" href="$billboard__sorter_8c.html#ac256353696b22e1ef8ab1c63b9f25006" title="Dispatches the sorting task using the specified SortingMode." alt="" coords="237,165,393,191"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,294,279,196,282,200,119,298"/>
+<area shape="rect" id="Node000013" href="$billboard__renderer_8c.html#ac713aa7ce04945441e7e0552e5125946" title=" " alt="" coords="233,271,397,296"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="185,296,219,292,220,297,186,301"/>
+<area shape="rect" id="Node000016" href="$billboard__renderer_8c.html#aed67baed6dfd34f30872bcd70363c729" title=" " alt="" coords="241,320,390,345"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="186,316,227,320,227,326,185,321"/>
+<area shape="rect" id="Node000017" href="$billboard__renderer_8c.html#ae44bcbdfedfc487c88da9594ba44b7ba" title=" " alt="" coords="234,375,397,400"/>
+<area shape="poly" id="edge18_Node000001_Node000017" title=" " alt="" coords="133,319,267,367,265,372,131,324"/>
+<area shape="rect" id="Node000003" href="$billboard__sorter_8c.html#aec701145359c500f4af067ef11e050e6" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on CPU." alt="" coords="445,63,632,88"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="342,163,444,114,495,91,498,96,446,119,344,168"/>
+<area shape="rect" id="Node000007" href="$billboard__sorter_8c.html#a34714dfd087e0b6f3176014fde266235" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) using Radix Sort." alt="" coords="461,129,617,169"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="393,165,447,158,448,163,394,170"/>
+<area shape="rect" id="Node000009" href="$billboard__sorter_8c.html#a4e0b31ffd7cd8db6aa71284ffac670c4" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on GPU." alt="" coords="445,203,632,228"/>
+<area shape="poly" id="edge10_Node000002_Node000009" title=" " alt="" coords="392,188,449,198,448,203,392,193"/>
+<area shape="rect" id="Node000004" href="$billboard__sorter_8c.html#a57be5e118fd5533df2275e84d89e1843" title=" " alt="" coords="680,5,863,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="590,60,705,31,707,37,592,65"/>
+<area shape="rect" id="Node000005" href="$billboard__sorter_8c.html#a8cc62bb240dd047fbb8f117badfb03a8" title="Grow CPU scratchpads to hold at least count elements." alt="" coords="692,104,851,129"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="611,85,686,99,685,104,610,91"/>
+<area shape="rect" id="Node000006" href="$billboard__sorter_8c.html#a7336426436cf583ae1c93b6cef937f3f" title="Upload count sorted instances from the CPU temp buffer to the SSBO." alt="" coords="686,55,857,80"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="632,69,672,68,672,73,632,75"/>
+<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="617,135,678,127,678,132,618,141"/>
+<area shape="poly" id="edge9_Node000007_Node000006" title=" " alt="" coords="584,126,679,89,704,81,706,86,681,94,586,131"/>
+<area shape="rect" id="Node000008" href="$billboard__sorter_8c.html#a5d5aab931453148c66e46823323759de" title="Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using inte..." alt="" coords="690,153,853,179"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="617,152,677,156,676,162,617,157"/>
+<area shape="rect" id="Node000010" href="$gl__debug_8c.html#a25be2ee4e0a9571435ad48c51f93da8a" title="Pop the current debug group from the OpenGL debug stack." alt="" coords="693,203,849,228"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="632,213,680,213,680,218,632,218"/>
+<area shape="rect" id="Node000011" href="$gl__debug_8c.html#aab0f03e3f09521ffa3e714fd12c61cf4" title="Push a named debug group onto the OpenGL debug stack." alt="" coords="690,252,853,277"/>
+<area shape="poly" id="edge12_Node000009_Node000011" title=" " alt="" coords="600,225,698,246,697,252,599,231"/>
+<area shape="rect" id="Node000012" href="$billboard__sorter_8c.html#a8dcb764e029c15c8bb949432cdc6b88b" title=" " alt="" coords="725,301,818,327"/>
+<area shape="poly" id="edge13_Node000009_Node000012" title=" " alt="" coords="604,226,633,238,649,251,658,263,667,275,681,286,712,300,710,305,679,291,663,279,654,266,645,254,631,243,602,230"/>
+<area shape="rect" id="Node000014" href="$billboard__renderer_8c.html#a99a8deeef73adfcfcd67ca34b7f0d3d6" title=" " alt="" coords="460,253,617,293"/>
+<area shape="poly" id="edge15_Node000013_Node000014" title=" " alt="" coords="397,277,446,274,446,280,398,282"/>
+<area shape="rect" id="Node000015" href="$billboard__renderer_8c.html#ae48897e4cdf59044c559f83c1133fed7" title=" " alt="" coords="453,317,625,357"/>
+<area shape="poly" id="edge16_Node000013_Node000015" title=" " alt="" coords="370,294,442,311,441,316,369,299"/>
+<area shape="rect" id="Node000018" href="$utils_8c.html#abeb736cfb3c1a73ff0b6c3fabc20b332" title="memcpy wrapper with bounds checking." alt="" coords="481,381,596,407"/>
+<area shape="poly" id="edge19_Node000017_Node000018" title=" " alt="" coords="397,387,468,389,468,395,397,392"/>
+</map>

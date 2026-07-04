@@ -1,0 +1,27 @@
+var structApp =
+[
+    [ "async_coord", "structApp.html#afcde1a5cf1997b417702196d6992f5d0", null ],
+    [ "async_loader", "structApp.html#ae23d2d96f024e64c81f150041c6f93af", null ],
+    [ "delta_time", "structApp.html#a90dac3c1153b09925cace5205c06889b", null ],
+    [ "effect_bench", "structApp.html#a421525fe2e3ce5106baf043c7371ff9f", null ],
+    [ "env_mgr", "structApp.html#ad0908bd6e87e96c85b3c5a0bf1547f58", null ],
+    [ "frame_count", "structApp.html#ac928f1ac59fadeeb71128a951d16a230", null ],
+    [ "height", "structApp.html#a5b13d0311b1a7dcb70a5c5774a419c31", null ],
+    [ "imgui", "structApp.html#a43f4e5863c674632e232186c26e67881", null ],
+    [ "input", "structApp.html#ad6d1aeb1371627cc3333ac800b5dfa1e", null ],
+    [ "last_frame_time", "structApp.html#a3d5af2228652f4aae50381d4bc55a643", null ],
+    [ "lum_histogram_buffer", "structApp.html#a77a8a8df9ae179b73369d99d1b151d9a", null ],
+    [ "lum_ssbo", "structApp.html#a3d92b6d7427fe49f91737f6bbcae083d", null ],
+    [ "notifier", "structApp.html#aef1a3d3437fe0e693c8676aa9b7a22f5", null ],
+    [ "overlay", "structApp.html#a1c778e4cff23207babd19f8ba6496a6e", null ],
+    [ "postprocess", "structApp.html#a5dd6825955dbaacbf6978b9c3b764290", null ],
+    [ "profiling", "structApp.html#a6c4ecc29f155f2fe61362f464ae742dd", null ],
+    [ "scene", "structApp.html#a6b11b5559efe024a597073478c6c79fe", null ],
+    [ "title", "structApp.html#ac04a88de3d4221699de21d4587a187e5", null ],
+    [ "u_ao", "structApp.html#a6ca474ac6ab816680d6faa9c3446d229", null ],
+    [ "u_exposure", "structApp.html#acd0c299e250ea192d73ba4aede950f09", null ],
+    [ "u_metallic", "structApp.html#a5f8d7250b5676f0babc40055e8184580", null ],
+    [ "u_roughness", "structApp.html#a05c8b971ea75c65f19686a057df48059", null ],
+    [ "width", "structApp.html#a2c90198ed2171c619f0f3b9eb49d005a", null ],
+    [ "win", "structApp.html#a91bbcaa24bf79aba505fe7d25af81fed", null ]
+];

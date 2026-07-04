@@ -1,0 +1,433 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/perf_timer.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('perf__timer_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">perf_timer.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="perf__timer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#ifndef PERF_TIMER_H</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define PERF_TIMER_H</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;time.h&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structPerfTimer.html">   24</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structPerfTimer.html#a9774d7f04ce62906b42dfd0059a1cf7e">   25</a></span>    <span class="keyword">struct </span>timespec start; </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structPerfTimer.html#a4a24d10e20b4d1752ae7fe51274b1c4c">   26</a></span>    <span class="keyword">struct </span>timespec end;   </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>} <a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a>;</div>
+</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structGPUTimer.html">   35</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c">   36</a></span>    GLuint <a class="code hl_variable" href="structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c">query_start</a>; </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structGPUTimer.html#a6cbbcc29ad48e891111c7ab4984261b6">   37</a></span>    GLuint <a class="code hl_variable" href="structGPUTimer.html#a6cbbcc29ad48e891111c7ab4984261b6">query_end</a>;   </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structGPUTimer.html#a17143da57587c19c5d114c9611a325db">   38</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structGPUTimer.html#a17143da57587c19c5d114c9611a325db">active</a>; </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>} <a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a>;</div>
+</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#include &lt;tracy/TracyC.h&gt;</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="foldopen" id="foldopen00049" data-start="{" data-end="};">
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structHybridTimer.html">   49</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structHybridTimer.html#a59b948e79a518d1c899cddf21fa0fd67">   50</a></span>    <a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a> <a class="code hl_variable" href="structHybridTimer.html#a59b948e79a518d1c899cddf21fa0fd67">cpu</a>; </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structHybridTimer.html#a733adeac52db45de06419e84cf61c93e">   51</a></span>    <a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a> <a class="code hl_variable" href="structHybridTimer.html#a733adeac52db45de06419e84cf61c93e">gpu</a>;  </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    TracyCZoneCtx tracy_ctx; </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    TracyCZoneCtx host_ctx;  </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>} <a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a>;</div>
+</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment">/* CPU Timer API                                                             */</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5">perf_timer_start</a>(<a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a>* timer);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keywordtype">double</span> <a class="code hl_function" href="perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a>(<a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a>* timer);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="keywordtype">double</span> <a class="code hl_function" href="perf__timer_8h.html#a1e8b0fc011f63d1416ab37899a7dd0c3">perf_timer_elapsed_us</a>(<a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a>* timer);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keywordtype">double</span> <a class="code hl_function" href="perf__timer_8h.html#a17f019ead24431cfe5e5646df73af5d6">perf_timer_elapsed_s</a>(<a class="code hl_struct" href="structPerfTimer.html">PerfTimer</a>* timer);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment">/* GPU Timer API                                                             */</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab">gpu_timer_start</a>(<a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a>* timer);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#a93662ba9f40c64c41997e746d07f135e">  103</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#a93662ba9f40c64c41997e746d07f135e">gpu_timer_stop</a>(<a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a>* timer);</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="keywordtype">double</span> <a class="code hl_function" href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a>(<a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a>* timer, <span class="keywordtype">int</span> wait_for_result);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c">gpu_timer_cleanup</a>(<a class="code hl_struct" href="structGPUTimer.html">GPUTimer</a>* timer);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="comment">/* Hybrid Timer API                                                          */</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span><a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a> <a class="code hl_function" href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_hybrid_start</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a>(<a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a>* timer, <span class="keyword">const</span> <span class="keywordtype">char</span>* label);</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="keywordtype">double</span> <a class="code hl_function" href="perf__timer_8h.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_hybrid_stop_debug</a>(<a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a>* timer, <span class="keyword">const</span> <span class="keywordtype">char</span>* label);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="comment">/* Macro Helpers                                                             */</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="comment">/* ========================================================================= */</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span> </div>
+<div class="foldopen" id="foldopen00165" data-start="" data-end="">
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f">  165</a></span><span class="preprocessor">#define PERF_MEASURE_MS(var_name)                                              \</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="preprocessor">    double var_name = 0.0;                                                 \</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="preprocessor">    for (PerfTimer                                                         \</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="preprocessor">             _timer##var_name = {0},                                       \</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="preprocessor">             *_run = (perf_timer_start(&amp;_timer##var_name), (PerfTimer*)1); \</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="preprocessor">         _run;                                                             \</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="preprocessor">         var_name = perf_timer_elapsed_ms(&amp;_timer##var_name), _run = NULL)</span></div>
+</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
+<div class="foldopen" id="foldopen00176" data-start="" data-end="">
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#a4f737311402592e9e4f485894f1fb0f3">  176</a></span><span class="preprocessor">#define PERF_MEASURE_LOG(label)                                            \</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">    for (PerfTimer _timer = {0},                                       \</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="preprocessor">                   *_run = (perf_timer_start(&amp;_timer), (PerfTimer*)1); \</span></div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">         _run; LOG_INFO(&quot;perf&quot;, &quot;%s: %.2f ms&quot;, label,                  \</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="preprocessor">                        perf_timer_elapsed_ms(&amp;_timer)),               \</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="preprocessor">                   _run = NULL)</span></div>
+</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
+<div class="foldopen" id="foldopen00186" data-start="" data-end="">
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#a3fb37d4b6578334d733d017b9b8a0673">  186</a></span><span class="preprocessor">#define GPU_MEASURE_MS(var_name)                                           \</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">    double var_name = 0.0;                                             \</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="preprocessor">    for (GPUTimer _gpu_timer##var_name = {0},                          \</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">                  *_gpu_run = (gpu_timer_start(&amp;_gpu_timer##var_name), \</span></div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="preprocessor">                               (GPUTimer*)1);                          \</span></div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">         _gpu_run;                                                     \</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">         var_name = gpu_timer_elapsed_ms(&amp;_gpu_timer##var_name, 1),    \</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">                  gpu_timer_cleanup(&amp;_gpu_timer##var_name),            \</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">                  _gpu_run = NULL)</span></div>
+</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
+<div class="foldopen" id="foldopen00199" data-start="" data-end="">
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#abd41b4ab68073a6cbd6723d5899061dc">  199</a></span><span class="preprocessor">#define GPU_MEASURE_LOG(label)                                             \</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="preprocessor">    for (GPUTimer                                                      \</span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="preprocessor">             _gpu_timer = {0},                                         \</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="preprocessor">             *_gpu_run = (gpu_timer_start(&amp;_gpu_timer), (GPUTimer*)1); \</span></div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="preprocessor">         _gpu_run; LOG_INFO(&quot;perf.gpu&quot;, &quot;%s: %.2f ms&quot;, label,          \</span></div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="preprocessor">                            gpu_timer_elapsed_ms(&amp;_gpu_timer, 1)),     \</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="preprocessor">             gpu_timer_cleanup(&amp;_gpu_timer), _gpu_run = NULL)</span></div>
+</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
+<div class="foldopen" id="foldopen00211" data-start="" data-end="">
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#a2890bfff296f02d391c9c90a2d8e5005">  211</a></span><span class="preprocessor">#define HYBRID_MEASURE_LOG(label)                                             \</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span><span class="preprocessor">    for (HybridTimer _h = perf_hybrid_start(), *_h_run = (HybridTimer*)1; \</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="preprocessor">         _h_run; perf_hybrid_stop(&amp;_h, label), _h_run = NULL)</span></div>
+</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
+<div class="foldopen" id="foldopen00229" data-start="" data-end="">
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701">  229</a></span><span class="preprocessor">#define HYBRID_MEASURE_DEBUG_MS(var_name, label)                              \</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="preprocessor">    double var_name = 0.0;                                                \</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="preprocessor">    for (HybridTimer _h##var_name = perf_hybrid_start(),                  \</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="preprocessor">                     *_h_run = (HybridTimer*)1;                           \</span></div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span><span class="preprocessor">         _h_run; var_name = perf_hybrid_stop_debug(&amp;_h##var_name, label), \</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span><span class="preprocessor">                     _h_run = NULL)</span></div>
+</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
+<div class="foldopen" id="foldopen00240" data-start="{" data-end="};">
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno"><a class="line" href="structHybridTimerRAII.html">  240</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno"><a class="line" href="structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0">  241</a></span>    <a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a> <a class="code hl_variable" href="structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0">timer</a>;</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno"><a class="line" href="structHybridTimerRAII.html#aa779026977f7085edb6e2c17553bb715">  242</a></span>    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_variable" href="structHybridTimerRAII.html#aa779026977f7085edb6e2c17553bb715">label</a>;</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>} <a class="code hl_struct" href="structHybridTimerRAII.html">HybridTimerRAII</a>;</div>
+</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
+<div class="foldopen" id="foldopen00246" data-start="{" data-end="}">
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">  246</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a>(<a class="code hl_struct" href="structHybridTimerRAII.html">HybridTimerRAII</a>* timer_raii)</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>{</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <a class="code hl_function" href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a>(&amp;timer_raii-&gt;<a class="code hl_variable" href="structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0">timer</a>, timer_raii-&gt;<a class="code hl_variable" href="structHybridTimerRAII.html#aa779026977f7085edb6e2c17553bb715">label</a>);</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>}</div>
+</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="foldopen" id="foldopen00262" data-start="" data-end="">
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">  262</a></span><span class="preprocessor">#define HYBRID_FUNC_TIMER(label)                                \</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="preprocessor">    HybridTimerRAII _h_raii                                 \</span></div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="preprocessor">        __attribute__((cleanup(hybrid_timer_cleanup_raii))) \</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="preprocessor">        __attribute__((unused)) = {perf_hybrid_start(), label}</span></div>
+</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span> </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="preprocessor">#endif </span><span class="comment">/* PERF_TIMER_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a0d2ae17973105f843bf88f6f7be496bc"><div class="ttname"><a href="perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a></div><div class="ttdeci">double perf_timer_elapsed_ms(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in milliseconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:39</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a144c7bd743c4e27d7738669d549e59ae"><div class="ttname"><a href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a></div><div class="ttdeci">void perf_hybrid_stop(HybridTimer *timer, const char *label)</div><div class="ttdoc">Stops both measurements and logs the results to the console.</div><div class="ttdef"><b>Definition</b> perf_timer.c:288</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a17f019ead24431cfe5e5646df73af5d6"><div class="ttname"><a href="perf__timer_8h.html#a17f019ead24431cfe5e5646df73af5d6">perf_timer_elapsed_s</a></div><div class="ttdeci">double perf_timer_elapsed_s(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in seconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:69</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a1e8b0fc011f63d1416ab37899a7dd0c3"><div class="ttname"><a href="perf__timer_8h.html#a1e8b0fc011f63d1416ab37899a7dd0c3">perf_timer_elapsed_us</a></div><div class="ttdeci">double perf_timer_elapsed_us(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in microseconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:54</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a248eca7078cf6b01ea1d0a65f3863774"><div class="ttname"><a href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a></div><div class="ttdeci">double gpu_timer_elapsed_ms(GPUTimer *timer, int wait_for_result)</div><div class="ttdoc">Stops the GPU timer and retrieves the result.</div><div class="ttdef"><b>Definition</b> perf_timer.c:107</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a2fe19c18f13ab8077e83373abd1a00f5"><div class="ttname"><a href="perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5">perf_timer_start</a></div><div class="ttdeci">void perf_timer_start(PerfTimer *timer)</div><div class="ttdoc">Starts the CPU timer.</div><div class="ttdef"><b>Definition</b> perf_timer.c:31</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a59a73414ace7b1c18599fb7ea34b376b"><div class="ttname"><a href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_hybrid_start</a></div><div class="ttdeci">HybridTimer perf_hybrid_start(void)</div><div class="ttdoc">Starts both CPU and GPU measurement simultaneously.</div><div class="ttdef"><b>Definition</b> perf_timer.c:210</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a93662ba9f40c64c41997e746d07f135e"><div class="ttname"><a href="perf__timer_8h.html#a93662ba9f40c64c41997e746d07f135e">gpu_timer_stop</a></div><div class="ttdeci">void gpu_timer_stop(GPUTimer *timer)</div><div class="ttdoc">Explicitly stops the GPU timer (records end timestamp).</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a9b01333acd4f8363793592ca8eebe9ce"><div class="ttname"><a href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a></div><div class="ttdeci">static void hybrid_timer_cleanup_raii(HybridTimerRAII *timer_raii)</div><div class="ttdoc">Internal cleanup function for HybridTimerRAII.</div><div class="ttdef"><b>Definition</b> perf_timer.h:246</div></div>
+<div class="ttc" id="aperf__timer_8h_html_ab590b4c19b3d254d82d940eca2bfdcab"><div class="ttname"><a href="perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab">gpu_timer_start</a></div><div class="ttdeci">void gpu_timer_start(GPUTimer *timer)</div><div class="ttdoc">Initializes and starts a GPU measurement.</div><div class="ttdef"><b>Definition</b> perf_timer.c:88</div></div>
+<div class="ttc" id="aperf__timer_8h_html_ab77f03ea3adbd1c7e38aad5e9c51a48c"><div class="ttname"><a href="perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c">gpu_timer_cleanup</a></div><div class="ttdeci">void gpu_timer_cleanup(GPUTimer *timer)</div><div class="ttdoc">Releases OpenGL resources associated with the GPU timer.</div><div class="ttdef"><b>Definition</b> perf_timer.c:161</div></div>
+<div class="ttc" id="aperf__timer_8h_html_adb9cf6460e741f89a12f75ad91b83bfc"><div class="ttname"><a href="perf__timer_8h.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_hybrid_stop_debug</a></div><div class="ttdeci">double perf_hybrid_stop_debug(HybridTimer *timer, const char *label)</div><div class="ttdoc">Like perf_hybrid_stop, but logs at DEBUG level instead of INFO.</div><div class="ttdef"><b>Definition</b> perf_timer.c:297</div></div>
+<div class="ttc" id="astructGPUTimer_html"><div class="ttname"><a href="structGPUTimer.html">GPUTimer</a></div><div class="ttdoc">GPU performance timer using OpenGL Query Objects.</div><div class="ttdef"><b>Definition</b> perf_timer.h:35</div></div>
+<div class="ttc" id="astructGPUTimer_html_a17143da57587c19c5d114c9611a325db"><div class="ttname"><a href="structGPUTimer.html#a17143da57587c19c5d114c9611a325db">GPUTimer::active</a></div><div class="ttdeci">bool active</div><div class="ttdef"><b>Definition</b> perf_timer.h:38</div></div>
+<div class="ttc" id="astructGPUTimer_html_a6cbbcc29ad48e891111c7ab4984261b6"><div class="ttname"><a href="structGPUTimer.html#a6cbbcc29ad48e891111c7ab4984261b6">GPUTimer::query_end</a></div><div class="ttdeci">GLuint query_end</div><div class="ttdef"><b>Definition</b> perf_timer.h:37</div></div>
+<div class="ttc" id="astructGPUTimer_html_a6e80f0b96ba846024c7c621a0e61649c"><div class="ttname"><a href="structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c">GPUTimer::query_start</a></div><div class="ttdeci">GLuint query_start</div><div class="ttdef"><b>Definition</b> perf_timer.h:36</div></div>
+<div class="ttc" id="astructHybridTimerRAII_html"><div class="ttname"><a href="structHybridTimerRAII.html">HybridTimerRAII</a></div><div class="ttdoc">Internal helper for scope-based timing.</div><div class="ttdef"><b>Definition</b> perf_timer.h:240</div></div>
+<div class="ttc" id="astructHybridTimerRAII_html_aa779026977f7085edb6e2c17553bb715"><div class="ttname"><a href="structHybridTimerRAII.html#aa779026977f7085edb6e2c17553bb715">HybridTimerRAII::label</a></div><div class="ttdeci">const char * label</div><div class="ttdef"><b>Definition</b> perf_timer.h:242</div></div>
+<div class="ttc" id="astructHybridTimerRAII_html_afdefbeaf767a13849baf25145b0498c0"><div class="ttname"><a href="structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0">HybridTimerRAII::timer</a></div><div class="ttdeci">HybridTimer timer</div><div class="ttdef"><b>Definition</b> perf_timer.h:241</div></div>
+<div class="ttc" id="astructHybridTimer_html"><div class="ttname"><a href="structHybridTimer.html">HybridTimer</a></div><div class="ttdoc">Hybrid timer combining CPU and GPU measurements.</div><div class="ttdef"><b>Definition</b> perf_timer.h:49</div></div>
+<div class="ttc" id="astructHybridTimer_html_a59b948e79a518d1c899cddf21fa0fd67"><div class="ttname"><a href="structHybridTimer.html#a59b948e79a518d1c899cddf21fa0fd67">HybridTimer::cpu</a></div><div class="ttdeci">PerfTimer cpu</div><div class="ttdef"><b>Definition</b> perf_timer.h:50</div></div>
+<div class="ttc" id="astructHybridTimer_html_a733adeac52db45de06419e84cf61c93e"><div class="ttname"><a href="structHybridTimer.html#a733adeac52db45de06419e84cf61c93e">HybridTimer::gpu</a></div><div class="ttdeci">GPUTimer gpu</div><div class="ttdef"><b>Definition</b> perf_timer.h:51</div></div>
+<div class="ttc" id="astructPerfTimer_html"><div class="ttname"><a href="structPerfTimer.html">PerfTimer</a></div><div class="ttdoc">CPU high-precision timer.</div><div class="ttdef"><b>Definition</b> perf_timer.h:24</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="perf__timer_8h.html">perf_timer.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

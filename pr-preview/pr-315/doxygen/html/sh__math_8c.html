@@ -1,0 +1,596 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/sh_math.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('sh__math_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">sh_math.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="sh__math_8h_source.html">sh_math.h</a>&quot;</code><br />
+<code>#include &lt;cglm/types.h&gt;</code><br />
+<code>#include &lt;cglm/vec3.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for sh_math.c:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sh__math_8c__incl.svg" width="456" height="183"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ae71449b1cc6e6250b91f539153a7a0d3" id="r_ae71449b1cc6e6250b91f539153a7a0d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#ae71449b1cc6e6250b91f539153a7a0d3">M_PI</a>&#160;&#160;&#160;3.14159265358979323846</td></tr>
+<tr class="separator:ae71449b1cc6e6250b91f539153a7a0d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92b85f2ca8c4c336eda8e8784d043afc" id="r_a92b85f2ca8c4c336eda8e8784d043afc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a92b85f2ca8c4c336eda8e8784d043afc">Y00</a>&#160;&#160;&#160;0.28209479177387814347f /* 0.5 * sqrt(1/pi) */</td></tr>
+<tr class="separator:a92b85f2ca8c4c336eda8e8784d043afc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c21d61b49bf97a6fe09015547083751" id="r_a9c21d61b49bf97a6fe09015547083751"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a9c21d61b49bf97a6fe09015547083751">Y1n1</a>&#160;&#160;&#160;0.48860251190291992159f /* -sqrt(3/4pi) * y */</td></tr>
+<tr class="separator:a9c21d61b49bf97a6fe09015547083751"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a9da4256dd3690ceb03fbab9f7bd03c" id="r_a8a9da4256dd3690ceb03fbab9f7bd03c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a8a9da4256dd3690ceb03fbab9f7bd03c">Y10</a>&#160;&#160;&#160;0.48860251190291992159f  /* sqrt(3/4pi) * z */</td></tr>
+<tr class="separator:a8a9da4256dd3690ceb03fbab9f7bd03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada6f3733b746af0bbd0380b639209f74" id="r_ada6f3733b746af0bbd0380b639209f74"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#ada6f3733b746af0bbd0380b639209f74">Y11</a>&#160;&#160;&#160;0.48860251190291992159f  /* -sqrt(3/4pi) * x */</td></tr>
+<tr class="separator:ada6f3733b746af0bbd0380b639209f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28b75b34d2c73ba642ddcb4e623963b1" id="r_a28b75b34d2c73ba642ddcb4e623963b1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a28b75b34d2c73ba642ddcb4e623963b1">Y2n2</a>&#160;&#160;&#160;1.09254843059207907054f /* 0.5 * sqrt(15/pi) * xy */</td></tr>
+<tr class="separator:a28b75b34d2c73ba642ddcb4e623963b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad537c14b313a8eab0768c6c3a5d6ffe9" id="r_ad537c14b313a8eab0768c6c3a5d6ffe9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#ad537c14b313a8eab0768c6c3a5d6ffe9">Y2n1</a>&#160;&#160;&#160;1.09254843059207907054f /* -0.5 * sqrt(15/pi) * yz */</td></tr>
+<tr class="separator:ad537c14b313a8eab0768c6c3a5d6ffe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3885363a9d4eaab45a068a19227f894" id="r_af3885363a9d4eaab45a068a19227f894"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#af3885363a9d4eaab45a068a19227f894">Y20</a>&#160;&#160;&#160;0.31539156525251999825f  /* 0.25 * sqrt(5/pi) * (3z^2 - 1) */</td></tr>
+<tr class="separator:af3885363a9d4eaab45a068a19227f894"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9624fdfc28e11cd9503f2fe43a4ba4b0" id="r_a9624fdfc28e11cd9503f2fe43a4ba4b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a9624fdfc28e11cd9503f2fe43a4ba4b0">Y21</a>&#160;&#160;&#160;1.09254843059207907054f  /* -0.5 * sqrt(15/pi) * xz */</td></tr>
+<tr class="separator:a9624fdfc28e11cd9503f2fe43a4ba4b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af857bb5a9376e61c6bb6becb44c419aa" id="r_af857bb5a9376e61c6bb6becb44c419aa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#af857bb5a9376e61c6bb6becb44c419aa">Y22</a>&#160;&#160;&#160;0.54627421529603953527f  /* 0.25 * sqrt(15/pi) * (x^2 - y^2) */</td></tr>
+<tr class="separator:af857bb5a9376e61c6bb6becb44c419aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d158f1e3af2ab523eb8423db3e5bd6e" id="r_a0d158f1e3af2ab523eb8423db3e5bd6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a0d158f1e3af2ab523eb8423db3e5bd6e">A0</a>&#160;&#160;&#160;3.14159265359f /* <a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a> */</td></tr>
+<tr class="separator:a0d158f1e3af2ab523eb8423db3e5bd6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd92b430059d886880c53f13ae038e3f" id="r_acd92b430059d886880c53f13ae038e3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#acd92b430059d886880c53f13ae038e3f">A1</a>&#160;&#160;&#160;2.09439510239f /* 2<a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a>/3 */</td></tr>
+<tr class="separator:acd92b430059d886880c53f13ae038e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2946bc30423c2a996eeafa49e995c30e" id="r_a2946bc30423c2a996eeafa49e995c30e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#a2946bc30423c2a996eeafa49e995c30e">A2</a>&#160;&#160;&#160;0.78539816339f /* <a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a>/4 */</td></tr>
+<tr class="separator:a2946bc30423c2a996eeafa49e995c30e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ac664d1a7cbd238963310d4b145b63e10" id="r_ac664d1a7cbd238963310d4b145b63e10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#ac664d1a7cbd238963310d4b145b63e10">sh_zero</a> (<a class="el" href="structSH9.html">SH9</a> *sh_ptr)</td></tr>
+<tr class="memdesc:ac664d1a7cbd238963310d4b145b63e10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize SH coefficients to zero.  <br /></td></tr>
+<tr class="separator:ac664d1a7cbd238963310d4b145b63e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab50dd1d1eb1234eb0daebf22e4e063c4" id="r_ab50dd1d1eb1234eb0daebf22e4e063c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#ab50dd1d1eb1234eb0daebf22e4e063c4">sh_project_directional</a> (const vec3 dir, const vec3 color, <a class="el" href="structSH9.html">SH9</a> *out_sh)</td></tr>
+<tr class="memdesc:ab50dd1d1eb1234eb0daebf22e4e063c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Projects a directional light into SH coefficients.  <br /></td></tr>
+<tr class="separator:ab50dd1d1eb1234eb0daebf22e4e063c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5dfe8e54e41814ae3a17368661d493b" id="r_aa5dfe8e54e41814ae3a17368661d493b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sh__math_8c.html#aa5dfe8e54e41814ae3a17368661d493b">sh_eval_irradiance</a> (const vec3 normal, const <a class="el" href="structSH9.html">SH9</a> *sh_ptr, vec3 out_color)</td></tr>
+<tr class="memdesc:aa5dfe8e54e41814ae3a17368661d493b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the irradiance from SH coefficients in a given direction.  <br /></td></tr>
+<tr class="separator:aa5dfe8e54e41814ae3a17368661d493b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a0d158f1e3af2ab523eb8423db3e5bd6e" name="a0d158f1e3af2ab523eb8423db3e5bd6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d158f1e3af2ab523eb8423db3e5bd6e">&#9670;&#160;</a></span>A0</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define A0&#160;&#160;&#160;3.14159265359f /* <a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a> */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd92b430059d886880c53f13ae038e3f" name="acd92b430059d886880c53f13ae038e3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd92b430059d886880c53f13ae038e3f">&#9670;&#160;</a></span>A1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define A1&#160;&#160;&#160;2.09439510239f /* 2<a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a>/3 */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2946bc30423c2a996eeafa49e995c30e" name="a2946bc30423c2a996eeafa49e995c30e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2946bc30423c2a996eeafa49e995c30e">&#9670;&#160;</a></span>A2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define A2&#160;&#160;&#160;0.78539816339f /* <a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a>/4 */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae71449b1cc6e6250b91f539153a7a0d3" name="ae71449b1cc6e6250b91f539153a7a0d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae71449b1cc6e6250b91f539153a7a0d3">&#9670;&#160;</a></span>M_PI</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define M_PI&#160;&#160;&#160;3.14159265358979323846</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a92b85f2ca8c4c336eda8e8784d043afc" name="a92b85f2ca8c4c336eda8e8784d043afc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92b85f2ca8c4c336eda8e8784d043afc">&#9670;&#160;</a></span>Y00</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y00&#160;&#160;&#160;0.28209479177387814347f /* 0.5 * sqrt(1/pi) */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a9da4256dd3690ceb03fbab9f7bd03c" name="a8a9da4256dd3690ceb03fbab9f7bd03c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a9da4256dd3690ceb03fbab9f7bd03c">&#9670;&#160;</a></span>Y10</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y10&#160;&#160;&#160;0.48860251190291992159f  /* sqrt(3/4pi) * z */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada6f3733b746af0bbd0380b639209f74" name="ada6f3733b746af0bbd0380b639209f74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada6f3733b746af0bbd0380b639209f74">&#9670;&#160;</a></span>Y11</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y11&#160;&#160;&#160;0.48860251190291992159f  /* -sqrt(3/4pi) * x */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9c21d61b49bf97a6fe09015547083751" name="a9c21d61b49bf97a6fe09015547083751"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c21d61b49bf97a6fe09015547083751">&#9670;&#160;</a></span>Y1n1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y1n1&#160;&#160;&#160;0.48860251190291992159f /* -sqrt(3/4pi) * y */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af3885363a9d4eaab45a068a19227f894" name="af3885363a9d4eaab45a068a19227f894"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3885363a9d4eaab45a068a19227f894">&#9670;&#160;</a></span>Y20</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y20&#160;&#160;&#160;0.31539156525251999825f  /* 0.25 * sqrt(5/pi) * (3z^2 - 1) */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9624fdfc28e11cd9503f2fe43a4ba4b0" name="a9624fdfc28e11cd9503f2fe43a4ba4b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9624fdfc28e11cd9503f2fe43a4ba4b0">&#9670;&#160;</a></span>Y21</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y21&#160;&#160;&#160;1.09254843059207907054f  /* -0.5 * sqrt(15/pi) * xz */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af857bb5a9376e61c6bb6becb44c419aa" name="af857bb5a9376e61c6bb6becb44c419aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af857bb5a9376e61c6bb6becb44c419aa">&#9670;&#160;</a></span>Y22</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y22&#160;&#160;&#160;0.54627421529603953527f  /* 0.25 * sqrt(15/pi) * (x^2 - y^2) */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad537c14b313a8eab0768c6c3a5d6ffe9" name="ad537c14b313a8eab0768c6c3a5d6ffe9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad537c14b313a8eab0768c6c3a5d6ffe9">&#9670;&#160;</a></span>Y2n1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y2n1&#160;&#160;&#160;1.09254843059207907054f /* -0.5 * sqrt(15/pi) * yz */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a28b75b34d2c73ba642ddcb4e623963b1" name="a28b75b34d2c73ba642ddcb4e623963b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28b75b34d2c73ba642ddcb4e623963b1">&#9670;&#160;</a></span>Y2n2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Y2n2&#160;&#160;&#160;1.09254843059207907054f /* 0.5 * sqrt(15/pi) * xy */</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aa5dfe8e54e41814ae3a17368661d493b" name="aa5dfe8e54e41814ae3a17368661d493b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5dfe8e54e41814ae3a17368661d493b">&#9670;&#160;</a></span>sh_eval_irradiance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sh_eval_irradiance </td>
+          <td>(</td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>normal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSH9.html">SH9</a> *&#160;</td>
+          <td class="paramname"><em>sh_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>out_color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Evaluates the irradiance from SH coefficients in a given direction. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">normal</td><td>Normalized surface normal. </td></tr>
+    <tr><td class="paramname">sh_ptr</td><td>Pointer to the SH structure. </td></tr>
+    <tr><td class="paramname">out_color</td><td>Output color (vec3). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab50dd1d1eb1234eb0daebf22e4e063c4" name="ab50dd1d1eb1234eb0daebf22e4e063c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab50dd1d1eb1234eb0daebf22e4e063c4">&#9670;&#160;</a></span>sh_project_directional()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sh_project_directional </td>
+          <td>(</td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structSH9.html">SH9</a> *&#160;</td>
+          <td class="paramname"><em>out_sh</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Projects a directional light into SH coefficients. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dir</td><td>Normalized direction vector pointing TOWARDS the light source. </td></tr>
+    <tr><td class="paramname">color</td><td>Linear RGB color/intensity of the light. </td></tr>
+    <tr><td class="paramname">out_sh</td><td>Pointer to the SH structure to accumulate into. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac664d1a7cbd238963310d4b145b63e10" name="ac664d1a7cbd238963310d4b145b63e10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac664d1a7cbd238963310d4b145b63e10">&#9670;&#160;</a></span>sh_zero()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sh_zero </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSH9.html">SH9</a> *&#160;</td>
+          <td class="paramname"><em>sh_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize SH coefficients to zero. </p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="sh__math_8c.html">sh_math.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
