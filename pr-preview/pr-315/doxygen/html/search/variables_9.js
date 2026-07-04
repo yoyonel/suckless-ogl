@@ -16,7 +16,7 @@ var searchData=
   ['icosphere_5fvao_13',['icosphere_vao',['../structSceneGPUResources.html#aa25eaac8c8a03e6f4354e3f1a81569b7',1,'SceneGPUResources']]],
   ['icosphere_5fvbo_14',['icosphere_vbo',['../structSceneGPUResources.html#a02c10eeafea9b8dfe56b7a79820d41a9',1,'SceneGPUResources']]],
   ['id_15',['id',['../structGlTexture.html#a398cf964f4aed93466a0581a9e2a1be2',1,'GlTexture']]],
-  ['imgui_16',['imgui',['../structApp.html#a43f4e5863c674632e232186c26e67881',1,'App']]],
+  ['imgui_16',['imgui',['../structApp.html#a5f79db5f8248f55bd63bb5898b1bdcfb',1,'App']]],
   ['impacts_17',['impacts',['../structNBodySim.html#ad4fd2ae205f64a894417f5a7d03bdb00',1,'NBodySim']]],
   ['inc_18',['inc',['../structPcg32.html#aa97421a198956761a9390bc4cffc70fa',1,'Pcg32']]],
   ['indent_5fstep_19',['INDENT_STEP',['../gpu__profiler__ui__layout_8h.html#af49642dff95fa92138797fa653177e5c',1,'gpu_profiler_ui_layout.h']]],

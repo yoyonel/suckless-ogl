@@ -1,0 +1,5390 @@
+<!DOCTYPE html><html lang="fr" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A lean, high-performance C11 PBR Renderer">
+      
+      
+        <meta name="author" content="Latty">
+      
+      
+      
+        <link rel="prev" href="../imgui_integration/">
+      
+      
+        <link rel="next" href="../gpu-rendering-synchronization/">
+      
+      
+        
+          <link rel="alternate" href="../../imgui_gap_analysis/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="fr">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>ImGui Gap Analysis (odin vs ogl) - Suckless OGL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#analyse-des-ecarts-imgui-suckless-odin-vs-suckless-ogl" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../" title="Suckless OGL" class="md-header__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Suckless OGL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ImGui Gap Analysis (odin vs ogl)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../imgui_gap_analysis/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/yoyonel/suckless-ogl" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../" title="Suckless OGL" class="md-nav__button md-logo" aria-label="Suckless OGL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Suckless OGL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/yoyonel/suckless-ogl" title="Aller au dépôt" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    yoyonel/suckless-ogl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application_lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anatomy of a Frame: Full Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagram Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../project_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ibl_architecture_ideas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBL Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_ubo_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process UBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../refactoring_analysis_2026_02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Analysis (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache_locality_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Locality vs Decoupling (May 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_analysis_report_2026_07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Analysis (July 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../goto_cleanup_pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    goto cleanup Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../portability_pal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Abstraction (PAL)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendu
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rendu
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../global_illumination/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Global Illumination
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neon_trails/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neon Trails
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sphere_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PBR Sphere Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../skybox_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skybox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../progressive_ibl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Progressive IBL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cubemap_seam_resolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FXAA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FXAA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specular_aa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specular Anti-Aliasing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banding &amp; Dithering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exposure_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exposure Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_debug_histogram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug Histogram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../photographic_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Photographic Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../env_transitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Transitions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (Feb 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postprocess_optimizations_2026-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (March 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_opt_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto-Exposure Opt. Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../motion_blur_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motion Blur Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bloom_debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cinematic_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cinematic Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_bokeh_effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Bokeh Research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sony_a7siii_profile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sony A7S III Profile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contrôles &amp; Entrées
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contrôles &amp; Entrées
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mouse_camera_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mouse Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gamepad Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../keyboard_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Help System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_visual_parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Visual Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_batching_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Batching Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../imgui_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImGui Diagnostic Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImGui Gap Analysis (odin vs ogl)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ImGui Gap Analysis (odin vs ogl)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#legende" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Légende
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-fonctionnalites-globales-transversales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Fonctionnalités globales / transversales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Fonctionnalités globales / transversales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-tooltips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Tooltips (?)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-boutons-reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Boutons Reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-ab-split-par-effet-post-fx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 A/B Split par effet Post-FX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-imgui-docking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 ImGui Docking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-onglet-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Onglet Camera
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-onglet-scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Onglet Scene
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-onglet-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Onglet Rendering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-onglet-post-fx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Onglet Post-FX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Onglet Post-FX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-controles-globaux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Contrôles globaux
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-pattern-par-effet-absent-en-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Pattern par effet — absent en C++
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-matrice-par-effet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Matrice par effet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-onglet-mblur-dedie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Onglet MBlur (Dédié)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-onglet-profiling-ecarts-critiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Onglet Profiling — Écarts critiques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Onglet Profiling — Écarts critiques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-widget-performance-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Widget Performance Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-tableau-gpu-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Tableau GPU Timer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-onglet-shaders-ecarts-critiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Onglet Shaders — Écarts critiques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Onglet Shaders — Écarts critiques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-enable-disable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Enable / Disable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-affichage-des-effets-actifs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Affichage des effets actifs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-statut-du-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Statut du cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-tableau-des-variantes-cachees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Tableau des variantes cachées
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-onglet-compute-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Onglet Compute Tuning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-onglet-ibl-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Onglet IBL Debug
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-configuration-ui-application-et-persistance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Configuration UI / Application et persistance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-feuille-de-route-de-portage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Feuille de route de portage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-scorecard-recapitulatif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Scorecard récapitulatif
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimisation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optimisation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu-rendering-synchronization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Synchronization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vertex_attrib_binding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vertex Attrib Binding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shader Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../texture_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texture Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_pbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async PBO Upload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nvidia_optimizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVIDIA Optimizations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shader-cross-gpu-compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-GPU Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_and_notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Mode &amp; Notifs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stencil_masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stencil Buffer Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fullscreen_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fullscreen Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simd_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIMD Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../billboard_gl_call_reduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Billboard GL Call Reduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mesa F32-to-F16 Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_draw_indirect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Draw Indirect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../justfile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Justfile Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../packaging_windows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Windows / Steam / Proton Packaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steam_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iwyu_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IWYU Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ide_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IDE &amp; Env Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_tracy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracy Profiling (v0.13.1)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu_profiling_flamegraph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CPU Profiling (FlameGraph)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_utilization_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Utilization Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gpu_usage_monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Usage Monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../effect_benchmark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Effect Benchmark
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_benchmarking_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Benchmarking Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renderdoc_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RenderDoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visual_testing_artifacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opengl_cleanup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenGL Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../raii_cleanup_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAII Cleanup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory_management_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../standalone_testing_mocking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standalone Mocking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gdb_debugging_tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GDB Debugging Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs_staging_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Staging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Docs System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doxygen_customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Doxygen Customization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes Techniques
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notes Techniques
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nbody_precision_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Precision Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../render_context_stack_allocation_2026_07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Render Context Stack Allocation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compilation_assembly_analysis_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compilation &amp; Assembly Analysis Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../doxygen/html/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Référence API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rapports
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rapports
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coverage/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Coverage (LCOV)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coverage/visual_tests/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Regression Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/imgui_gap_analysis.fr.md" title="Editer cette page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="analyse-des-ecarts-imgui-suckless-odin-vs-suckless-ogl">Analyse des écarts ImGui : suckless-odin vs suckless-ogl<a class="headerlink" href="#analyse-des-ecarts-imgui-suckless-odin-vs-suckless-ogl" title="Permanent link">¶</a></h1>
+<blockquote>
+<p><strong>Sources analysées</strong>
+- Référence Odin : <code>src/gui/gui.odin</code> (1317 l.), <code>gui_compute.odin</code> (383 l.), <code>gui_postfx.odin</code> (1388 l.)
+- Portage C++ : <code>src/gui.cpp</code> (1323 l.), <code>src/gui.h</code>
+- Captures d'écran de référence du runtime suckless-odin</p>
+</blockquote>
+<h2 id="legende">Légende<a class="headerlink" href="#legende" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symbole</th>
+<th>Signification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅</td>
+<td>Implémenté et fonctionnel</td>
+</tr>
+<tr>
+<td>⚠️</td>
+<td>Partiellement implémenté ou placeholder</td>
+</tr>
+<tr>
+<td>❌</td>
+<td>Absent de suckless-ogl</td>
+</tr>
+<tr>
+<td>🔴</td>
+<td>Écart critique (fonctionnalité manquante ou simulée)</td>
+</tr>
+<tr>
+<td>🟠</td>
+<td>Écart important (feature significative absente)</td>
+</tr>
+<tr>
+<td>🟡</td>
+<td>Écart qualité (ergonomie, discoverabilité)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-fonctionnalites-globales-transversales">1. Fonctionnalités globales / transversales<a class="headerlink" href="#1-fonctionnalites-globales-transversales" title="Permanent link">¶</a></h2>
+<h3 id="11-tooltips">1.1 Tooltips <code>(?)</code><a class="headerlink" href="#11-tooltips" title="Permanent link">¶</a></h3>
+<p>Chaque slider, checkbox et combo en Odin dispose d'un label <code>(?)</code> affichant sur survol
+un <code>SetTooltip</code> décrivant : l'effet du paramètre, ses unités, et des conseils pratiques.</p>
+<p><strong>Statut suckless-ogl</strong> : environ 5 contrôles sur 80 ont un tooltip. Le reste n'a que des labels nus.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Camera — 8 sliders tous annotés <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Scene — tooltips</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌ (2/10)</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Rendering — tooltips</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Post-FX — tooltip par effet</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Onglet MBlur — tous les paramètres annotés</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Compute Tuning — SPBRDF, SPMap, IRMap</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Compute Tuning — paramètres de slicing</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-boutons-reset">1.2 Boutons Reset<a class="headerlink" href="#12-boutons-reset" title="Permanent link">¶</a></h3>
+<p>Odin fournit des boutons <code>Reset</code> ou <code>Reset to Defaults</code> par paramètre/effet.
+Dans suckless-ogl, <strong>aucun mécanisme de reset n'existe</strong> dans l'interface.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Post-FX : <code>Reset</code> par effet dans Settings</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Compute Tuning : <code>Reset</code> par slider</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Onglet MBlur : <code>Reset to Defaults</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Camera : <code>Reset Camera</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-ab-split-par-effet-post-fx">1.3 A/B Split par effet Post-FX<a class="headerlink" href="#13-ab-split-par-effet-post-fx" title="Permanent link">¶</a></h3>
+<p>Chaque effet en Odin expose : une <strong>checkbox A/B Split</strong>, un <strong>slider de position</strong> (<code>← %.0f%% →</code>)
+et un <strong>badge coloré <code>[S]</code></strong> (palette Glasbey) pour la lisibilité multi-split.
+suckless-ogl n'a <strong>aucun A/B split par effet</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A/B split par effet + slider position</td>
+<td style="text-align: center;">✅ tous effets</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Indicateur coloré <code>[S]</code> multi-split</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>A/B split global Specular AA</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+</tbody>
+</table>
+<h3 id="14-imgui-docking">1.4 ImGui Docking<a class="headerlink" href="#14-imgui-docking" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ImGuiConfigFlags_DockingEnable</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>Fenêtre détachable/repositionnable</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-onglet-camera">2. Onglet Camera<a class="headerlink" href="#2-onglet-camera" title="Permanent link">¶</a></h2>
+<p><strong>Paramètres : parité. Manquant : tous les tooltips côté C++.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th style="text-align: center;">Tooltip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Position (affichage)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>Yaw / Pitch (affichage)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Acceleration</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Friction</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Sensitivity</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Rotation Smoothing</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Mouse Smoothing</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>FOV</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Head Bobbing toggle</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Bobbing Frequency</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Bobbing Amplitude</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">Odin ✅ C++ ❌</td>
+</tr>
+<tr>
+<td>Bouton Reset Camera</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-onglet-scene">3. Onglet Scene<a class="headerlink" href="#3-onglet-scene" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Toggle Skybox</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Skybox Blur (LOD)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Subdivisions (icosphère)</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td>Exclusivité C++</td>
+</tr>
+<tr>
+<td><strong>Skybox Mode</strong> (Equirect / Cubemap)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Blur Source</strong> (Mipmap / IBL Prefilter)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Cubemap Mipmap Mode</strong> (seamless)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Show Blur Diff + Diff Gain</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>PBR Debug Mode combo (10 modes, live)</td>
+<td style="text-align: center;">❌ placeholder</td>
+<td style="text-align: center;">✅</td>
+<td>C++ plus complet</td>
+</tr>
+<tr>
+<td><strong>GI Mode</strong> live (OFF / Volume / SSBO)</td>
+<td style="text-align: center;">❌ placeholder</td>
+<td style="text-align: center;">✅</td>
+<td>Exclusivité C++</td>
+</tr>
+<tr>
+<td><strong>Show Probe Grid</strong></td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td>Exclusivité C++</td>
+</tr>
+<tr>
+<td>Sort Mode</td>
+<td style="text-align: center;">✅ 3 modes</td>
+<td style="text-align: center;">✅ 3+GPU Bitonic</td>
+<td></td>
+</tr>
+<tr>
+<td>Wireframe</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-onglet-rendering">4. Onglet Rendering<a class="headerlink" href="#4-onglet-rendering" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Edge AA checkbox + vue debug heatmap</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Tooltip <code>(?)</code> sur Edge AA</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>Info MSAA (lecture seule)</td>
+<td style="text-align: center;">⚠️</td>
+<td style="text-align: center;">✅ texte</td>
+<td></td>
+</tr>
+<tr>
+<td>Specular AA toggle</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Specular AA Mode (Screen-Space / Curvature)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Tooltip <code>(?)</code> sur Specular AA</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><strong>Vues debug Specular AA</strong> (variance / diff)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>A/B Split — Specular AA</strong> + slider position</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Section Debug Views (Fog, Histogram, Stencil)</td>
+<td style="text-align: center;">⚠️ placeholder</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Section Profiling (GPU Timeline, Metrics, Perf)</td>
+<td style="text-align: center;">⚠️ placeholder</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Section Scene Debug (N-Body, Probes, sliders)</td>
+<td style="text-align: center;">⚠️ placeholder</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Section Environment (HDR Index, Hot-Reload)</td>
+<td style="text-align: center;">⚠️ placeholder</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-onglet-post-fx">5. Onglet Post-FX<a class="headerlink" href="#5-onglet-post-fx" title="Permanent link">¶</a></h2>
+<h3 id="51-controles-globaux">5.1 Contrôles globaux<a class="headerlink" href="#51-controles-globaux" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master toggle Enable Post-FX</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Combo Preset (Default, Cinematic…)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ (13 presets)</td>
+<td></td>
+</tr>
+<tr>
+<td>Section Save / Load dépliable</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️ stub</td>
+<td>🟠</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-pattern-par-effet-absent-en-c">5.2 Pattern par effet — absent en C++<a class="headerlink" href="#52-pattern-par-effet-absent-en-c" title="Permanent link">¶</a></h3>
+<p>Chaque effet en Odin suit un pattern <strong>entièrement absent en C++</strong> :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>[✓] Nom effet  [S]           ← badge coloré A/B split actif
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    ▶ Settings
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        [Reset]              ← reset aux valeurs par défaut
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        Slider (?)           ← tooltip sur chaque paramètre
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        [✓] A/B Split        ← split-screen par effet
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            ← 50% →         ← slider de position du split
+</span></code></pre></div>
+<h3 id="53-matrice-par-effet">5.3 Matrice par effet<a class="headerlink" href="#53-matrice-par-effet" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Effet</th>
+<th style="text-align: center;">Reset Odin</th>
+<th style="text-align: center;">Reset C++</th>
+<th style="text-align: center;">A/B Odin</th>
+<th style="text-align: center;">A/B C++</th>
+<th style="text-align: center;">Tooltips Odin</th>
+<th style="text-align: center;">Tooltips C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exposure</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Tonemapping</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Vignette</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Film Grain</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Chrom. Aberration</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Color Grading</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Bloom</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>FXAA</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Auto-Exposure</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Depth of Field</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Motion Blur</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Banding</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Fog</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>LUT3D</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-onglet-mblur-dedie">6. Onglet MBlur (Dédié)<a class="headerlink" href="#6-onglet-mblur-dedie" title="Permanent link">¶</a></h2>
+<p>Odin dispose d'un <strong>onglet dédié</strong> avec des contrôles avancés absents de suckless-ogl.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin (onglet MBlur)</th>
+<th style="text-align: center;">C++ (dans Post-FX)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Enable Motion Blur</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Intensity + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌ tooltip</td>
+</tr>
+<tr>
+<td>Max Velocity + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌ tooltip</td>
+</tr>
+<tr>
+<td>Samples + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌ tooltip</td>
+</tr>
+<tr>
+<td><strong>Reset to Defaults</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td><strong>Injection de vélocité synthétique</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>— Enable Injection</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>— Direction (0–360°)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>— Magnitude (fraction UV)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>— Presets directionnels: Right/Up/Left/Down</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>— Presets de vitesse: Slow/Medium/Fast/Max</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>— Vecteur UV live</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Debug Mode combo (Velocity / Tile-Max / Neighbor-Max / Heatmap)</td>
+<td style="text-align: center;">✅ 4 modes</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Diagnostic état (bits flags)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="7-onglet-profiling-ecarts-critiques">7. Onglet Profiling — Écarts critiques<a class="headerlink" href="#7-onglet-profiling-ecarts-critiques" title="Permanent link">¶</a></h2>
+<h3 id="71-widget-performance-mode">7.1 Widget Performance Mode<a class="headerlink" href="#71-widget-performance-mode" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Section Performance Mode</strong> en tête d'onglet</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Tooltip <code>(?)</code> (GameMode / SCHED_FIFO / nice)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Checkbox Enable/Disable</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Label backend <code>[GameMode]</code> / <code>[SCHED_FIFO]</code> / <code>[Nice]</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Notification restart Mesa</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-tableau-gpu-timer">7.2 Tableau GPU Timer<a class="headerlink" href="#72-tableau-gpu-timer" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Toggle Enable Profiling</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Colonnes : Pass, <strong>Avg</strong>, <strong>Min</strong>, <strong>Max</strong>, %</td>
+<td style="text-align: center;">✅ 5 colonnes</td>
+<td style="text-align: center;">⚠️ 3 (Stage, ms, %)</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Colonnes Min / Max</strong> (plage statistique, grisée)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Ligne Total</strong> (Avg/Min/Max agrégés)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Résumé budget frame</strong> <code>PostFX: X.X% (Y.YY ms)</code> vert/jaune/rouge</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Statistiques glissantes vs échantillon instantané</p>
+<p>Le tableau Odin expose des statistiques <strong>min/max/avg</strong> sur fenêtre glissante —
+indispensable pour détecter les pics GPU. Le C++ n'affiche que l'échantillon
+instantané du dernier frame.</p>
+</div>
+<hr>
+<h2 id="8-onglet-shaders-ecarts-critiques">8. Onglet Shaders — Écarts critiques<a class="headerlink" href="#8-onglet-shaders-ecarts-critiques" title="Permanent link">¶</a></h2>
+<h3 id="81-enable-disable">8.1 Enable / Disable<a class="headerlink" href="#81-enable-disable" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Checkbox Enable Variants</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Texte "Disabled — using uber-shader"</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-affichage-des-effets-actifs">8.2 Affichage des effets actifs<a class="headerlink" href="#82-affichage-des-effets-actifs" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Active Effects</strong> — liste à puces avec noms lisibles</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️ flags hex uniquement</td>
+<td>🟠</td>
+</tr>
+</tbody>
+</table>
+<h3 id="83-statut-du-cache">8.3 Statut du cache<a class="headerlink" href="#83-statut-du-cache" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Status: CACHED (program N)</strong> / <strong>MISS</strong> coloré</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️ compteur statique</td>
+<td>🟠</td>
+</tr>
+</tbody>
+</table>
+<h3 id="84-actions">8.4 Actions<a class="headerlink" href="#84-actions" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Compile Current</strong> (appelle <code>pipeline_compile_variant</code>)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Bouton désactivé quand déjà en cache</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>Hint "(already cached)" / "(cache full)"</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><strong>Clear All</strong> (détruit le cache)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+</tbody>
+</table>
+<h3 id="85-tableau-des-variantes-cachees">8.5 Tableau des variantes cachées<a class="headerlink" href="#85-tableau-des-variantes-cachees" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cached Variants: N / MAX</code> live</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️ statique "0 ou 1"</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Tableau : #, Program ID, Effects (noms lisibles)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Variante active mise en valeur en vert</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟡</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9-onglet-compute-tuning">9. Onglet Compute Tuning<a class="headerlink" href="#9-onglet-compute-tuning" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SPBRDF Sample Count + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ sans tooltip</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>SPMap Sample Count + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ sans tooltip</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>IRMap Sample Delta + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ sans tooltip</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><strong>Reset par slider</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Mip 0/½ Slices + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ sans tooltip</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>Irradiance Slices + <code>(?)</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ sans tooltip</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><strong>Mip Grouping Start Mip + <code>(?)</code></strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Seamless Progressive Mip Threshold + <code>(?)</code></strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td><strong>Apply &amp; Recalculate</strong> (callback réel câblé)</td>
+<td style="text-align: center;">✅ réel</td>
+<td style="text-align: center;">⚠️ mock</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td><strong>Combo profil actif</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td><strong>Save Draft to profile</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td><strong>Delete Profile</strong> (modal de confirmation)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td><strong>Create new profile</strong> (saisie nom + Create)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td><strong>Persistance JSON</strong> (lecture/écriture fichier config)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Validation avant apply/save</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Messages status/erreur avec timer d'auto-dismiss</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️ status seulement</td>
+<td>🟡</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="10-onglet-ibl-debug">10. Onglet IBL Debug<a class="headerlink" href="#10-onglet-ibl-debug" title="Permanent link">¶</a></h2>
+<p>Parité quasi totale sur cet onglet.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slider Preview Size</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Preview Exposure (EV) + reset clic droit</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Env Map : dépliable + inspecteur pixel</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Irradiance Map : dépliable + inspecteur</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Prefilter Map + slider Mip Roughness</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>BRDF LUT : dépliable + inspecteur</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Section GPU Memory Estimate</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Bouton "Go To" depuis la recherche</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="11-configuration-ui-application-et-persistance">11. Configuration UI / Application et persistance<a class="headerlink" href="#11-configuration-ui-application-et-persistance" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">Odin</th>
+<th style="text-align: center;">C++</th>
+<th>Écart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Profils Compute Tuning (JSON I/O)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>🔴</td>
+</tr>
+<tr>
+<td>Save / Load preset Post-FX (JSON)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">⚠️ apply only</td>
+<td>🟠</td>
+</tr>
+<tr>
+<td>Persistance état UI entre sessions</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Restauration onglet après recherche (<code>restore_tab</code>)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="12-feuille-de-route-de-portage">12. Feuille de route de portage<a class="headerlink" href="#12-feuille-de-route-de-portage" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Priorité</th>
+<th>Feature</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔴 1</td>
+<td>Compute Tuning — Apply callback réel</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🔴 2</td>
+<td>Compute Tuning — CRUD + JSON</td>
+<td>Moyen</td>
+</tr>
+<tr>
+<td>🔴 3</td>
+<td>Shaders — Compile Current + Clear All</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🔴 4</td>
+<td>Shaders — Tableau variantes live</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🔴 5</td>
+<td>Shaders — Liste effets actifs lisible</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟠 6</td>
+<td>Post-FX — boutons Reset par effet</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟠 7</td>
+<td>Post-FX — A/B Split par effet + slider</td>
+<td>Moyen</td>
+</tr>
+<tr>
+<td>🟠 8</td>
+<td>Profiling — toggle Enable Profiling</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟠 9</td>
+<td>Profiling — colonnes Min/Max + ligne Total</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟠 10</td>
+<td>Profiling — résumé budget frame</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟠 11</td>
+<td>Widget Performance Mode</td>
+<td>Moyen</td>
+</tr>
+<tr>
+<td>🟠 12</td>
+<td>Onglet MBlur dédié avec injection</td>
+<td>Moyen</td>
+</tr>
+<tr>
+<td>🟠 13</td>
+<td>Rendering — Edge AA + debug heatmap</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟠 14</td>
+<td>Rendering — A/B Split Specular AA</td>
+<td>Faible</td>
+</tr>
+<tr>
+<td>🟡 15</td>
+<td>Tooltips <code>(?)</code> sur tous les paramètres</td>
+<td>Faible (volume)</td>
+</tr>
+<tr>
+<td>🟡 16</td>
+<td>ImGui Docking</td>
+<td>Trivial (1 flag)</td>
+</tr>
+<tr>
+<td>🟡 17</td>
+<td>Indicateur <code>[S]</code> A/B split</td>
+<td>Faible</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="13-scorecard-recapitulatif">13. Scorecard récapitulatif<a class="headerlink" href="#13-scorecard-recapitulatif" title="Permanent link">¶</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Domaine                  suckless-odin    suckless-ogl (C++)
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>──────────────────────────────────────────────────────────────
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Tooltips (?)             ████████████     ██░░░░░░░░░░  ~17%
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Boutons Reset            ████████████     ░░░░░░░░░░░░   0%
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>A/B Split par effet      ████████████     ░░░░░░░░░░░░   0%
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>Contrôles Post-FX        ████████████     ████████░░░░  ~65%
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>Observabilité Profiling  ████████████     ████░░░░░░░░  ~35%
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Onglet Shaders           ████████████     ████░░░░░░░░  ~35%
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>Compute Tuning           ████████████     ████░░░░░░░░  ~35%
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>Onglet MBlur dédié       ████████████     ░░░░░░░░░░░░   0%
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>Performance Mode         ████████████     ░░░░░░░░░░░░   0%
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>IBL Debug                ████████████     ████████████  ~95%
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>Contrôles Camera         ████████████     ████████░░░░  ~80%
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>──────────────────────────────────────────────────────────────
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>Estimation globale       100%             ~45%
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Apply &amp; Recalculate est un mock dans suckless-ogl</p>
+<p>Le bouton "Apply &amp; Recalculate Active Environment" dans <code>src/gui.cpp</code>
+ne fait qu'afficher un message de statut. Il <strong>ne déclenche aucun</strong>
+recalcul de shader. En Odin, il appelle <code>apply_compute_tuning</code> qui
+recompile et relance la convolution IBL.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Features exclusives à suckless-ogl (non portées en Odin)</p>
+<ul>
+<li>GPU Bitonic Sort (tri GPU parallèle)</li>
+<li>Subdivisions icosphère (niveau de détail mesh)</li>
+<li>Toggle Show Probe Grid</li>
+<li>GI Mode live (OFF / Volume 3D / SSBO)</li>
+<li>PBR Debug Mode live combo (10 modes)</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Dernière mise à jour">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="4 juillet 2026 15:37:52 UTC">4 juillet 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Retour en haut de la page
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../assets/javascripts/lang_switcher.js"></script>
+      
+        <script src="../../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../../assets/javascripts/mermaid_config.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

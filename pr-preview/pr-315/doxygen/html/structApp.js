@@ -7,7 +7,7 @@ var structApp =
     [ "env_mgr", "structApp.html#ad0908bd6e87e96c85b3c5a0bf1547f58", null ],
     [ "frame_count", "structApp.html#ac928f1ac59fadeeb71128a951d16a230", null ],
     [ "height", "structApp.html#a5b13d0311b1a7dcb70a5c5774a419c31", null ],
-    [ "imgui", "structApp.html#a43f4e5863c674632e232186c26e67881", null ],
+    [ "imgui", "structApp.html#a5f79db5f8248f55bd63bb5898b1bdcfb", null ],
     [ "input", "structApp.html#ad6d1aeb1371627cc3333ac800b5dfa1e", null ],
     [ "last_frame_time", "structApp.html#a3d5af2228652f4aae50381d4bc55a643", null ],
     [ "lum_histogram_buffer", "structApp.html#a77a8a8df9ae179b73369d99d1b151d9a", null ],
