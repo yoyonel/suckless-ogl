@@ -15,6 +15,7 @@
 #include "env_manager.h"
 #include "gamepad_input.h"
 #include "icosphere.h"
+#include "log.h"
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #else
@@ -102,6 +103,10 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
+	if (!gui_init(&app->imgui, app->win.handle)) {
+		LOG_ERROR("suckless-ogl.app", "Failed to initialize ImGui");
+		return 0;
+	}
 
 	postprocess_set_dummy_textures(app->postprocess,
 	                               app->scene->gpu->dummy_black_tex);
@@ -129,6 +134,7 @@ void app_cleanup(App* app)
 	}
 
 	/* Inline struct cleanup (not descriptor-managed) */
+	gui_destroy(&app->imgui);
 	app_ui_cleanup(&app->overlay);
 
 	/* Reverse-order cleanup of all descriptor-managed subsystems */
@@ -317,6 +323,11 @@ void app_run(App* app)
 			    .render_ui_data = app,
 			};
 			renderer_draw_frame(&rctx);
+			if (app->imgui.visible) {
+				gui_new_frame(&app->imgui);
+				gui_update(&app->imgui, app);
+				gui_render(&app->imgui);
+			}
 			PROFILE_ZONE_END(render_ctx);
 		}
 
@@ -409,4 +420,37 @@ AppInputContext app_input_ctx_from_app(App* app)
 	    .perf_mode_active = &app->profiling->perf_mode_active,
 	    .log_gpu_metrics = &app->profiling->log_gpu_metrics,
 	};
+}
+
+void app_set_gui_visible(App* app, bool visible)
+{
+	if (!app) {
+		return;
+	}
+
+	app->imgui.visible = visible;
+	if (visible) {
+		app->input->camera_enabled = false;
+		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
+		                 GLFW_CURSOR_NORMAL);
+		LOG_INFO("suckless-ogl.gui",
+		         "GUI activated: cursor released, camera controls "
+		         "suspended.");
+	} else {
+		app->input->camera_enabled = true;
+		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
+		                 GLFW_CURSOR_DISABLED);
+		app->input->camera.first_mouse = true;
+		LOG_INFO("suckless-ogl.gui",
+		         "GUI deactivated: cursor captured, camera controls "
+		         "resumed.");
+	}
+}
+
+void app_toggle_gui(App* app)
+{
+	if (!app) {
+		return;
+	}
+	app_set_gui_visible(app, INT_TO_BOOL(!app->imgui.visible));
 }

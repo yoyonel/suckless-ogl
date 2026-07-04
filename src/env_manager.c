@@ -291,6 +291,7 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
 			if (mgr->transition_alpha <= 0.0F) {
 				mgr->transition_alpha = 0.0F;
 				mgr->transition_state = TRANSITION_IDLE;
+				mgr->is_first_load = false;
 			}
 			break;
 	}
