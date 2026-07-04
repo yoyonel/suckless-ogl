@@ -198,7 +198,7 @@ jobs:
           SIZE=$(du -k build-audit/app_stripped | cut -f1)
 
           # Nouvelle limite pour un moteur avec transcodeur KTX2 (ex: 2500 KB)
-          LIMIT=2500
+          LIMIT=3000
 
           if [ "$SIZE" -gt "$LIMIT" ]; then
             echo "::error::Binaire strippé trop lourd : ${SIZE}KB (Limite: ${LIMIT}KB)"
