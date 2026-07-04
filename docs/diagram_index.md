@@ -932,6 +932,29 @@ ADAPT --> EXP[Exposure Tex]
 </div>
 
 
+## [Code Analysis & SRP Refactoring Report (July 2026)](../code_analysis_report_2026_07/)
+
+<div class="diagram-item">
+  <a href="../code_analysis_report_2026_07/#why-does-it-exist" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Why does it exist?</a> : <span style="opacity: 0.6; font-size: 0.85em;">This function is a Type Erasure Trampoline (Adapter Pattern) designed to enforce Separation of Concerns (SoC) and prevent circular dependencies.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+App[app.c / app.h <br/><i>High-level Orchestrator</i>]
+Renderer[renderer.c / renderer.h <br/><i>Low-level Render Pipeline</i>]
+AppUI[app_ui.c / app_ui.h <br/><i>Dear ImGui User Interface</i>]
+App -->|includes| Renderer
+App -->|includes| AppUI
+AppUI -->|takes const App*| App
+Renderer -.->|Callback via RenderUIFn| App
+style Renderer fill:#1a1b26,stroke:#f7768e,stroke-width:2px;
+style App fill:#1a1b26,stroke:#7aa2f7,stroke-width:2px;
+```
+
+  </div>
+</div>
+
+
 ## [Environment Transitions](../env_transitions/)
 
 <div class="diagram-item">

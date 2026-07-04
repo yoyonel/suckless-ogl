@@ -125,7 +125,7 @@ void test_handle_app_input_exhaustive(void)
 	handle_app_input(&ctx, GLFW_KEY_F1, 0);
 	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
 	handle_app_input(&ctx, GLFW_KEY_F2, 0);
-	TEST_ASSERT_TRUE(test_app->imgui.visible);
+	TEST_ASSERT_TRUE(test_app->imgui->visible);
 	handle_app_input(&ctx, GLFW_KEY_F3, 0);
 	TEST_ASSERT_TRUE(test_app->profiling->timeline_ui.visible);
 	handle_app_input(&ctx, GLFW_KEY_F4, 0);

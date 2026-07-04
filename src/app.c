@@ -14,6 +14,7 @@
 #include "camera_input.h"
 #include "env_manager.h"
 #include "gamepad_input.h"
+#include "gui.h"
 #include "icosphere.h"
 #include "log.h"
 #ifdef USE_SSBO_RENDERING
@@ -31,6 +32,7 @@
 #include "texture.h"
 #include "tracy_gpu.h"
 #include <GLFW/glfw3.h>
+#include <stdlib.h>
 #include <string.h>
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
@@ -103,8 +105,16 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
-	if (!gui_init(&app->imgui, app->win.handle)) {
+	app->imgui = (Gui_C*)malloc(sizeof(*app->imgui));
+	if (!app->imgui) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for ImGui context");
+		return 0;
+	}
+	if (!gui_init(app->imgui, app->win.handle)) {
 		LOG_ERROR("suckless-ogl.app", "Failed to initialize ImGui");
+		free(app->imgui);
+		app->imgui = NULL;
 		return 0;
 	}
 
@@ -134,7 +144,11 @@ void app_cleanup(App* app)
 	}
 
 	/* Inline struct cleanup (not descriptor-managed) */
-	gui_destroy(&app->imgui);
+	if (app->imgui) {
+		gui_destroy(app->imgui);
+		free(app->imgui);
+		app->imgui = NULL;
+	}
 	app_ui_cleanup(&app->overlay);
 
 	/* Reverse-order cleanup of all descriptor-managed subsystems */
@@ -323,10 +337,10 @@ void app_run(App* app)
 			    .render_ui_data = app,
 			};
 			renderer_draw_frame(&rctx);
-			if (app->imgui.visible) {
-				gui_new_frame(&app->imgui);
-				gui_update(&app->imgui, app);
-				gui_render(&app->imgui);
+			if (app->imgui && app->imgui->visible) {
+				gui_new_frame(app->imgui);
+				gui_update(app->imgui, app);
+				gui_render(app->imgui);
 			}
 			PROFILE_ZONE_END(render_ctx);
 		}
@@ -428,7 +442,9 @@ void app_set_gui_visible(App* app, bool visible)
 		return;
 	}
 
-	app->imgui.visible = visible;
+	if (app->imgui) {
+		app->imgui->visible = visible;
+	}
 	if (visible) {
 		app->input->camera_enabled = false;
 		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
@@ -452,5 +468,7 @@ void app_toggle_gui(App* app)
 	if (!app) {
 		return;
 	}
-	app_set_gui_visible(app, INT_TO_BOOL(!app->imgui.visible));
+	if (app->imgui) {
+		app_set_gui_visible(app, INT_TO_BOOL(!app->imgui->visible));
+	}
 }

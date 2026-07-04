@@ -31,8 +31,8 @@ typedef enum {
 	BLOOM_UPSAMPLE,
 } BloomState;
 
-static char* const bloom_stages[] = {"Final Map", "Prefilter", "Downsample",
-                                     "Upsample"};
+static const char* const bloom_stages[] = {"Final Map", "Prefilter",
+                                           "Downsample", "Upsample"};
 
 /* Structure regroupant les ressources graphiques du Bloom */
 typedef struct BloomFX {

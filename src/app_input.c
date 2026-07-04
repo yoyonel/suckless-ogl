@@ -12,6 +12,7 @@
 #include "env_manager.h"
 #include "gamepad_input.h"
 #include "gpu_profiler_ui.h"
+#include "gui.h"
 #include "log.h"
 #include "nbody.h"
 #include "nbody_types.h"
@@ -777,7 +778,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods)
 {
 	App* app = (App*)glfwGetWindowUserPointer(window);
-	if (app && gui_wants_keyboard(&app->imgui) && key >= GLFW_KEY_SPACE &&
+	if (app && gui_wants_keyboard(app->imgui) && key >= GLFW_KEY_SPACE &&
 	    key <= GLFW_KEY_GRAVE_ACCENT) {
 		return;
 	}
@@ -890,7 +891,7 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	App* app = (App*)glfwGetWindowUserPointer(window);
-	if (app && gui_wants_mouse(&app->imgui)) {
+	if (app && gui_wants_mouse(app->imgui)) {
 		return;
 	}
 	AppInputContext ctx_storage = app_input_ctx_from_app(app);
@@ -909,7 +910,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	(void)xoffset;
 	App* app = (App*)glfwGetWindowUserPointer(window);
-	if (app && gui_wants_mouse(&app->imgui)) {
+	if (app && gui_wants_mouse(app->imgui)) {
 		return;
 	}
 	AppInputContext ctx_storage = app_input_ctx_from_app(app);

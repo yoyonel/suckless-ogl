@@ -36,7 +36,7 @@ typedef struct App {
 	AppProfiling* profiling; /**< Profiling and metrics sub-system. */
 	AppInput* input;      /**< Camera, gamepad, key-bindings sub-system. */
 	AppUIOverlay overlay; /**< Overlay and text rendering state. */
-	Gui_C imgui;          /**< ImGui GUI interface context. */
+	Gui_C* imgui;         /**< ImGui GUI interface context. */
 
 	/* --- App State Flags and Values --- */
 	const char* title;       /**< Window title (borrowed, not owned). */
