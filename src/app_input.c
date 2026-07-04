@@ -3,6 +3,7 @@
 #include "app_input.h"
 
 #include "action_notifier.h"
+#include "app.h"
 #include "app_settings.h"
 #include "app_ui.h"
 #include "bool_utils.h"
@@ -346,9 +347,13 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 		case GLFW_KEY_F1:
 			handle_overlay_input(ctx);
 			return true;
-		case GLFW_KEY_F2:
-			app_toggle_help(ctx);
+		case GLFW_KEY_F2: {
+			App* app = (App*)glfwGetWindowUserPointer(ctx->window);
+			if (app) {
+				app_toggle_gui(app);
+			}
 			return true;
+		}
 		case GLFW_KEY_F3:
 			handle_f3_input(ctx, mods);
 			return true;
@@ -771,6 +776,11 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods)
 {
+	App* app = (App*)glfwGetWindowUserPointer(window);
+	if (app && gui_wants_keyboard(&app->imgui) && key >= GLFW_KEY_SPACE &&
+	    key <= GLFW_KEY_GRAVE_ACCENT) {
+		return;
+	}
 	const char* key_name = glfwGetKeyName(key, scancode);
 
 	/* Wine/AZERTY Fallback: Some keys (like é, è, ç, à on the top row)
@@ -803,7 +813,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 	LOG_DEBUG("suckless-ogl.app",
 	          "Key: %d - Scancode: %d - Name: %s - Action: %d - Mods: %d",
 	          key, scancode, key_name ? key_name : "NULL", action, mods);
-	App* app = (App*)glfwGetWindowUserPointer(window);
 	AppInputContext ctx_storage = app_input_ctx_from_app(app);
 	AppInputContext* ctx = &ctx_storage;
 	if (action == GLFW_PRESS) {
@@ -881,6 +890,9 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	App* app = (App*)glfwGetWindowUserPointer(window);
+	if (app && gui_wants_mouse(&app->imgui)) {
+		return;
+	}
 	AppInputContext ctx_storage = app_input_ctx_from_app(app);
 	AppInputContext* ctx = &ctx_storage;
 
@@ -897,6 +909,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	(void)xoffset;
 	App* app = (App*)glfwGetWindowUserPointer(window);
+	if (app && gui_wants_mouse(&app->imgui)) {
+		return;
+	}
 	AppInputContext ctx_storage = app_input_ctx_from_app(app);
 	AppInputContext* ctx = &ctx_storage;
 	camera_input_handle_scroll(ctx->camera, yoffset);
