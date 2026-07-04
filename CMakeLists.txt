@@ -161,6 +161,7 @@ set(SOURCES
     src/platform/platform_fs.c
     src/platform/platform_time.c
     src/platform/platform_utils.c
+    src/gui.cpp
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -180,7 +181,7 @@ if(EXISTS "${OFFLINE_DEPS_DIR}")
   message(STATUS "Offline mode: Checking for local dependencies in ${OFFLINE_DEPS_DIR}")
 
   # List of dependencies we want to support overrides for
-  set(MANIFEST_DEPS "cglm" "glad" "stb" "unity" "cjson" "glfw" "libktx")
+  set(MANIFEST_DEPS "cglm" "glad" "stb" "unity" "cjson" "glfw" "libktx" "imgui")
 
   foreach(dep ${MANIFEST_DEPS})
     if(EXISTS "${OFFLINE_DEPS_DIR}/${dep}")
@@ -354,6 +355,42 @@ set(BASISU_SUPPORT_UASTC OFF CACHE BOOL "Disable Basis UASTC encoder" FORCE)
 
 FetchContent_MakeAvailable(libktx)
 
+# 7. Dear ImGui (v1.92.4)
+message(STATUS "Fetching Dear ImGui...")
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG        v1.92.4
+)
+FetchContent_MakeAvailable(imgui)
+
+# Define static library for ImGui
+add_library(imgui STATIC
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+# ImGui needs glad, glfw, and core headers
+target_include_directories(imgui PUBLIC
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
+    ${glfw_SOURCE_DIR}/include
+    ${glad_BINARY_DIR}/include
+)
+
+# Compile definitions for ImGui
+target_compile_definitions(imgui PUBLIC
+    IMGUI_IMPL_OPENGL_LOADER_GLAD
+    GLFW_INCLUDE_NONE
+)
+
+# We link glad and glfw to imgui
+target_link_libraries(imgui PRIVATE glad glfw)
+
 # App target
 set(APP_SOURCES ${SOURCES})
 if(ENABLE_TRACY)
@@ -416,6 +453,8 @@ target_include_directories(app PRIVATE
     ${glfw_SOURCE_DIR}/include
     ${glad_BINARY_DIR}/include
     ${cglm_SOURCE_DIR}/include
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
 )
 if(ENABLE_TRACY)
   target_include_directories(app PUBLIC deps/tracy/public)
@@ -431,6 +470,7 @@ target_link_libraries(app PRIVATE
     ${GLFW3_LIBRARIES}
     Threads::Threads
     ktx_read
+    imgui
 )
 
 if(UNIX)

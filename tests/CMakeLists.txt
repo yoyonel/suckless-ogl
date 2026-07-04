@@ -5,7 +5,7 @@
 # CONFIGURATION COMMUNE
 # =============================================================================
 
-set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Threads::Threads ktx)
+set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Threads::Threads ktx imgui)
 if(UNIX)
   list(APPEND TEST_COMMON_LIBS m dl)
 endif()
@@ -17,6 +17,8 @@ set(TEST_INCLUDE_DIRS
     ${glfw_SOURCE_DIR}/include
     ${glad_BINARY_DIR}/include
     ${cglm_SOURCE_DIR}/include
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
 )
 
 if(ENABLE_TRACY)

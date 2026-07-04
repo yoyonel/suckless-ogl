@@ -14,7 +14,9 @@
 #include "camera_input.h"
 #include "env_manager.h"
 #include "gamepad_input.h"
+#include "gui.h"
 #include "icosphere.h"
+#include "log.h"
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #else
@@ -30,6 +32,7 @@
 #include "texture.h"
 #include "tracy_gpu.h"
 #include <GLFW/glfw3.h>
+#include <stdlib.h>
 #include <string.h>
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
@@ -102,6 +105,18 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
+	app->imgui = (Gui_C*)malloc(sizeof(*app->imgui));
+	if (!app->imgui) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for ImGui context");
+		return 0;
+	}
+	if (!gui_init(app->imgui, app->win.handle)) {
+		LOG_ERROR("suckless-ogl.app", "Failed to initialize ImGui");
+		free(app->imgui);
+		app->imgui = NULL;
+		return 0;
+	}
 
 	postprocess_set_dummy_textures(app->postprocess,
 	                               app->scene->gpu->dummy_black_tex);
@@ -129,6 +144,11 @@ void app_cleanup(App* app)
 	}
 
 	/* Inline struct cleanup (not descriptor-managed) */
+	if (app->imgui) {
+		gui_destroy(app->imgui);
+		free(app->imgui);
+		app->imgui = NULL;
+	}
 	app_ui_cleanup(&app->overlay);
 
 	/* Reverse-order cleanup of all descriptor-managed subsystems */
@@ -317,6 +337,11 @@ void app_run(App* app)
 			    .render_ui_data = app,
 			};
 			renderer_draw_frame(&rctx);
+			if (app->imgui && app->imgui->visible) {
+				gui_new_frame(app->imgui);
+				gui_update(app->imgui, app);
+				gui_render(app->imgui);
+			}
 			PROFILE_ZONE_END(render_ctx);
 		}
 
@@ -409,4 +434,41 @@ AppInputContext app_input_ctx_from_app(App* app)
 	    .perf_mode_active = &app->profiling->perf_mode_active,
 	    .log_gpu_metrics = &app->profiling->log_gpu_metrics,
 	};
+}
+
+void app_set_gui_visible(App* app, bool visible)
+{
+	if (!app) {
+		return;
+	}
+
+	if (app->imgui) {
+		app->imgui->visible = visible;
+	}
+	if (visible) {
+		app->input->camera_enabled = false;
+		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
+		                 GLFW_CURSOR_NORMAL);
+		LOG_INFO("suckless-ogl.gui",
+		         "GUI activated: cursor released, camera controls "
+		         "suspended.");
+	} else {
+		app->input->camera_enabled = true;
+		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
+		                 GLFW_CURSOR_DISABLED);
+		app->input->camera.first_mouse = true;
+		LOG_INFO("suckless-ogl.gui",
+		         "GUI deactivated: cursor captured, camera controls "
+		         "resumed.");
+	}
+}
+
+void app_toggle_gui(App* app)
+{
+	if (!app) {
+		return;
+	}
+	if (app->imgui) {
+		app_set_gui_visible(app, INT_TO_BOOL(!app->imgui->visible));
+	}
 }

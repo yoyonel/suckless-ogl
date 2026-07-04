@@ -169,9 +169,15 @@ enum { GL_UBO_ALIGNMENT = 32 };
  * Place after the typedef to catch misconfigurations at build time.
  * @param type The UBO struct type name.
  */
+#ifdef __cplusplus
+#define GL_ASSERT_UBO_ALIGNMENT(type)                    \
+	static_assert(alignof(type) >= GL_UBO_ALIGNMENT, \
+	              #type " must be >= 32-byte aligned for AVX (cglm)")
+#else
 #define GL_ASSERT_UBO_ALIGNMENT(type)                      \
 	_Static_assert(_Alignof(type) >= GL_UBO_ALIGNMENT, \
 	               #type " must be >= 32-byte aligned for AVX (cglm)")
+#endif
 
 /**
  * @brief Pushes a debug group to the OpenGL command stream for debugging tools.

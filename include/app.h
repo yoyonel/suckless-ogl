@@ -6,7 +6,8 @@
 #include "app_window.h"        // IWYU pragma: export
 #include "effect_benchmark.h"  // IWYU pragma: export
 #include "gl_common.h"         // IWYU pragma: export
-#include <cglm/cglm.h>         // IWYU pragma: export
+#include "gui.h"
+#include <cglm/cglm.h>  // IWYU pragma: export
 
 /* --- Opaque sub-struct forward declarations --- */
 typedef struct AppProfiling AppProfiling;
@@ -35,6 +36,7 @@ typedef struct App {
 	AppProfiling* profiling; /**< Profiling and metrics sub-system. */
 	AppInput* input;      /**< Camera, gamepad, key-bindings sub-system. */
 	AppUIOverlay overlay; /**< Overlay and text rendering state. */
+	Gui_C* imgui;         /**< ImGui GUI interface context. */
 
 	/* --- App State Flags and Values --- */
 	const char* title;       /**< Window title (borrowed, not owned). */
@@ -80,6 +82,16 @@ void app_run(App* app);
  * @brief One-frame logic update (physics, timers, camera).
  */
 void app_update(App* app);
+
+/**
+ * @brief Sets the GUI visibility state and synchronizes cursor/camera state.
+ */
+void app_set_gui_visible(App* app, bool visible);
+
+/**
+ * @brief Toggles the GUI visibility state.
+ */
+void app_toggle_gui(App* app);
 
 enum { TRACY_SCREENSHOT_WIDTH = 320, TRACY_SCREENSHOT_HEIGHT = 180 };
 
