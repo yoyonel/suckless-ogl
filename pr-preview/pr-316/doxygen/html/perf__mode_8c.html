@@ -1,0 +1,811 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/perf_mode.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('perf__mode_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">perf_mode.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Runtime performance optimization implementation.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for perf_mode.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="perf__mode_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ae8a3b6a5d0d3244ed73924ab2421a0d0" id="r_ae8a3b6a5d0d3244ed73924ab2421a0d0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="perf__mode_8c.html#ae8a3b6a5d0d3244ed73924ab2421a0d0a687519edbd732d77000feab85aa93696">PERF_RT_PRIORITY</a> = 50
+ }</td></tr>
+<tr class="memdesc:ae8a3b6a5d0d3244ed73924ab2421a0d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default real-time priority for SCHED_FIFO (1-99).  <a href="perf__mode_8c.html#ae8a3b6a5d0d3244ed73924ab2421a0d0">More...</a><br /></td></tr>
+<tr class="separator:ae8a3b6a5d0d3244ed73924ab2421a0d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af715e26dfffd1f8de1c18449e2770cff" id="r_af715e26dfffd1f8de1c18449e2770cff"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="perf__mode_8c.html#af715e26dfffd1f8de1c18449e2770cffa977eba3d475617fd9921e404d36b1f93">PERF_NICE_VALUE</a> = -10
+ }</td></tr>
+<tr class="memdesc:af715e26dfffd1f8de1c18449e2770cff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Nice value for elevated priority (-20 to 19).  <a href="perf__mode_8c.html#af715e26dfffd1f8de1c18449e2770cff">More...</a><br /></td></tr>
+<tr class="separator:af715e26dfffd1f8de1c18449e2770cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a2314ff5b7bd9601806ac578d254842a7" id="r_a2314ff5b7bd9601806ac578d254842a7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a2314ff5b7bd9601806ac578d254842a7">detect_gamemode</a> (void)</td></tr>
+<tr class="memdesc:a2314ff5b7bd9601806ac578d254842a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detect if GameMode daemon is available.  <br /></td></tr>
+<tr class="separator:a2314ff5b7bd9601806ac578d254842a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a017d93bea6fbc0ddc774d49145e2aa86" id="r_a017d93bea6fbc0ddc774d49145e2aa86"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a017d93bea6fbc0ddc774d49145e2aa86">detect_native_capabilities</a> (void)</td></tr>
+<tr class="memdesc:a017d93bea6fbc0ddc774d49145e2aa86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detect if native scheduling capabilities are available.  <br /></td></tr>
+<tr class="separator:a017d93bea6fbc0ddc774d49145e2aa86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a154025c04a9fa8a639eeb948e58e2505" id="r_a154025c04a9fa8a639eeb948e58e2505"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a154025c04a9fa8a639eeb948e58e2505">perf_mode_init</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a154025c04a9fa8a639eeb948e58e2505"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the performance mode subsystem.  <br /></td></tr>
+<tr class="separator:a154025c04a9fa8a639eeb948e58e2505"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14e32f8e0379a6b587c9c163912ef738" id="r_a14e32f8e0379a6b587c9c163912ef738"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a14e32f8e0379a6b587c9c163912ef738">activate_gamemode</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a14e32f8e0379a6b587c9c163912ef738"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activate using GameMode backend.  <br /></td></tr>
+<tr class="separator:a14e32f8e0379a6b587c9c163912ef738"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceef0f4621470222733f17aba42c69b0" id="r_aceef0f4621470222733f17aba42c69b0"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#aceef0f4621470222733f17aba42c69b0">deactivate_gamemode</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:aceef0f4621470222733f17aba42c69b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deactivate GameMode backend.  <br /></td></tr>
+<tr class="separator:aceef0f4621470222733f17aba42c69b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3248ef5884dfcaa4a23445e299cdc5b4" id="r_a3248ef5884dfcaa4a23445e299cdc5b4"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a3248ef5884dfcaa4a23445e299cdc5b4">activate_native</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a3248ef5884dfcaa4a23445e299cdc5b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activate using native Linux scheduler.  <br /></td></tr>
+<tr class="separator:a3248ef5884dfcaa4a23445e299cdc5b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7d534a6d1e90285fdd2cb6f262ebbec" id="r_ae7d534a6d1e90285fdd2cb6f262ebbec"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#ae7d534a6d1e90285fdd2cb6f262ebbec">deactivate_native</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:ae7d534a6d1e90285fdd2cb6f262ebbec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deactivate native Linux scheduler.  <br /></td></tr>
+<tr class="separator:ae7d534a6d1e90285fdd2cb6f262ebbec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24bb58cfa7928d93310def4391d3394e" id="r_a24bb58cfa7928d93310def4391d3394e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a24bb58cfa7928d93310def4391d3394e">perf_mode_request_start</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a24bb58cfa7928d93310def4391d3394e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request activation of performance mode.  <br /></td></tr>
+<tr class="separator:a24bb58cfa7928d93310def4391d3394e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a498514effcc3a3fa67efdcd6530a8a" id="r_a8a498514effcc3a3fa67efdcd6530a8a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a8a498514effcc3a3fa67efdcd6530a8a">perf_mode_request_end</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a8a498514effcc3a3fa67efdcd6530a8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request deactivation of performance mode.  <br /></td></tr>
+<tr class="separator:a8a498514effcc3a3fa67efdcd6530a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ee859004a75de69605d3984f7ea2f2" id="r_a93ee859004a75de69605d3984f7ea2f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a93ee859004a75de69605d3984f7ea2f2">perf_mode_cleanup</a> (<a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a93ee859004a75de69605d3984f7ea2f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clean up performance mode resources.  <br /></td></tr>
+<tr class="separator:a93ee859004a75de69605d3984f7ea2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ff3e4dc53bde11bc737a5286afb02e1" id="r_a4ff3e4dc53bde11bc737a5286afb02e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">PerfModeState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#a4ff3e4dc53bde11bc737a5286afb02e1">perf_mode_get_state</a> (const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:a4ff3e4dc53bde11bc737a5286afb02e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current performance mode state.  <br /></td></tr>
+<tr class="separator:a4ff3e4dc53bde11bc737a5286afb02e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa667cf6303e7347a152fe91b1f67bbf6" id="r_aa667cf6303e7347a152fe91b1f67bbf6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">PerfModeBackend</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#aa667cf6303e7347a152fe91b1f67bbf6">perf_mode_get_backend</a> (const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:aa667cf6303e7347a152fe91b1f67bbf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the detected backend type.  <br /></td></tr>
+<tr class="separator:aa667cf6303e7347a152fe91b1f67bbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6e7d34f198b807e5319bd33ed97aaa2" id="r_aa6e7d34f198b807e5319bd33ed97aaa2"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#aa6e7d34f198b807e5319bd33ed97aaa2">perf_mode_get_state_string</a> (const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:aa6e7d34f198b807e5319bd33ed97aaa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a human-readable string for the current state.  <br /></td></tr>
+<tr class="separator:aa6e7d34f198b807e5319bd33ed97aaa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6fe4848ea239fdecd15d6c3056f7b78" id="r_af6fe4848ea239fdecd15d6c3056f7b78"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__mode_8c.html#af6fe4848ea239fdecd15d6c3056f7b78">perf_mode_is_active</a> (const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *ctx)</td></tr>
+<tr class="memdesc:af6fe4848ea239fdecd15d6c3056f7b78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if performance mode is currently active.  <br /></td></tr>
+<tr class="separator:af6fe4848ea239fdecd15d6c3056f7b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Runtime performance optimization implementation. </p>
+<p>Implements performance mode with two backends:</p><ol type="1">
+<li>libgamemode - Preferred when gamemoded is running</li>
+<li>Native Linux syscalls - Fallback using sched_setscheduler/nice </li>
+</ol>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ae8a3b6a5d0d3244ed73924ab2421a0d0" name="ae8a3b6a5d0d3244ed73924ab2421a0d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8a3b6a5d0d3244ed73924ab2421a0d0">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default real-time priority for SCHED_FIFO (1-99). </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae8a3b6a5d0d3244ed73924ab2421a0d0a687519edbd732d77000feab85aa93696" name="ae8a3b6a5d0d3244ed73924ab2421a0d0a687519edbd732d77000feab85aa93696"></a>PERF_RT_PRIORITY&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="af715e26dfffd1f8de1c18449e2770cff" name="af715e26dfffd1f8de1c18449e2770cff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af715e26dfffd1f8de1c18449e2770cff">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Nice value for elevated priority (-20 to 19). </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af715e26dfffd1f8de1c18449e2770cffa977eba3d475617fd9921e404d36b1f93" name="af715e26dfffd1f8de1c18449e2770cffa977eba3d475617fd9921e404d36b1f93"></a>PERF_NICE_VALUE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a14e32f8e0379a6b587c9c163912ef738" name="a14e32f8e0379a6b587c9c163912ef738"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14e32f8e0379a6b587c9c163912ef738">&#9670;&#160;</a></span>activate_gamemode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int activate_gamemode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Activate using GameMode backend. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Context ptr. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a3248ef5884dfcaa4a23445e299cdc5b4" name="a3248ef5884dfcaa4a23445e299cdc5b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3248ef5884dfcaa4a23445e299cdc5b4">&#9670;&#160;</a></span>activate_native()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int activate_native </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Activate using native Linux scheduler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Context ptr. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="aceef0f4621470222733f17aba42c69b0" name="aceef0f4621470222733f17aba42c69b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aceef0f4621470222733f17aba42c69b0">&#9670;&#160;</a></span>deactivate_gamemode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int deactivate_gamemode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deactivate GameMode backend. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Context ptr. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="ae7d534a6d1e90285fdd2cb6f262ebbec" name="ae7d534a6d1e90285fdd2cb6f262ebbec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7d534a6d1e90285fdd2cb6f262ebbec">&#9670;&#160;</a></span>deactivate_native()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int deactivate_native </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deactivate native Linux scheduler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Context ptr. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+
+</div>
+</div>
+<a id="a2314ff5b7bd9601806ac578d254842a7" name="a2314ff5b7bd9601806ac578d254842a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2314ff5b7bd9601806ac578d254842a7">&#9670;&#160;</a></span>detect_gamemode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int detect_gamemode </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Detect if GameMode daemon is available. </p>
+<dl class="section return"><dt>Returns</dt><dd>1 if available, 0 otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a017d93bea6fbc0ddc774d49145e2aa86" name="a017d93bea6fbc0ddc774d49145e2aa86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a017d93bea6fbc0ddc774d49145e2aa86">&#9670;&#160;</a></span>detect_native_capabilities()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int detect_native_capabilities </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Detect if native scheduling capabilities are available. </p>
+<dl class="section return"><dt>Returns</dt><dd>1 if SCHED_FIFO possible, 2 if only nice, 0 otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a93ee859004a75de69605d3984f7ea2f2" name="a93ee859004a75de69605d3984f7ea2f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93ee859004a75de69605d3984f7ea2f2">&#9670;&#160;</a></span>perf_mode_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void perf_mode_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clean up performance mode resources. </p>
+<p>Ensures any active optimizations are properly reverted. Should be called at application shutdown.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="perf__mode_8c_a93ee859004a75de69605d3984f7ea2f2_cgraph.svg" width="608" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aa667cf6303e7347a152fe91b1f67bbf6" name="aa667cf6303e7347a152fe91b1f67bbf6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa667cf6303e7347a152fe91b1f67bbf6">&#9670;&#160;</a></span>perf_mode_get_backend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="perf__mode_8h.html#ac5467609abb7a40ec168953640e608f0">PerfModeBackend</a> perf_mode_get_backend </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the detected backend type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Detected PerfModeBackend value. </dd></dl>
+
+</div>
+</div>
+<a id="a4ff3e4dc53bde11bc737a5286afb02e1" name="a4ff3e4dc53bde11bc737a5286afb02e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ff3e4dc53bde11bc737a5286afb02e1">&#9670;&#160;</a></span>perf_mode_get_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="perf__mode_8h.html#a37872c6bedfeee2206740a57ca310492">PerfModeState</a> perf_mode_get_state </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the current performance mode state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Current PerfModeState value. </dd></dl>
+
+</div>
+</div>
+<a id="aa6e7d34f198b807e5319bd33ed97aaa2" name="aa6e7d34f198b807e5319bd33ed97aaa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6e7d34f198b807e5319bd33ed97aaa2">&#9670;&#160;</a></span>perf_mode_get_state_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * perf_mode_get_state_string </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a human-readable string for the current state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Static string describing the current mode (e.g., "GameMode", "Native SCHED_FIFO", "Off"). </dd></dl>
+
+</div>
+</div>
+<a id="a154025c04a9fa8a639eeb948e58e2505" name="a154025c04a9fa8a639eeb948e58e2505"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a154025c04a9fa8a639eeb948e58e2505">&#9670;&#160;</a></span>perf_mode_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int perf_mode_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize the performance mode subsystem. </p>
+<p>Detects available backends (GameMode daemon, native capabilities). Should be called once at application startup.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context to initialize. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="perf__mode_8c_a154025c04a9fa8a639eeb948e58e2505_cgraph.svg" width="372" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="af6fe4848ea239fdecd15d6c3056f7b78" name="af6fe4848ea239fdecd15d6c3056f7b78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6fe4848ea239fdecd15d6c3056f7b78">&#9670;&#160;</a></span>perf_mode_is_active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int perf_mode_is_active </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if performance mode is currently active. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if active, 0 if not. </dd></dl>
+
+</div>
+</div>
+<a id="a8a498514effcc3a3fa67efdcd6530a8a" name="a8a498514effcc3a3fa67efdcd6530a8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a498514effcc3a3fa67efdcd6530a8a">&#9670;&#160;</a></span>perf_mode_request_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int perf_mode_request_end </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Request deactivation of performance mode. </p>
+<p>Reverts any system changes made by <a class="el" href="perf__mode_8h.html#a24bb58cfa7928d93310def4391d3394e" title="Request activation of performance mode.">perf_mode_request_start()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="perf__mode_8c_a8a498514effcc3a3fa67efdcd6530a8a_cgraph.svg" width="410" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a24bb58cfa7928d93310def4391d3394e" name="a24bb58cfa7928d93310def4391d3394e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24bb58cfa7928d93310def4391d3394e">&#9670;&#160;</a></span>perf_mode_request_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int perf_mode_request_start </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Request activation of performance mode. </p>
+<p>Attempts to activate performance optimizations using the best available backend. Effects may include:</p><ul>
+<li>CPU governor set to "performance"</li>
+<li>GPU performance mode enabled</li>
+<li>Process scheduling priority elevated</li>
+<li>Background services deprioritized</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to the context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>For native SCHED_FIFO, requires CAP_SYS_NICE or root. GameMode handles permissions via polkit. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="perf__mode_8c_a24bb58cfa7928d93310def4391d3394e_cgraph.svg" width="400" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="perf__mode_8c.html">perf_mode.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

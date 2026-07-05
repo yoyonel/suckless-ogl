@@ -1,0 +1,66 @@
+<map id="scene_subsys_cleanup" name="scene_subsys_cleanup">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,297,176,322"/>
+<area shape="rect" id="Node000002" href="$scene__cleanup_8c.html#a544a31d29501a2854aee06c6011ec62d" title="Cleans up scene resources." alt="" coords="224,297,343,322"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="176,307,210,307,210,312,176,312"/>
+<area shape="rect" id="Node000003" href="$billboard__renderer_8c.html#a60c2566cde9be1fd592e69cff97ab26b" title="Releases all GPU resources allocated for the billboard renderer." alt="" coords="429,5,571,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="284,296,292,250,310,185,341,116,363,84,389,55,415,39,417,44,392,59,367,87,346,119,315,187,297,251,289,297"/>
+<area shape="rect" id="Node000005" href="$ibl__coordinator_8c.html#a7af04c7b19cdf6fd658af855351f19ad" title="Cleanups any pending resources held by the coordinator." alt="" coords="411,70,589,95"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="285,296,295,258,315,206,346,151,366,126,389,105,398,99,401,103,392,109,370,130,350,154,320,208,300,259,290,297"/>
+<area shape="rect" id="Node000007" href="$icosphere_8c.html#a5d46fa05e1dc89e653b23558a202774f" title="Frees all dynamic memory in the icosphere container." alt="" coords="441,119,559,145"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="287,296,301,266,322,227,352,187,389,154,426,138,428,142,392,158,356,191,327,230,305,268,292,298"/>
+<area shape="rect" id="Node000010" href="$instanced__rendering_8c.html#a1c3f138d496ea038ba38d988c71d6884" title="Releases all GPU resources for the instanced group." alt="" coords="407,169,593,194"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="292,295,331,249,358,224,389,203,404,196,406,201,392,208,361,228,334,253,296,298"/>
+<area shape="rect" id="Node000011" href="$light__probes_8c.html#a6c8fc97128572ecc44171194266abf88" title="Cleans up all resources (CPU, GPU, Threads)." alt="" coords="407,218,593,243"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="304,294,343,273,390,252,415,244,416,249,392,257,345,278,307,299"/>
+<area shape="rect" id="Node000014" href="$material_8c.html#aa231f444b37b3b2f771ad22b78b2acb3" title="Frees all memory associated with a material library." alt="" coords="433,267,567,293"/>
+<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="343,299,419,288,420,293,344,304"/>
+<area shape="rect" id="Node000015" href="$scene__cleanup_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3" title=" " alt="" coords="391,431,609,457"/>
+<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="295,320,333,368,361,394,392,416,409,424,406,429,389,421,357,398,330,371,291,324"/>
+<area shape="rect" id="Node000022" href="$scene__cleanup_8c.html#a50a9a525b6a64adff72514d309f6e0e9" title=" " alt="" coords="412,579,588,605"/>
+<area shape="poly" id="edge23_Node000002_Node000022" title=" " alt="" coords="289,322,296,369,313,435,327,470,344,505,366,537,392,565,401,571,398,575,389,569,362,540,339,508,322,472,308,436,291,370,283,323"/>
+<area shape="rect" id="Node000027" href="$shockwave_8c.html#a62fa17ef9c97f9ec82e7564c3b066377" title="Releases all GPU resources." alt="" coords="421,317,579,357"/>
+<area shape="poly" id="edge29_Node000002_Node000027" title=" " alt="" coords="343,314,408,323,407,328,343,320"/>
+<area shape="rect" id="Node000028" href="$skybox_8c.html#a426022a6fba8e5f57863e91b5ce3a3a0" title="Cleans up GPU resources." alt="" coords="437,481,563,506"/>
+<area shape="poly" id="edge31_Node000002_Node000028" title=" " alt="" coords="292,321,305,352,326,391,355,432,392,466,425,481,422,486,389,470,351,435,322,394,300,354,287,324"/>
+<area shape="rect" id="Node000029" href="$ssbo__rendering_8c.html#aae9fda89e7e2fe2746ac18af43fc988f" title="Releases GPU resources." alt="" coords="423,530,577,555"/>
+<area shape="poly" id="edge32_Node000002_Node000029" title=" " alt="" coords="290,322,300,360,320,413,350,469,369,494,392,515,411,526,408,531,389,519,365,497,345,472,315,415,295,362,285,323"/>
+<area shape="rect" id="Node000030" href="$trail__renderer_8c.html#aff7e69ac17c34ee473f7a2df615f2f75" title="Releases all GPU resources." alt="" coords="416,382,584,407"/>
+<area shape="poly" id="edge33_Node000002_Node000030" title=" " alt="" coords="305,320,344,344,392,367,418,376,417,381,390,372,341,348,302,324"/>
+<area shape="rect" id="Node000004" href="$billboard__sorter_8c.html#ad7a360778f7d79b99618da36773fb1fd" title="Destroys the sorter context." alt="" coords="675,13,858,38"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="571,23,662,23,662,28,571,28"/>
+<area shape="rect" id="Node000006" href="$ibl__coordinator_8c.html#a0bff11f3337e1e69179225a25757bcc0" title="Resets the coordinator to IDLE state." alt="" coords="687,70,846,95"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="589,80,673,80,673,85,589,85"/>
+<area shape="rect" id="Node000008" href="$icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62" title="Frees the internal buffer of a UintArray." alt="" coords="709,169,824,194"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="560,140,696,166,695,171,559,146"/>
+<area shape="rect" id="Node000009" href="$icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a" title="Frees the internal buffer of a Vec3Array." alt="" coords="707,119,827,145"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="560,129,693,129,693,135,560,135"/>
+<area shape="rect" id="Node000012" href="$light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df" title="Cleans up CPU resources." alt="" coords="671,218,862,243"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="593,228,657,228,657,233,593,233"/>
+<area shape="rect" id="Node000013" href="$shader_8c.html#a54bf3663058663ec7530cd1a0a1af00b" title="Destroys the shader wrapper and deletes the GL program." alt="" coords="705,325,828,350"/>
+<area shape="poly" id="edge12_Node000011_Node000013" title=" " alt="" coords="573,241,610,252,678,283,735,315,733,320,676,288,608,257,571,246"/>
+<area shape="rect" id="Node000016" href="$scene__cleanup_8c.html#af38744aa42e41f95b6dc75a7f1ffb57d" title=" " alt="" coords="681,441,852,466"/>
+<area shape="poly" id="edge15_Node000015_Node000016" title=" " alt="" coords="610,445,668,447,668,453,609,450"/>
+<area shape="rect" id="Node000020" href="$scene__cleanup_8c.html#a5d03299a2403acf2110589d4800f4b95" title=" " alt="" coords="677,378,856,403"/>
+<area shape="poly" id="edge21_Node000015_Node000020" title=" " alt="" coords="564,429,689,403,690,409,565,434"/>
+<area shape="rect" id="Node000017" href="$scene__cleanup_8c.html#a150bbc077ca335c908117ba8fc4f16b8" title=" " alt="" coords="1160,473,1303,498"/>
+<area shape="poly" id="edge16_Node000016_Node000017" title=" " alt="" coords="810,463,864,477,924,488,977,492,1018,492,1112,488,1146,487,1146,492,1112,493,1018,498,977,498,924,493,863,483,809,469"/>
+<area shape="rect" id="Node000018" href="$scene__cleanup_8c.html#a04107bb275766d0bb05126f01c4c0f2e" title=" " alt="" coords="1167,419,1296,445"/>
+<area shape="poly" id="edge17_Node000016_Node000018" title=" " alt="" coords="828,438,924,424,1018,421,1112,424,1153,425,1153,431,1112,429,1018,426,924,429,828,443"/>
+<area shape="rect" id="Node000019" href="$scene__cleanup_8c.html#a24bdb02de96abeaa6a2fbdc577022c24" title=" " alt="" coords="924,439,1112,479"/>
+<area shape="poly" id="edge18_Node000016_Node000019" title=" " alt="" coords="852,452,910,454,910,459,852,458"/>
+<area shape="poly" id="edge19_Node000019_Node000017" title=" " alt="" coords="1113,468,1147,472,1146,477,1112,473"/>
+<area shape="poly" id="edge20_Node000019_Node000018" title=" " alt="" coords="1112,444,1153,439,1153,444,1113,450"/>
+<area shape="rect" id="Node000021" href="$scene__cleanup_8c.html#a7774d3aa7526e5e904c1a1544cb17e9c" title=" " alt="" coords="942,338,1094,363"/>
+<area shape="poly" id="edge22_Node000020_Node000021" title=" " alt="" coords="847,375,928,362,929,367,847,381"/>
+<area shape="rect" id="Node000023" href="$scene__cleanup_8c.html#a856820fcc3d10f45ccf937e49baa9123" title=" " alt="" coords="939,574,1097,599"/>
+<area shape="poly" id="edge24_Node000022_Node000023" title=" " alt="" coords="564,577,657,564,767,558,876,564,928,569,927,575,876,569,767,564,658,569,565,582"/>
+<area shape="rect" id="Node000024" href="$scene__cleanup_8c.html#a0d34f99b92855ca3e8537eb5456e8048" title=" " alt="" coords="657,629,876,654"/>
+<area shape="poly" id="edge25_Node000022_Node000024" title=" " alt="" coords="570,602,684,623,683,629,569,607"/>
+<area shape="rect" id="Node000026" href="$scene__cleanup_8c.html#ae38a190b0dc00819aec7e5afc1d32d10" title=" " alt="" coords="665,579,869,605"/>
+<area shape="poly" id="edge27_Node000022_Node000026" title=" " alt="" coords="588,589,651,589,651,595,588,595"/>
+<area shape="rect" id="Node000025" href="$scene__cleanup_8c.html#a8fdf16c5b511a5572f0674ed113f938a" title=" " alt="" coords="938,629,1098,654"/>
+<area shape="poly" id="edge26_Node000024_Node000025" title=" " alt="" coords="876,639,924,639,924,644,876,644"/>
+<area shape="poly" id="edge28_Node000026_Node000023" title=" " alt="" coords="869,587,925,586,925,591,869,593"/>
+<area shape="poly" id="edge30_Node000027_Node000013" title=" " alt="" coords="579,335,692,335,692,340,579,340"/>
+<area shape="poly" id="edge34_Node000030_Node000013" title=" " alt="" coords="559,379,693,350,694,356,560,385"/>
+</map>

@@ -1,0 +1,732 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: IBLCoordinator Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('structIBLCoordinator.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle"><div class="title">IBLCoordinator Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Manages the progressive IBL generation process.  
+ <a href="structIBLCoordinator.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for IBLCoordinator:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="structIBLCoordinator__coll__graph.svg" width="590" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:ad86d6a415c26a59e240146dc5adb03b0" id="r_ad86d6a415c26a59e240146dc5adb03b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0">state</a></td></tr>
+<tr class="separator:ad86d6a415c26a59e240146dc5adb03b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a943239b7bca0a0799ce9f1138625421f" id="r_a943239b7bca0a0799ce9f1138625421f"><td class="memItemLeft" align="right" valign="top">GLsync&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f">lum_sync</a></td></tr>
+<tr class="separator:a943239b7bca0a0799ce9f1138625421f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a818d7b51bbb57fb8ebbc5d80a8740def" id="r_a818d7b51bbb57fb8ebbc5d80a8740def"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def">current_mip</a></td></tr>
+<tr class="separator:a818d7b51bbb57fb8ebbc5d80a8740def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bd55a2b0bcadc87485a5f9193df26de" id="r_a7bd55a2b0bcadc87485a5f9193df26de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de">total_mips</a></td></tr>
+<tr class="separator:a7bd55a2b0bcadc87485a5f9193df26de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a589d1a49358ad375dd97b3f4488c91f1" id="r_a589d1a49358ad375dd97b3f4488c91f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1">width</a></td></tr>
+<tr class="separator:a589d1a49358ad375dd97b3f4488c91f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1f25c18ba792980024cb1198cac93fe" id="r_ad1f25c18ba792980024cb1198cac93fe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe">height</a></td></tr>
+<tr class="separator:ad1f25c18ba792980024cb1198cac93fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25c66e920fe5480ac2c0daad7e22e3a7" id="r_a25c66e920fe5480ac2c0daad7e22e3a7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a25c66e920fe5480ac2c0daad7e22e3a7">threshold</a></td></tr>
+<tr class="separator:a25c66e920fe5480ac2c0daad7e22e3a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10da02b0b88ef2d95100507a4fd04193" id="r_a10da02b0b88ef2d95100507a4fd04193"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193">current_slice</a></td></tr>
+<tr class="separator:a10da02b0b88ef2d95100507a4fd04193"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77e6ebb9a8546c2aa95937090ce5fe76" id="r_a77e6ebb9a8546c2aa95937090ce5fe76"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76">total_slices</a></td></tr>
+<tr class="separator:a77e6ebb9a8546c2aa95937090ce5fe76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afddb06c4d125ddd47cf5ee7107c55f02" id="r_afddb06c4d125ddd47cf5ee7107c55f02"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02">pending_hdr_tex</a></td></tr>
+<tr class="separator:afddb06c4d125ddd47cf5ee7107c55f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14287ac19c5a9cfc3fc8825c51036669" id="r_a14287ac19c5a9cfc3fc8825c51036669"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a14287ac19c5a9cfc3fc8825c51036669">pending_spec_tex</a></td></tr>
+<tr class="separator:a14287ac19c5a9cfc3fc8825c51036669"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aade18713ee8f17933fc0a05c5c6da12c" id="r_aade18713ee8f17933fc0a05c5c6da12c"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c">pending_irr_tex</a></td></tr>
+<tr class="separator:aade18713ee8f17933fc0a05c5c6da12c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9fc947f4086bd1f6148282bebfe63d1" id="r_ae9fc947f4086bd1f6148282bebfe63d1"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1">spmap_program</a></td></tr>
+<tr class="separator:ae9fc947f4086bd1f6148282bebfe63d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a58c3eb0c5e578b55dc23a3b16becde" id="r_a4a58c3eb0c5e578b55dc23a3b16becde"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a4a58c3eb0c5e578b55dc23a3b16becde">irmap_program</a></td></tr>
+<tr class="separator:a4a58c3eb0c5e578b55dc23a3b16becde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acca6b2979c075f85a0c43079a887d952" id="r_acca6b2979c075f85a0c43079a887d952"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#acca6b2979c075f85a0c43079a887d952">lum_pass1_program</a></td></tr>
+<tr class="separator:acca6b2979c075f85a0c43079a887d952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08f663ef2c3ea59070786bd9f1534ddb" id="r_a08f663ef2c3ea59070786bd9f1534ddb"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a08f663ef2c3ea59070786bd9f1534ddb">lum_pass2_program</a></td></tr>
+<tr class="separator:a08f663ef2c3ea59070786bd9f1534ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a558216b46bac01e44c7dbbcda27d7f70" id="r_a558216b46bac01e44c7dbbcda27d7f70"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70">lum_ssbo</a> [2]</td></tr>
+<tr class="separator:a558216b46bac01e44c7dbbcda27d7f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8a3c6a002c92639218e6c394ea2998d" id="r_ab8a3c6a002c92639218e6c394ea2998d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">spec_uniforms</a></td></tr>
+<tr class="separator:ab8a3c6a002c92639218e6c394ea2998d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37cf9dd1cf7fdda6b709b93b9ba4b89e" id="r_a37cf9dd1cf7fdda6b709b93b9ba4b89e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e">irr_uniforms</a></td></tr>
+<tr class="separator:a37cf9dd1cf7fdda6b709b93b9ba4b89e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43a141b4082137f347576387dbc495f2" id="r_a43a141b4082137f347576387dbc495f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2">lum_uniforms</a></td></tr>
+<tr class="separator:a43a141b4082137f347576387dbc495f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa91b497d73f575bc292be18acaffdc76" id="r_aa91b497d73f575bc292be18acaffdc76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerfTimer.html">PerfTimer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76">global_timer</a></td></tr>
+<tr class="separator:aa91b497d73f575bc292be18acaffdc76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac80feec6db7c68ff02c0ee21d741f0c3" id="r_ac80feec6db7c68ff02c0ee21d741f0c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerfTimer.html">PerfTimer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3">stage_timer</a></td></tr>
+<tr class="separator:ac80feec6db7c68ff02c0ee21d741f0c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2d6543725765afb9881d93ec893401e" id="r_ac2d6543725765afb9881d93ec893401e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ac2d6543725765afb9881d93ec893401e">stage_gpu_min</a></td></tr>
+<tr class="separator:ac2d6543725765afb9881d93ec893401e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fb478126bc6cbe108879f1877780c7a" id="r_a6fb478126bc6cbe108879f1877780c7a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a">stage_gpu_max</a></td></tr>
+<tr class="separator:a6fb478126bc6cbe108879f1877780c7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a864f974c3d91fdd67ce7475b91f74de0" id="r_a864f974c3d91fdd67ce7475b91f74de0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0">stage_gpu_sum</a></td></tr>
+<tr class="separator:a864f974c3d91fdd67ce7475b91f74de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaac58f28cd2f8fed9653758a8b9931f4" id="r_aaac58f28cd2f8fed9653758a8b9931f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4">stage_slice_count</a></td></tr>
+<tr class="separator:aaac58f28cd2f8fed9653758a8b9931f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5de6c250a7893d96b6a88e774797463" id="r_ae5de6c250a7893d96b6a88e774797463"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ae5de6c250a7893d96b6a88e774797463">barrier_executed</a></td></tr>
+<tr class="separator:ae5de6c250a7893d96b6a88e774797463"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Manages the progressive IBL generation process. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="ae5de6c250a7893d96b6a88e774797463" name="ae5de6c250a7893d96b6a88e774797463"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5de6c250a7893d96b6a88e774797463">&#9670;&#160;</a></span>barrier_executed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool IBLCoordinator::barrier_executed</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Indicates if the memory barrier was executed for DONE state. </p>
+
+</div>
+</div>
+<a id="a818d7b51bbb57fb8ebbc5d80a8740def" name="a818d7b51bbb57fb8ebbc5d80a8740def"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a818d7b51bbb57fb8ebbc5d80a8740def">&#9670;&#160;</a></span>current_mip</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::current_mip</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Mip level being computed. </p>
+
+</div>
+</div>
+<a id="a10da02b0b88ef2d95100507a4fd04193" name="a10da02b0b88ef2d95100507a4fd04193"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10da02b0b88ef2d95100507a4fd04193">&#9670;&#160;</a></span>current_slice</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::current_slice</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cubemap face/slice being processed. </p>
+
+</div>
+</div>
+<a id="aa91b497d73f575bc292be18acaffdc76" name="aa91b497d73f575bc292be18acaffdc76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa91b497d73f575bc292be18acaffdc76">&#9670;&#160;</a></span>global_timer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPerfTimer.html">PerfTimer</a> IBLCoordinator::global_timer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Benchmarking for the entire process. </p>
+
+</div>
+</div>
+<a id="ad1f25c18ba792980024cb1198cac93fe" name="ad1f25c18ba792980024cb1198cac93fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1f25c18ba792980024cb1198cac93fe">&#9670;&#160;</a></span>height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source texture height. </p>
+
+</div>
+</div>
+<a id="a4a58c3eb0c5e578b55dc23a3b16becde" name="a4a58c3eb0c5e578b55dc23a3b16becde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a58c3eb0c5e578b55dc23a3b16becde">&#9670;&#160;</a></span>irmap_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::irmap_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Irradiance convolution compute shader. </p>
+
+</div>
+</div>
+<a id="a37cf9dd1cf7fdda6b709b93b9ba4b89e" name="a37cf9dd1cf7fdda6b709b93b9ba4b89e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37cf9dd1cf7fdda6b709b93b9ba4b89e">&#9670;&#160;</a></span>irr_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a> IBLCoordinator::irr_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached uniforms for irradiance shader. </p>
+
+</div>
+</div>
+<a id="acca6b2979c075f85a0c43079a887d952" name="acca6b2979c075f85a0c43079a887d952"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acca6b2979c075f85a0c43079a887d952">&#9670;&#160;</a></span>lum_pass1_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::lum_pass1_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Luminance reduction pass 1. </p>
+
+</div>
+</div>
+<a id="a08f663ef2c3ea59070786bd9f1534ddb" name="a08f663ef2c3ea59070786bd9f1534ddb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08f663ef2c3ea59070786bd9f1534ddb">&#9670;&#160;</a></span>lum_pass2_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::lum_pass2_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Luminance reduction pass 2. </p>
+
+</div>
+</div>
+<a id="a558216b46bac01e44c7dbbcda27d7f70" name="a558216b46bac01e44c7dbbcda27d7f70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a558216b46bac01e44c7dbbcda27d7f70">&#9670;&#160;</a></span>lum_ssbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::lum_ssbo[2]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>SSBOs for luminance reduction. </p>
+
+</div>
+</div>
+<a id="a943239b7bca0a0799ce9f1138625421f" name="a943239b7bca0a0799ce9f1138625421f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a943239b7bca0a0799ce9f1138625421f">&#9670;&#160;</a></span>lum_sync</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLsync IBLCoordinator::lum_sync</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sync object for luminance readback. </p>
+
+</div>
+</div>
+<a id="a43a141b4082137f347576387dbc495f2" name="a43a141b4082137f347576387dbc495f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43a141b4082137f347576387dbc495f2">&#9670;&#160;</a></span>lum_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> IBLCoordinator::lum_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached uniforms for luminance shader. </p>
+
+</div>
+</div>
+<a id="afddb06c4d125ddd47cf5ee7107c55f02" name="afddb06c4d125ddd47cf5ee7107c55f02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afddb06c4d125ddd47cf5ee7107c55f02">&#9670;&#160;</a></span>pending_hdr_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::pending_hdr_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source HDR texture handle. </p>
+
+</div>
+</div>
+<a id="aade18713ee8f17933fc0a05c5c6da12c" name="aade18713ee8f17933fc0a05c5c6da12c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aade18713ee8f17933fc0a05c5c6da12c">&#9670;&#160;</a></span>pending_irr_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::pending_irr_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Target irradiance map handle. </p>
+
+</div>
+</div>
+<a id="a14287ac19c5a9cfc3fc8825c51036669" name="a14287ac19c5a9cfc3fc8825c51036669"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14287ac19c5a9cfc3fc8825c51036669">&#9670;&#160;</a></span>pending_spec_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::pending_spec_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Target specular map handle. </p>
+
+</div>
+</div>
+<a id="ab8a3c6a002c92639218e6c394ea2998d" name="ab8a3c6a002c92639218e6c394ea2998d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a3c6a002c92639218e6c394ea2998d">&#9670;&#160;</a></span>spec_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a> IBLCoordinator::spec_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached uniforms for specular shader. </p>
+
+</div>
+</div>
+<a id="ae9fc947f4086bd1f6148282bebfe63d1" name="ae9fc947f4086bd1f6148282bebfe63d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9fc947f4086bd1f6148282bebfe63d1">&#9670;&#160;</a></span>spmap_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::spmap_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Specular pre-filter compute shader. </p>
+
+</div>
+</div>
+<a id="a6fb478126bc6cbe108879f1877780c7a" name="a6fb478126bc6cbe108879f1877780c7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fb478126bc6cbe108879f1877780c7a">&#9670;&#160;</a></span>stage_gpu_max</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double IBLCoordinator::stage_gpu_max</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Maximum GPU time across slices (ms). </p>
+
+</div>
+</div>
+<a id="ac2d6543725765afb9881d93ec893401e" name="ac2d6543725765afb9881d93ec893401e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2d6543725765afb9881d93ec893401e">&#9670;&#160;</a></span>stage_gpu_min</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double IBLCoordinator::stage_gpu_min</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Minimum GPU time across slices (ms). </p>
+
+</div>
+</div>
+<a id="a864f974c3d91fdd67ce7475b91f74de0" name="a864f974c3d91fdd67ce7475b91f74de0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a864f974c3d91fdd67ce7475b91f74de0">&#9670;&#160;</a></span>stage_gpu_sum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double IBLCoordinator::stage_gpu_sum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Accumulated GPU time across slices (ms). </p>
+
+</div>
+</div>
+<a id="aaac58f28cd2f8fed9653758a8b9931f4" name="aaac58f28cd2f8fed9653758a8b9931f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaac58f28cd2f8fed9653758a8b9931f4">&#9670;&#160;</a></span>stage_slice_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::stage_slice_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Number of slices completed in stage. </p>
+
+</div>
+</div>
+<a id="ac80feec6db7c68ff02c0ee21d741f0c3" name="ac80feec6db7c68ff02c0ee21d741f0c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac80feec6db7c68ff02c0ee21d741f0c3">&#9670;&#160;</a></span>stage_timer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPerfTimer.html">PerfTimer</a> IBLCoordinator::stage_timer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Wall-clock timer for the current stage. </p>
+
+</div>
+</div>
+<a id="ad86d6a415c26a59e240146dc5adb03b0" name="ad86d6a415c26a59e240146dc5adb03b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad86d6a415c26a59e240146dc5adb03b0">&#9670;&#160;</a></span>state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> IBLCoordinator::state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current processing phase. </p>
+
+</div>
+</div>
+<a id="a25c66e920fe5480ac2c0daad7e22e3a7" name="a25c66e920fe5480ac2c0daad7e22e3a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25c66e920fe5480ac2c0daad7e22e3a7">&#9670;&#160;</a></span>threshold</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float IBLCoordinator::threshold</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Radiance threshold for sampling. </p>
+
+</div>
+</div>
+<a id="a7bd55a2b0bcadc87485a5f9193df26de" name="a7bd55a2b0bcadc87485a5f9193df26de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bd55a2b0bcadc87485a5f9193df26de">&#9670;&#160;</a></span>total_mips</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::total_mips</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Target mip count. </p>
+
+</div>
+</div>
+<a id="a77e6ebb9a8546c2aa95937090ce5fe76" name="a77e6ebb9a8546c2aa95937090ce5fe76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77e6ebb9a8546c2aa95937090ce5fe76">&#9670;&#160;</a></span>total_slices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::total_slices</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Face count (typically 6). </p>
+
+</div>
+</div>
+<a id="a589d1a49358ad375dd97b3f4488c91f1" name="a589d1a49358ad375dd97b3f4488c91f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a589d1a49358ad375dd97b3f4488c91f1">&#9670;&#160;</a></span>width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IBLCoordinator::width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source texture width. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

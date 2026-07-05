@@ -1,0 +1,354 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="globals.html#index_a"><span>a</span></a></li>
+      <li><a href="globals_b.html#index_b"><span>b</span></a></li>
+      <li><a href="globals_c.html#index_c"><span>c</span></a></li>
+      <li><a href="globals_d.html#index_d"><span>d</span></a></li>
+      <li><a href="globals_e.html#index_e"><span>e</span></a></li>
+      <li><a href="globals_f.html#index_f"><span>f</span></a></li>
+      <li><a href="globals_g.html#index_g"><span>g</span></a></li>
+      <li><a href="globals_h.html#index_h"><span>h</span></a></li>
+      <li class="current"><a href="globals_i.html#index_i"><span>i</span></a></li>
+      <li><a href="globals_k.html#index_k"><span>k</span></a></li>
+      <li><a href="globals_l.html#index_l"><span>l</span></a></li>
+      <li><a href="globals_m.html#index_m"><span>m</span></a></li>
+      <li><a href="globals_n.html#index_n"><span>n</span></a></li>
+      <li><a href="globals_o.html#index_o"><span>o</span></a></li>
+      <li><a href="globals_p.html#index_p"><span>p</span></a></li>
+      <li><a href="globals_q.html#index_q"><span>q</span></a></li>
+      <li><a href="globals_r.html#index_r"><span>r</span></a></li>
+      <li><a href="globals_s.html#index_s"><span>s</span></a></li>
+      <li><a href="globals_t.html#index_t"><span>t</span></a></li>
+      <li><a href="globals_u.html#index_u"><span>u</span></a></li>
+      <li><a href="globals_v.html#index_v"><span>v</span></a></li>
+      <li><a href="globals_w.html#index_w"><span>w</span></a></li>
+      <li><a href="globals_x.html#index_x"><span>x</span></a></li>
+      <li><a href="globals_y.html#index_y"><span>y</span></a></li>
+      <li><a href="globals_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_i.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all functions, variables, defines, enums, and typedefs with links to the files they belong to:</div>
+
+<h3><a id="index_i" name="index_i"></a>- i -</h3><ul>
+<li>ibl_coordinator_cleanup()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a7af04c7b19cdf6fd658af855351f19ad">ibl_coordinator.c</a>, <a class="el" href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">ibl_coordinator.h</a></li>
+<li>ibl_coordinator_get_results()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a897ce59e5e3e582ff1385f4c9e2c7f82">ibl_coordinator.c</a>, <a class="el" href="ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82">ibl_coordinator.h</a></li>
+<li>ibl_coordinator_get_state()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a1877c6b20516ab30bc63f6e7da914a20">ibl_coordinator.c</a>, <a class="el" href="ibl__coordinator_8h.html#a1877c6b20516ab30bc63f6e7da914a20">ibl_coordinator.h</a></li>
+<li>ibl_coordinator_init()&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">ibl_coordinator.h</a>, <a class="el" href="ibl__coordinator_8c.html#a076ded1b24635b548a16e161d45735c3">ibl_coordinator.c</a></li>
+<li>ibl_coordinator_reset()&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a0bff11f3337e1e69179225a25757bcc0">ibl_coordinator.h</a>, <a class="el" href="ibl__coordinator_8c.html#a0bff11f3337e1e69179225a25757bcc0">ibl_coordinator.c</a></li>
+<li>ibl_coordinator_start()&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3">ibl_coordinator.h</a>, <a class="el" href="ibl__coordinator_8c.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3">ibl_coordinator.c</a></li>
+<li>ibl_coordinator_update()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#ac4e66403e82cf9193c1eeb0a534b90d8">ibl_coordinator.c</a>, <a class="el" href="ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8">ibl_coordinator.h</a></li>
+<li>IBL_IRRADIANCE_HARDWARE_SLICES&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a50f2c8aeca54eeb71bd72a8fdeaf1c45">ibl_coordinator.c</a></li>
+<li>ibl_irradiance_slices()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a325df28750573fe64f999eace591c77b">ibl_coordinator.c</a></li>
+<li>IBL_LOG_LABEL_SIZE&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#aa5ac2b4f077bc45d4ea556539a84db38">ibl_coordinator.c</a></li>
+<li>IBL_SOFTWARE_FALLBACK_SLICES&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a6494d63e0ff1eb4d9ec732a056ab655c">ibl_coordinator.c</a></li>
+<li>IBL_SOFTWARE_MIP_GROUPING_START_MIP&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a7427e33647e1f11c1129bfe49029bcce">ibl_coordinator.c</a></li>
+<li>IBL_SPECULAR_MIP0_HARDWARE_SLICES&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a10906b0fc6004f05d5b0428c10cad2e9">ibl_coordinator.c</a></li>
+<li>ibl_specular_mip0_slices()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#aaa5ff05792c6e4a641f2bffb90279ac4">ibl_coordinator.c</a></li>
+<li>IBL_SPECULAR_MIP1_HARDWARE_SLICES&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#ad724e11eb756c49bf2e1f0603946b3e0">ibl_coordinator.c</a></li>
+<li>ibl_specular_mip1_slices()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a68e655e2e6acfa7418ca6cbb31f7dfa7">ibl_coordinator.c</a></li>
+<li>IBL_SPECULAR_MIP_GROUPING_START_MIP&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a0f951302cb33cd6f2aa28d7314bc2bc8">ibl_coordinator.c</a></li>
+<li>ibl_specular_mips_grouping_start()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#afd9d63c9f2007aeb78aa1e3df5552c3e">ibl_coordinator.c</a></li>
+<li>IBL_STATE_DONE&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">ibl_coordinator.h</a></li>
+<li>IBL_STATE_IDLE&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">ibl_coordinator.h</a></li>
+<li>IBL_STATE_IRRADIANCE&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">ibl_coordinator.h</a></li>
+<li>IBL_STATE_LUMINANCE&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">ibl_coordinator.h</a></li>
+<li>IBL_STATE_LUMINANCE_WAIT&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79">ibl_coordinator.h</a></li>
+<li>IBL_STATE_SPECULAR_INIT&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">ibl_coordinator.h</a></li>
+<li>IBL_STATE_SPECULAR_MIPS&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">ibl_coordinator.h</a></li>
+<li>ibl_stats_accumulate()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#ad84674ac64b27b24aeca92bd5ab7d1c4">ibl_coordinator.c</a></li>
+<li>ibl_stats_log_summary()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a5b1a8f5de925bfe99792303d6c760488">ibl_coordinator.c</a></li>
+<li>ibl_stats_reset()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a50744c66f0d06568ff860aecb9f30cba">ibl_coordinator.c</a></li>
+<li>IBL_TEXTURE_COUNT&#160;:&#160;<a class="el" href="scene__gpu__resources_8h.html#a5d76b81b0ad4c19007a781d4edb8181fafd56f8a6cb1afc6b2ee324b1de154b4e">scene_gpu_resources.h</a></li>
+<li>IBL_THRESHOLD_FALLBACK_MIN&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#a7f01277e23e73c88a937e3771351252c">ibl_coordinator.c</a></li>
+<li>IBLState&#160;:&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">ibl_coordinator.h</a></li>
+<li>ICOSAHEDRON_INDEX_COUNT&#160;:&#160;<a class="el" href="icosphere_8c.html#afa231099d07583c3ed0981e0bb665f55a3e4dd7eb2f4986df933274b70b7a6afd">icosphere.c</a></li>
+<li>icosahedron_indices&#160;:&#160;<a class="el" href="icosphere_8c.html#a331322d23a758cda19c33705af0f98dd">icosphere.c</a></li>
+<li>ICOSAHEDRON_VERTEX_COUNT&#160;:&#160;<a class="el" href="icosphere_8c.html#afa231099d07583c3ed0981e0bb665f55a6146e19be1ba08d03a7cd419cef6bf22">icosphere.c</a></li>
+<li>icosahedron_vertices&#160;:&#160;<a class="el" href="icosphere_8c.html#a3a17f248c8cd96628538e037c878860e">icosphere.c</a></li>
+<li>icosphere_free()&#160;:&#160;<a class="el" href="icosphere_8c.html#a5d46fa05e1dc89e653b23558a202774f">icosphere.c</a>, <a class="el" href="icosphere_8h.html#a5d46fa05e1dc89e653b23558a202774f">icosphere.h</a></li>
+<li>icosphere_generate()&#160;:&#160;<a class="el" href="icosphere_8c.html#a7c1eaf921d44583aa9f855097b74d4b1">icosphere.c</a>, <a class="el" href="icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1">icosphere.h</a></li>
+<li>icosphere_init()&#160;:&#160;<a class="el" href="icosphere_8h.html#a98ec73bfde90923b7425adee892c7529">icosphere.h</a>, <a class="el" href="icosphere_8c.html#a98ec73bfde90923b7425adee892c7529">icosphere.c</a></li>
+<li>INDENT_STEP&#160;:&#160;<a class="el" href="gpu__profiler__ui__layout_8h.html#af49642dff95fa92138797fa653177e5c">gpu_profiler_ui_layout.h</a></li>
+<li>INDEX_SHIFT&#160;:&#160;<a class="el" href="icosphere_8c.html#afa231099d07583c3ed0981e0bb665f55aa24be6570a0e4f5604c47521bed974c5">icosphere.c</a></li>
+<li>INFO_LOG_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#aedcf2109f459315e1a7f2af73ec9b603a452257118dc4009bf289a99b738d1288">shader.c</a></li>
+<li>INITIAL_SUBDIVISIONS&#160;:&#160;<a class="el" href="group__Geometry.html#ggabc6126af1d45847bc59afa0aa3216b04a4dcc3f43b13b159296f85b7d6d293a4b">app_settings.h</a></li>
+<li>INITIAL_UINT_CAPACITY&#160;:&#160;<a class="el" href="icosphere_8c.html#afa231099d07583c3ed0981e0bb665f55aa2a9070dd99320b9bc4f897c47220926">icosphere.c</a></li>
+<li>INITIAL_VEC3_CAPACITY&#160;:&#160;<a class="el" href="icosphere_8c.html#afa231099d07583c3ed0981e0bb665f55a329acb3ae88741fba4e792489782463e">icosphere.c</a></li>
+<li>inject_defines_into_source()&#160;:&#160;<a class="el" href="shader_8c.html#accb74d7cb19fd2bdf7d928b84376fc9c">shader.c</a></li>
+<li>INSTANCE_ATTR_START&#160;:&#160;<a class="el" href="gl__common_8h.html#a05589fbab0657f08285ebdfe93f5ec9eae627525491a141e81f7479d7fffb4038">gl_common.h</a></li>
+<li>instanced_group_bind_mesh()&#160;:&#160;<a class="el" href="instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4">instanced_rendering.h</a>, <a class="el" href="instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4">instanced_rendering.c</a></li>
+<li>instanced_group_cleanup()&#160;:&#160;<a class="el" href="instanced__rendering_8h.html#a1c3f138d496ea038ba38d988c71d6884">instanced_rendering.h</a>, <a class="el" href="instanced__rendering_8c.html#a1c3f138d496ea038ba38d988c71d6884">instanced_rendering.c</a></li>
+<li>instanced_group_draw()&#160;:&#160;<a class="el" href="instanced__rendering_8h.html#af70d42b318f921586735530dc3a533e5">instanced_rendering.h</a>, <a class="el" href="instanced__rendering_8c.html#af70d42b318f921586735530dc3a533e5">instanced_rendering.c</a></li>
+<li>instanced_group_init()&#160;:&#160;<a class="el" href="instanced__rendering_8h.html#aaf6a9f5495e335b448587e24c56c2a77">instanced_rendering.h</a>, <a class="el" href="instanced__rendering_8c.html#aaf6a9f5495e335b448587e24c56c2a77">instanced_rendering.c</a></li>
+<li>instanced_group_update()&#160;:&#160;<a class="el" href="instanced__rendering_8h.html#a5a080d716887f7858b0d9b745b078448">instanced_rendering.h</a>, <a class="el" href="instanced__rendering_8c.html#a5a080d716887f7858b0d9b745b078448">instanced_rendering.c</a></li>
+<li>INT_TO_BOOL&#160;:&#160;<a class="el" href="bool__utils_8h.html#ad031a7679fe67ae3963f81e172372198">bool_utils.h</a></li>
+<li>InterleavedGradientNoise()&#160;:&#160;<a class="el" href="common_8glsl.html#ac7912b45ccfde451dd68228dd7114bfb">common.glsl</a></li>
+<li>intersectSphere()&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a65c64433ce42e5fa98925acb42321c46">pbr_ibl_billboard.frag</a></li>
+<li>INV_PI&#160;:&#160;<a class="el" href="pbr__functions_8glsl.html#aba5e6db48fdfc9b9cb18c368295bd224">pbr_functions.glsl</a></li>
+<li>invAtan&#160;:&#160;<a class="el" href="background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80">background.frag</a></li>
+<li>io_read_file()&#160;:&#160;<a class="el" href="io_8c.html#a4ce68f88c050c3287a2a532957ffa1fc">io.c</a>, <a class="el" href="io_8h.html#a4ce68f88c050c3287a2a532957ffa1fc">io.h</a></li>
+<li>IRIDIANCE_MAP_SIZE&#160;:&#160;<a class="el" href="group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743">app_settings.h</a></li>
+<li>is_key_active_in_overlay()&#160;:&#160;<a class="el" href="app__ui_8c.html#a79e4807fa5dc8741de93d060381548f8">app_ui.c</a></li>
+<li>is_modifier_relevant()&#160;:&#160;<a class="el" href="app__ui_8c.html#a2c6ab23480ae4de17b6ff39d29cdc36e">app_ui.c</a></li>
+<li>is_probe_inside_sphere()&#160;:&#160;<a class="el" href="light__probes_8c.html#abde5719c10df3a99d455b1664addce2a">light_probes.c</a></li>
+<li>is_safe_filename()&#160;:&#160;<a class="el" href="utils_8h.html#a0e22037461cd1f39af6f4ed6619bf953">utils.h</a>, <a class="el" href="utils_8c.html#a0e22037461cd1f39af6f4ed6619bf953">utils.c</a></li>
+<li>is_safe_relative_path()&#160;:&#160;<a class="el" href="utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1">utils.h</a>, <a class="el" href="utils_8c.html#a520044f64f3253a0c6842b6f80b4e6d1">utils.c</a></li>
+<li>is_software_renderer()&#160;:&#160;<a class="el" href="ibl__coordinator_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e">ibl_coordinator.c</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
