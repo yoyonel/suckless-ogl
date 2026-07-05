@@ -64,7 +64,7 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 * **Validation** :
   - Le test `ctest -R test_scene_cleanup_idempotency` passe avec succès (GREEN) sous ASan/Valgrind.
 
-### [ ] Tâche 3.3 : Restructuration et sécurisation de scene_cleanup de haut niveau
+### [x] Tâche 3.3 : Restructuration et sécurisation de scene_cleanup de haut niveau
 * **Fichier cible** : [scene_cleanup.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_cleanup.c#L82)
 * **Description** :
   - Restructurer la fonction globale [scene_cleanup](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_cleanup.c#L82) pour qu'elle nettoie les ressources dans un ordre strict (du plus dépendant au plus indépendant).
@@ -88,7 +88,7 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 * **Validation** :
   - Compilation réussie du projet global.
 
-### [ ] Tâche 4.2 : Sécurisation du point d'entrée subsystem scene_subsys_init
+### [x] Tâche 4.2 : Sécurisation du point d'entrée subsystem scene_subsys_init
 * **Fichier cible** : [scene_init.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L508)
 * **Description** : Dans [scene_subsys_init](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L508), s'assurer que si [scene_init](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L427) échoue, la structure globale `app->scene` allouée par `platform_aligned_alloc` est proprement désallouée et le pointeur est mis à `NULL`.
 * **Validation** :
@@ -105,7 +105,7 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 * **Validation** :
   - Le test `ctest -R test_scene_cleanup_idempotency` exécuté sous ASan ou Valgrind remonte 0 fuite mémoire directe ou indirecte (`no memory leaks`) et 0 erreur de comportement indéfini.
 
-### [ ] Tâche 5.2 : Validation des performances en transition (Fondu au noir)
+### [x] Tâche 5.2 : Validation des performances en transition (Fondu au noir)
 * **Description** :
   - Configurer et lancer le test de transition ou l'application avec le mode `ENV_TRANSITION_BLACK_SCREEN` (géré par [env_manager.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/env_manager.c#L217)).
   - Confirmer via profilage ou par l'état interne du coordinateur qu'aucun appel redondant ou gaspillage de barrière mémoire GPU n'est émis.

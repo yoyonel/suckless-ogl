@@ -134,6 +134,7 @@ set(OPENGL_TESTS
     test_auto_exposure_debug
     test_fx_lut3d
     test_fx_dof
+    test_transition_performance
 )
 
 

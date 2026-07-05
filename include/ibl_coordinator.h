@@ -113,6 +113,13 @@ void ibl_coordinator_start(IBLCoordinator* coord, GLuint hdr_tex, int width,
 IBLState ibl_coordinator_update(IBLCoordinator* coord, uint64_t frame_count);
 
 /**
+ * @brief Retrieves the current state of the coordinator.
+ * @param coord Pointer to the coordinator instance.
+ * @return The current IBLState.
+ */
+IBLState ibl_coordinator_get_state(const IBLCoordinator* coord);
+
+/**
  * @brief Retrieves the results of the IBL generation.
  * @param coord Pointer to the coordinator instance.
  * @param out_hdr_tex Pointer to receive the HDR texture handle.

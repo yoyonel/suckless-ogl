@@ -140,6 +140,14 @@ int env_manager_trigger_transition(EnvManager* mgr, AsyncLoader* loader,
 		return 0;
 	}
 
+	if (mgr->ibl_coord) {
+		IBLState ibl_state = ibl_coordinator_get_state(mgr->ibl_coord);
+		if (ibl_state != IBL_STATE_IDLE &&
+		    ibl_state != IBL_STATE_DONE) {
+			return 0;
+		}
+	}
+
 	mgr->transition_state = TRANSITION_LOADING;
 	mgr->transition_alpha = 0.0F;
 
@@ -148,9 +156,14 @@ int env_manager_trigger_transition(EnvManager* mgr, AsyncLoader* loader,
 
 static void capture_snapshot(Scene* scene, int width, int height)
 {
+	if (!scene || !scene->gpu) {
+		return;
+	}
+
 	if (scene->gpu->transition_snapshot_tex == 0) {
 		glGenTextures(1, &scene->gpu->transition_snapshot_tex);
 	}
+
 	glBindTexture(GL_TEXTURE_2D, scene->gpu->transition_snapshot_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
 	             GL_UNSIGNED_BYTE, NULL);
@@ -165,6 +178,10 @@ static void finalize_ibl_swap(Scene* scene, PostProcess* postproc,
                               GLuint hdr_tex, GLuint spec_tex, GLuint irr_tex,
                               float threshold, uint64_t frame_count)
 {
+	if (!scene || !scene->gpu) {
+		return;
+	}
+
 	postprocess_set_exposure_target(postproc, threshold);
 
 	/* Recyclage de l'ancienne texture HDR pour éviter les allocations
@@ -200,6 +217,10 @@ static void handle_ibl_done_wait_state(EnvManager* mgr, Scene* scene,
 	GLuint irr_tex = 0;
 	float threshold = 0.0F;
 
+	if (!mgr || !scene || !scene->gpu) {
+		return;
+	}
+
 	if (ibl_coordinator_get_results(&scene->lighting.ibl_coord, &hdr_tex,
 	                                &spec_tex, &irr_tex, &threshold)) {
 		finalize_ibl_swap(scene, postproc, hdr_tex, spec_tex, irr_tex,
@@ -214,7 +235,16 @@ static void handle_ibl_done_loading_state(EnvManager* mgr, Scene* scene,
                                           uint64_t frame_count, int width,
                                           int height)
 {
+	if (!mgr || !scene || !scene->gpu) {
+		return;
+	}
+
 	if (mgr->env_transition_mode == ENV_TRANSITION_BLACK_SCREEN) {
+		IBLCoordinator* coord = &scene->lighting.ibl_coord;
+		if (ibl_coordinator_get_state(coord) != IBL_STATE_DONE ||
+		    !coord->barrier_executed) {
+			return;
+		}
 		mgr->transition_state = TRANSITION_FADE_OUT;
 		mgr->transition_alpha = 0.0F;
 	} else {
@@ -239,6 +269,12 @@ void env_manager_update_ibl(EnvManager* mgr, Scene* scene,
                             PostProcess* postproc, uint64_t frame_count,
                             int width, int height)
 {
+	if (!mgr || !scene || !scene->gpu) {
+		return;
+	}
+
+	mgr->ibl_coord = &scene->lighting.ibl_coord;
+
 	IBLState state =
 	    ibl_coordinator_update(&scene->lighting.ibl_coord, frame_count);
 
@@ -257,6 +293,10 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
                                    PostProcess* postproc, double delta_time,
                                    uint64_t frame_count)
 {
+	if (!mgr || !scene || !scene->gpu) {
+		return;
+	}
+
 	switch (mgr->transition_state) {
 		case TRANSITION_IDLE:
 		case TRANSITION_LOADING:
@@ -298,6 +338,10 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
 
 void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene)
 {
+	if (!mgr || !scene || !scene->shaders || !scene->gpu) {
+		return;
+	}
+
 	if (mgr->transition_state != TRANSITION_IDLE) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -343,6 +387,11 @@ int env_mgr_subsys_init(App* app)
 	app->env_mgr->transition_alpha = 1.0F;
 	app->env_mgr->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
 	app->env_mgr->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
+	if (app->scene) {
+		app->env_mgr->ibl_coord = &app->scene->lighting.ibl_coord;
+	} else {
+		app->env_mgr->ibl_coord = NULL;
+	}
 	return 1;
 }
 

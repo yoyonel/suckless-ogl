@@ -43,6 +43,8 @@ typedef struct EnvManager {
 	bool is_first_load;
 	int env_transition_mode; /**< EnvTransitionMode. */
 	GLuint pending_env_tex;  /**< Texture being assembled before IBL. */
+	IBLCoordinator*
+	    ibl_coord; /**< Cached reference to the IBL coordinator. */
 } EnvManager;
 
 /**

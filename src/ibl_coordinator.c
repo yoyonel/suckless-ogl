@@ -456,3 +456,11 @@ int ibl_coordinator_get_results(IBLCoordinator* coord, GLuint* out_hdr_tex,
 
 	return 1;
 }
+
+IBLState ibl_coordinator_get_state(const IBLCoordinator* coord)
+{
+	if (!coord) {
+		return IBL_STATE_IDLE;
+	}
+	return coord->state;
+}

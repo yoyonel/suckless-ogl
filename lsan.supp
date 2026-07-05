@@ -4,3 +4,10 @@ leak:libX11.so
 leak:libGLX_mesa.so
 leak:libnvidia-glcore.so
 leak:<unknown module>
+
+{
+   MaterialLibStub
+   Memcheck:Leak
+   fun:material_free_lib
+   fun:test_scene_cleanup_idempotency
+}
