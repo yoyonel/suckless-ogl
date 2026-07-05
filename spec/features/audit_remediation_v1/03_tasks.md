@@ -88,7 +88,7 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 * **Validation** :
   - Compilation réussie du projet global.
 
-### [x] Tâche 4.2 : Sécurisation du point d'entrée subsystem scene_subsys_init
+### [ ] Tâche 4.2 : Sécurisation du point d'entrée subsystem scene_subsys_init
 * **Fichier cible** : [scene_init.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L508)
 * **Description** : Dans [scene_subsys_init](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L508), s'assurer que si [scene_init](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L427) échoue, la structure globale `app->scene` allouée par `platform_aligned_alloc` est proprement désallouée et le pointeur est mis à `NULL`.
 * **Validation** :
