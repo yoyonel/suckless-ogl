@@ -13,6 +13,7 @@
 #include "gl_common.h"
 #include "pbr.h"
 #include "perf_timer.h"
+#include <stdbool.h>
 
 /**
  * @enum IBLState
@@ -71,6 +72,8 @@ typedef struct {
 	double stage_gpu_max;   /**< Maximum GPU time across slices (ms). */
 	double stage_gpu_sum;   /**< Accumulated GPU time across slices (ms). */
 	int stage_slice_count;  /**< Number of slices completed in stage. */
+	bool barrier_executed; /**< Indicates if the memory barrier was executed
+	                          for DONE state. */
 } IBLCoordinator;
 
 /**

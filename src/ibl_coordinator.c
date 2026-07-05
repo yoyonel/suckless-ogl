@@ -137,6 +137,7 @@ void ibl_coordinator_init(IBLCoordinator* coord, GLuint spmap_program,
 {
 	*coord = (IBLCoordinator){0};
 	coord->state = IBL_STATE_IDLE;
+	coord->barrier_executed = false;
 
 	coord->spmap_program = spmap_program;
 	coord->irmap_program = irmap_program;
@@ -177,6 +178,7 @@ void ibl_coordinator_reset(IBLCoordinator* coord)
 		coord->pending_irr_tex = 0;
 	}
 	coord->state = IBL_STATE_IDLE;
+	coord->barrier_executed = false;
 }
 
 void ibl_coordinator_start(IBLCoordinator* coord, GLuint hdr_tex, int width,
@@ -376,7 +378,8 @@ static IBLState process_irradiance(IBLCoordinator* coord,
 
 IBLState ibl_coordinator_update(IBLCoordinator* coord, uint64_t frame_count)
 {
-	if (coord->state == IBL_STATE_IDLE || coord->state == IBL_STATE_DONE) {
+	if (coord->state == IBL_STATE_IDLE ||
+	    (coord->state == IBL_STATE_DONE && coord->barrier_executed)) {
 		return coord->state;
 	}
 
@@ -404,9 +407,15 @@ IBLState ibl_coordinator_update(IBLCoordinator* coord, uint64_t frame_count)
 			break;
 
 		case IBL_STATE_DONE:
-			/* Barrier logic is better handled by caller or implicit
-			 * in texture usage, but original code had it here. */
-			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+			if (!coord->barrier_executed) {
+				glMemoryBarrier(
+				    GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+				coord->barrier_executed = true;
+				LOG_INFO(
+				    "suckless-ogl.ibl",
+				    "[Frame %llu] IBL Memory barrier executed.",
+				    frame);
+			}
 			break;
 
 		default:

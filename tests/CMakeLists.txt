@@ -469,7 +469,6 @@ endif()
 # =============================================================================
 add_executable(test_ibl_coordinator
     test_ibl_coordinator.c
-    ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/src/ibl_coordinator.c
     ${CMAKE_SOURCE_DIR}/src/log.c
@@ -488,7 +487,6 @@ target_include_directories(test_ibl_coordinator PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${stb_SOURCE_DIR}
-    ${unity_SOURCE_DIR}/src
 )
 if(ENABLE_TRACY)
   target_include_directories(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")

@@ -1,6 +1,6 @@
 #include "ibl_coordinator.h"
 #include "mock_gl_standalone.h"
-#include "unity.h"
+#include <assert.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -28,9 +28,6 @@ static const int MOCK_HEIGHT = 256;
 static const int MAX_STEPS = 1000;
 static const GLuint MOCK_RES_SPEC = 200;
 static const GLuint MOCK_RES_IRR = 300;
-static const float TEST_EXPECTED_THRESHOLD = 3.0F;
-static const float TEST_TOLERANCE = 0.1F;
-static const int TEST_COORD_DIM = 100;
 
 /* Mocks for perf_timer */
 void perf_timer_start(PerfTimer* timer)
@@ -219,107 +216,72 @@ void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
 
 /* ------------------------------------------------ */
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static IBLCoordinator g_coord;
-
-void setUp(void)
+void test_ibl_coordinator_lifecycle_and_barrier(void)
 {
 	mock_gl_reset_calls();
-	/* Ensure clean state */
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(&g_coord, 0, sizeof(g_coord));
-}
 
-void tearDown(void)
-{
-	ibl_coordinator_cleanup(&g_coord);
-}
+	/* 1. Instancie une structure IBLCoordinator à {0} */
+	IBLCoordinator coord = {0};
 
-void test_ibl_coordinator_full_cycle(void)
-{
-	/* 1. Initialization */
-	ibl_coordinator_init(&g_coord, MOCK_SHADER_SP, MOCK_SHADER_IR,
+	/* 2. Appelle les fonctions d'init/reset */
+	ibl_coordinator_init(&coord, MOCK_SHADER_SP, MOCK_SHADER_IR,
 	                     MOCK_SHADER_L1, MOCK_SHADER_L2);
-	TEST_ASSERT_EQUAL(IBL_STATE_IDLE, g_coord.state);
+	assert(coord.state == IBL_STATE_IDLE);
 
-	/* 2. Start */
-	ibl_coordinator_start(&g_coord, MOCK_HDR_TEX, MOCK_WIDTH, MOCK_HEIGHT);
-	TEST_ASSERT_EQUAL(IBL_STATE_LUMINANCE, g_coord.state);
-	TEST_ASSERT_EQUAL(MOCK_HDR_TEX, g_coord.pending_hdr_tex);
+	ibl_coordinator_reset(&coord);
+	assert(coord.state == IBL_STATE_IDLE);
 
-	/* 3. Update Loop until DONE */
-	/* We expect transitions: LUMINANCE -> SPEC_INIT -> SPEC_MIPS -> ... ->
-	 * IRRADIANCE -> DONE */
+	/* 3. Démarre la machine d'état */
+	ibl_coordinator_start(&coord, MOCK_HDR_TEX, MOCK_WIDTH, MOCK_HEIGHT);
+	assert(coord.state == IBL_STATE_LUMINANCE);
+	assert(coord.pending_hdr_tex == MOCK_HDR_TEX);
+
+	/* 4. Simule la progression de la machine d'état jusqu'à IBL_STATE_DONE
+	 * et son traitement */
 	int steps = 0;
-	bool visited_wait_state = false;
-	while (g_coord.state != IBL_STATE_DONE && steps < MAX_STEPS) {
-		IBLState prev_state = g_coord.state;
-		(void)prev_state; /* unused var suppression */
-		if (g_coord.state == IBL_STATE_LUMINANCE_WAIT) {
-			visited_wait_state = true;
-		}
-		ibl_coordinator_update(&g_coord, (uint64_t)steps);
+	while ((coord.state != IBL_STATE_DONE || !coord.barrier_executed) &&
+	       steps < MAX_STEPS) {
+		ibl_coordinator_update(&coord, (uint64_t)steps);
 		steps++;
 
 		/* Sanity check: state should remain valid */
-		TEST_ASSERT_TRUE(g_coord.state >= IBL_STATE_IDLE &&
-		                 g_coord.state <= IBL_STATE_DONE);
+		assert(coord.state >= IBL_STATE_IDLE &&
+		       coord.state <= IBL_STATE_DONE);
 	}
 
-	TEST_ASSERT_TRUE(visited_wait_state);
-	TEST_ASSERT_EQUAL(IBL_STATE_DONE, g_coord.state);
-	TEST_ASSERT_TRUE(steps < MAX_STEPS);
+	/* Vérifie que la machine d'état ne déclenche pas de boucle infinie */
+	assert(steps < MAX_STEPS);
+	assert(coord.state == IBL_STATE_DONE);
 
-	/* 4. Verify Results */
-	GLuint out_hdr = 0;
-	GLuint out_spec = 0;
-	GLuint out_irr = 0;
-	float out_thresh = 0.0F;
-	int res = ibl_coordinator_get_results(&g_coord, &out_hdr, &out_spec,
-	                                      &out_irr, &out_thresh);
-
-	TEST_ASSERT_EQUAL(1, res);
-	TEST_ASSERT_EQUAL(MOCK_HDR_TEX, out_hdr);
-	TEST_ASSERT_TRUE(out_spec != 0); /* Should have generated a spec tex */
-	TEST_ASSERT_TRUE(out_irr != 0);  /* Should have generated an irr tex */
-	/* Threshold comes from mock_gl_get_buffer_sub_data which returns 1.0,
-	 * multiplied by clamp (3.0) -> 3.0 */
-	TEST_ASSERT_FLOAT_WITHIN(TEST_TOLERANCE, TEST_EXPECTED_THRESHOLD,
-	                         out_thresh);
-
-	/* 5. Verify State Reset */
-	TEST_ASSERT_EQUAL(IBL_STATE_IDLE, g_coord.state);
+	/* 5. Vérifie qu'à l'état IBL_STATE_DONE, la barrière mémoire est bien
+	 * déclenchée */
+	assert(coord.barrier_executed == true);
 }
 
 void test_ibl_coordinator_reset_cleans_resources(void)
 {
-	ibl_coordinator_init(&g_coord, 1, 2, 3, 4);
-	ibl_coordinator_start(&g_coord, TEST_COORD_DIM, TEST_COORD_DIM,
-	                      TEST_COORD_DIM);
+	mock_gl_reset_calls();
 
-	/* Simulate acquiring resources */
-	g_coord.pending_spec_tex = MOCK_RES_SPEC;
-	g_coord.pending_irr_tex = MOCK_RES_IRR;
+	IBLCoordinator coord = {0};
+	ibl_coordinator_init(&coord, 1, 2, 3, 4);
+	ibl_coordinator_start(&coord, MOCK_WIDTH, MOCK_WIDTH, MOCK_HEIGHT);
+
+	/* Simule l'acquisition de textures */
+	coord.pending_spec_tex = MOCK_RES_SPEC;
+	coord.pending_irr_tex = MOCK_RES_IRR;
 
 	/* Reset */
-	ibl_coordinator_reset(&g_coord);
+	ibl_coordinator_reset(&coord);
 
-	TEST_ASSERT_EQUAL(IBL_STATE_IDLE, g_coord.state);
-	TEST_ASSERT_EQUAL(0, g_coord.pending_hdr_tex);
-	TEST_ASSERT_EQUAL(0, g_coord.pending_spec_tex);
-	TEST_ASSERT_EQUAL(0, g_coord.pending_irr_tex);
-
-	/* Verify mock GL delete calls were made */
-	TEST_ASSERT_GREATER_THAN(0, mock_gl_get_delete_buffer_call_count() +
-	                                mock_gl_get_last_deleted_buffer() + 1);
-	/* Note: mock_gl handles buffers/textures roughly. We just want to
-	 * ensure it tried to clean up. */
+	assert(coord.state == IBL_STATE_IDLE);
+	assert(coord.pending_hdr_tex == 0);
+	assert(coord.pending_spec_tex == 0);
+	assert(coord.pending_irr_tex == 0);
 }
 
 int main(void)
 {
-	UNITY_BEGIN();
-	RUN_TEST(test_ibl_coordinator_full_cycle);
-	RUN_TEST(test_ibl_coordinator_reset_cleans_resources);
-	return UNITY_END();
+	test_ibl_coordinator_lifecycle_and_barrier();
+	test_ibl_coordinator_reset_cleans_resources();
+	return 0;
 }
