@@ -13,6 +13,7 @@
 #include "gl_common.h"
 #include "pbr.h"
 #include "perf_timer.h"
+#include <stdbool.h>
 
 /**
  * @enum IBLState
@@ -71,6 +72,8 @@ typedef struct {
 	double stage_gpu_max;   /**< Maximum GPU time across slices (ms). */
 	double stage_gpu_sum;   /**< Accumulated GPU time across slices (ms). */
 	int stage_slice_count;  /**< Number of slices completed in stage. */
+	bool barrier_executed; /**< Indicates if the memory barrier was executed
+	                          for DONE state. */
 } IBLCoordinator;
 
 /**
@@ -108,6 +111,13 @@ void ibl_coordinator_start(IBLCoordinator* coord, GLuint hdr_tex, int width,
  * @return IBLState The new state after the update.
  */
 IBLState ibl_coordinator_update(IBLCoordinator* coord, uint64_t frame_count);
+
+/**
+ * @brief Retrieves the current state of the coordinator.
+ * @param coord Pointer to the coordinator instance.
+ * @return The current IBLState.
+ */
+IBLState ibl_coordinator_get_state(const IBLCoordinator* coord);
 
 /**
  * @brief Retrieves the results of the IBL generation.

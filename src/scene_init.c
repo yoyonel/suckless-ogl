@@ -426,6 +426,8 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 
 int scene_init(Scene* scene)
 {
+	int success = 0;
+
 	/* Allocate opaque sub-structs */
 	scene->gpu = calloc(1, sizeof(SceneGPUResources));
 	scene->shaders = calloc(1, sizeof(SceneShaders));
@@ -434,19 +436,19 @@ int scene_init(Scene* scene)
 	if (!scene->gpu || !scene->shaders || !scene->simulation ||
 	    !scene->visuals) {
 		LOG_ERROR("Scene", "Failed to allocate scene sub-structs");
-		return 0;
+		goto cleanup;
 	}
 
 	scene_init_state(scene);
 
 	if (!scene_init_core_shaders(scene)) {
-		return 0;
+		goto cleanup;
 	}
 
 	render_utils_create_empty_vao(&scene->gpu->empty_vao);
 
 	if (!scene_init_billboard_shader(scene)) {
-		return 0;
+		goto cleanup;
 	}
 
 	render_utils_create_quad_vbo(&scene->gpu->quad_vbo);
@@ -464,7 +466,7 @@ int scene_init(Scene* scene)
 	    material_load_presets("assets/materials/pbr_materials.json");
 
 	if (!scene_init_compute_resources(scene)) {
-		return 0;
+		goto cleanup;
 	}
 
 	/* Initialize Probe Grid: dense grid covering the full sphere extent. */
@@ -481,7 +483,7 @@ int scene_init(Scene* scene)
 
 	Shader* inst_shader = NULL;
 	if (!scene_init_instanced_shader(scene, &inst_shader)) {
-		return 0;
+		goto cleanup;
 	}
 
 	scene->shaders->debug_uniforms.projection = shader_get_uniform_location(
@@ -499,7 +501,13 @@ int scene_init(Scene* scene)
 	scene->shaders->debug_uniforms.u_color =
 	    shader_get_uniform_location(scene->shaders->debug_line, "u_color");
 
-	return 1;
+	success = 1;
+
+cleanup:
+	if (!success) {
+		scene_cleanup(scene);
+	}
+	return success;
 }
 
 /* --- Subsystem descriptor (Phase 1 alloc + Phase 3 GL init) --- */
@@ -507,20 +515,31 @@ int scene_init(Scene* scene)
 /* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
 int scene_subsys_init(App* app)
 {
+	int success = 0;
+
 	app->scene =
 	    platform_aligned_alloc(sizeof(*app->scene), SIMD_ALIGNMENT);
 	if (!app->scene) {
-		return 0;
+		goto cleanup;
 	}
 	*app->scene = (Scene){0};
 	app->scene->config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
+
 	if (!scene_init(app->scene)) {
-		scene_cleanup(app->scene);
-		platform_aligned_free(app->scene);
-		app->scene = NULL;
-		return 0;
+		goto cleanup;
 	}
-	return 1;
+
+	success = 1;
+
+cleanup:
+	if (!success) {
+		if (app->scene) {
+			scene_cleanup(app->scene);
+			platform_aligned_free(app->scene);
+			app->scene = NULL;
+		}
+	}
+	return success;
 }
 
 /* Called via APP_SUBSYSTEM_TABLE in app.c (subsystem descriptor pattern) */
