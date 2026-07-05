@@ -94,6 +94,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shockwave\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_trail_renderer\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_postprocess_input\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_render\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_init_rollback\\.c$")
 
 # Exclure les tests spécifiques à POSIX sur Windows
 if(WIN32)
@@ -1009,3 +1010,44 @@ endif()
 add_executable(test_ibl_extract test_ibl_extract.c)
 target_link_libraries(test_ibl_extract PRIVATE app_testlib)
 # No add_test because it's a CLI tool for verification, not a unit test.
+
+# =============================================================================
+# SCENE INIT ROLLBACK (STANDALONE MOCKED)
+# =============================================================================
+add_executable(test_scene_init_rollback
+    test_scene_init_rollback.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
+)
+if(ENABLE_TRACY)
+  target_sources(test_scene_init_rollback PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_scene_init_rollback PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+    ${glad_BINARY_DIR}/include
+)
+if(ENABLE_TRACY)
+  target_include_directories(test_scene_init_rollback PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(test_scene_init_rollback PRIVATE cglm m)
+else()
+  target_link_libraries(test_scene_init_rollback PRIVATE cglm)
+endif()
+
+if(WIN32)
+  add_test(NAME test_scene_init_rollback
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_init_rollback>)
+else()
+  add_test(NAME test_scene_init_rollback COMMAND test_scene_init_rollback)
+endif()

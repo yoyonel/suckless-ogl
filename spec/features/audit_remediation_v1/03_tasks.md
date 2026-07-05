@@ -77,7 +77,7 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 
 ## Phase 4 : Flux Transactionnel d'Initialisation
 
-### [ ] Tâche 4.1 : Transition de scene_init vers le point de sortie unique
+### [x] Tâche 4.1 : Transition de scene_init vers le point de sortie unique
 * **Fichier cible** : [scene_init.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L427)
 * **Description** : Réécrire entièrement le flux de contrôle de la fonction [scene_init](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_init.c#L427) :
   - Déclarer une variable `int success = 0;`.
@@ -98,7 +98,7 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 
 ## Phase 5 : Tests de Non-Régression et Performance
 
-### [ ] Tâche 5.1 : Validation de l'idempotence sous ASan et Valgrind
+### [x] Tâche 5.1 : Validation de l'idempotence sous ASan et Valgrind
 * **Description** :
   - Compiler le moteur avec le support d'AddressSanitizer (ASan) et UndefinedBehaviorSanitizer (UBSan).
   - Exécuter le test unitaire d'idempotence [tests/test_scene_cleanup_idempotency.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/tests/test_scene_cleanup_idempotency.c) sous ASan et Valgrind.
