@@ -88,6 +88,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_security\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_extract\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_cleanup_idempotency\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_nbody\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shockwave\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_trail_renderer\\.c$")
@@ -964,6 +965,42 @@ if(WIN32)
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_render>)
 else()
   add_test(NAME test_scene_render COMMAND test_scene_render)
+endif()
+
+# =============================================================================
+# SCENE CLEANUP IDEMPOTENCY (STANDALONE MOCKED)
+# =============================================================================
+add_executable(test_scene_cleanup_idempotency
+    test_scene_cleanup_idempotency.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/scene_cleanup.c
+)
+if(ENABLE_TRACY)
+  target_sources(test_scene_cleanup_idempotency PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_scene_cleanup_idempotency PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+)
+if(ENABLE_TRACY)
+  target_include_directories(test_scene_cleanup_idempotency PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(test_scene_cleanup_idempotency PRIVATE cglm m)
+else()
+  target_link_libraries(test_scene_cleanup_idempotency PRIVATE cglm)
+endif()
+
+if(WIN32)
+  add_test(NAME test_scene_cleanup_idempotency
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_cleanup_idempotency>)
+else()
+  add_test(NAME test_scene_cleanup_idempotency COMMAND test_scene_cleanup_idempotency)
 endif()
 
 # =============================================================================

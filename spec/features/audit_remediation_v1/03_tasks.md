@@ -46,13 +46,13 @@ Ce document fournit la liste des tâches de développement unitaires (estimées 
 
 ## Phase 3 : Sécurisation Défensive et Idempotence du Nettoyage
 
-### [ ] Tâche 3.1 (TDD) : Créer tests/test_scene_cleanup_idempotency.c
+### [x] Tâche 3.1 (TDD) : Créer tests/test_scene_cleanup_idempotency.c
 * **Fichier cible** : [tests/test_scene_cleanup_idempotency.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/tests/test_scene_cleanup_idempotency.c)
 * **Description** : Créer le fichier de test unitaire [tests/test_scene_cleanup_idempotency.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/tests/test_scene_cleanup_idempotency.c) et l'enregistrer dans [tests/CMakeLists.txt](file:///home/latty/Prog/__PERSO__/suckless-ogl/tests/CMakeLists.txt). Ce test doit instancier une structure [Scene](file:///home/latty/Prog/__PERSO__/suckless-ogl/include/scene.h#L27) initialisée à `{0}`, appeler la fonction [scene_cleanup](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_cleanup.c#L82), et vérifier via ctest sous ASan/Valgrind l'absence de Segfault.
 * **Validation** :
   - Le test compile avec succès, est enregistré dans CTest, et échoue (RED) avant la sécurisation de [scene_cleanup](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_cleanup.c#L82).
 
-### [ ] Tâche 3.2 : Sécurisation des routines internes de nettoyage
+### [x] Tâche 3.2 : Sécurisation des routines internes de nettoyage
 * **Fichier cible** : [scene_cleanup.c](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_cleanup.c#L22)
 * **Description** : Modifier toutes les routines de nettoyage interne statiques pour les rendre tolérantes aux pointeurs nuls :
   - [scene_cleanup_pbr_shaders](file:///home/latty/Prog/__PERSO__/suckless-ogl/src/scene_cleanup.c#L22) : Guarder l'accès à `scene->shaders` et `scene->gpu`.
